@@ -1,0 +1,597 @@
+{
+ "session": "20260927T061107-953Z-150600-11",
+ "segments_evidence_sha256": "d87f5906a45c177c532218269c47c5249cc009e32f6416b07ec804c1bf87e968",
+ "reviewer": "admission-codex",
+ "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+ "role": "owner visual inspection; provisional until independent frame verdicts and admission review",
+ "method": "Inspected all 74 supplied JPEGs in ten contact sheets and verified JPEG and evidence-input hashes. Replayed all key/button events in the five candidate accepts, including middle-button hold plus settle overlaps. No new decode for owner inspection.",
+ "limits": [
+  "Sparse supplied JPEGs cannot establish all intervening frames. Native independent review required at event neighborhoods and death/final-round edges."
+ ],
+ "input_audit": {
+  "path": "data/admission-codex/review-11/input-audit.json",
+  "sha256": "8c0f9c7a9f4d90b33a849c7fbfa1c67e891b36d125ab76097751bc90f14dd3fa"
+ },
+ "verdicts": {
+  "seg-000": {
+   "suitability": "rejected",
+   "reason": "focus_transition: retained conservative intake exclusion. All supplied samples visually inspected.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 32,
+     "composition_ns": 557342367895795,
+     "decoded_bgr_sha256": "5eeb886a3a869c68f18c2225633cb13f5cad9588a78975628f1b24c92499b249"
+    },
+    {
+     "frame_index": 46,
+     "composition_ns": 557342484562457,
+     "decoded_bgr_sha256": "d832d6bc0396cb41bdf66df8f88e0c00634cc9a860f760c6d9ce6f5a13dfb540"
+    },
+    {
+     "frame_index": 61,
+     "composition_ns": 557342609562452,
+     "decoded_bgr_sha256": "71f4a42495ef983bb66f943cea64ba2fe6df7519d90d2f372c17d237a93edf03"
+    }
+   ]
+  },
+  "seg-001": {
+   "suitability": "rejected",
+   "reason": "no_range_hud: retained conservative intake exclusion. All supplied samples visually inspected.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 62,
+     "composition_ns": 557342617895785,
+     "decoded_bgr_sha256": "88543c775e26b5f36b0f22a3671c81380a31b8cec1097e3f030483b84b4a190a"
+    },
+    {
+     "frame_index": 355,
+     "composition_ns": 557345059562354,
+     "decoded_bgr_sha256": "c37ccaeacc93ecf1ab1e51f90689f0917eb3352cdec207d41a68b8434de24e61"
+    },
+    {
+     "frame_index": 648,
+     "composition_ns": 557347501228923,
+     "decoded_bgr_sha256": "5f88b5699e9487374ec9a171526ff05d63bff59576a6bc365d991cd622c6e118"
+    }
+   ]
+  },
+  "seg-002": {
+   "suitability": "accepted",
+   "reason": "Own setup traversal across trees and roofs, own camera and HUD in all three samples.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 649,
+     "composition_ns": 557347509562256,
+     "decoded_bgr_sha256": "7c98f683c18dc43d5f730e4f9fef6a89649d4bd06fe85f5967337baa3ba58514"
+    },
+    {
+     "frame_index": 1655,
+     "composition_ns": 557355892895254,
+     "decoded_bgr_sha256": "960fa1a2fa57b8988f3f5d9ec56c8d7ef9ca66826edb97ad87d0b56ecea13e47"
+    },
+    {
+     "frame_index": 2661,
+     "composition_ns": 557364276228252,
+     "decoded_bgr_sha256": "a9fb9d9d8a4e770bd9407b1d391770f1e6f041f6e4651443a5dc68525d1c06f1"
+    }
+   ]
+  },
+  "seg-003": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained conservative intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": []
+  },
+  "seg-004": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained conservative intake exclusion. All supplied samples visually inspected.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 2662,
+     "composition_ns": 557364284561585,
+     "decoded_bgr_sha256": "b038aeca265cffbb626339266d78218e9bc8b39e4fe3f314b5690ce5bbc6a8f8"
+    },
+    {
+     "frame_index": 3515,
+     "composition_ns": 557371392894634,
+     "decoded_bgr_sha256": "b6d91f155d11e573660b6140389eb5a59b078e34d1b9a934b763842b75a4a8f4"
+    },
+    {
+     "frame_index": 4368,
+     "composition_ns": 557378501227683,
+     "decoded_bgr_sha256": "65fd462697097dbaaca62290f5dd3b723ce754e8234873199fea26baa5e7c888"
+    }
+   ]
+  },
+  "seg-005": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained conservative intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": []
+  },
+  "seg-006": {
+   "suitability": "accepted",
+   "reason": "Own roof exit, traversal, combat and healing in all nine samples. Final frame remains alive at 129 HP. Passive team chat is not a menu.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 4369,
+     "composition_ns": 557378509561016,
+     "decoded_bgr_sha256": "ce7ac5fa9aa82de1af8c77625f653ef8b76eac8adac31aac145fbe04a6b5ca6d"
+    },
+    {
+     "frame_index": 5520,
+     "composition_ns": 557388101227299,
+     "decoded_bgr_sha256": "21aec04c459761b8eee5b7af77238fed354fca6c8da544ec7970f0e5c45a2df0"
+    },
+    {
+     "frame_index": 6671,
+     "composition_ns": 557397692893582,
+     "decoded_bgr_sha256": "feedb6256f5224a31432f02d9c935ec106309a7890203d99ba0430c18ac81d4c"
+    },
+    {
+     "frame_index": 7822,
+     "composition_ns": 557407284559865,
+     "decoded_bgr_sha256": "48d5cef913b0001d9f23ae7d676b4bc248b58dacfeaffdcc66c5d82f3bfaf177"
+    },
+    {
+     "frame_index": 8973,
+     "composition_ns": 557416876226148,
+     "decoded_bgr_sha256": "4a1d5bf9bfc96d2fdacccac14a5ff2a3d4cc9f25b0b2d64bb86ad52a406dc4dc"
+    },
+    {
+     "frame_index": 10124,
+     "composition_ns": 557426467892431,
+     "decoded_bgr_sha256": "bd4dee56578514742d50f5210aa7f5d843d7e471028ee0eddbdf103a6018f9b8"
+    },
+    {
+     "frame_index": 11275,
+     "composition_ns": 557436059558714,
+     "decoded_bgr_sha256": "3d338a277450fa026c9f0784c2d84e385ae477522ef517f8d049d446737e8462"
+    },
+    {
+     "frame_index": 12426,
+     "composition_ns": 557445651224997,
+     "decoded_bgr_sha256": "1d9824e1ffbf1a95335d6172cb44797bd6d3cab9941109290ba0d131994b62bd"
+    },
+    {
+     "frame_index": 13577,
+     "composition_ns": 557455242891280,
+     "decoded_bgr_sha256": "4f1bd9bc249e2c2e4c62e29763eab4134c5472c36f4e4ced8a0628b7fad51c47"
+    }
+   ]
+  },
+  "seg-007": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained conservative intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": []
+  },
+  "seg-008": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained conservative intake exclusion. All supplied samples visually inspected.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 13578,
+     "composition_ns": 557455251224613,
+     "decoded_bgr_sha256": "9e35a06cd94b2817da211da188848b0de2b1c9fe690f0a8cac6d7ee07df39f81"
+    },
+    {
+     "frame_index": 13709,
+     "composition_ns": 557456342891236,
+     "decoded_bgr_sha256": "ced733bffc9249c11984e1577e50d57702685ecf8e96ec38cd0e24940a815780"
+    },
+    {
+     "frame_index": 13841,
+     "composition_ns": 557457442891192,
+     "decoded_bgr_sha256": "bffd79a50e460fd946a13e7284992c530bfbfa5a2295d8e3ff34284225988637"
+    }
+   ]
+  },
+  "seg-009": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained conservative intake exclusion. All supplied samples visually inspected.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 13842,
+     "composition_ns": 557457451224525,
+     "decoded_bgr_sha256": "f9a8dc5bd3afa52dd4e3cb70428017985c37e8bbc4c00814b91a3380b582f27d"
+    }
+   ]
+  },
+  "seg-010": {
+   "suitability": "accepted",
+   "reason": "Own healing and combat in all five samples. Frame 14982 is a reader miss under pink shark/teammate effects with own 100 HP HUD; later bonus HP remains own play. Ends alive at 170 HP.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 13843,
+     "composition_ns": 557457459557858,
+     "decoded_bgr_sha256": "62de349047021329782b8c461981a7c555516d940d437f36a4cfc7c440bb2071"
+    },
+    {
+     "frame_index": 14982,
+     "composition_ns": 557466951224145,
+     "decoded_bgr_sha256": "9c2dd1ffda42dcf051633db296df5bc603bd2a2399d35f0bf7495278608e8d28"
+    },
+    {
+     "frame_index": 16122,
+     "composition_ns": 557476451223765,
+     "decoded_bgr_sha256": "eeb559a96cc72e2d1ad8c32c6378016dd2987186ae2f7c259a447078eff5fcde"
+    },
+    {
+     "frame_index": 17261,
+     "composition_ns": 557485942890052,
+     "decoded_bgr_sha256": "7bc5d6aba409985ef814f04c03edfe081b783c65b101be5f32b67d2a05344b2d"
+    },
+    {
+     "frame_index": 18401,
+     "composition_ns": 557495442889672,
+     "decoded_bgr_sha256": "6a34d970fc2a405b356fa0f5f875146249aa474a5bf39b75ae49dcc0a8889f41"
+    }
+   ]
+  },
+  "seg-011": {
+   "suitability": "rejected",
+   "reason": "hud_unknown: retained conservative intake exclusion. All supplied samples visually inspected.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 18402,
+     "composition_ns": 557495451223005,
+     "decoded_bgr_sha256": "3d3fec0e1498a80447566aa747052afa08216e09e34f336242ba16248efaf7a3"
+    },
+    {
+     "frame_index": 18503,
+     "composition_ns": 557496292889638,
+     "decoded_bgr_sha256": "74256f9be464de1a22d56e640a8532013670014aa36218845018dbd33235e0e6"
+    },
+    {
+     "frame_index": 18605,
+     "composition_ns": 557497142889604,
+     "decoded_bgr_sha256": "0038bc2b5709deb9d873364356709350e08abea1fc1458358b9878e142ee1a02"
+    }
+   ]
+  },
+  "seg-012": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained conservative intake exclusion. All supplied samples visually inspected.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 18606,
+     "composition_ns": 557497151222937,
+     "decoded_bgr_sha256": "c080424ce5499a710d2ad8a613f70b73f1802055b6ccc40abdd1d6e17e5df73a"
+    },
+    {
+     "frame_index": 18736,
+     "composition_ns": 557498234556227,
+     "decoded_bgr_sha256": "7eeda3431ecd79513e30779a6b0d9fac3b2f749480a9e730cb8890e92273fc06"
+    },
+    {
+     "frame_index": 18866,
+     "composition_ns": 557499317889517,
+     "decoded_bgr_sha256": "b4ca979e83897c2c997c14b58d06c53cc459714a41b482935977be02f50c7d9d"
+    }
+   ]
+  },
+  "seg-013": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained conservative intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": []
+  },
+  "seg-014": {
+   "suitability": "accepted",
+   "reason": "Own traversal, healing and combat in all twelve samples. Frame 22407 is a reader miss with own 164 HP HUD. Final frame 31848 remains own live camera at 55 HP before the death cut; independent native edge check required.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 18867,
+     "composition_ns": 557499326222850,
+     "decoded_bgr_sha256": "5ca5d52f90d4d323627742474daaeb5a67a6a821ed4f52f1ad46e8716ea83358"
+    },
+    {
+     "frame_index": 20047,
+     "composition_ns": 557509159555790,
+     "decoded_bgr_sha256": "85ab6ac80f36e4f73a039eae22538d587a2a3d0f08a3f56b46835884618871a5"
+    },
+    {
+     "frame_index": 21227,
+     "composition_ns": 557518992888730,
+     "decoded_bgr_sha256": "4e0c9481c001cac967dea71a92e3ecfe49cd0167e4eee6df426e979491ce327e"
+    },
+    {
+     "frame_index": 22407,
+     "composition_ns": 557528826221670,
+     "decoded_bgr_sha256": "8319ec00f94e2121786fd98922c20df477455219211e10c11fdfebe35a45e4b9"
+    },
+    {
+     "frame_index": 23587,
+     "composition_ns": 557538659554610,
+     "decoded_bgr_sha256": "203e10f1ba03d4f3e0b2f32a39237a9ed0e8193fc9427cf052010223f4301134"
+    },
+    {
+     "frame_index": 24767,
+     "composition_ns": 557548492887550,
+     "decoded_bgr_sha256": "e1bb694d2c402c54c6009d5fcaa83913070bcbd89d4880a4a1880a38f9551615"
+    },
+    {
+     "frame_index": 25947,
+     "composition_ns": 557558326220490,
+     "decoded_bgr_sha256": "15bcd2473cc3d2e78c4d768a52289c1c6e055969cebd443624b4f90cf49af29e"
+    },
+    {
+     "frame_index": 27127,
+     "composition_ns": 557568159553430,
+     "decoded_bgr_sha256": "69e497647e0c9936f2e07bcde98dae6b4404ad12aa77564d18f001fcf552e7ea"
+    },
+    {
+     "frame_index": 28307,
+     "composition_ns": 557577992886370,
+     "decoded_bgr_sha256": "c153456b819ea47d1bf5aeb0b3411a43be732c32e96141cf6e63d0c669b74f7e"
+    },
+    {
+     "frame_index": 29487,
+     "composition_ns": 557587826219310,
+     "decoded_bgr_sha256": "1a4f0634f48f4f782c9f92a286bd0dcda9fec1887c6f5afa2113461235f930d4"
+    },
+    {
+     "frame_index": 30667,
+     "composition_ns": 557597659552250,
+     "decoded_bgr_sha256": "201cdaa801e89fdfd2063d4718b04ca8aaa4f58c84ed6586af22b7044311c8a4"
+    },
+    {
+     "frame_index": 31848,
+     "composition_ns": 557607501218523,
+     "decoded_bgr_sha256": "6d3df851013ac87e4440686b756b3e52fd3e41a4cbea44eab4d2e88c2bbcba0d"
+    }
+   ]
+  },
+  "seg-015": {
+   "suitability": "rejected",
+   "reason": "dead: retained conservative intake exclusion. All supplied samples visually inspected.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 31849,
+     "composition_ns": 557607509551856,
+     "decoded_bgr_sha256": "0953e93e5ea0b86d038fd4db35026f7b39d393226ec3fcd35ea0c519d645423e"
+    },
+    {
+     "frame_index": 31882,
+     "composition_ns": 557607784551845,
+     "decoded_bgr_sha256": "17e57672d6065b5d8a922451c2bed52c3bc7f30ed9daa8888742e85635edd692"
+    },
+    {
+     "frame_index": 31915,
+     "composition_ns": 557608059551834,
+     "decoded_bgr_sha256": "85ecc10e14bb9c64006734009d4aa6bef0e7959efff91d07ed173f9161b6b371"
+    }
+   ]
+  },
+  "seg-016": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained conservative intake exclusion. All supplied samples visually inspected. Scoreboard/death/Past Lives replay excluded.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 31916,
+     "composition_ns": 557608067885167,
+     "decoded_bgr_sha256": "a45e13d79c5c7f88c84c388539cbf8bc3f11c3d22ed76146bd7386bc6d42a329"
+    },
+    {
+     "frame_index": 32150,
+     "composition_ns": 557610017885089,
+     "decoded_bgr_sha256": "f50572f498d98fcbb2c832a8cdbe3b9550b951f35386c067a309d4ba39cef197"
+    },
+    {
+     "frame_index": 32384,
+     "composition_ns": 557611967885011,
+     "decoded_bgr_sha256": "2d09b211cfa90eaf3e3bc25272467eaff9844920ebb84ff0f406816293c9be2d"
+    }
+   ]
+  },
+  "seg-017": {
+   "suitability": "rejected",
+   "reason": "dead: retained conservative intake exclusion. All supplied samples visually inspected. Scoreboard/death/Past Lives replay excluded.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 32385,
+     "composition_ns": 557611976218344,
+     "decoded_bgr_sha256": "76d29f03b43322ed44f4284dc6d3a5322f3e2437313dc86c8ed8edc7c207113c"
+    },
+    {
+     "frame_index": 32637,
+     "composition_ns": 557614076218260,
+     "decoded_bgr_sha256": "26a44b816046adc51a0a47108bb9df28b452b78536544136ab11456680b43262"
+    },
+    {
+     "frame_index": 32890,
+     "composition_ns": 557616184551509,
+     "decoded_bgr_sha256": "54ec14a153b9459fe1eb843b49089fe1c2305785019ea39dcda5d23b03963510"
+    }
+   ]
+  },
+  "seg-018": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained conservative intake exclusion. All supplied samples visually inspected. Scoreboard/death/Past Lives replay excluded.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 32891,
+     "composition_ns": 557616192884842,
+     "decoded_bgr_sha256": "852b6a0114e460129a7a728af7598461a4b7d14ef6fc59f2a6b39f0f44f9fa84"
+    },
+    {
+     "frame_index": 33031,
+     "composition_ns": 557617359551462,
+     "decoded_bgr_sha256": "a2a19adcac62f19b4505e130fc162dca87975bcf37de14084e808fe31f094c53"
+    },
+    {
+     "frame_index": 33172,
+     "composition_ns": 557618534551415,
+     "decoded_bgr_sha256": "22fae09c0c0d0f38b7e7c4752442ada11319056dc7a013779cdfce02e4855cb1"
+    }
+   ]
+  },
+  "seg-019": {
+   "suitability": "rejected",
+   "reason": "dead: retained conservative intake exclusion. All supplied samples visually inspected.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 33173,
+     "composition_ns": 557618542884748,
+     "decoded_bgr_sha256": "937aefa2513dd38ce81c0809bc01d668d6d869161e1e525d482957af9fdc4d60"
+    },
+    {
+     "frame_index": 33206,
+     "composition_ns": 557618817884737,
+     "decoded_bgr_sha256": "58411b96089070d7fddcfdf9c8e545da83c0241eab095af038e208ed2bb7283f"
+    },
+    {
+     "frame_index": 33240,
+     "composition_ns": 557619101218059,
+     "decoded_bgr_sha256": "8b36e8f91b317fe89a819fe824f50d93747a60a93f5893e600e4f87371640f5d"
+    }
+   ]
+  },
+  "seg-020": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained conservative intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": []
+  },
+  "seg-021": {
+   "suitability": "accepted",
+   "reason": "Own respawn exit, traversal, combat and healing in all eight samples. Bonus HP and objective countdown overlay live control. Last frame 40928 shows own combat at 300 HP before the final UI/scoreboard/MVP cut; independent native edge check required.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 33241,
+     "composition_ns": 557619109551392,
+     "decoded_bgr_sha256": "8bb82c26bb73938395a20a6a84b794416952eb1fc79617a09647160b3cde8c45"
+    },
+    {
+     "frame_index": 34339,
+     "composition_ns": 557628259551026,
+     "decoded_bgr_sha256": "93dd24e4d991bd3b14fc0bd3823aa17fdb66b6d2fe861b0b0aa1d5abaac0825e"
+    },
+    {
+     "frame_index": 35437,
+     "composition_ns": 557637409550660,
+     "decoded_bgr_sha256": "bb6852a475d346eb275e23721bbebaacdd61acaa0c174a1d249d3b3101873d60"
+    },
+    {
+     "frame_index": 36535,
+     "composition_ns": 557646559550294,
+     "decoded_bgr_sha256": "6dd8731212961e52bfdf26b636b704556160296eb7967d01deb8df8fe8d31ba6"
+    },
+    {
+     "frame_index": 37633,
+     "composition_ns": 557655709549928,
+     "decoded_bgr_sha256": "e8470dc13937c4119b2b303c249d90c3b97b04a0480f3dd9343d8d3fac7b8352"
+    },
+    {
+     "frame_index": 38731,
+     "composition_ns": 557664859549562,
+     "decoded_bgr_sha256": "a3fc1d71aae6c409150dd527d2c8cd13a63bc41c206f3501f5ebf050f9418f0a"
+    },
+    {
+     "frame_index": 39829,
+     "composition_ns": 557674009549196,
+     "decoded_bgr_sha256": "a6830de44c7981282b60acd13d69390e03f8e9231a77d37dde446f5b3a063696"
+    },
+    {
+     "frame_index": 40928,
+     "composition_ns": 557683167882163,
+     "decoded_bgr_sha256": "add629f9db7095eb1c96a48f2be364b9d0338e7293c47468ac008c36b104f959"
+    }
+   ]
+  },
+  "seg-022": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained conservative intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": []
+  },
+  "seg-023": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained conservative intake exclusion. All supplied samples visually inspected. Final scoreboard and MVP sequence excluded.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-28T00:00:36.647653+00:00",
+   "evidence": "All 74 supplied JPEGs visually inspected through review-11/page-00.jpg through page-09.jpg",
+   "frames": [
+    {
+     "frame_index": 40929,
+     "composition_ns": 557683176215496,
+     "decoded_bgr_sha256": "1dd1b3f9c84dcdb08dccddde3b3d9e62d4f4be6470f7b7afdb0ac8d20d42b877"
+    },
+    {
+     "frame_index": 41402,
+     "composition_ns": 557687117882005,
+     "decoded_bgr_sha256": "32d89abd019580057f59eb965cdcbba3709832fedb12d68b0d8dab0d0e18bd9e"
+    },
+    {
+     "frame_index": 41876,
+     "composition_ns": 557691067881847,
+     "decoded_bgr_sha256": "da55f6fbc34466be6452b551a2de334ca1338787c355720a8edf70aa1dcd2ee2"
+    }
+   ]
+  }
+ }
+}
