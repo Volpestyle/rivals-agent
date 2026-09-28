@@ -30,6 +30,7 @@ exploration is for.
 | IDM expanded refit, killed at 6% | $3.04 | Random frame reads from a Modal network Volume, plus hashing every store before training; and the same false stop | **Not yet shared:** the yaw lane learned "stage to local disk" at 20:48, and the IDM lane repeated the mistake at 22:00. Belongs in `cloud/modal_guard` (stage to local disk by default) and the `modal` skill |
 | Round 3 launch churn | part of $6.04, and about 18 h | A new launch layer failing one piece at a time | `docs/compute.md` shakedown rule (3b4cfad); the shared toolkit |
 | Conservative holds booked as spend | $0 (but blocked work) | Reservations counted as spend; round 3's ledger showed about $40 against $6 actual | Use `modal billing report` actuals (charter improvements tracker) |
+| IDM full02, killed at 55% by our own guard | $7.65 | v1.0.5 treated one 10 s `modal billing` timeout as fatal and tore down a healthy ~10 h fit (02:08 CDT 09-28); no checkpoint existed | Guard v2 (`ead3e6d`): no custom budget code, native timeouts only, apps detached; IDM checkpoints every epoch (`05a61b4`); `rivals-compute` skill |
 
 ## Rules this ledger suggests
 
@@ -38,3 +39,11 @@ exploration is for.
 2. **Stage data on the GPU machine's local disk, never read training frames at random from a network Volume.**
 3. **A lesson goes into the toolkit or the skill for that moment the same day.** Lane notes are history.
 4. **Cost comes from Modal's bill, per run, and lands in this table** when the run ends.
+
+## Manual bill checks (the lead's process from 2026-09-28; no code queries billing)
+
+| Time (CDT) | Metered month-to-date | Billed after credits | Next launch and its estimate | Projected total | Under $150? |
+|---|---:|---:|---|---:|---|
+| 09-28 02:35 | $78.24 | $48.04 | v2 shakedown, two L40S apps, $0.48 all-in (frozen estimate, 0.10 overhead included); then IDM full03 ~$26.29 | ~$105.01 | Yes |
+
+`modal billing report` covers only complete days; use `modal billing summary` for the metered figure that includes today.
