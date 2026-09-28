@@ -48,7 +48,7 @@ def ref(path, pin=None):
 
 def registry(root):
     rows = []
-    for short, revision in [('051206','-a1'), ('052001','-a1'), ('053118',''), ('053838',''), ('055006',''), ('060021',''), ('061107','')]:
+    for short, revision in [('051206','-a1'), ('052001','-a1'), ('053118',''), ('053838',''), ('055006',''), ('060021',''), ('061107',''), ('061900','')]:
         doc = json.loads(receipt(root, short, revision).read_text())
         for sid, e in doc['sessions'].items():
             rows.append(dict(session_id=sid, session_group=e['session_group'], split='idm_train',
@@ -109,6 +109,8 @@ def test_current_controls_and_relocated_current_receipt(bundle):
      '20260927T060021-195Z-150600-10'),
     ('061107', 'c37d7ff11c67224005cb865f335b7798c877ec260e02a8696bbe59e687843a5d',
      '20260927T061107-953Z-150600-11'),
+    ('061900', '9f4bee42649f18d5e72db3729c1d4d94092e9a2cff54e4198d1e410edb23905e',
+     '20260927T061900-143Z-150600-12'),
 ])
 def test_new_accepted_metadata_is_in_bundle_without_expanding_selected_roster(bundle, short, pin, sid):
     path = receipt(bundle, short)
