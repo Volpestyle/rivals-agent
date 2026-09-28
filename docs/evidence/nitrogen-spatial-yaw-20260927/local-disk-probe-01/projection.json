@@ -1,0 +1,34 @@
+{
+  "tag": "EXPLORATORY TIMING PROJECTION, NOT P95",
+  "artifact_pins": {
+    "probe.json": "4211b09ff07dc5981187d547bf8c66e1157c1b19110e5b962d9af6326755f7a0",
+    "copy.json": "d98a3912cc14e5b83147600c9451a23f5763441f5616123b85ad85a71c81f07d"
+  },
+  "seconds": {
+    "copy_hash": 283.97680463,
+    "train_load_verify": 191.23758606299998,
+    "15288_updates": 3809.894669536435,
+    "26_epoch_boundaries": 240.71422843270423,
+    "final_evaluator": 15.888089409000031,
+    "eval_reload_allowance": 191.23758606299998,
+    "model_and_volume_checkpoint_allowance": 120
+  },
+  "projected_work_seconds": 4852.948964134139,
+  "proposed_work_seconds": 6300,
+  "unallocated_work_margin_seconds": 1447.0510358658612,
+  "proposed_startup_seconds": 300,
+  "proposed_cleanup_seconds": 120,
+  "proposed_hold_each_usd": "4.874214",
+  "proposed_three_holds_usd": "14.622642",
+  "settled_components_usd": {
+    "shakedowns": "1.302986",
+    "extractions": "1.780898",
+    "original_fit_refusals": "1.583800",
+    "stopped_grid8": "2.252171",
+    "completed_grid4": "2.585487",
+    "local_disk_probe": "0.547570"
+  },
+  "settled_campaign_usd": "10.052912",
+  "outstanding_yaw_holds_usd": "0",
+  "campaign_plus_proposed_holds_usd": "24.675554"
+}

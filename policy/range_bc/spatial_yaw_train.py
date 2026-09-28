@@ -106,13 +106,22 @@ def runtime():
     return "cuda"
 
 
+def dataset_path(spec, spec_sha256):
+    if spec.get("cache_mode") is None:
+        return spec["dataset_root"]
+    train.require(spec["cache_mode"] == "verified-local" and spec["grid"] == 8,
+                  "unapproved cache mode")
+    from .spatial_yaw_local import prepare_cache
+    return prepare_cache(spec["dataset_root"], spec["dataset_sha256"], spec_sha256)
+
+
 def fit(root, *, spec_path, spec_sha256):
     """Stage artifact list: epoch-26.pt, fit.json. Partial fits never resume."""
     root = Path(root)
     spec = checked_spec(spec_path, spec_sha256)
     device = runtime()
     train.require(not (root / "latest.pt").exists(), "partial fit refused")
-    arrays, dev, stats = load_dataset(spec["dataset_root"], spec["dataset_sha256"], spec["grid"])
+    arrays, dev, stats = load_dataset(dataset_path(spec, spec_sha256), spec["dataset_sha256"], spec["grid"])
     batches, dev_batches = SpatialBatches(arrays, stride=64), SpatialBatches(dev, stride=64)
     train.require(26*math.ceil(len(batches.windows)/8) == 15288, "matched window schedule differs")
     base, _ = load_base(spec["base_checkpoint"], spec["base_sha256"], spec["seed"])
@@ -158,7 +167,7 @@ def evaluate(root, *, spec_path, spec_sha256):
     train.require(cutoff["source"] == "TRAIN teacher-forced predictions only"
                   and len(cutoff["thresholds"]) == vocab.N
                   and all(math.isfinite(t) and 0 <= t <= 1 for t in cutoff["thresholds"]), "bad TRAIN cutoffs")
-    _, dev, stats = load_dataset(spec["dataset_root"], spec["dataset_sha256"], spec["grid"], dev_only=True)
+    _, dev, stats = load_dataset(dataset_path(spec, spec_sha256), spec["dataset_sha256"], spec["grid"], dev_only=True)
     result = evaluate_model(model.to(device), dev, stats["live_mask"], cutoff["thresholds"], device=device)
     result.update(spec=spec, spec_sha256=spec_sha256, fit=receipt, threshold_calibration=cutoff,
                   device=device, torch=str(torch.__version__))
