@@ -21,6 +21,11 @@ Before writing or debugging Modal code, load the `modal` skill (Modal's own, v1.
 and redeliver the same call (2026-09-27, ~19:15 UTC: two lanes lost their runs this way within 2 s). A worker must
 tolerate re-entry: resume only from a completed, hash-checked stage, and refuse a partial one instead of refitting.
 
+Only a run's own timeout and Modal's workspace limit may stop a running app. On 2026-09-28 at 07:08 UTC a single
+10-second timeout of `modal billing` made guard v1.0.5 kill IDM full02, a healthy run 55% through a ~10 h fit
+(VUH-1353). Billing is checked before launch and reconciled after it; a failed billing query mid-run only warns.
+Prefer fewer moving parts: every check that can stop a run is one more way to lose it.
+
 Never train by reading frames or feature caches at random straight off a Modal Volume: stage them onto the
 container's local disk first, hash-check, then read locally. On 2026-09-27 Volume-backed random reads ran 3-15x slower
 and cost two lanes about $14 of runs that never finished (`docs/steering/spend-ledger-20260927.md`). The exception is a workload
