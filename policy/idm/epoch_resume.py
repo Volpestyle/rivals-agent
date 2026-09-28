@@ -31,11 +31,12 @@ def canonical(value):
     return json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
 
 
-def rng_state():
+def rng_state(device="cpu"):
     n = np.random.get_state()
     return {"python": random.getstate(), "numpy": [n[0], n[1].tolist(), n[2], n[3], n[4]],
             "torch": torch.get_rng_state(),
-            "cuda": torch.cuda.get_rng_state_all() if torch.cuda.is_initialized() else []}
+            "cuda": torch.cuda.get_rng_state_all() if torch.cuda.is_initialized() else [],
+            "mps": torch.mps.get_rng_state() if str(device).split(":")[0] == "mps" else None}
 
 
 def restore_rng(state):
@@ -46,6 +47,9 @@ def restore_rng(state):
     if state["cuda"]:
         TR.require(torch.cuda.is_initialized(), "checkpoint CUDA RNG requires CUDA")
         torch.cuda.set_rng_state_all(state["cuda"])
+    if state.get("mps") is not None:
+        TR.require(torch.backends.mps.is_available(), "checkpoint MPS RNG requires MPS")
+        torch.mps.set_rng_state(state["mps"])
 
 
 def finite(value):
@@ -73,8 +77,9 @@ class EpochJournal:
         rows = hashlib.sha256()
         for target, _, row, _ in examples.items:
             rows.update(canonical([target.session_id, row["i"]]) + b"\n")
-        TR.require(str(recipe["device"]).split(":")[0] in ("cpu", "cuda"),
-                   "epoch resume supports CPU/CUDA only; MPS RNG not implemented")
+        device = str(recipe["device"]).split(":")[0]
+        TR.require(device in ("cpu", "cuda", "mps"), "unsupported epoch device")
+        TR.require(device != "mps" or torch.backends.mps.is_available(), "MPS unavailable")
         self.contract = {"identity": self.identity, "provenance": self.provenance,
                          "recipe": recipe, "config": config.as_dict(), "rows": len(examples),
                          "ordered_rows_sha256": rows.hexdigest(), "permutation": TR.PERMUTATION,
@@ -82,7 +87,7 @@ class EpochJournal:
                          "pos_weight": stats["pos_weight"].tolist(),
                          "runtime": {"torch": str(torch.__version__), "cuda": torch.version.cuda,
                                      "threads": torch.get_num_threads(),
-                                     "device_name": torch.cuda.get_device_name() if str(recipe["device"]).startswith("cuda") else "cpu",
+                                     "device_name": torch.cuda.get_device_name() if device == "cuda" else device,
                                      "deterministic": torch.are_deterministic_algorithms_enabled(),
                                      "cudnn": torch.backends.cudnn.version(),
                                      "cudnn_benchmark": torch.backends.cudnn.benchmark,
@@ -108,6 +113,8 @@ class EpochJournal:
                    "epoch payload hash mismatch")
         payload = torch.load(io.BytesIO(data), map_location="cpu", weights_only=True)
         state = payload["resume"]
+        TR.require(self.contract["recipe"]["device"] != "mps" or state["rng"].get("mps") is not None,
+                   "MPS checkpoint missing device RNG")
         n = receipt["completed_epochs"]
         TR.require(type(n) is int and 1 <= n <= self.contract["recipe"]["epochs"], "invalid completed epoch")
         TR.require(state["contract"] == self.contract and state["next_epoch"] == n
@@ -153,7 +160,7 @@ class EpochJournal:
         payload = torch.load(io.BytesIO(TR.checkpoint_bytes(model, self.provenance)), weights_only=True)
         payload["resume"] = {"contract": self.contract, "optimizer": optimizer.state_dict(),
                              "scheduler": None, "amp_scaler": None,
-                             "rng": rng_state(), "next_epoch": n, "next_batch": 0,
+                             "rng": rng_state(self.contract["recipe"]["device"]), "next_epoch": n, "next_batch": 0,
                              "step_count": n * math.ceil(self.contract["rows"] / self.contract["recipe"]["batch_size"]),
                              "history": history}
         TR.require(finite(payload), "nonfinite epoch state")

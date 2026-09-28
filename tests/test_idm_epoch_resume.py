@@ -12,8 +12,11 @@ from policy.idm import epoch_resume as E, train as TR
 from test_idm_model import TINY, examples, prov
 
 
-@pytest.fixture
-def rig(tmp_path):
+@pytest.fixture(params=["cpu", "mps"])
+def rig(tmp_path, request):
+    device = request.param
+    if device == "mps" and not torch.backends.mps.is_available():
+        pytest.skip("native MPS required")
     old = torch.get_num_threads()
     torch.set_num_threads(2)
     ex, target, store = examples(tmp_path, n=17)
@@ -27,13 +30,14 @@ def rig(tmp_path):
         seen.extend(idx)
         motion, hud = base_inputs(idx)
         # Exercise all three persisted RNGs, even though production has no augmentation.
-        return motion + (random.random() + np.random.random() + torch.rand(())) * .001, hud
+        device_noise = float(torch.rand((), device=device).cpu())
+        return motion + (random.random() + np.random.random() + torch.rand(()) + device_noise) * .001, hud
     ex.inputs = noisy_inputs
     def journal(root, **kwargs):
         return E.EpochJournal(root, identity={"inputs": "a"*64, "recipe": "b"*64},
                               provenance=meta, commit=lambda: None, **kwargs)
     def fit(j):
-        return TR.fit(ex, TINY, stats, seed=7, epochs=3, batch_size=5, epoch_journal=j)
+        return TR.fit(ex, TINY, stats, seed=7, epochs=3, batch_size=5, device=device, epoch_journal=j)
     yield ex, stats, journal, fit, seen
     torch.set_num_threads(old)
 
