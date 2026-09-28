@@ -76,7 +76,9 @@ so give cloud boxes 8 CPUs or more.
   hard cap.
   **No custom budget code** (James, 2026-09-28 ~02:30 CDT), after our own guard killed healthy runs twice: at 22:00 a
   false workspace stop, then at 02:08 a billing query that timed out. Spend is bounded by Modal alone: every function
-  sets `timeout=` (measured p95 plus a margin, so time × GPU rate caps a run) under the $200 workspace limit. The $150
+  sets `timeout=` (measured p95 plus a margin), which bounds each invocation, under the $200 workspace limit.
+  A timeout doesn't bound the whole app's bill, so the lead's estimate also counts CPU and RAM, startup, storage and
+  any repeated invocations. The $150
   "tell James first" rule is a lead process, not code. Before a paid launch the lead reads `modal billing report` and
   adds the run's estimate; after it ends, the lead records the bill in the spend ledger. `cloud/modal_guard` keeps only
   what protects the work: detached apps, the timeout, teardown proof, paced AppCreate, checkpoint re-entry and
