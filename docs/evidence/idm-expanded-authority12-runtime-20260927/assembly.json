@@ -1,0 +1,15 @@
+{
+  "app_commit": "9989f32a10e3a2aa7fae11818e757abe3b5c3178",
+  "authority_commit": "6ac019fa2208eb915549c75cf59e87ca5e315950",
+  "files": 182,
+  "guard_commit": "80d944bd8732103f2de1ad67dd83c4009b6bb7f2",
+  "image_id": "im-FNjy4v5u4XYF29SBGvT0KD",
+  "image_route": "existing image and immutable native source mount; no build",
+  "input_manifest_sha256": "42494717650293cc4b77add3721d5168c20781e6b98ca275443824656e055580",
+  "launch_performed": false,
+  "payload_manifest_sha256": "6dbc288c558df5caaad4a9179c973ed70c34442aff5d71894be055d5da011057",
+  "release_sha256": "5c0e979227738363bfceaef792d9852d2578fcc149f77d2f9cde61510dc8a8fd",
+  "source_inventory_sha256": "fb81937c4eb83e3326fc35042ec73b8466508117094281efef12f303ae016e52",
+  "specs": [],
+  "status": "SOURCE_FROZEN; authority delta LAND; upload/specs pending"
+}

@@ -1,0 +1,11 @@
+# LAND: final night IDM receipt-authority metadata refresh
+
+Reviewer: fit-review (Codex), independent metadata-only admission-consumer review. Exact commit: `6ac019fa2208eb915549c75cf59e87ca5e315950`. No findings.
+
+- All twelve canonical raw member hashes verify. All eleven prior pins and both revocations remain identical to independently accepted `f2f179a`. The only added member is the -12 accepted receipt `9f4bee42649f18d5e72db3729c1d4d94092e9a2cff54e4198d1e410edb23905e`, byte-identical to upstream `17dff14`. It records lead acceptance based on independent cut LAND and frame-review agreement on all 48 segments. Upstream acceptance is reused; frames were not re-inspected.
+- Verified index LF SHA256: `4c93196e14d04ee6a7d2d75d9e35e632539f2ced45b6b677e65aed1ef7aa1f87`. Enforcement source raw SHA256: `a2d70dcf96aa390cfd886dd3fad475f957f462dd681324718e6aac16ecec93c1`. Lane-note raw SHA256: `72c9599d40b071f14c3a13cd2620960194d3d96fe6315e4d38a7857c61e9408d`. All four reviewed files match the exact commit after LF normalization.
+- The production code changes only INDEX_SHA256. Prior currentness, revocation, registry and loader enforcement is unchanged. The four-path delta changes no vocabulary, V binding, numeric computation, or runtime action behavior.
+- Independent metadata-only probe against the actual registry and denylist validates eight current authority heads while loading exactly `20260927T051206-888Z-150600-4`, `20260927T052001-827Z-150600-5`, and `20260927T053118-260Z-150600-6`. Authority expansion does not select extra matches.
+- Independently ran `tests/test_idm_receipt_current.py`, `tests/test_idm_match_receipt_set.py`, `tests/test_idm_review_refusals.py`, and `tests/test_idm_explore.py`: **74 passed**. Owner's broader 98-test/Ruff result is reported evidence, not another independently executed result.
+
+LAND applies to this exact metadata delta for fresh runtime12 use. The cohort remains eight ranges plus -4a1/-5a1/-6; no -7/-8/-10/-11/-12 payload inclusion is authorized. The running upload and runtime11 were untouched. No media, logger payload, frames, steps, targets, stores, cloud actions or owner files were changed. Budget and total-night-duration statements in the note are outside this admission-consumer delta review.
