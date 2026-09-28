@@ -1,0 +1,105 @@
+{
+  "recorded_at": 1790568396.5252109,
+  "kind": "CONSERVATIVE LANE REPORT; not a provider balance",
+  "dropout_settled_usd": "2.550702",
+  "dropout_hard_cap_usd": "6.25",
+  "prior_yaw_settled_usd": "18.666509",
+  "cumulative_yaw_settled_usd": "21.217211",
+  "active_holds_usd": "0",
+  "attempts": [
+    {
+      "attempt_id": "yaw-dropout-probe-s1-20260928-01",
+      "app_id": "ap-QVeLevoayFdWqPzS95UUaK",
+      "bound_usd": "0.103155",
+      "pins": {
+        "probe/probe.json": {
+          "bytes": 890,
+          "sha256": "19c5b72b569e111344b00810d436feeb8f61253e964995c15c2da1a441b6030f"
+        }
+      }
+    },
+    {
+      "attempt_id": "yaw-dropout-probe-s2-20260928-01",
+      "app_id": "ap-CjWEJxyEcdzRl91dqM3KDs",
+      "bound_usd": "0.092766",
+      "pins": {
+        "probe/probe.json": {
+          "bytes": 888,
+          "sha256": "f904ebdc48d30d1cdca91c3fd4862ff2ed84fbbfee0b416b1c9dc3d03136215a"
+        }
+      }
+    },
+    {
+      "attempt_id": "yaw-dropout-probe-s3-20260928-01",
+      "app_id": "ap-6Dl7cjGkqqQ4f3TPurjS92",
+      "bound_usd": "0.077333",
+      "pins": {
+        "probe/probe.json": {
+          "bytes": 890,
+          "sha256": "223302850323aa23fc5af50c870f19705ad2dd796c55fcd18ffc7f663e293b58"
+        }
+      }
+    },
+    {
+      "attempt_id": "yaw-dropout-fit-s1-20260928-01",
+      "app_id": "ap-xp8Zo6tUkkjrD6UCR4zr9T",
+      "bound_usd": "0.713955",
+      "pins": {
+        "fit/fit.json": {
+          "bytes": 432,
+          "sha256": "0ee0288b229a83d5c994f61dba705a1dddb71995d414415de3826c658f98aa76"
+        },
+        "evaluation/evaluation.json": {
+          "bytes": 64814,
+          "sha256": "c969585e6df41b1be0540881b5bdc5ae4bffb8ac2b0b08ff8fc791553deb36ae"
+        },
+        "fit/status.json": {
+          "sha256": "5249d837e1ca985b162fcb0cd0f30716c3e852fea8966ed9c35da77cbbc1ab05",
+          "bytes": 11933,
+          "authority": "supplementary stable collection; not original guard artifact pin"
+        }
+      }
+    },
+    {
+      "attempt_id": "yaw-dropout-fit-s2-20260928-01",
+      "app_id": "ap-Aed2egLWCTD3A4iYd6zOeq",
+      "bound_usd": "0.774705",
+      "pins": {
+        "fit/fit.json": {
+          "bytes": 432,
+          "sha256": "c369b2191194ad81a8f17a0353f987dd3bfedea12f4769a2d790f9b1cc3fbaca"
+        },
+        "evaluation/evaluation.json": {
+          "bytes": 65023,
+          "sha256": "a33200c69ca4b224c77de81149589b6c3acec0212397631f8d9ffe6724dc6b37"
+        },
+        "fit/status.json": {
+          "sha256": "277692f5c4900f2295225128a11db8d6551967e9ba313598ce3dc19165ce90eb",
+          "bytes": 11926,
+          "authority": "supplementary stable collection; not original guard artifact pin"
+        }
+      }
+    },
+    {
+      "attempt_id": "yaw-dropout-fit-s3-20260928-01",
+      "app_id": "ap-0fRwzgw3rUuKCyKBBSVdYG",
+      "bound_usd": "0.788788",
+      "pins": {
+        "fit/fit.json": {
+          "bytes": 432,
+          "sha256": "c344df31c02413bfb75b6ae84958e289c704edab0b5183ed8287fa05f1e74169"
+        },
+        "evaluation/evaluation.json": {
+          "bytes": 65041,
+          "sha256": "c8c72a29aa0c747eb52e26fcf25a59ec234d4688f969a0132491b00049c30ef3"
+        },
+        "fit/status.json": {
+          "sha256": "794a06664114a5fd8225c32b29afd05627f419c42f91ab164445c0496a310aad",
+          "bytes": 11932,
+          "authority": "supplementary stable collection; not original guard artifact pin"
+        }
+      }
+    }
+  ],
+  "new_compute_authorized": false
+}

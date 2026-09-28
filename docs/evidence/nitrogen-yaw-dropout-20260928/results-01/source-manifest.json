@@ -1,0 +1,207 @@
+{
+  "files": {
+    "docs/evidence/nitrogen-yaw-dropout-20260928/report.py": {
+      "sha256": "9455b79d6b0673c887d482da5dd1c189d044b4ab13e23e68ab6d7f1b445d5cfa",
+      "bytes": 10660
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/test_report.py": {
+      "sha256": "16ebb552592dd42a33ecd273cda870a5afb6a4ad045ebc192af0c38309baab18",
+      "bytes": 1872
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/collect.py": {
+      "sha256": "5e02cdafcdc8c9a8f85484a84a1d730d4a6d2ec6e6fe7f1f8e7caf2609b4de11",
+      "bytes": 5588
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/probe-results-01/collection.json": {
+      "sha256": "ad413a1a662371ec16f541732de0988a1cb789bbc3589bebf56d9f6a9bc5260c",
+      "bytes": 1379
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/collection.json": {
+      "sha256": "138f624017115d906aab12058c17d3d12a4fc973c69c00d5029552b06871e65b",
+      "bytes": 2495
+    },
+    "docs/evidence/nitrogen-spatial-yaw-20260927/grid4-results-02/collection.json": {
+      "sha256": "30dd6799af4805cbd6011545415dfc2eb55860d3b5c34daf740bf9a961d17e2f",
+      "bytes": 1660
+    },
+    "docs/evidence/nitrogen-spatial-yaw-20260927/fit-curves-20260928/grid4/collection.json": {
+      "sha256": "01707a1cc1c9b3ce6239374edcf882025cbc9a8c6649fa67e55476ff19be389a",
+      "bytes": 15494
+    },
+    "docs/evidence/nitrogen-spatial-yaw-20260927/localfit03-workspace-stop-20260928/summary.json": {
+      "sha256": "f9ee98f5f4bfa389289960d5b7e4ffe6ad7fa16a2b773a53124945db0ec54088",
+      "bytes": 5626
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-launch-01/batch-result.json": {
+      "sha256": "cbbd1c5f4c404d0bb115010ee364c992e95e498aae7048bd3eeb41b53b7c03ea",
+      "bytes": 167
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-launch-01/batch.exit": {
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-launch-01/batch.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-launch-01/launch.json": {
+      "sha256": "6cfce3518f0f83dea213207ea8219bd4adb9bc85596e86673990b3dda61591f5",
+      "bytes": 165
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-launch-01/rates-1790567326.json": {
+      "sha256": "06409259e878ebcb17ee60eafa9f00f72a276da8226945a664f79e7b82cd8f73",
+      "bytes": 4124
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-launch-01/rates-1790567376.json": {
+      "sha256": "5fb16af3a76e4e78d4335b24d90196a260aec05840ef0dbf6ebbaa1962c7de3a",
+      "bytes": 6622
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-launch-01/rates-1790567468.json": {
+      "sha256": "b1f2a87bbb58e43cf39ef514ad011cfc4084b7fa2b8a41d8664fe7a4191e4597",
+      "bytes": 11986
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-launch-01/started.json": {
+      "sha256": "dee99a8a41b5ffd4d76b537cba93270011d7fa49828f921d7515a66290d6fc8d",
+      "bytes": 1100
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-launch-01/terminal.json": {
+      "sha256": "3f0b6ecb5bab2ba540d1ab0df2f517b9fce0fd23fd268b785e9a3666859376c6",
+      "bytes": 38
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s1-20260928-01/call.json": {
+      "sha256": "cacefd5d3291c5ffd0f5dad854b208fc7cc0e18f2370eab6cf23ebe5fcfaa6e2",
+      "bytes": 44
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s1-20260928-01/evaluation/evaluation.json": {
+      "sha256": "c969585e6df41b1be0540881b5bdc5ae4bffb8ac2b0b08ff8fc791553deb36ae",
+      "bytes": 64814
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s1-20260928-01/fit/fit.json": {
+      "sha256": "0ee0288b229a83d5c994f61dba705a1dddb71995d414415de3826c658f98aa76",
+      "bytes": 432
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s1-20260928-01/fit/status.json": {
+      "sha256": "5249d837e1ca985b162fcb0cd0f30716c3e852fea8966ed9c35da77cbbc1ab05",
+      "bytes": 11933
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s1-20260928-01/rates.json": {
+      "sha256": "8d1965185f059e8ac1c7e2aad0eaf0a92a6b0f1a21f0ef0d237718fed8b6aba5",
+      "bytes": 2760
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s1-20260928-01/result.json": {
+      "sha256": "fd5cfb2d81fa5401fc5c1560e0dbde7358e49ff878b040aeb100d4645f244106",
+      "bytes": 21272
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s1-20260928-01/teardown.json": {
+      "sha256": "95c31742e8222475744b50f6f9781dad0ea2f8f8f430b38e24d02bed11255642",
+      "bytes": 16928
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s1-20260928-01/watchdog.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s2-20260928-01/call.json": {
+      "sha256": "c00390025ef1859e5a3b4124ceb6301d6fe17047515d88e413495e2cb41b826f",
+      "bytes": 44
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s2-20260928-01/evaluation/evaluation.json": {
+      "sha256": "a33200c69ca4b224c77de81149589b6c3acec0212397631f8d9ffe6724dc6b37",
+      "bytes": 65023
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s2-20260928-01/fit/fit.json": {
+      "sha256": "c369b2191194ad81a8f17a0353f987dd3bfedea12f4769a2d790f9b1cc3fbaca",
+      "bytes": 432
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s2-20260928-01/fit/status.json": {
+      "sha256": "277692f5c4900f2295225128a11db8d6551967e9ba313598ce3dc19165ce90eb",
+      "bytes": 11926
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s2-20260928-01/rates.json": {
+      "sha256": "9edd5068e03574d4430e81433caaed808556de744eeb2b53bbacc62e46acbff7",
+      "bytes": 2762
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s2-20260928-01/result.json": {
+      "sha256": "5d9f58f4e0db0fccc621b885a6c1037e07f9294750d28d52fe652d4d3493a8f8",
+      "bytes": 20444
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s2-20260928-01/teardown.json": {
+      "sha256": "d0de32b03653598aa05e43225039a43d3855f63e60c3f9aa4b70915596cab6dd",
+      "bytes": 16092
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s2-20260928-01/watchdog.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s3-20260928-01/call.json": {
+      "sha256": "83039f9b95ec98cb562f973609dc9ee65a32b7f3efd8db7e05af5716bf4f2d70",
+      "bytes": 44
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s3-20260928-01/evaluation/evaluation.json": {
+      "sha256": "c8c72a29aa0c747eb52e26fcf25a59ec234d4688f969a0132491b00049c30ef3",
+      "bytes": 65041
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s3-20260928-01/fit/fit.json": {
+      "sha256": "c344df31c02413bfb75b6ae84958e289c704edab0b5183ed8287fa05f1e74169",
+      "bytes": 432
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s3-20260928-01/fit/status.json": {
+      "sha256": "794a06664114a5fd8225c32b29afd05627f419c42f91ab164445c0496a310aad",
+      "bytes": 11932
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s3-20260928-01/rates.json": {
+      "sha256": "88493dfaf931d4d9ab95a31a56f3bf9643726c3f54135b683dd81ee2666d5cc2",
+      "bytes": 2759
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s3-20260928-01/result.json": {
+      "sha256": "d2e11bce3d6a294a1c09e6e21a854ddec7b9f187415696e16a0da8a454ee3ca9",
+      "bytes": 14734
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s3-20260928-01/teardown.json": {
+      "sha256": "845b0c32a37d98386308f8c01603937cb1f33e275be5b05c2512e6a4972d5866",
+      "bytes": 15455
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/fit-results-01/yaw-dropout-fit-s3-20260928-01/watchdog.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/results-01/curves.csv": {
+      "sha256": "39bf64ad9c0dd64cd0a95dc94585578dd2288df34bec85148d2d78663caaabc3",
+      "bytes": 8827
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/results-01/curves.png": {
+      "sha256": "666aaf2eb6fddb678e1893887e9a73a7b7b12fbdf2383d89895b89cac5db895c",
+      "bytes": 183282
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/results-01/curves.svg": {
+      "sha256": "5c436eb7002800fedc4b0598c6525d80029f4e9d6aa101f719af1d50fe16983b",
+      "bytes": 74112
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/results-01/INTERPRETATION.md": {
+      "sha256": "393ecba599d8ca8b7067b08dea3ceb58aa775f324c35928ef87a0b20e5545469",
+      "bytes": 3638
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/results-01/linear-comment.md": {
+      "sha256": "d3cbd95e804006c0ccbe8228a38c72aed4d3cad9f8c956ff777041d8bde1ddd8",
+      "bytes": 2060
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/results-01/report.json": {
+      "sha256": "314af5196cebc6c904fa677c5b71b33d2c8b919e66a12e16c48ff0f7848b0315",
+      "bytes": 44439
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/results-01/report.md": {
+      "sha256": "e835ee52cb03ffec0a05f41bdb0e498af93cad4bac70dc2f65d90aaf60621285",
+      "bytes": 3184
+    },
+    "docs/evidence/nitrogen-yaw-dropout-20260928/results-01/settlement.json": {
+      "sha256": "812ab2b8411132426574877fe0406923cb982cbe7a1d9f636142cd2ea85e7479",
+      "bytes": 3571
+    }
+  },
+  "transferred_archive_sha256": "8e85633733a1a408b04457f0796e7adcebc5ccda902304fbe48ae1313e59a329",
+  "collector_sha256": "5e02cdafcdc8c9a8f85484a84a1d730d4a6d2ec6e6fe7f1f8e7caf2609b4de11",
+  "authoritative_results": "final epoch26 only",
+  "curve_plot_inspected": true,
+  "report_pairing_tests": "10 passed plus historical-control schema dry-run",
+  "review": "EXPLORATORY; owner checks, no result review required",
+  "linear_publication": "draft handed to lead; not claimed published"
+}

@@ -1,0 +1,94 @@
+[
+  {
+    "attempt": "yaw-dropout-fit-s1-20260928-01",
+    "state": "RUNNING",
+    "app_id": "ap-xp8Zo6tUkkjrD6UCR4zr9T",
+    "stop_at": 1790569232.787096,
+    "stop_utc": "2026-09-28T04:20:32.787096+00:00",
+    "points": [
+      [
+        1790567253.0,
+        0
+      ],
+      [
+        1790567284.0,
+        588
+      ],
+      [
+        1790567284.0,
+        589
+      ],
+      [
+        1790567312.0,
+        1176
+      ],
+      [
+        1790567314.0,
+        1209
+      ]
+    ],
+    "raw": "2026-09-27 22:47:33-05:00 spatial yaw 4 seed 1: 0/15288\n2026-09-27 22:48:04-05:00 {\"tag\": \"EXPLORATORY\", \"horizon\": 1, \"seed\": 1, \"epoch\": 1, \"steps\": 588, \"train_chunk_loss\": 1.4013084830070028, \"seconds\": 28.318578481000003, \"dev_step_one\": {\"held\": 0.16959322327577725, \"press\": 0.3275103421964471, \"release\": 0.2728121101700606, \"camera\": 2.7221922121222275, \"total\": 2.131011781703399}}\n2026-09-27 22:48:04-05:00 spatial yaw 4 seed 1: 588/15288\n2026-09-27 22:48:04-05:00 spatial yaw 4 seed 1: 589/15288\n2026-09-27 22:48:32-05:00 {\"tag\": \"EXPLORATORY\", \"horizon\": 1, \"seed\": 1, \"epoch\": 2, \"steps\": 1176, \"train_chunk_loss\": 1.3991322045018073, \"seconds\": 56.953551626999996, \"dev_step_one\": {\"held\": 0.16959322327577725, \"press\": 0.3275103421964471, \"release\": 0.2728121101700606, \"camera\": 2.762996699729103, \"total\": 2.1514140255068366}}\n2026-09-27 22:48:32-05:00 spatial yaw 4 seed 1: 1176/15288\n2026-09-27 22:48:34-05:00 spatial yaw 4 seed 1: 1209/15288\n",
+    "stderr": "",
+    "rate_updates_sec": 20.7,
+    "measured_seconds": 30.0,
+    "finish_lower_bound_utc": "2026-09-28T03:59:54.144928+00:00",
+    "over_deadline_seconds": -1238.642168521881,
+    "evaluation_seconds_included": false
+  },
+  {
+    "attempt": "yaw-dropout-fit-s2-20260928-01",
+    "state": "RUNNING",
+    "app_id": "ap-Aed2egLWCTD3A4iYd6zOeq",
+    "stop_at": 1790569232.7927759,
+    "stop_utc": "2026-09-28T04:20:32.792776+00:00",
+    "points": [
+      [
+        1790567279.0,
+        0
+      ],
+      [
+        1790567309.0,
+        530
+      ],
+      [
+        1790567315.0,
+        588
+      ]
+    ],
+    "raw": "2026-09-27 22:47:59-05:00 spatial yaw 4 seed 2: 0/15288\n2026-09-27 22:48:29-05:00 spatial yaw 4 seed 2: 530/15288\n2026-09-27 22:48:35-05:00 {\"tag\": \"EXPLORATORY\", \"horizon\": 1, \"seed\": 2, \"epoch\": 1, \"steps\": 588, \"train_chunk_loss\": 1.400773963149713, \"seconds\": 33.11005221100001, \"dev_step_one\": {\"held\": 0.17084041790302365, \"press\": 0.3235535310391658, \"release\": 0.267914020517165, \"camera\": 2.7342617443273958, \"total\": 2.1294388416230525}}\n2026-09-27 22:48:35-05:00 spatial yaw 4 seed 2: 588/15288\n",
+    "stderr": "",
+    "rate_updates_sec": 9.666666666666666,
+    "measured_seconds": 6.0,
+    "finish_lower_bound_utc": "2026-09-28T04:13:55.689655+00:00",
+    "over_deadline_seconds": -397.103120803833,
+    "evaluation_seconds_included": false
+  },
+  {
+    "attempt": "yaw-dropout-fit-s3-20260928-01",
+    "state": "RUNNING",
+    "app_id": "ap-0fRwzgw3rUuKCyKBBSVdYG",
+    "stop_at": 1790569232.796182,
+    "stop_utc": "2026-09-28T04:20:32.796182+00:00",
+    "points": [
+      [
+        1790567271.0,
+        0
+      ],
+      [
+        1790567301.0,
+        547
+      ],
+      [
+        1790567305.0,
+        588
+      ]
+    ],
+    "raw": "2026-09-27 22:47:51-05:00 spatial yaw 4 seed 3: 0/15288\n2026-09-27 22:48:21-05:00 spatial yaw 4 seed 3: 547/15288\n2026-09-27 22:48:25-05:00 {\"tag\": \"EXPLORATORY\", \"horizon\": 1, \"seed\": 3, \"epoch\": 1, \"steps\": 588, \"train_chunk_loss\": 1.4009685443372142, \"seconds\": 32.135012824000015, \"dev_step_one\": {\"held\": 0.16997044337013684, \"press\": 0.3167096637092122, \"release\": 0.26643793732316934, \"camera\": 2.7456186788822903, \"total\": 2.1259273838436634}}\n2026-09-27 22:48:25-05:00 spatial yaw 4 seed 3: 588/15288\n",
+    "stderr": "",
+    "rate_updates_sec": 10.25,
+    "measured_seconds": 4.0,
+    "finish_lower_bound_utc": "2026-09-28T04:12:19.146342+00:00",
+    "over_deadline_seconds": -493.64984035491943,
+    "evaluation_seconds_included": false
+  }
+]
