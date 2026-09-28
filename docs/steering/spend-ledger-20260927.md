@@ -45,5 +45,6 @@ exploration is for.
 | Time (CDT) | Metered month-to-date | Billed after credits | Next launch and its estimate | Projected total | Under $150? |
 |---|---:|---:|---|---:|---|
 | 09-28 02:35 | $78.24 | $48.04 | v2 shakedown, two L40S apps, $0.48 all-in (frozen estimate, 0.10 overhead included); then IDM full03 ~$26.29 | ~$105.01 | Yes |
+| 09-28 02:51 | $78.33 | $48.13 | After the v2 shakedown PASS (two L40S apps; metered +$0.09 so far against the $0.48 estimate; Modal's meter can lag). Next: IDM full03, ~$26.29 | ~$104.62 | Yes |
 
 `modal billing report` covers only complete days; use `modal billing summary` for the metered figure that includes today.
