@@ -1,0 +1,19 @@
+{
+  "event": "EXTRACTION02_PASS_AND_SETTLEMENT",
+  "recorded_at_unix": 1790556413.19088,
+  "campaign_cap_usd": "24",
+  "warn_usd": "20",
+  "extraction_setup_cap_usd": "3",
+  "six_fits_cap_usd": "15",
+  "extraction01_conservative_charge_usd": "0.187193",
+  "extraction02_conservative_charge_usd": "1.593705",
+  "combined_extraction_conservative_charge_usd": "1.780898",
+  "prior_terminal_shakedown_charge_usd": "1.302986",
+  "yaw_campaign_conservative_charge_usd": "3.083884",
+  "active_yaw_holds_usd": "0",
+  "historical_explore_report_plus_yaw_bound_usd": "52.110287877872901",
+  "report_is_provider_balance": false,
+  "collection_sha256": "32816722c098059bb51e8388e1f207fc562181e713e40ce8c197df14936fe9cd",
+  "finite_prior_slots_reused": false,
+  "scientific_fits_launched": false
+}

@@ -1,0 +1,91 @@
+{
+  "identity": {
+    "graph": {
+      "tower": "NitroGen vision",
+      "tower_sha256": "2fceee7b828e737e459b39aa5d11e01362ce38210033f6f885b9974d7a0d6e79",
+      "config_sha256": "172e39dbf0143b8fe22d2f08921730eb8c397967e58cb37d133161e28aa34104",
+      "views": [
+        "global",
+        "crop"
+      ],
+      "resize": "bilinear antialias 256x256 squash",
+      "normalize": "RGB / 127.5 - 1",
+      "tokens": [
+        256,
+        1024
+      ],
+      "grids": [
+        4,
+        8
+      ],
+      "pool": "independent float32 means directly from tower tokens, row-major",
+      "encoder_dtype": "bfloat16",
+      "cache_dtype": "float16",
+      "device": "cuda",
+      "index": "sorted unique eligible original cache frame ids",
+      "batch": 32
+    },
+    "inputs_sha256": "14347004b5d12ed44a89d69961fcb2df7be8f1a34444460f145fee3c5797cf21",
+    "manifest_sha256": "aec08c08e247e3743ddeb1eec49dd880e1c0f62039c375932cab31dfccb91e22",
+    "spec_sha256": "a60bd94a3366994291a452c00200608c3fcf250fd353e8b60a2f91f3d6267687",
+    "torch": "2.14.0+cu130",
+    "cuda": "13.0",
+    "transformers": "4.57.1",
+    "safetensors": "0.6.2"
+  },
+  "exit": 0,
+  "sessions": {
+    "20260923T051828-422Z-33696-1": {
+      "count": 12550,
+      "seconds": 53.58503969099999,
+      "receipt_sha256": "628922dbee863ae2f4dd0a846725d0537c3723da8535342f168c83806210ceda"
+    },
+    "20260923T200129-346Z-33696-6": {
+      "count": 47910,
+      "seconds": 205.113594142,
+      "receipt_sha256": "a718ccb71cc5d629d975c7967ffb8955e6ec03d9d4277d0da6ca7bbcde7d0d33"
+    },
+    "20260924T232304-170Z-12024-1": {
+      "count": 15777,
+      "seconds": 68.747375815,
+      "receipt_sha256": "2b68009ca4d7822f6b1d06b13d429a1a8c30e4d32d5802384f6d30689b541c72"
+    },
+    "20260925T021320-371Z-7804-1": {
+      "count": 62126,
+      "seconds": 273.2425399499999,
+      "receipt_sha256": "cc4abcf788ab6117e5ee0012372c01aeb60d11bf8af4b8555f754eb2698acf8d"
+    },
+    "20260925T025230-605Z-7804-2": {
+      "count": 6594,
+      "seconds": 28.82570982900006,
+      "receipt_sha256": "cb60fd1ed3663748ba0ab1e108831dba78282ebf716ed556e8345484ed18af92"
+    },
+    "20260925T203745-207Z-49728-2": {
+      "count": 82756,
+      "seconds": 372.91854210199995,
+      "receipt_sha256": "81d75b221f4692cc9656a37783b54648a692a25595895a04880ac37d32fb7715"
+    },
+    "20260926T035932-508Z-63684-14": {
+      "count": 54270,
+      "seconds": 235.9808559600001,
+      "receipt_sha256": "95dbad7af523362e16319c1b2df92402dea8b462aa9525f69da454364aa58dc3"
+    },
+    "20260926T045729-166Z-79780-1": {
+      "count": 18465,
+      "seconds": 80.99913936899998,
+      "receipt_sha256": "9bbc4118607fff8d24aedfeeaf0e3f3ac3947acb7daf7d35ece2a1e02bcdb471"
+    },
+    "20260923T171533-187Z-33696-5": {
+      "count": 4630,
+      "seconds": 20.539238763000185,
+      "receipt_sha256": "f4943502934230a54b0fd7b7eafa0bb4104cec09917a2c33ccc5472f4c908f78"
+    },
+    "20260923T205528-900Z-45572-3": {
+      "count": 19926,
+      "seconds": 88.54247720700005,
+      "receipt_sha256": "125df06ac707d876f46c7054610bf705b726c0fc10e07b95eb80ac0c5c3c030b"
+    }
+  },
+  "dataset_sha256": "71e344f4f17d9e537c87c154b30f6aae12c14cc601b59d668299ac799715660e",
+  "completed_at": 1790556097.0719657
+}

@@ -1,0 +1,64 @@
+{
+  "identity": {
+    "graph": {
+      "tower": "NitroGen vision",
+      "tower_sha256": "2fceee7b828e737e459b39aa5d11e01362ce38210033f6f885b9974d7a0d6e79",
+      "config_sha256": "172e39dbf0143b8fe22d2f08921730eb8c397967e58cb37d133161e28aa34104",
+      "views": [
+        "global",
+        "crop"
+      ],
+      "resize": "bilinear antialias 256x256 squash",
+      "normalize": "RGB / 127.5 - 1",
+      "tokens": [
+        256,
+        1024
+      ],
+      "grids": [
+        4,
+        8
+      ],
+      "pool": "independent float32 means directly from tower tokens, row-major",
+      "encoder_dtype": "bfloat16",
+      "cache_dtype": "float16",
+      "device": "cuda",
+      "index": "sorted unique eligible original cache frame ids",
+      "batch": 32
+    },
+    "inputs_sha256": "14347004b5d12ed44a89d69961fcb2df7be8f1a34444460f145fee3c5797cf21",
+    "manifest_sha256": "aec08c08e247e3743ddeb1eec49dd880e1c0f62039c375932cab31dfccb91e22",
+    "spec_sha256": "a60bd94a3366994291a452c00200608c3fcf250fd353e8b60a2f91f3d6267687",
+    "torch": "2.14.0+cu130",
+    "cuda": "13.0",
+    "transformers": "4.57.1",
+    "safetensors": "0.6.2",
+    "session": "20260924T232304-170Z-12024-1",
+    "steps_sha256": "8a6c63d4024b13d5b73ab0154f434782e6cfc853d6eaa8291bd9fa8ca8f3b1b1",
+    "count": 15777,
+    "frame_ids_sha256": "56f2963cd95fe5050f44fe8099cdf7bcc7d8af96be87d6e2e39dc5f099008f77"
+  },
+  "exit": 0,
+  "seconds": 68.747375815,
+  "files": {
+    "crop-4.npy": {
+      "bytes": 516980864,
+      "sha256": "4cebef0b8839b4f8386ead72c495d8cd6dc9f2404e33749b8e20a55f65295528"
+    },
+    "crop-8.npy": {
+      "bytes": 2067923072,
+      "sha256": "b2b292e4d5ebdb43a55c564bdbd7ccdc83cea9cf4f0cd44dff399081d7331ebc"
+    },
+    "frame_ids.npy": {
+      "bytes": 126344,
+      "sha256": "3664ad8bae903d1e70d02336cabf278211d6e9c6515130e25e32de354f997da5"
+    },
+    "global-4.npy": {
+      "bytes": 516980864,
+      "sha256": "4cb649d6a2b3ee85bcc67da561c33e9d48f4f5405f2d29c2466e9e51ee79f509"
+    },
+    "global-8.npy": {
+      "bytes": 2067923072,
+      "sha256": "fd4b588a7468291c474905e6decf1fd27b779840c8856699baaec9154670a74d"
+    }
+  }
+}

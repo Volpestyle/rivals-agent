@@ -1,0 +1,77 @@
+{
+  "status": "PASS",
+  "attempt_id": "yaw-extract-20260927-02",
+  "app_id": "ap-wihxUdGaIOvyh9GtyREBfW",
+  "output_volume_id": "vo-ujapSF2Htu9GfKAXEyXH70",
+  "dataset_sha256": "71e344f4f17d9e537c87c154b30f6aae12c14cc601b59d668299ac799715660e",
+  "guard_verified_artifacts": 75,
+  "guard_verified_bytes": 107013610021,
+  "collected_metadata_pins": {
+    "dual-grid-cache/20260923T051828-422Z-33696-1/completed.json": {
+      "bytes": 2135,
+      "sha256": "628922dbee863ae2f4dd0a846725d0537c3723da8535342f168c83806210ceda"
+    },
+    "dual-grid-cache/20260923T171533-187Z-33696-5/completed.json": {
+      "bytes": 2132,
+      "sha256": "f4943502934230a54b0fd7b7eafa0bb4104cec09917a2c33ccc5472f4c908f78"
+    },
+    "dual-grid-cache/20260923T200129-346Z-33696-6/completed.json": {
+      "bytes": 2133,
+      "sha256": "a718ccb71cc5d629d975c7967ffb8955e6ec03d9d4277d0da6ca7bbcde7d0d33"
+    },
+    "dual-grid-cache/20260923T205528-900Z-45572-3/completed.json": {
+      "bytes": 2135,
+      "sha256": "125df06ac707d876f46c7054610bf705b726c0fc10e07b95eb80ac0c5c3c030b"
+    },
+    "dual-grid-cache/20260924T232304-170Z-12024-1/completed.json": {
+      "bytes": 2130,
+      "sha256": "2b68009ca4d7822f6b1d06b13d429a1a8c30e4d32d5802384f6d30689b541c72"
+    },
+    "dual-grid-cache/20260925T021320-371Z-7804-1/completed.json": {
+      "bytes": 2136,
+      "sha256": "cc4abcf788ab6117e5ee0012372c01aeb60d11bf8af4b8555f754eb2698acf8d"
+    },
+    "dual-grid-cache/20260925T025230-605Z-7804-2/completed.json": {
+      "bytes": 2130,
+      "sha256": "cb60fd1ed3663748ba0ab1e108831dba78282ebf716ed556e8345484ed18af92"
+    },
+    "dual-grid-cache/20260925T203745-207Z-49728-2/completed.json": {
+      "bytes": 2140,
+      "sha256": "81d75b221f4692cc9656a37783b54648a692a25595895a04880ac37d32fb7715"
+    },
+    "dual-grid-cache/20260926T035932-508Z-63684-14/completed.json": {
+      "bytes": 2138,
+      "sha256": "95dbad7af523362e16319c1b2df92402dea8b462aa9525f69da454364aa58dc3"
+    },
+    "dual-grid-cache/20260926T045729-166Z-79780-1/completed.json": {
+      "bytes": 2135,
+      "sha256": "9bbc4118607fff8d24aedfeeaf0e3f3ac3947acb7daf7d35ece2a1e02bcdb471"
+    },
+    "dual-grid-cache/complete.json": {
+      "bytes": 3229,
+      "sha256": "e27266c734491e4ec9476a8e297283a605ea745b837d5e856e08e807c7025255"
+    },
+    "dual-grid-cache/dataset.json": {
+      "bytes": 6856,
+      "sha256": "71e344f4f17d9e537c87c154b30f6aae12c14cc601b59d668299ac799715660e"
+    },
+    "dual-grid-cache/identity.json": {
+      "bytes": 1056,
+      "sha256": "8496f51fee78e39abe52e84d84165add8eeaeb1dde4f7dce292f9255ffa17f40"
+    },
+    "extraction.json": {
+      "bytes": 3229,
+      "sha256": "e27266c734491e4ec9476a8e297283a605ea745b837d5e856e08e807c7025255"
+    },
+    "pixels-verified.json": {
+      "bytes": 4353,
+      "sha256": "a5a154ee68e0bdedad1271080a3fd641f5525970400384b3b2997184107fb22d"
+    }
+  },
+  "conservative_charge_usd": "1.593705",
+  "active_hold_usd": "0",
+  "device": "cuda",
+  "precision": "bf16 tower / fp16 features",
+  "full_payload_verification": "accepted worker stage hashes before and after volume commit",
+  "collected_at": 1790556413.19088
+}
