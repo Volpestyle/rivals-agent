@@ -46,7 +46,10 @@ sequential `LS RS` taps for an ultimate. `combat:goh_targeting:0.1` still needs
 - Every new pad takes ~2 s to enumerate and raises a "Switching Devices" banner and a
   connect/disconnect toast. A real loop holds ONE pad for the whole session.
   The first input after a pad connects is swallowed by that device switch, even 4 s after
-  connecting: send a throwaway move first.
+  connecting: send a throwaway move first. A hand-tool call (`scripts/padrun.sh`, or any wrapper
+  around `pad.py`) opens a NEW pad each time, so every call starts with its own throwaway, e.g.
+  `w:2.2 ls:0.3,0,0.05 w:0.3 A`. A bare `w:2.5 A` was swallowed on 2026-09-28 and looked like the
+  screen ignoring the pad.
 - In the range, a freshly connected pad TURNS THE CAMERA LEFT at about 25 deg/s from within 70 ms of attaching, through any
   number of neutral reports, until its first non-neutral report or its disconnect (measured 2026-09-21, vgamepad 0.1.0, whose
   constructor sends an all-zero report; Steam running). A 2 s connect wait is about 49 degrees, 3 s about 75. So a pose one
@@ -56,7 +59,8 @@ sequential `LS RS` taps for an ultimate. `combat:goh_targeting:0.1` still needs
   `Start-Process`es it). Over plain SSH dxcam fails with `DXGI_ERROR_NOT_CURRENTLY_AVAILABLE`.
 - A monitor that is OFF kills dxcam silently. With the monitor switched off at its power button
   (what happened on 2026-09-20: James turns it off by hand when he leaves) the DisplayPort link
-  drops, Windows shows 0 monitors (`Get-PnpDevice -Class Monitor | Where-Object Present`), and
+  drops, Windows shows 0 monitors (`@(Get-PnpDevice -Class Monitor | Where-Object Present).Count`;
+  without `@()` PowerShell 5.1 prints nothing for a single monitor, which reads like zero), and
   dxcam returns no frame at all while GDI and `desk.sh shot` keep working, so everything looks
   alive. Symptom in `reenter.py`: every `A` refused for proof age. Run
   `python scripts/capture.py preflight` before any live tool. Injected mouse movement and a
@@ -80,11 +84,27 @@ sequential `LS RS` taps for an ultimate. `combat:goh_targeting:0.1` still needs
 Any loop that sends input confirms the range HUD on a fresh frame first
 (`record.in_range(frame)`), and stops input the moment it is gone.
 
+## Launching the game
+
+`Start-Process "steam://rungameid/2767030"` from a `C:\desk` job starts it (processes `Marvel`,
+`MarvelRivals_Launcher`, `Marvel-Win64-Shipping`). The build and a shader-preload percentage show
+bottom-left; after an update the preload took ~5 minutes (2026-09-28, build 3892207, Season 10).
+Record the build with any sitting: a new season can change the HUD, the kit and settings.
+
+A new season opens on a story splash ("A Greater Story", SPACE CONTINUE). On 2026-09-28 injected
+`SendKeys(" ")` and pad `A` with the cursor on CONTINUE did not clear it; James cleared it by hand
+(he says a click or pad A/B works; the pad attempts may have hit the swallowed-first-input rule
+above). If it happens again: throwaway move, then `A`, then `B`, one screenshot each; if still
+stuck, ask James rather than trying further input paths.
+
 ## Into the Practice Range from the lobby
 
 Menus use a stick-driven cursor. It keeps its position between pad connects, is hidden
 until the stick moves, and stick magnitude under ~0.5 barely moves it in short taps.
-Speed at full deflection is ~1200 px/s measured on a 2000 px-wide view of the 2560 screen.
+Speed at full deflection is ~1200 px/s measured on a 2000 px-wide view of the 2560 screen
+(2026-09-28: 0.4 s at full down moved ~525 px of that view). Small corrections: 0.65-0.9
+magnitude for 0.12-0.15 s moves ~35-80 px; a 0.3 tap barely moves it but still counts as the
+throwaway input.
 
 1. Wiggle (`ls:0,1,0.12`) and screenshot to find the cursor.
 2. Steer toward PRACTICE (the small tab above TRY COMPETITIVE, right side). Crop the
@@ -104,7 +124,15 @@ tracks replacing this with a script that verifies the highlight itself.
 `RB` twice from the "all" tab reaches duelists; Spider-Man is the top-left portrait
 (~845,45 in 1280x720 units). `A` selects, `X` confirms (safe here, not on the lobby).
 The picker does not reliably remember the last hero or tab (it opened on Black Panther,
-"all" tab, after a drop), so crop and check the portrait under the cursor before `A`.
+"all" tab, after a drop; on Iron Man 2026-09-28), so crop and check the portrait under the cursor before `A`.
+Hovering a portrait shows a "Request to Team-Up with <hero>" / "Add to Strike Squad" tooltip; those
+are secondary-button actions, and `A` still just selects the hovered hero. The Punisher sits directly
+below Spider-Man, so check the tooltip's hero name. In the Practice Range the hero-select timer
+counts UP (00:40 → 04:16), so there is no auto-pick deadline. After `A`, check the skin dropdown
+under the name: it may not be James's usual recording skin (2026-09-28: "Marvel Cosmic Invasion").
+`X` needs `pad.py --dangerous`, and Claude Code's auto-mode classifier denies that flag
+(2026-09-27 and 09-28). Until James adds a permission rule for it, ask him to click CONFIRM, and
+don't reach the same outcome another way (e.g. `A` on the CONFIRM button).
 
 ## The inactivity drop
 
