@@ -82,3 +82,14 @@ def run(root, *, payload_manifest_sha256, phase, input_volume_id, output_volume_
     if phase == "probe":
         return worker.probe(root, **kwargs)
     return worker.stage(root, phase=phase, **kwargs)
+
+
+def run_local(root, *, payload_manifest_sha256, phase, input_volume_id, output_volume_id):
+    """Fresh local-disk route; shared guard still owns every stage boundary."""
+    payload, manifest = verify_payload(Path(__file__).resolve().parent, payload_manifest_sha256)
+    activate(payload)
+    worker = importlib.import_module("policy.idm.local_run")
+    return worker.run(root, phase=phase, manifest=input_ref(manifest["inputs"]),
+                      manifest_sha256=manifest["inputs"]["sha256"],
+                      registry=input_ref(manifest["registry"]), input_volume_id=input_volume_id,
+                      output_volume_id=output_volume_id)
