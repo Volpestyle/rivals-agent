@@ -117,6 +117,8 @@ so give cloud boxes 8 CPUs or more.
   - **Small spends:** a run under $5 that uses an already-reviewed spend guard, changing only its cap or name
     configuration, launches without waiting for review.
   - A change to a pre-registration still needs a pre-result `-aN` amendment before its result is read.
+- **Launch Modal jobs from the Mac** (James, 2026-09-27). Windows launch paths kept hitting path, CRLF and
+  Python-version bugs this weekend. Build packets anywhere, but create Modal apps from the Mac.
 - **Share an operational lesson the same day** (James, 2026-09-27). When a lane learns how a platform behaves, e.g.
   "stage data to local disk, don't read frames at random from a Modal Volume", it goes into `cloud/modal_guard` or
   the `rivals-compute` skill that day, so another lane doesn't pay for it again. The spend ledger is
