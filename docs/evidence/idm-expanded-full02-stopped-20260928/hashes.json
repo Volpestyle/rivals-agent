@@ -1,0 +1,23 @@
+{
+  "app-all.log": "5203d082f2ed33d78b0f72dd9d1726353d14ad56c34947af570b0c6bc00a3957",
+  "app-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "app-system.log": "2a59d6a28dd7d44250e090939c864b245916f756e6402071debd5505836772a9",
+  "bindings.json": "1a74e56ae45acce5f1c06db60fac11bc4f44b681f38e90a033338922f047d629",
+  "call.json": "fd1deaa4a510d4aba356050c987dceb4f5da6ba4401fb2fa59d5eda97793cccb",
+  "output-inventory.json": "34939fba838e46422cc6a3140c670cfc42278769bab3df13b6f068a9550155c0",
+  "rates.json": "2187b28168121c56ad9cc22620d236ec92d89bd7c23462713384bda23011e4ff",
+  "result.json": "5e4400ccdc9ad8f62299af7be0ec5e8ea399b03d826b8c67288038489af1067f",
+  "run.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+  "run.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "spec.json": "4d566c85e5447282e2d77757b10d27f5ce4f14ccb9b45b23195e09211fcf16e3",
+  "summary.json": "0814326b7a4892d800ecd4be9acc343ad75127959a7d01ba31b4bdc7f65faf22",
+  "teardown.json": "b8ef60ce5a588c8dc39224438c7e7e6475fc319474afd6697e91d423fe40bbf3",
+  "volume/fit/jobs/idm-local-fit.status.json": "e661a0f23e821cdbf38c5bf7a310947052a4a1c8603565c9cc64d4d1bdeb9222",
+  "volume/fit/started.json": "2341fbb3a51cdb89f0cbb168bc6926690517f9db1321237cd9136fe6e635d9d8",
+  "volume/local/completed.json": "085c4e10fdb1c213382376376a083788c9aba8ace141c121ab43d96b3ee0595f",
+  "volume/local/copy.json": "0e70410b8ebf114b72bc2d4bc7afc33ac2d8b9b93ce337e51d30ed4f059d98cf",
+  "volume/local/jobs/idm-local-local.status.json": "7228cbfc0f6628dd437d2a5b88bf8e23808b2478ab737ce355e74f104f0a9623",
+  "volume/local/local.json": "68616827149b7e4c72f108ed2b585810c31abc8b6024d63956f76fa99b62686d",
+  "volume/local/started.json": "0b227bd138c7c76085fd6e5cc099a85e1ec590ff51c7d8645453afe5a7cc91c0",
+  "watchdog.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

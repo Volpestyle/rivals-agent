@@ -1,0 +1,57 @@
+[
+  {
+    "path": "idm-expanded-20260928-full-02/local/jobs",
+    "bytes": 27,
+    "type": "2"
+  },
+  {
+    "path": "idm-expanded-20260928-full-02/local",
+    "bytes": 49,
+    "type": "2"
+  },
+  {
+    "path": "idm-expanded-20260928-full-02/fit",
+    "bytes": 16,
+    "type": "2"
+  },
+  {
+    "path": "idm-expanded-20260928-full-02/fit/jobs",
+    "bytes": 25,
+    "type": "2"
+  },
+  {
+    "path": "idm-expanded-20260928-full-02/fit/jobs/idm-local-fit.status.json",
+    "bytes": 303,
+    "type": "1"
+  },
+  {
+    "path": "idm-expanded-20260928-full-02/fit/started.json",
+    "bytes": 402,
+    "type": "1"
+  },
+  {
+    "path": "idm-expanded-20260928-full-02/local/completed.json",
+    "bytes": 669,
+    "type": "1"
+  },
+  {
+    "path": "idm-expanded-20260928-full-02/local/local.json",
+    "bytes": 83,
+    "type": "1"
+  },
+  {
+    "path": "idm-expanded-20260928-full-02/local/jobs/idm-local-local.status.json",
+    "bytes": 470,
+    "type": "1"
+  },
+  {
+    "path": "idm-expanded-20260928-full-02/local/copy.json",
+    "bytes": 6711,
+    "type": "1"
+  },
+  {
+    "path": "idm-expanded-20260928-full-02/local/started.json",
+    "bytes": 404,
+    "type": "1"
+  }
+]
