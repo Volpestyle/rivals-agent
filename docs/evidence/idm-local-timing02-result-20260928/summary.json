@@ -1,0 +1,55 @@
+{
+  "status": "TIMING_COMPLETE",
+  "app_id": "ap-pJjKWZEP0XIjnBeWRa1E9K",
+  "state": "TERMINAL",
+  "bound_usd": "0.732304",
+  "zero_containers": true,
+  "completed_stages": [
+    "timing"
+  ],
+  "checkpoint_present": false,
+  "copy_bytes": 113401840789,
+  "copy_source_hash_seconds": 192.38578096600025,
+  "destination_verify_seconds": 116.70974413999991,
+  "loader_seconds": 341.03141537000005,
+  "preflight_seconds": 35.194821889,
+  "training_updates": 1000,
+  "steady_updates_per_second": 6.777766359248649,
+  "half_rates": [
+    6.927923292292275,
+    6.777766359248649
+  ],
+  "inference": [
+    {
+      "role": "train",
+      "rows": 4096,
+      "rows_per_second": 112.37360678473546,
+      "seconds": 36.44984011100007
+    },
+    {
+      "role": "dev",
+      "rows": 4096,
+      "rows_per_second": 144.24150694813937,
+      "seconds": 28.396819241999992
+    }
+  ],
+  "projection": {
+    "components_seconds": {
+      "camera_projected_full_dev": 302.72926434571286,
+      "checkpoint_and_report_allowance": 120.0,
+      "copy": 309.22909541900003,
+      "load_examples_five_times": 1705.1570768500003,
+      "local_reverification_four_times": 466.83897655999965,
+      "metadata_preflight_seven_stages": 246.36375322300003,
+      "train_calibration_real_and_zero": 6691.980630652411,
+      "training_three_epochs": 18088.259981506744
+    },
+    "limitations": "One app timing; not full-fit p95. Includes conservative repeated load/verify and 120s checkpoint/report allowance.",
+    "margin": 0.3,
+    "projected_work_seconds": 27930.558778556868,
+    "work_seconds_with_margin": 36310
+  },
+  "lane_terminal_bound_usd": "10.375030068670252",
+  "storage_allocation_usd": "1.65",
+  "no_full_launch": true
+}

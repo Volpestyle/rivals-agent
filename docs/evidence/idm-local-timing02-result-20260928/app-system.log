@@ -1,0 +1,54 @@
+2026-09-27 22:45:12-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260923T051828-422Z-33696-1/frames.json", "reused": false, "copy_source_hash_seconds": 0.0008245910000042045, "destination_verify_seconds": 0.0005027730000009001}}
+2026-09-27 22:45:19-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260923T051828-422Z-33696-1/frames.u8", "reused": false, "copy_source_hash_seconds": 4.406672314000005, "destination_verify_seconds": 2.694266333999998}}
+2026-09-27 22:45:23-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260923T051828-422Z-33696-1/hud.u8", "reused": false, "copy_source_hash_seconds": 6.407001795000006, "destination_verify_seconds": 3.868821665999995}}
+2026-09-27 22:45:23-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260923T171533-187Z-33696-5/frames.json", "reused": false, "copy_source_hash_seconds": 6.407679553000008, "destination_verify_seconds": 3.869049703999991}}
+2026-09-27 22:45:25-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260923T171533-187Z-33696-5/frames.u8", "reused": false, "copy_source_hash_seconds": 8.13969302800001, "destination_verify_seconds": 4.8818835739999855}}
+2026-09-27 22:45:27-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260923T171533-187Z-33696-5/hud.u8", "reused": false, "copy_source_hash_seconds": 9.038771071000014, "destination_verify_seconds": 5.291954492999984}}
+2026-09-27 22:45:27-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260923T200129-346Z-33696-6/frames.json", "reused": false, "copy_source_hash_seconds": 9.041032932000014, "destination_verify_seconds": 5.293430571999984}}
+2026-09-27 22:45:55-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260923T200129-346Z-33696-6/frames.u8", "reused": false, "copy_source_hash_seconds": 27.04781470500002, "destination_verify_seconds": 15.47058555799999}}
+2026-09-27 22:46:07-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260923T200129-346Z-33696-6/hud.u8", "reused": false, "copy_source_hash_seconds": 35.06284078500002, "destination_verify_seconds": 19.619101165999986}}
+2026-09-27 22:46:07-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260923T205528-900Z-45572-3/frames.json", "reused": false, "copy_source_hash_seconds": 35.06586698300002, "destination_verify_seconds": 19.619854025999977}}
+2026-09-27 22:46:19-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260923T205528-900Z-45572-3/frames.u8", "reused": false, "copy_source_hash_seconds": 42.44700144200003, "destination_verify_seconds": 24.057473517999973}}
+2026-09-27 22:46:24-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260923T205528-900Z-45572-3/hud.u8", "reused": false, "copy_source_hash_seconds": 45.78085395700003, "destination_verify_seconds": 25.773642981999977}}
+2026-09-27 22:46:24-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260924T232304-170Z-12024-1/frames.json", "reused": false, "copy_source_hash_seconds": 45.78270352700004, "destination_verify_seconds": 25.774154088999985}}
+2026-09-27 22:46:34-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260924T232304-170Z-12024-1/frames.u8", "reused": false, "copy_source_hash_seconds": 52.30698688500004, "destination_verify_seconds": 29.079188251999987}}
+2026-09-27 22:46:38-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260924T232304-170Z-12024-1/hud.u8", "reused": false, "copy_source_hash_seconds": 54.88017066400003, "destination_verify_seconds": 30.443730311999992}}
+2026-09-27 22:46:38-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260925T021320-371Z-7804-1/frames.json", "reused": false, "copy_source_hash_seconds": 54.88584622500004, "destination_verify_seconds": 30.445657565999987}}
+2026-09-27 22:47:15-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260925T021320-371Z-7804-1/frames.u8", "reused": false, "copy_source_hash_seconds": 77.38492483900005, "destination_verify_seconds": 45.089678686999996}}
+2026-09-27 22:47:31-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260925T021320-371Z-7804-1/hud.u8", "reused": false, "copy_source_hash_seconds": 87.24871735600006, "destination_verify_seconds": 51.07172696}}
+2026-09-27 22:47:31-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260925T025230-605Z-7804-2/frames.json", "reused": false, "copy_source_hash_seconds": 87.25229751400006, "destination_verify_seconds": 51.07212473399999}}
+2026-09-27 22:47:34-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260925T025230-605Z-7804-2/frames.u8", "reused": false, "copy_source_hash_seconds": 89.67687157800007, "destination_verify_seconds": 52.40849880299998}}
+2026-09-27 22:47:36-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260925T025230-605Z-7804-2/hud.u8", "reused": false, "copy_source_hash_seconds": 90.98225378200006, "destination_verify_seconds": 52.97853381199999}}
+2026-09-27 22:47:36-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260926T045729-166Z-79780-1/frames.json", "reused": false, "copy_source_hash_seconds": 90.98528895200006, "destination_verify_seconds": 52.97918553799999}}
+2026-09-27 22:47:48-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260926T045729-166Z-79780-1/frames.u8", "reused": false, "copy_source_hash_seconds": 98.49019414900006, "destination_verify_seconds": 57.07586663999998}}
+2026-09-27 22:47:52-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260926T045729-166Z-79780-1/hud.u8", "reused": false, "copy_source_hash_seconds": 101.42737558400007, "destination_verify_seconds": 58.68505700899998}}
+2026-09-27 22:47:52-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260926T035932-508Z-63684-14/frames.json", "reused": false, "copy_source_hash_seconds": 101.43201602800009, "destination_verify_seconds": 58.686736915999994}}
+2026-09-27 22:48:28-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260926T035932-508Z-63684-14/frames.u8", "reused": false, "copy_source_hash_seconds": 122.34391297000012, "destination_verify_seconds": 73.355687603}}
+2026-09-27 22:48:42-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260926T035932-508Z-63684-14/hud.u8", "reused": false, "copy_source_hash_seconds": 131.26425193500012, "destination_verify_seconds": 78.10842382500002}}
+2026-09-27 22:48:42-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260925T203745-207Z-49728-2/frames.json", "reused": false, "copy_source_hash_seconds": 131.27064503500011, "destination_verify_seconds": 78.11092538900002}}
+2026-09-27 22:49:33-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260925T203745-207Z-49728-2/frames.u8", "reused": false, "copy_source_hash_seconds": 161.02206636700015, "destination_verify_seconds": 99.73894380400006}}
+2026-09-27 22:49:56-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260925T203745-207Z-49728-2/hud.u8", "reused": false, "copy_source_hash_seconds": 174.80449917500016, "destination_verify_seconds": 108.66568687700007}}
+2026-09-27 22:49:56-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260927T051206-888Z-150600-4/frames.json", "reused": false, "copy_source_hash_seconds": 174.8066762000002, "destination_verify_seconds": 108.66599819100006}}
+2026-09-27 22:50:01-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260927T051206-888Z-150600-4/frames.u8", "reused": false, "copy_source_hash_seconds": 178.54311779600022, "destination_verify_seconds": 110.50060535000003}}
+2026-09-27 22:50:04-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260927T051206-888Z-150600-4/hud.u8", "reused": false, "copy_source_hash_seconds": 180.4263647250002, "destination_verify_seconds": 111.27592975500002}}
+2026-09-27 22:50:04-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260927T052001-827Z-150600-5/frames.json", "reused": false, "copy_source_hash_seconds": 180.42880931300022, "destination_verify_seconds": 111.27645647400001}}
+2026-09-27 22:50:12-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260927T052001-827Z-150600-5/frames.u8", "reused": false, "copy_source_hash_seconds": 186.32021474800024, "destination_verify_seconds": 113.58443767999998}}
+2026-09-27 22:50:15-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260927T052001-827Z-150600-5/hud.u8", "reused": false, "copy_source_hash_seconds": 188.26298716800022, "destination_verify_seconds": 114.46095297599996}}
+2026-09-27 22:50:15-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260927T053118-260Z-150600-6/frames.json", "reused": false, "copy_source_hash_seconds": 188.26419596600022, "destination_verify_seconds": 114.46125880299994}}
+2026-09-27 22:50:20-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260927T053118-260Z-150600-6/frames.u8", "reused": false, "copy_source_hash_seconds": 191.04745207100024, "destination_verify_seconds": 116.0403389109999}}
+2026-09-27 22:50:22-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260927T053118-260Z-150600-6/hud.u8", "reused": false, "copy_source_hash_seconds": 192.38578096600025, "destination_verify_seconds": 116.70974413999991}}
+2026-09-27 22:56:03-05:00 {"stage": "timing", "progress": {"phase": "loader_complete", "seconds": 341.03141537000005, "rows": 653842}}
+2026-09-27 22:56:24-05:00 {"stage": "timing", "progress": {"n": 1600, "total": 1961526}}
+2026-09-27 22:56:38-05:00 {"stage": "timing", "progress": {"n": 3200, "total": 1961526}}
+2026-09-27 22:56:52-05:00 {"stage": "timing", "progress": {"n": 4800, "total": 1961526}}
+2026-09-27 22:57:07-05:00 {"stage": "timing", "progress": {"n": 6400, "total": 1961526}}
+2026-09-27 22:57:22-05:00 {"stage": "timing", "progress": {"n": 8000, "total": 1961526}}
+2026-09-27 22:57:37-05:00 {"stage": "timing", "progress": {"n": 9600, "total": 1961526}}
+2026-09-27 22:57:51-05:00 {"stage": "timing", "progress": {"n": 11200, "total": 1961526}}
+2026-09-27 22:58:06-05:00 {"stage": "timing", "progress": {"n": 12800, "total": 1961526}}
+2026-09-27 22:58:21-05:00 {"stage": "timing", "progress": {"n": 14400, "total": 1961526}}
+2026-09-27 22:58:36-05:00 {"stage": "timing", "progress": {"n": 16000, "total": 1961526}}
+2026-09-27 23:00:09-05:00 Stopping app - local entrypoint completed.
+2026-09-27 23:00:10-05:00 Stopping app - user stopped from CLI.
+2026-09-27 23:00:11-05:00 Stopping app - user stopped from CLI.
+2026-09-27 23:00:12-05:00 Stopping app - user stopped from CLI.

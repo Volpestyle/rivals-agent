@@ -1,0 +1,20 @@
+{
+  "independent_verification": "PASS",
+  "updates": 1000,
+  "unique_full_shuffle_rows": 16000,
+  "train_sessions_sampled": 11,
+  "store_files_verified": 39,
+  "work_seconds_with_30percent_margin": 36310,
+  "startup_seconds": 120,
+  "cleanup_seconds": 120,
+  "overhead_usd": "0.05",
+  "rate_usd_second": "0.0007178888888888888888888888889",
+  "projected_full_reservation_usd": "26.288839",
+  "suggested_full_cap_usd": "26.29",
+  "lane_terminal_bounds_usd": "10.375030068670252",
+  "storage_allocation_usd": "1.65",
+  "remaining_lane_usd": "12.974969931329748",
+  "projected_lane_with_full_usd": "38.313869068670252",
+  "fits_current_lane_cap": false,
+  "full_launch_authorized": false
+}
