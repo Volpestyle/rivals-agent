@@ -1,0 +1,19 @@
+{"scope": "EXPLORATORY; not Gate 2", "tau": 0, "manifest_sha256": "81304ead59639e05a46b05f6508a9caf2916226dca3c90415e723915cea3571d", "stage": "train", "status": "negative_calibration_identity", "match_predictions_read": false}
+       92.83 real        76.32 user         9.17 sys
+          2550333440  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              546723  page reclaims
+                   3  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 173  voluntary context switches
+              197155  involuntary context switches
+       1188029096263  instructions retired
+        384659371811  cycles elapsed
+          2886273304  peak memory footprint

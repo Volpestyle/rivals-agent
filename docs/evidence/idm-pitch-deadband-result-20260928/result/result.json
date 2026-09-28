@@ -1,0 +1,8 @@
+{
+  "scope": "EXPLORATORY; not Gate 2",
+  "tau": 0,
+  "manifest_sha256": "81304ead59639e05a46b05f6508a9caf2916226dca3c90415e723915cea3571d",
+  "stage": "train",
+  "status": "negative_calibration_identity",
+  "match_predictions_read": false
+}

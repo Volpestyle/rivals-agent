@@ -1,0 +1,11 @@
+{
+  "collected-hashes.json": "0e72307277bb33c413c869e8d416e7163a9f9910366c950b043d8ade09a0a30a",
+  "experiment.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "experiment.log": "31f7fc6b4d2cf11f447f5441c23c357b28b455baf19ee937149a433ac6aa29df",
+  "report.md": "8df2cea61e4fb37b701ea38e8ed459798aa1dd00f7b6f36bdc9593d594304de0",
+  "terminal.json": "1bd9a94772059e375ef2a5b975f7bfe853b436bcf50650517b43b9c3f6687d7a",
+  "verification.json": "cfe33d35d97af5f6311f41777d4b70ec1f6b187fa986a895a5757cf51f6605f5",
+  "verify-result.py": "062e98cfa968104f448c1a925e84a4193af73fa7c1f44ef86984d8eee98dafa4",
+  "result/calibration.json": "332e91a5fbf430f07b699969bd71b0ac385b346fadfe98b1a5f9e1149cf5a610",
+  "result/result.json": "451e92132db350e5cbb73be2057dfaf82d5a24b3f01566866519fc523eb7ccd4"
+}
