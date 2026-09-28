@@ -1,0 +1,80 @@
+{
+ "session": "20260927T055006-068Z-150600-8",
+ "authority": {
+  "path": "docs/evidence/idm-match-admission-055006-20260927/receipt/match-admission-055006.accepted.json",
+  "sha256": "27e34517ec16b694147a0a897eb8c75fcfce34061b778fbf59ca29e7c86c9819"
+ },
+ "files": [
+  {
+   "windows_path": "C:/Users/volpe/Videos/2026-09-27 00-50-06.mkv",
+   "mac_path": "/Users/james/dev/idm-match-data/originals/2026-09-27 00-50-06.mkv",
+   "bytes": 4544535960,
+   "expected_sha256": "a4cf9008db659ee19145df0fcd648e199fb31e75ae7418be59e4ebc2c80e5268",
+   "partial_path": "/Users/james/dev/idm-match-data/originals/2026-09-27 00-50-06.mkv.idm-later-20260928.part",
+   "windows_sha256": "a4cf9008db659ee19145df0fcd648e199fb31e75ae7418be59e4ebc2c80e5268",
+   "mac_sha256": "a4cf9008db659ee19145df0fcd648e199fb31e75ae7418be59e4ebc2c80e5268",
+   "verified": true,
+   "state": "copied_verified"
+  },
+  {
+   "windows_path": "C:/Users/volpe/Videos/RivalsInput/20260927T055006-068Z-150600-8/metadata.json",
+   "mac_path": "/Users/james/dev/idm-match-data/originals/20260927T055006-068Z-150600-8/metadata.json",
+   "bytes": 1122,
+   "expected_sha256": "9e41f51983b277746a03898d581608e30dad22c61a82dfc38cd5ccc1ea304473",
+   "partial_path": "/Users/james/dev/idm-match-data/originals/20260927T055006-068Z-150600-8/metadata.json.idm-later-20260928.part",
+   "windows_sha256": "9e41f51983b277746a03898d581608e30dad22c61a82dfc38cd5ccc1ea304473",
+   "mac_sha256": "9e41f51983b277746a03898d581608e30dad22c61a82dfc38cd5ccc1ea304473",
+   "verified": true,
+   "state": "copied_verified"
+  },
+  {
+   "windows_path": "C:/Users/volpe/Videos/RivalsInput/20260927T055006-068Z-150600-8/inputs.jsonl",
+   "mac_path": "/Users/james/dev/idm-match-data/originals/20260927T055006-068Z-150600-8/inputs.jsonl",
+   "bytes": 8313224,
+   "expected_sha256": "383326e6fde7bc6c3bd0c7a485099548749dcba62ba1f4583dda5c672145c592",
+   "partial_path": "/Users/james/dev/idm-match-data/originals/20260927T055006-068Z-150600-8/inputs.jsonl.idm-later-20260928.part",
+   "windows_sha256": "383326e6fde7bc6c3bd0c7a485099548749dcba62ba1f4583dda5c672145c592",
+   "mac_sha256": "383326e6fde7bc6c3bd0c7a485099548749dcba62ba1f4583dda5c672145c592",
+   "verified": true,
+   "state": "copied_verified"
+  },
+  {
+   "windows_path": "C:/Users/volpe/Videos/RivalsInput/20260927T055006-068Z-150600-8/frames.csv",
+   "mac_path": "/Users/james/dev/idm-match-data/originals/20260927T055006-068Z-150600-8/frames.csv",
+   "bytes": 6267132,
+   "expected_sha256": "4a0b9bc7ca77cc99f93702a5e605544f7be797b53aec1ecdc7b5ae8c1b7a14bb",
+   "partial_path": "/Users/james/dev/idm-match-data/originals/20260927T055006-068Z-150600-8/frames.csv.idm-later-20260928.part",
+   "windows_sha256": "4a0b9bc7ca77cc99f93702a5e605544f7be797b53aec1ecdc7b5ae8c1b7a14bb",
+   "mac_sha256": "4a0b9bc7ca77cc99f93702a5e605544f7be797b53aec1ecdc7b5ae8c1b7a14bb",
+   "verified": true,
+   "state": "copied_verified"
+  },
+  {
+   "windows_path": "C:/Users/volpe/repos/rivals-agent/data/human/sessions/20260927T055006-068Z-150600-8/20260927T055006-068Z-150600-8.steps.jsonl",
+   "mac_path": "/Users/james/dev/idm-match-data/sessions/20260927T055006-068Z-150600-8/20260927T055006-068Z-150600-8.steps.jsonl",
+   "bytes": 8322476,
+   "expected_sha256": "957eb1a554858f6a3ca09184276dafaa9c5aeb705f1dced412b84234867298ef",
+   "partial_path": "/Users/james/dev/idm-match-data/sessions/20260927T055006-068Z-150600-8/20260927T055006-068Z-150600-8.steps.jsonl.idm-later-20260928.part",
+   "windows_sha256": "957eb1a554858f6a3ca09184276dafaa9c5aeb705f1dced412b84234867298ef",
+   "mac_sha256": "957eb1a554858f6a3ca09184276dafaa9c5aeb705f1dced412b84234867298ef",
+   "verified": true,
+   "state": "copied_verified"
+  },
+  {
+   "windows_path": "C:/Users/volpe/repos/rivals-agent/data/human/sessions/20260927T055006-068Z-150600-8/imported-demo.jsonl",
+   "mac_path": "/Users/james/dev/idm-match-data/sessions/20260927T055006-068Z-150600-8/imported-demo.jsonl",
+   "bytes": 24442131,
+   "expected_sha256": "0fc7874f7ae6a25823b81e437d08787b6f61bc71749877d4e0838d758b2e74f3",
+   "partial_path": "/Users/james/dev/idm-match-data/sessions/20260927T055006-068Z-150600-8/imported-demo.jsonl.idm-later-20260928.part",
+   "windows_sha256": "0fc7874f7ae6a25823b81e437d08787b6f61bc71749877d4e0838d758b2e74f3",
+   "mac_sha256": "0fc7874f7ae6a25823b81e437d08787b6f61bc71749877d4e0838d758b2e74f3",
+   "verified": true,
+   "state": "copied_verified"
+  }
+ ],
+ "kind": "immutable_relocation",
+ "at": "2026-09-28T16:38:18.791999+00:00",
+ "mac_root": "/Users/james/dev/idm-match-data",
+ "contract": "docs/machines.md, Record on Windows, import on the Mac",
+ "note": "Recorder bytes and literal Windows video_path unchanged. No re-registration; decoder uses explicit local video root. Targets and admission-receipt deployment are owned by idm-owner. Transfer is not fresh admission."
+}

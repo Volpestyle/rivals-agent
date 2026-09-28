@@ -1,0 +1,9 @@
+{
+  "adapted_from": "data\\admission-codex\\relocate_matches_4_6.py",
+  "source_sha256": "c71e84d045a305dec19600f066f66d7f0d823563c9e263a35133347fc0a754a5",
+  "delta": "Explicit five-session roster, diagnostic-specific temporary suffix and descriptions; copy/hash logic unchanged",
+  "files": {
+    "relocate_later.py": "7d8e1b3cebfe4699deb462179fce4d00589fade84079b7ae4db302eca2de3bc0",
+    "relocate_mac.py": "72fd8f0fb60d13a3f7cce11999843a1dac0a4e949a11e74ed427f45aee1bb81e"
+  }
+}

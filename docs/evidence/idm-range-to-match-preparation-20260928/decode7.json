@@ -1,0 +1,29 @@
+{
+  "sessions": [
+    {
+      "session_id": "20260927T053838-153Z-150600-7",
+      "admission": {
+        "path": "docs/evidence/idm-match-admission-053838-20260927/receipt/match-admission-053838.accepted.json",
+        "sha256": "535adf28f42ba37b2051c7ccb5707d0b1e175bb0463bd7502bfe72b4ce578a87"
+      },
+      "relocation": {
+        "path": "/Users/james/dev/idm-data/range-to-match-20260928-a2/receipts/20260927T053838-153Z-150600-7/relocation.json",
+        "sha256": "33f2506eae06571dba46056dd1ab98e2edd50568dfcea80995632533954e3116"
+      },
+      "video": "/Users/james/dev/idm-match-data/originals/2026-09-27 00-38-38.mkv",
+      "targets": {
+        "path": "/Users/james/dev/idm-data/range-to-match-20260928-a2/targets/20260927T053838-153Z-150600-7/20260927T053838-153Z-150600-7.idm.jsonl",
+        "sha256": "fb111143f18132264b52be38ee5b79e74d7f29cd935c7d9975af89541def0982"
+      },
+      "steps": {
+        "path": "/Users/james/dev/idm-match-data/sessions/20260927T053838-153Z-150600-7/20260927T053838-153Z-150600-7.steps.jsonl",
+        "sha256": "7efd043edcbdd7036b6ee28da32584cd3e4fba32683405c0f0c4259144ee213f"
+      },
+      "demo": {
+        "path": "/Users/james/dev/idm-match-data/sessions/20260927T053838-153Z-150600-7/imported-demo.jsonl",
+        "sha256": "75aa74285213cc11c7d17ec5c82e045156430378ea260e863e8841699e00d71c"
+      }
+    }
+  ],
+  "scope": "EXPLORATORY serial Mac decode; no fitting"
+}

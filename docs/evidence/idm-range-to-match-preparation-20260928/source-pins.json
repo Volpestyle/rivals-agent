@@ -1,0 +1,6 @@
+{
+  "policy\\idm\\match_diagnostic.py": "272dbb49f1db3258895d3d85a2dae6a89b6de7ebedcb80d9acba25d5a57a6217",
+  "tests\\test_idm_match_diagnostic.py": "0f6238c88537236ffb2b606b223c0c1933f51b312b57cc4bf7cfd8620e45eada",
+  "policy\\idm\\decode.py": "3a0eb3f5fc42f2ad0818bad3956295563b74069c5c58141b8bf7425e88066263",
+  "policy\\idm\\receipt-current.json": "4c93196e14d04ee6a7d2d75d9e35e632539f2ced45b6b677e65aed1ef7aa1f87"
+}

@@ -1,0 +1,162 @@
+[
+  {
+    "session_id": "20260927T053838-153Z-150600-7",
+    "targets": "data\\idm\\range-to-match-20260928\\20260927T053838-153Z-150600-7\\20260927T053838-153Z-150600-7.idm.jsonl",
+    "targets_sha256": "fb111143f18132264b52be38ee5b79e74d7f29cd935c7d9975af89541def0982",
+    "admission": {
+      "path": "docs/evidence/idm-match-admission-053838-20260927/receipt/match-admission-053838.accepted.json",
+      "sha256": "535adf28f42ba37b2051c7ccb5707d0b1e175bb0463bd7502bfe72b4ce578a87"
+    },
+    "source": {
+      "steps": {
+        "path": "data/human/sessions/20260927T053838-153Z-150600-7/20260927T053838-153Z-150600-7.steps.jsonl",
+        "sha256": "7efd043edcbdd7036b6ee28da32584cd3e4fba32683405c0f0c4259144ee213f"
+      },
+      "imported_demo": {
+        "path": "data/human/sessions/20260927T053838-153Z-150600-7/imported-demo.jsonl",
+        "sha256": "75aa74285213cc11c7d17ec5c82e045156430378ea260e863e8841699e00d71c"
+      },
+      "builder": {
+        "path": "policy/idm_targets.py",
+        "sha256": "b570da810601bb79d6f3ac9f015e7f744c65481596257604182cd336bd6bc493"
+      }
+    },
+    "target_rows": 31016,
+    "usable_rows": 25098,
+    "full_store_frames": 25274,
+    "full_store_bytes": 4066485504,
+    "video_path": "C:\\Users\\volpe\\Videos\\2026-09-27 00-38-38.mkv",
+    "media_sha256": "de6aea85939a986b9c090ac72139b66c2ab6742259d3c8aff427d31a58c4ff81",
+    "source_role": "idm_train",
+    "video_opened": false,
+    "purpose": "frozen range-to-match inference, outside full03 fit; TRAIN unchanged"
+  },
+  {
+    "session_id": "20260927T055006-068Z-150600-8",
+    "targets": "data\\idm\\range-to-match-20260928\\20260927T055006-068Z-150600-8\\20260927T055006-068Z-150600-8.idm.jsonl",
+    "targets_sha256": "e90ccdf7f86137c3b3536af4a087c93d956c3811e8da66d344248eae84c6630e",
+    "admission": {
+      "path": "docs/evidence/idm-match-admission-055006-20260927/receipt/match-admission-055006.accepted.json",
+      "sha256": "27e34517ec16b694147a0a897eb8c75fcfce34061b778fbf59ca29e7c86c9819"
+    },
+    "source": {
+      "steps": {
+        "path": "data/human/sessions/20260927T055006-068Z-150600-8/20260927T055006-068Z-150600-8.steps.jsonl",
+        "sha256": "957eb1a554858f6a3ca09184276dafaa9c5aeb705f1dced412b84234867298ef"
+      },
+      "imported_demo": {
+        "path": "data/human/sessions/20260927T055006-068Z-150600-8/imported-demo.jsonl",
+        "sha256": "0fc7874f7ae6a25823b81e437d08787b6f61bc71749877d4e0838d758b2e74f3"
+      },
+      "builder": {
+        "path": "policy/idm_targets.py",
+        "sha256": "b570da810601bb79d6f3ac9f015e7f744c65481596257604182cd336bd6bc493"
+      }
+    },
+    "target_rows": 24566,
+    "usable_rows": 18544,
+    "full_store_frames": 18752,
+    "full_store_bytes": 3017121792,
+    "video_path": "C:\\Users\\volpe\\Videos\\2026-09-27 00-50-06.mkv",
+    "media_sha256": "a4cf9008db659ee19145df0fcd648e199fb31e75ae7418be59e4ebc2c80e5268",
+    "source_role": "idm_train",
+    "video_opened": false,
+    "purpose": "frozen range-to-match inference, outside full03 fit; TRAIN unchanged"
+  },
+  {
+    "session_id": "20260927T060021-195Z-150600-10",
+    "targets": "data\\idm\\range-to-match-20260928\\20260927T060021-195Z-150600-10\\20260927T060021-195Z-150600-10.idm.jsonl",
+    "targets_sha256": "e656578d0a3afd9d4dd884e5856f2ac3e8853261f68df43c3ef53b63d9e19b87",
+    "admission": {
+      "path": "docs/evidence/idm-match-admission-060021-20260927/receipt/match-admission-060021.accepted.json",
+      "sha256": "4f16079cac4e500d94b8e047e903d4b0690e0b5f87673e9ef41bfda7af822331"
+    },
+    "source": {
+      "steps": {
+        "path": "data/human/sessions/20260927T060021-195Z-150600-10/20260927T060021-195Z-150600-10.steps.jsonl",
+        "sha256": "898bb2521202c9db3738a91367f1a047c24afad513bae14f32d0ebfe9830e972"
+      },
+      "imported_demo": {
+        "path": "data/human/sessions/20260927T060021-195Z-150600-10/imported-demo.jsonl",
+        "sha256": "1bc11343019822b0090d74dd53efd301e960a449ccbfb8b480a6478354e3dc9c"
+      },
+      "builder": {
+        "path": "policy/idm_targets.py",
+        "sha256": "b570da810601bb79d6f3ac9f015e7f744c65481596257604182cd336bd6bc493"
+      }
+    },
+    "target_rows": 32282,
+    "usable_rows": 25118,
+    "full_store_frames": 25262,
+    "full_store_bytes": 4064554752,
+    "video_path": "C:\\Users\\volpe\\Videos\\2026-09-27 01-00-21.mkv",
+    "media_sha256": "0771473550e9752bd58c3505c16a8d44d1b31fcfc5dfd7553e1039a598c2471b",
+    "source_role": "idm_train",
+    "video_opened": false,
+    "purpose": "frozen range-to-match inference, outside full03 fit; TRAIN unchanged"
+  },
+  {
+    "session_id": "20260927T061107-953Z-150600-11",
+    "targets": "data\\idm\\range-to-match-20260928\\20260927T061107-953Z-150600-11\\20260927T061107-953Z-150600-11.idm.jsonl",
+    "targets_sha256": "59abec151c6eefa8fdf77cb555b70c0c05d6438f66886e3ed0992e1aa8dcdd3e",
+    "admission": {
+      "path": "docs/evidence/idm-match-admission-061107-20260927/receipt/match-admission-061107.accepted.json",
+      "sha256": "c37d7ff11c67224005cb865f335b7798c877ec260e02a8696bbe59e687843a5d"
+    },
+    "source": {
+      "steps": {
+        "path": "data/human/sessions/20260927T061107-953Z-150600-11/20260927T061107-953Z-150600-11.steps.jsonl",
+        "sha256": "50b9b2e7f80c31078571cd369bac5cd1933d06f2eb6d30dafcfff34cc50bbb06"
+      },
+      "imported_demo": {
+        "path": "data/human/sessions/20260927T061107-953Z-150600-11/imported-demo.jsonl",
+        "sha256": "650e59633dc6b4da32eb59fec6b52513cf0b0d673bb6b3059592a63a5c6da43b"
+      },
+      "builder": {
+        "path": "policy/idm_targets.py",
+        "sha256": "b570da810601bb79d6f3ac9f015e7f744c65481596257604182cd336bd6bc493"
+      }
+    },
+    "target_rows": 20896,
+    "usable_rows": 18216,
+    "full_store_frames": 18296,
+    "full_store_bytes": 2943753216,
+    "video_path": "C:\\Users\\volpe\\Videos\\2026-09-27 01-11-07.mkv",
+    "media_sha256": "367767faea8a26936b363f29c2c19ab7f59ad76589085415805b3b5ab3a489b5",
+    "source_role": "idm_train",
+    "video_opened": false,
+    "purpose": "frozen range-to-match inference, outside full03 fit; TRAIN unchanged"
+  },
+  {
+    "session_id": "20260927T061900-143Z-150600-12",
+    "targets": "data\\idm\\range-to-match-20260928\\20260927T061900-143Z-150600-12\\20260927T061900-143Z-150600-12.idm.jsonl",
+    "targets_sha256": "7ae583d643c98b6575546b37947897a74755bb23b8c44fc57f4ea8610527df2d",
+    "admission": {
+      "path": "docs/evidence/idm-match-admission-061900-20260927/receipt/match-admission-061900.accepted.json",
+      "sha256": "9f4bee42649f18d5e72db3729c1d4d94092e9a2cff54e4198d1e410edb23905e"
+    },
+    "source": {
+      "steps": {
+        "path": "data/human/sessions/20260927T061900-143Z-150600-12/20260927T061900-143Z-150600-12.steps.jsonl",
+        "sha256": "60bb7749971efc6330aabeb7ceaf977742d3553c20da9ceafc98f65f2bab0265"
+      },
+      "imported_demo": {
+        "path": "data/human/sessions/20260927T061900-143Z-150600-12/imported-demo.jsonl",
+        "sha256": "88fa3c3cfd221f1b2763082e0c5c8e238459e35ef57b288e623c67c4929c3869"
+      },
+      "builder": {
+        "path": "policy/idm_targets.py",
+        "sha256": "b570da810601bb79d6f3ac9f015e7f744c65481596257604182cd336bd6bc493"
+      }
+    },
+    "target_rows": 30070,
+    "usable_rows": 24364,
+    "full_store_frames": 24492,
+    "full_store_bytes": 3940664832,
+    "video_path": "C:\\Users\\volpe\\Videos\\2026-09-27 01-19-00.mkv",
+    "media_sha256": "c9bdd3aeed4f5a560ee4a130c1943871ee9b0d39c8baad277bfdb04d0bdf7c74",
+    "source_role": "idm_train",
+    "video_opened": false,
+    "purpose": "frozen range-to-match inference, outside full03 fit; TRAIN unchanged"
+  }
+]
