@@ -1,0 +1,449 @@
+{
+  "tag": "EXPLORATORY",
+  "recipe": {
+    "tag": "EXPLORATORY",
+    "horizon": 1,
+    "seed": 2,
+    "epochs": 26,
+    "batch": 8,
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "warmup": 500,
+    "device": "cuda",
+    "config": {
+      "channels": [
+        16,
+        32,
+        32
+      ],
+      "reduce": 8,
+      "embed": 256,
+      "hud_embed": 128,
+      "history_embed": 64,
+      "hidden": 512,
+      "global_hw": [
+        144,
+        256
+      ],
+      "crop_hw": [
+        128,
+        128
+      ],
+      "hud_hw": [
+        80,
+        200
+      ],
+      "frames": true,
+      "hud": false,
+      "history": false,
+      "regime_bit": false
+    },
+    "prev_dropout": 0.2,
+    "lag": 0,
+    "cohort": "full",
+    "run_identity": "a2a2e72e2e8abe699b3b400ab72e7d4b38d77b088263334d59dfc41f98ef2f06",
+    "batch_identity": "fa052ae55bc20ea0080452464e0baad9a22302099d229e0984d11b7bdea44f4a",
+    "windows": 4697,
+    "total_steps": 15288,
+    "pos_weight": [
+      [
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0
+      ],
+      [
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0
+      ]
+    ],
+    "encoder_explore": {
+      "spatial_yaw": {
+        "base_checkpoint": "/inputs/assets/candidate-s2/epoch-26.pt",
+        "base_sha256": "99f17cd5e105a96dc1b89face1145ec037606c329cc7a2710c081f4dc7c495b7",
+        "cutoff_receipt": "/inputs/assets/candidate-s2/evaluation.json",
+        "cutoff_sha256": "cacc25bbadf15e146cfef36a485d1c69783af36be639914ebfc8fa755b1e59a1",
+        "dataset_root": "/inputs/yaw-extract-20260927-02/extraction/dual-grid-cache",
+        "dataset_sha256": "71e344f4f17d9e537c87c154b30f6aae12c14cc601b59d668299ac799715660e",
+        "epochs": 26,
+        "grid": 4,
+        "seed": 2,
+        "tag": "EXPLORATORY",
+        "updates": 15288
+      },
+      "head_parameters": 201187,
+      "base_tensor_sha256": "f5896692e47858459a7e94ec074eb0f4f57bab04f35ea4111171923a07284379",
+      "cache_precision": "bf16 tower / fp16 features"
+    }
+  },
+  "epoch_reason": "26 matched epochs for H=1/4/8: twice the inherited 13-epoch cap, because the prior curves often reached that cap while falling. Retain per-head dev curves and epoch 13; its LR is from a 26-epoch cosine schedule, so it is not a replication of the legacy 13-epoch fit. Use final epoch, not a dev-selected checkpoint; convergence is measured, not assumed.",
+  "epoch": 26,
+  "cursor": 0,
+  "updates": 15288,
+  "history": [
+    {
+      "epoch": 1,
+      "steps": 588,
+      "train_chunk_loss": 1.4005394225217858,
+      "seconds": 31.32418056600001,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.750386604129801,
+        "total": 2.137501271524255
+      }
+    },
+    {
+      "epoch": 2,
+      "steps": 1176,
+      "train_chunk_loss": 1.3968721506546955,
+      "seconds": 66.455985154,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.8009736793159505,
+        "total": 2.1627948091173295
+      }
+    },
+    {
+      "epoch": 3,
+      "steps": 1764,
+      "train_chunk_loss": 1.3944837488487465,
+      "seconds": 102.99707216,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.8066105307237907,
+        "total": 2.16561323482125
+      }
+    },
+    {
+      "epoch": 4,
+      "steps": 2352,
+      "train_chunk_loss": 1.3931543196545166,
+      "seconds": 137.57984016799998,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.8137453922092446,
+        "total": 2.1691806655639767
+      }
+    },
+    {
+      "epoch": 5,
+      "steps": 2940,
+      "train_chunk_loss": 1.3922517601730062,
+      "seconds": 171.662235845,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.8236272503128252,
+        "total": 2.174121594615767
+      }
+    },
+    {
+      "epoch": 6,
+      "steps": 3528,
+      "train_chunk_loss": 1.3919397744597222,
+      "seconds": 206.081011133,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.824646129931856,
+        "total": 2.1746310344252824
+      }
+    },
+    {
+      "epoch": 7,
+      "steps": 4116,
+      "train_chunk_loss": 1.3902405652464653,
+      "seconds": 240.043725214,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.819974274921666,
+        "total": 2.1722951069201875
+      }
+    },
+    {
+      "epoch": 8,
+      "steps": 4704,
+      "train_chunk_loss": 1.389043265256752,
+      "seconds": 273.009275375,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.8317834409658964,
+        "total": 2.1781996899423026
+      }
+    },
+    {
+      "epoch": 9,
+      "steps": 5292,
+      "train_chunk_loss": 1.3893891962207094,
+      "seconds": 305.864441453,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.8316088251905716,
+        "total": 2.17811238205464
+      }
+    },
+    {
+      "epoch": 10,
+      "steps": 5880,
+      "train_chunk_loss": 1.386882570122375,
+      "seconds": 338.547894283,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.835248021481865,
+        "total": 2.179931980200287
+      }
+    },
+    {
+      "epoch": 11,
+      "steps": 6468,
+      "train_chunk_loss": 1.3870477295246253,
+      "seconds": 371.201689956,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.8334810671544886,
+        "total": 2.179048503036599
+      }
+    },
+    {
+      "epoch": 12,
+      "steps": 7056,
+      "train_chunk_loss": 1.385758674266387,
+      "seconds": 402.279401062,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.8361363193073723,
+        "total": 2.1803761291130406
+      }
+    },
+    {
+      "epoch": 13,
+      "steps": 7644,
+      "train_chunk_loss": 1.3850960605809477,
+      "seconds": 433.13212955499995,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.839170873632008,
+        "total": 2.1818934062753583
+      }
+    },
+    {
+      "epoch": 14,
+      "steps": 8232,
+      "train_chunk_loss": 1.3847555331632393,
+      "seconds": 464.773984322,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.839220289773169,
+        "total": 2.181918114345939
+      }
+    },
+    {
+      "epoch": 15,
+      "steps": 8820,
+      "train_chunk_loss": 1.3831092934219205,
+      "seconds": 497.13059666199996,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.8415855128833583,
+        "total": 2.1831007259010335
+      }
+    },
+    {
+      "epoch": 16,
+      "steps": 9408,
+      "train_chunk_loss": 1.382202840783969,
+      "seconds": 528.569242333,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.8374445936387263,
+        "total": 2.1810302662787175
+      }
+    },
+    {
+      "epoch": 17,
+      "steps": 9996,
+      "train_chunk_loss": 1.3819144939889714,
+      "seconds": 563.356718805,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.844012092983754,
+        "total": 2.184314015951231
+      }
+    },
+    {
+      "epoch": 18,
+      "steps": 10584,
+      "train_chunk_loss": 1.38152218270464,
+      "seconds": 599.389749538,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.843246035414016,
+        "total": 2.183930987166362
+      }
+    },
+    {
+      "epoch": 19,
+      "steps": 11172,
+      "train_chunk_loss": 1.381336673587358,
+      "seconds": 633.4564707760001,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.8495215112173216,
+        "total": 2.1870687250680154
+      }
+    },
+    {
+      "epoch": 20,
+      "steps": 11760,
+      "train_chunk_loss": 1.3806354843434834,
+      "seconds": 666.282319905,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.849756774952144,
+        "total": 2.1871863569354266
+      }
+    },
+    {
+      "epoch": 21,
+      "steps": 12348,
+      "train_chunk_loss": 1.3798103239260564,
+      "seconds": 699.699245228,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.848856488344875,
+        "total": 2.186736213631792
+      }
+    },
+    {
+      "epoch": 22,
+      "steps": 12936,
+      "train_chunk_loss": 1.3798153451105364,
+      "seconds": 732.527719036,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.8493325417720308,
+        "total": 2.1869742403453696
+      }
+    },
+    {
+      "epoch": 23,
+      "steps": 13524,
+      "train_chunk_loss": 1.3793281128211898,
+      "seconds": 764.8932931070001,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.849608627374116,
+        "total": 2.1871122831464125
+      }
+    },
+    {
+      "epoch": 24,
+      "steps": 14112,
+      "train_chunk_loss": 1.3796433455684558,
+      "seconds": 797.730508748,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.8508632649952066,
+        "total": 2.1877396019569577
+      }
+    },
+    {
+      "epoch": 25,
+      "steps": 14700,
+      "train_chunk_loss": 1.3788720878208576,
+      "seconds": 830.613384633,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.8509111273693355,
+        "total": 2.187763533144022
+      }
+    },
+    {
+      "epoch": 26,
+      "steps": 15288,
+      "train_chunk_loss": 1.3791953469214797,
+      "seconds": 862.0393986500001,
+      "dev_step_one": {
+        "held": 0.17084041790302365,
+        "press": 0.3235535310391658,
+        "release": 0.267914020517165,
+        "camera": 2.8509568427312466,
+        "total": 2.1877863908249777
+      }
+    }
+  ],
+  "seconds": 864.225916526,
+  "status": "complete"
+}

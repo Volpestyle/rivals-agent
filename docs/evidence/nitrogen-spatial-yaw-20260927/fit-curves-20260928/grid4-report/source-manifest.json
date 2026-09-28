@@ -1,0 +1,29 @@
+{
+  "collections": [
+    {
+      "path": "docs\\evidence\\nitrogen-spatial-yaw-20260927\\fit-curves-20260928\\grid4\\collection.json",
+      "sha256": "01707a1cc1c9b3ce6239374edcf882025cbc9a8c6649fa67e55476ff19be389a"
+    }
+  ],
+  "endpoints": [
+    {
+      "grid": 4,
+      "seed": 1,
+      "train_change": -0.022728068285247982,
+      "dev_camera_change": 0.09759645798187666
+    },
+    {
+      "grid": 4,
+      "seed": 2,
+      "train_change": -0.021344075600306045,
+      "dev_camera_change": 0.10057023860144554
+    },
+    {
+      "grid": 4,
+      "seed": 3,
+      "train_change": -0.022849752383978128,
+      "dev_camera_change": 0.11822939852821612
+    }
+  ],
+  "report_script_sha256": "a24094c3493f59d982da4e0c2a4a8849998cd001731f844b8f76b6c0d8c49efd"
+}

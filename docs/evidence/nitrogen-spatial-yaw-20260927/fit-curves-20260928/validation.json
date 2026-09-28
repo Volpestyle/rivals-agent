@@ -1,0 +1,13 @@
+{
+  "collector_sha256": "6889dc86e05c063bc29a4204efd63c5291c2ed76708c59526e1f5df830952b49",
+  "checks": [
+    "complete real 26-epoch status accepted",
+    "partial status refused",
+    "wrong recipe pin refused",
+    "missing epoch refused",
+    "nonfinite camera curve refused"
+  ],
+  "ruff": "PASS",
+  "figure_inspection": "PASS: all 26 epochs readable, three seeds, train and dev panels",
+  "compute": "PC CPU BelowNormal; no fit or extraction"
+}
