@@ -1,0 +1,7 @@
+2026-09-27 20:42:07-05:00 ta-01M3JTRDC90N3F2B4KEBR5C0HR Task's current input(s) ["in-01M3JTRD2DHR2G3B7PPEE4GK57:1790559663203-0"] cancelled because: Task's current input in-01M3JTRD2DHR2G3B7PPEE4GK57:1790559663203-0 hit its timeout of 60s
+2026-09-27 20:42:07-05:00 ta-01M3JTRDC90N3F2B4KEBR5C0HR [modal-client] 2026-09-28T01:42:07+0000 Received a cancellation signal while processing input ('in-01M3JTRD2DHR2G3B7PPEE4GK57:1790559663203-0',)
+2026-09-27 20:42:07-05:00 ta-01M3JTRDC90N3F2B4KEBR5C0HR [modal-client] 2026-09-28T01:42:07+0000 Successfully canceled input ('in-01M3JTRD2DHR2G3B7PPEE4GK57:1790559663203-0',)
+2026-09-27 20:42:07-05:00 Stopping app - uncaught exception raised locally: FunctionTimeoutError("Task's current input in-01M3JTRD2DHR2G3B7PPEE4GK57:1790559663203-0 hit its timeout of 60s").
+2026-09-27 20:42:08-05:00 Stopping app - user stopped from CLI.
+2026-09-27 20:42:09-05:00 Stopping app - user stopped from CLI.
+2026-09-27 20:42:10-05:00 Stopping app - user stopped from CLI.
