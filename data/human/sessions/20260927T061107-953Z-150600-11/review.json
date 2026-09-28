@@ -1,0 +1,452 @@
+{
+ "schema_version": 1,
+ "session_id": "20260927T061107-953Z-150600-11",
+ "reviewer": "owner admission-owner (3d84ff3169cb4093) + independent frame-review (Opus)",
+ "reviewed_at": "2026-09-28T00:13:47Z",
+ "device_scope": {
+  "kind": "single_keyboard_mouse",
+  "source": "input-profile.json: keyboard ['1840451255'], mouse ['614403941']; 7 zero-effect handle-0 packets allowed (lead decision), no injected control input",
+  "no_pad_attestation": "James, chat, 2026-09-27 ~09:20 CDT (docs/recording-log.md, Motor settings, committed 32007db): \"Keyboard/mouse only\", no controller at any point in the 23:13-01:27 takes"
+ },
+ "pts_anchor": {
+  "kind": "independent_muxer_offset",
+  "offset_num": 21,
+  "offset_den": 1000,
+  "source": "accepted blank-scene derivation plus this session's own first-16-packet forward prediction (provenance.json anchor_applicability), no fitting",
+  "evidence": [
+   {
+    "path": "data/human/inspection/20260922T033319-205Z-24328-2/independent-review-resolution.md",
+    "sha256": "a67f55f36554887d97765b4552a33ac5c92494f6a50c814801183528a0c3c8e6"
+   },
+   {
+    "path": "data/human/sessions/20260927T061107-953Z-150600-11/provenance.json",
+    "sha256": "524cd27ba1f48c442d7cbf49b800d4560f7ccd94457fd32da4b9592ec0d603a4"
+   }
+  ]
+ },
+ "provenance": {
+  "hero": "Spider-Man",
+  "settings": {
+   "value": {
+    "dpi": 800,
+    "horizontal_sensitivity": 1.89,
+    "vertical_sensitivity": 1.89,
+    "swing_mode": {
+     "automatic_swing": false,
+     "hold_to_swing": true
+    },
+    "mouse_acceleration": true,
+    "mouse_smoothing": true
+   },
+   "source": "James's statements in docs/recording-log.md (2026-09-23): DPI 800 (~14:50 CDT), sensitivity unchanged since 2026-09-21 (1.89/1.89 in the 09-21 report), default swing settings on Shift with Simple Swing on Caps Lock; confirmed on native frames of the settings look (calibration.json: 1.89/1.89, hold to swing on, simple swing off)",
+   "per_session_source": "James's statement for the 2026-09-27 night matches (docs/recording-log.md, Motor settings, committed 32007db): alt account, DPI, in-game sensitivity (1.89) and bindings unchanged (chat, 2026-09-27 ~09:20 CDT, and his 01:37 declaration)",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260927T061107-953Z-150600-11/recording-log.f478461.md",
+     "sha256": "782eb4b996bfa45ef9ba83675988524798a881799ee2e562ccd1954c2f426549"
+    },
+    {
+     "path": "data/human/notes/2026-09-21-user-settings.json",
+     "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+    },
+    {
+     "path": "data/human/sessions/20260927T061107-953Z-150600-11/provenance.json",
+     "sha256": "524cd27ba1f48c442d7cbf49b800d4560f7ccd94457fd32da4b9592ec0d603a4"
+    },
+    {
+     "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+     "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+    }
+   ]
+  },
+  "bindings": {
+   "value": {
+    "move_forward": [
+     "key:17:0"
+    ],
+    "move_left": [
+     "key:30:0"
+    ],
+    "move_back": [
+     "key:31:0"
+    ],
+    "move_right": [
+     "key:32:0"
+    ],
+    "jump": [
+     "key:57:0"
+    ],
+    "web_swing": [
+     "key:42:0"
+    ],
+    "get_over_here": [
+     "key:33:0"
+    ],
+    "amazing_combo": [
+     "key:18:0",
+     "key:3:0"
+    ],
+    "ultimate": [
+     "key:16:0"
+    ],
+    "melee": [
+     "key:47:0",
+     "mouse:5"
+    ],
+    "spider_power": [
+     "mouse:1"
+    ],
+    "web_cluster": [
+     "mouse:2"
+    ],
+    "team_up": [
+     "key:46:0"
+    ],
+    "team_up_b": [
+     "key:45:0"
+    ],
+    "simple_swing": [
+     "key:58:0"
+    ],
+    "goh_targeting": [
+     "mouse:4",
+     "key:3:0"
+    ],
+    "slow_walk": [
+     "key:29:0"
+    ]
+   },
+   "aliases": {
+    "mouse:5": "melee"
+   },
+   "notes": {
+    "team_up": "C = Team-Up A, fires in the solo range with a visible effect (James; 051828/team-up-check.json). A real action with positives, trained but masked live (Y is off the pad whitelist).",
+    "melee": "V and Mouse 5 (settings look; lead decision): Mouse 5 presses count as melee (header binding_aliases).",
+    "goh_targeting": "Get Over Here Targeting: Mouse 4 (X1) and 2; a fit action (lead decision), structurally unsupported on the pad, counted. Only Mouse 4 is in the step header (2 is shared).",
+    "amazing_combo": "E and 2; 2 is also Get Over Here Targeting, so it is not aliased (unsupported).",
+    "simple_swing": "Caps Lock (VK 20, scan 58), off as a mode; not in the fit vocabulary (unsupported).",
+    "team_up_b": "X, Team-Up B; not in the fit vocabulary (unsupported).",
+    "slow_walk": "LCtrl, hold; not in the fit vocabulary (unsupported).",
+    "alt": "Alt is unbound in game (James); Alt presses are Alt-Tab and stay UI-key cuts."
+   },
+   "source": "native frames of James's settings look (calibration take 2026-09-23, keyboard pages, calibration.json), agreeing with his 2026-09-21 report and 2026-09-23 statements; HUD key labels on this session's frames (slot-mapping.json)",
+   "per_session_source": "James's statement for the 2026-09-27 night matches (docs/recording-log.md, Motor settings, committed 32007db): bindings unchanged (chat, 2026-09-27 ~09:20 CDT)",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260927T061107-953Z-150600-11/recording-log.f478461.md",
+     "sha256": "782eb4b996bfa45ef9ba83675988524798a881799ee2e562ccd1954c2f426549"
+    },
+    {
+     "path": "data/human/notes/2026-09-21-user-settings.json",
+     "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+    },
+    {
+     "path": "data/human/sessions/20260927T061107-953Z-150600-11/slot-mapping.json",
+     "sha256": "60f3b74ea3a5d7491b7349d2b7675aa249607f8f18287ac184d3bc354c8db4c3"
+    },
+    {
+     "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+     "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+    }
+   ]
+  },
+  "game_patch": {
+   "value": "1.1.3892207/build25501035",
+   "source": "Steam appmanifest (buildid, LastUpdated), the game's version.json and the content log's update steps, read by the provenance step at intake; derived by agent.human_intake.recorded_build",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260927T061107-953Z-150600-11/provenance.json",
+     "sha256": "524cd27ba1f48c442d7cbf49b800d4560f7ccd94457fd32da4b9592ec0d603a4"
+    }
+   ],
+   "derivation": {
+    "value": "1.1.3892207/build25501035",
+    "version": "1.1.3892207",
+    "buildid": "25501035",
+    "installed_utc": "2026-09-24T11:15:31+00:00",
+    "version_json_written_utc": "2026-09-24T11:15:10.109511+00:00",
+    "recording": {
+     "started_utc": "2026-09-27T06:11:07.953000+00:00",
+     "ended_utc": "2026-09-27T06:16:58.502617+00:00"
+    },
+    "content_log_finished_update": {
+     "local": "2026-09-24 06:15:31",
+     "utc": "2026-09-24T11:15:31+00:00",
+     "build": "25501035"
+    },
+    "content_log_utc_offset_s": -18000
+   }
+  },
+  "cooldown_regime": {
+   "value": "normal",
+   "source": "5 fps HUD scan: depletion observed",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260927T061107-953Z-150600-11/regime-timeline.json",
+     "sha256": "bad1731b66908df51e12d8dfbd7a09bface20cb6c469a3e63b6b3441d1024f8a"
+    }
+   ]
+  },
+  "segments_evidence": {
+   "path": "data/human/sessions/20260927T061107-953Z-150600-11/segments-evidence.json",
+   "sha256": "d87f5906a45c177c532218269c47c5249cc009e32f6416b07ec804c1bf87e968"
+  },
+  "owner_verdicts": {
+   "path": "data/human/sessions/20260927T061107-953Z-150600-11/owner-verdicts.json",
+   "sha256": "3d84ff3169cb4093661369a318ac330b81b5e618391dff38300a19eb6126402e"
+  },
+  "lead_decisions": null,
+  "independent_review": {
+   "path": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json",
+   "sha256": "ba8b031bc445f5b1eb78ebe6b1585d4a52d1a81e0e48d6f7d88720113cb88611",
+   "reviewer": "frame-review (Opus)"
+  }
+ },
+ "alignment": {
+  "kind": "assumption",
+  "statement": "OBS composition time is the labelling clock; capture, display and input-delivery latency are uncalibrated (no measured bound is asserted)",
+  "source": "lead decision for the whole-session campaign; as for the 2026-09-22/23 request packets"
+ },
+ "segments": [
+  {
+   "segment_id": "seg-000",
+   "start_ns": 557342365584500,
+   "end_ns": 557342615584500,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "focus_transition: concur, rejected by rule; owner frames checked (loading screen with taskbar, deaths and 'DEFEATED BY' / 'PAST LIVES' spectate, Tab scoreboard, end-of-match scoreboard and MVP screen, emote and ping wheels; some are conservative cuts over own play).",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "focus_transition"
+  },
+  {
+   "segment_id": "seg-001",
+   "start_ns": 557342615584500,
+   "end_ns": 557347509562256,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "no_range_hud: concur, rejected by rule; owner frames checked (loading screen with taskbar, deaths and 'DEFEATED BY' / 'PAST LIVES' spectate, Tab scoreboard, end-of-match scoreboard and MVP screen, emote and ping wheels; some are conservative cuts over own play).",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "no_range_hud"
+  },
+  {
+   "segment_id": "seg-002",
+   "start_ns": 557347509562256,
+   "end_ns": 557364276228253,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Own live play 5.53-22.30 s: swinging and running across the cathedral grounds and rooftops, own HUD 250/250 throughout; last frame f2661 (22.30 s) is own play, and the EMOTES wheel first appears at 22.61 s, after the edge (inside the following ui_key cut).",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-003",
+   "start_ns": 557364276228253,
+   "end_ns": 557364278153100,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-004",
+   "start_ns": 557364278153100,
+   "end_ns": 557378506403900,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames checked (loading screen with taskbar, deaths and 'DEFEATED BY' / 'PAST LIVES' spectate, Tab scoreboard, end-of-match scoreboard and MVP screen, emote and ping wheels; some are conservative cuts over own play).",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-005",
+   "start_ns": 557378506403900,
+   "end_ns": 557378509561016,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-006",
+   "start_ns": 557378509561016,
+   "end_ns": 557455242891281,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Own live play 36.53-113.27 s: rooftop run, 'PREVENT RATATOSKR FROM BEING RESCUED' banner over live control, fights with bonus health and KO/ACE banners; last frame f13577 (113.27 s) own play at hp 129; the ping wheel appears at 113.37 s, after the edge. Reader misses (32/386) are own play under combat effects.",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-007",
+   "start_ns": 557455242891281,
+   "end_ns": 557455246111100,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-008",
+   "start_ns": 557455246111100,
+   "end_ns": 557457444103500,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames checked (loading screen with taskbar, deaths and 'DEFEATED BY' / 'PAST LIVES' spectate, Tab scoreboard, end-of-match scoreboard and MVP screen, emote and ping wheels; some are conservative cuts over own play).",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-009",
+   "start_ns": 557457444103500,
+   "end_ns": 557457459557858,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: concur, rejected by rule; owner frames checked (loading screen with taskbar, deaths and 'DEFEATED BY' / 'PAST LIVES' spectate, Tab scoreboard, end-of-match scoreboard and MVP screen, emote and ping wheels; some are conservative cuts over own play).",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-010",
+   "start_ns": 557457459557858,
+   "end_ns": 557495442889673,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Own live play 115.48-153.47 s from the healing-zone fight through combat and runs; both edges own HUD (hp 139 at start, 178 at end). Reader misses (77/235) are own play under the green heal vignette, bonus health and combat effects (f14982 at 124.97 s: own body under an enemy crystal effect, own HUD hp 168).",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-011",
+   "start_ns": 557495442889673,
+   "end_ns": 557497150150100,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "hud_unknown: concur, rejected by rule; owner frames checked (loading screen with taskbar, deaths and 'DEFEATED BY' / 'PAST LIVES' spectate, Tab scoreboard, end-of-match scoreboard and MVP screen, emote and ping wheels; some are conservative cuts over own play).",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "hud_unknown"
+  },
+  {
+   "segment_id": "seg-012",
+   "start_ns": 557497150150100,
+   "end_ns": 557499324097600,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames checked (loading screen with taskbar, deaths and 'DEFEATED BY' / 'PAST LIVES' spectate, Tab scoreboard, end-of-match scoreboard and MVP screen, emote and ping wheels; some are conservative cuts over own play).",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-013",
+   "start_ns": 557499324097600,
+   "end_ns": 557499326222850,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-014",
+   "start_ns": 557499326222850,
+   "end_ns": 557607501218524,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Own live play 157.35-265.52 s. f22407 (186.85 s) and the purple/pink frames 184-187 s are own play under an enemy area/buff tint with the own HUD (hp 164-202). Two '4' presses at 241.81 and 255.52 s post the quick-chat voice line: a 'Thank you!' line appears in the team chat log (241.97, 255.72 s) with no menu, wheel or camera change; he keeps fighting. End edge: last in-segment frame f31848 (265.52 s) is own live play at hp 55 under the damage vignette; the next frames show hp 0 at 265.57 s, the respawn timer at 265.62 s and the Tab scoreboard at 266.23 s, all after the cut. Reader misses (50/585) are own play under effects.",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-015",
+   "start_ns": 557607501218524,
+   "end_ns": 557608067238700,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "dead: concur, rejected by rule; owner frames checked (loading screen with taskbar, deaths and 'DEFEATED BY' / 'PAST LIVES' spectate, Tab scoreboard, end-of-match scoreboard and MVP screen, emote and ping wheels; some are conservative cuts over own play).",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-016",
+   "start_ns": 557608067238700,
+   "end_ns": 557611972274600,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames checked (loading screen with taskbar, deaths and 'DEFEATED BY' / 'PAST LIVES' spectate, Tab scoreboard, end-of-match scoreboard and MVP screen, emote and ping wheels; some are conservative cuts over own play).",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-017",
+   "start_ns": 557611972274600,
+   "end_ns": 557616185242800,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "dead: concur, rejected by rule; owner frames checked (loading screen with taskbar, deaths and 'DEFEATED BY' / 'PAST LIVES' spectate, Tab scoreboard, end-of-match scoreboard and MVP screen, emote and ping wheels; some are conservative cuts over own play).",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-018",
+   "start_ns": 557616185242800,
+   "end_ns": 557618537240300,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames checked (loading screen with taskbar, deaths and 'DEFEATED BY' / 'PAST LIVES' spectate, Tab scoreboard, end-of-match scoreboard and MVP screen, emote and ping wheels; some are conservative cuts over own play).",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-019",
+   "start_ns": 557618537240300,
+   "end_ns": 557619101218099,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "dead: concur, rejected by rule; owner frames checked (loading screen with taskbar, deaths and 'DEFEATED BY' / 'PAST LIVES' spectate, Tab scoreboard, end-of-match scoreboard and MVP screen, emote and ping wheels; some are conservative cuts over own play).",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-020",
+   "start_ns": 557619101218099,
+   "end_ns": 557619109551392,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-021",
+   "start_ns": 557619109551392,
+   "end_ns": 557683167882164,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Own live play 277.13-341.19 s from the respawn door through the final fights; last frame f40928 (341.19 s) is own live play at hp 300 (bonus health); the image dims from 341.24 s and the end-of-match scoreboard fades in at 341.29 s, after the cut. Reader misses (18/334) are own play.",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-022",
+   "start_ns": 557683167882164,
+   "end_ns": 557683171305200,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-023",
+   "start_ns": 557683171305200,
+   "end_ns": 557691068101200,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames checked (loading screen with taskbar, deaths and 'DEFEATED BY' / 'PAST LIVES' spectate, Tab scoreboard, end-of-match scoreboard and MVP screen, emote and ping wheels; some are conservative cuts over own play).",
+   "evidence": "data/human/sessions/20260927T061107-953Z-150600-11/independent-review.verdicts.json (ba8b031bc445f5b1)",
+   "machine_reason": "ui_key"
+  }
+ ]
+}

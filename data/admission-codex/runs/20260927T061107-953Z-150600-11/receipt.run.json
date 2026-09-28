@@ -1,0 +1,24 @@
+﻿{
+    "session":  "20260927T061107-953Z-150600-11",
+    "step":  "receipt",
+    "started":  "2026-09-28T00:33:59.0227827Z",
+    "finished":  "2026-09-28T00:34:02.5387903Z",
+    "pid":  101644,
+    "exit_code":  0,
+    "failure":  null,
+    "free_bytes_before":  13983744000,
+    "process_peak_working_set_bytes":  {
+                                           "101644":  4808704,
+                                           "72940":  26673152,
+                                           "141464":  7802880
+                                       },
+    "arguments":  [
+                      "-u",
+                      "data/human/sessions/match_admission.py",
+                      "20260927T061107-953Z-150600-11",
+                      "--snapshot",
+                      "code-snapshot-f8fd92c-6046514b",
+                      "--out",
+                      "C:\\Users\\volpe\\repos\\rivals-agent\\data\\admission-codex\\runs\\20260927T061107-953Z-150600-11\\match-admission.pending.json"
+                  ]
+}
