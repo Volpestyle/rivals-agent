@@ -90,3 +90,21 @@ def test_camera_feature_tap_exactly_matches_forward():
         expected=m(x,hud)[1]
         cam=m.camera(m.motion(x));cam[:,2:]=cam[:,2:].clamp(-12,8)
     assert torch.equal(cam,expected)
+
+
+def test_checkpoint_provenance_contains_dev_but_never_trains_it():
+    from policy.idm.yaw_support_run import checkpoint_roster, RANGES, DEV, MATCHES
+    entries=[{'session_id':s,'role':'dev' if s in DEV else 'train',
+              'targets_sha256':'a'*64,'frames_sha256':'b'*64} for s in (*RANGES,*MATCHES,*DEV)]
+    m={'sessions':entries}
+    meta={'targets':{e['session_id']:{'split':'val' if e['session_id'] in DEV else
+                       ('idm_train' if e['session_id'] in MATCHES else 'train'),'sha256':'a'*64} for e in entries},
+          'frame_stores':{e['session_id']:{'manifest_sha256':'b'*64} for e in entries}}
+    checkpoint_roster(meta,m)
+    for bad in ('train','test','idm_train'):
+        changed=copy.deepcopy(meta);changed['targets'][DEV[0]]['split']=bad
+        with pytest.raises(ValueError):checkpoint_roster(changed,m)
+    changed=copy.deepcopy(meta);changed['targets'][RANGES[0]]['sha256']='c'*64
+    with pytest.raises(ValueError):checkpoint_roster(changed,m)
+    changed=copy.deepcopy(meta);changed['targets']['later-match']={}
+    with pytest.raises(ValueError):checkpoint_roster(changed,m)

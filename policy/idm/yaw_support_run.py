@@ -21,6 +21,23 @@ def roster(manifest):
         raise ValueError('exact full03 TRAIN and two range-dev roster required')
 
 
+def checkpoint_roster(meta, manifest):
+    """Checkpoint provenance includes DEV too; authenticate roles, not keys alone."""
+    roster(manifest)
+    expected={e['session_id']:e for e in manifest['sessions']}
+    if set(meta['targets'])!=set(expected) or set(meta['frame_stores'])!=set(expected):
+        raise ValueError('checkpoint provenance roster mismatch')
+    trained=set()
+    for sid,e in expected.items():
+        actual=meta['targets'][sid]
+        split='idm_train' if sid in MATCHES else ('val' if sid in DEV else 'train')
+        if actual['split']!=split or actual['sha256']!=e['targets_sha256'] \
+                or meta['frame_stores'][sid]['manifest_sha256']!=e['frames_sha256']:
+            raise ValueError('checkpoint role/target/store pin differs')
+        if actual['split'] in ('train','idm_train'):trained.add(sid)
+    if trained!=set((*RANGES,*MATCHES)):raise ValueError('checkpoint TRAIN roster mismatch')
+
+
 def select(target, store_meta, role):
     from policy.idm.temporal import context_rows
     pairs,counts=context_rows(target,tuple(range(-8,9)))
@@ -63,7 +80,7 @@ def main():
         if set(admission.sessions)!=set(MATCHES):raise ValueError('unexpected match admission selected')
         if T.sha256(m['checkpoint'])!=S.CHECKPOINT:raise ValueError('full03 pin')
         model,payload=train.load_checkpoint(m['checkpoint'],device='mps')
-        if set(payload['meta']['targets'])!=set((*RANGES,*MATCHES)):raise ValueError('checkpoint TRAIN roster mismatch')
+        checkpoint_roster(payload['meta'],m)
         if model.config.embed!=128:raise ValueError('feature dimension')
         selections={};selected={};rates=[];rate_summary={}
         def load(e):
