@@ -130,9 +130,10 @@ are secondary-button actions, and `A` still just selects the hovered hero. The P
 below Spider-Man, so check the tooltip's hero name. In the Practice Range the hero-select timer
 counts UP (00:40 → 04:16), so there is no auto-pick deadline. After `A`, check the skin dropdown
 under the name: it may not be James's usual recording skin (2026-09-28: "Marvel Cosmic Invasion").
-`X` needs `pad.py --dangerous`, and Claude Code's auto-mode classifier denies that flag
-(2026-09-27 and 09-28). Until James adds a permission rule for it, ask him to click CONFIRM, and
-don't reach the same outcome another way (e.g. `A` on the CONFIRM button).
+`X` needs `pad.py --dangerous`. James has told the lead to press `X` on a verified hero-select frame
+himself (2026-09-28: "JUST PRESS X"), but Claude Code's auto-mode classifier may still deny the flag.
+If it does, ask James once in chat for an explicit go-ahead and retry; don't reach the same outcome
+another way (e.g. `A` on the CONFIRM button).
 
 ## The inactivity drop
 
