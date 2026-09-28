@@ -1,0 +1,44 @@
+{
+  "receipt_sha256": "39adaba7b786573d0493791c7ddea47cca2eb4ea6bfbe3e1c05f7315906a1bed",
+  "checkpoint_sha256": "211233600c4c49860986be0bbd52733144318b1bad18223080edd78388d82953",
+  "completed_epochs": 1,
+  "step_count": 45130,
+  "history": [
+    {
+      "epoch": 0,
+      "train_loss": 1.1415385462089451,
+      "seconds": 2640.4364514169865
+    }
+  ],
+  "updates_per_second": 17.09187129869422,
+  "epoch_minutes": 44.007274190283105,
+  "projected_remaining_fit_minutes": 88.01454838056621,
+  "rng_keys": [
+    "python",
+    "numpy",
+    "torch",
+    "cuda",
+    "mps"
+  ],
+  "mps_rng_bytes": 44,
+  "holdout_families_absent": true,
+  "memory_samples": 462,
+  "first_memory": {
+    "max_rss_bytes": 95160401920,
+    "mps_allocated_bytes": 130333952,
+    "mps_driver_bytes": 1106313216,
+    "swap": "total = 13312.00M  used = 12506.31M  free = 805.69M  (encrypted)"
+  },
+  "last_memory": {
+    "max_rss_bytes": 95160401920,
+    "mps_allocated_bytes": 130333952,
+    "mps_driver_bytes": 1107755008,
+    "swap": "total = 13312.00M  used = 12330.25M  free = 981.75M  (encrypted)"
+  },
+  "peak_rss_gib": 88.62503051757812,
+  "swap_first_mib": 12506.31,
+  "swap_max_mib": 12506.31,
+  "swap_last_mib": 12330.25,
+  "last_100_samples_same_swap": true,
+  "limitations": "Mac system swap/RSS are not process private physical footprint. These are training progress metrics, not held-out accuracy."
+}

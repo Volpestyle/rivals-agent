@@ -1,0 +1,11 @@
+# EXPLORATORY Mac refit: epoch 1 complete
+
+Epoch1 of3 is durable and independently validated: **45,130 optimizer updates**, checkpoint **211233600c4c49860986be0bbd52733144318b1bad18223080edd78388d82953**, completion receipt **39adaba7b786573d0493791c7ddea47cca2eb4ea6bfbe3e1c05f7315906a1bed**. Local payload is 5,142,203 bytes under `data/idm/match-refit-mac-20260928/watch/epoch-1/`; native immutable artifact paths are recorded in the launch watcher. Owner checked hash, contract, complete epoch/cursor/history, finite tensors, optimizer step counts and MPS RNG through `EpochJournal.read`. Both whole transfer families remain absent from checkpoint provenance.
+
+Fit elapsed time inside the trainer: **2,640.436 s / 44.007 min**, **17.092 updates/s**. Completion was about13:55:55CDT, roughly50min after launch including loading. If this rate holds, the remaining two epochs need about88min; a15:25?15:40CDT fit finish is a projection. TRAIN calibration and range-dev/transfer reporting follow; this is not a whole-job completion ETA. Training loss1.141539 is not an accuracy claim.
+
+Memory: peak logged process RSS **88.625GiB**, including memory-mapped stores. MPS driver allocation around1.03GiB. Across462 logged observations, system swap fell from12,506.31M to12,330.25M (as printed by sysctl), with the final100 observations identical; it is not growing over that tail. Fresh13:56:44CDT read confirms12,330.25M used of13,312M and `memory_pressure -Q` reports77% free. Do not interpret mapped RSS or that percentage as private physical footprint. Lead requested another swap comparison at epoch2; owner will check it then.
+
+The original PID12434 run continues unchanged on the reserved Mac, with no restart, deletion or paid work. Epoch2 was already progressing at observation. Remaining: epochs2/3; TRAIN-only press calibration and real/zero range-dev report; per-source-first camera transfer readout on the unchanged37,980 unread -11/-12 rows. No retuning, Gate2 or corpus-label claim. Checkpoint/observer/receipt roles and source freeze remain59d2404/17b0f96 (manifest73d486da).
+
+Sent the bounded result, remaining work and next action to herdr-lead for VUH-1353. Direct Linear write/readback remains lead-owned. Mac slot is retained until final collection and explicit release.
