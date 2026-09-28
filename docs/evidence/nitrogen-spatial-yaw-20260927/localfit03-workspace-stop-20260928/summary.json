@@ -1,0 +1,169 @@
+{
+  "tag": "DIAGNOSTIC ONLY; interrupted 8x8 is not a scientific verdict",
+  "sources": [
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\docs\\evidence\\nitrogen-spatial-yaw-20260927\\fit-curves-20260928\\grid4\\yaw-fit-grid4-s1-20260927-02\\status.json",
+      "sha256": "47c4695eb9f9e864d8bcec74199d7f61088b5782a73ba55c1990f909dbc5f0d8"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\docs\\evidence\\nitrogen-spatial-yaw-20260927\\localfit03-workspace-stop-20260928\\yaw-fit-grid8-s1-20260927-03\\fit\\status.json",
+      "sha256": "b1ef8b4569f681c282cb51b3a31e1f1ae1fac4cf1ad23be3b9417e255b9bd0ab"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\docs\\evidence\\nitrogen-spatial-yaw-20260927\\fit-curves-20260928\\grid4\\yaw-fit-grid4-s2-20260927-02\\status.json",
+      "sha256": "1bcde3011c29b3d6bdb0188c13c0033cdd4fa1ddb7c22cdf80ee4d91a9333984"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\docs\\evidence\\nitrogen-spatial-yaw-20260927\\localfit03-workspace-stop-20260928\\yaw-fit-grid8-s2-20260927-03\\fit\\status.json",
+      "sha256": "8caa3900e9efd56261a0215c74e09cf54cbe5d74b35c0e26219823610f9c32a1"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\docs\\evidence\\nitrogen-spatial-yaw-20260927\\fit-curves-20260928\\grid4\\yaw-fit-grid4-s3-20260927-02\\status.json",
+      "sha256": "ea0daa4ac8ccb7542e9f163a674e22fa48a7704b59de655144e6b3f8cbe9d20c"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\docs\\evidence\\nitrogen-spatial-yaw-20260927\\localfit03-workspace-stop-20260928\\yaw-fit-grid8-s3-20260927-03\\fit\\status.json",
+      "sha256": "366950f733ffcfdbb21465add96c035a9abb8f8083338afb0c10dea5667d4484"
+    }
+  ],
+  "last_epochs_grid8": [
+    21,
+    17,
+    19
+  ],
+  "epoch26_available": false,
+  "completed_fit_stage": false,
+  "evaluation_available": false,
+  "grid_comparison_valid": false,
+  "stopped_fit_charges_usd": [
+    "2.873781",
+    "2.870400",
+    "2.869416"
+  ],
+  "stopped_total_usd": "8.613597",
+  "campaign_settled_conservative_usd": "18.666509",
+  "active_yaw_holds_usd": "0",
+  "metered_floor_usd": "69.09386987",
+  "pre_stop_retained_bounds_usd": "31.078902",
+  "pre_stop_commitment_usd": "100.17277187",
+  "workspace_cap_usd": "100",
+  "endpoints": [
+    {
+      "grid": 4,
+      "seed": 1,
+      "first": {
+        "epoch": 1,
+        "train_chunk_loss": 1.4010440816684646,
+        "dev_step_one_camera": 2.7387318430619203
+      },
+      "epoch17": {
+        "epoch": 17,
+        "train_chunk_loss": 1.3814116378827972,
+        "dev_step_one_camera": 2.828831075688255
+      },
+      "last": {
+        "epoch": 26,
+        "train_chunk_loss": 1.3783160133832166,
+        "dev_step_one_camera": 2.836328301043797
+      }
+    },
+    {
+      "grid": 4,
+      "seed": 2,
+      "first": {
+        "epoch": 1,
+        "train_chunk_loss": 1.4005394225217858,
+        "dev_step_one_camera": 2.750386604129801
+      },
+      "epoch17": {
+        "epoch": 17,
+        "train_chunk_loss": 1.3819144939889714,
+        "dev_step_one_camera": 2.844012092983754
+      },
+      "last": {
+        "epoch": 26,
+        "train_chunk_loss": 1.3791953469214797,
+        "dev_step_one_camera": 2.8509568427312466
+      }
+    },
+    {
+      "grid": 4,
+      "seed": 3,
+      "first": {
+        "epoch": 1,
+        "train_chunk_loss": 1.4007900126126347,
+        "dev_step_one_camera": 2.7567762774524738
+      },
+      "epoch17": {
+        "epoch": 17,
+        "train_chunk_loss": 1.380665357015571,
+        "dev_step_one_camera": 2.8642900332458336
+      },
+      "last": {
+        "epoch": 26,
+        "train_chunk_loss": 1.3779402602286566,
+        "dev_step_one_camera": 2.87500567598069
+      }
+    },
+    {
+      "grid": 8,
+      "seed": 1,
+      "first": {
+        "epoch": 1,
+        "train_chunk_loss": 1.4010554533831927,
+        "dev_step_one_camera": 2.7384110374799286
+      },
+      "epoch17": {
+        "epoch": 17,
+        "train_chunk_loss": 1.3808805506651094,
+        "dev_step_one_camera": 2.8271739520229806
+      },
+      "last": {
+        "epoch": 21,
+        "train_chunk_loss": 1.377800968431291,
+        "dev_step_one_camera": 2.8341979899543386
+      }
+    },
+    {
+      "grid": 8,
+      "seed": 2,
+      "first": {
+        "epoch": 1,
+        "train_chunk_loss": 1.4005500238363435,
+        "dev_step_one_camera": 2.7504104522127397
+      },
+      "epoch17": {
+        "epoch": 17,
+        "train_chunk_loss": 1.3789898205776603,
+        "dev_step_one_camera": 2.851651486777761
+      },
+      "last": {
+        "epoch": 17,
+        "train_chunk_loss": 1.3789898205776603,
+        "dev_step_one_camera": 2.851651486777761
+      }
+    },
+    {
+      "grid": 8,
+      "seed": 3,
+      "first": {
+        "epoch": 1,
+        "train_chunk_loss": 1.4008261387040015,
+        "dev_step_one_camera": 2.754306266575507
+      },
+      "epoch17": {
+        "epoch": 17,
+        "train_chunk_loss": 1.3785015141882864,
+        "dev_step_one_camera": 2.8720322047450213
+      },
+      "last": {
+        "epoch": 19,
+        "train_chunk_loss": 1.3767091218306093,
+        "dev_step_one_camera": 2.87947817757609
+      }
+    }
+  ],
+  "relaunch": "HOLD; lead revoked prior approval pending James/workspace decision",
+  "report_script_sha256": "d4ab95a5c7da37610cbe77e10b98aeb47623ebd27999795844d4b2197cb8d5eb",
+  "ledger_snapshot_sha256": "b35904c18bfde648eea34cc7336a1075ede7c511bb0dc61256f55a159ef665ff"
+}

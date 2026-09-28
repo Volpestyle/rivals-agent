@@ -1,0 +1,27 @@
+[
+  {
+    "path": "yaw-fit-grid8-s1-20260927-03/fit",
+    "size": 43,
+    "type": "2"
+  },
+  {
+    "path": "yaw-fit-grid8-s1-20260927-03/fit/status.json",
+    "size": 10208,
+    "type": "1"
+  },
+  {
+    "path": "yaw-fit-grid8-s1-20260927-03/fit/latest.pt",
+    "size": 45176409,
+    "type": "1"
+  },
+  {
+    "path": "yaw-fit-grid8-s1-20260927-03/fit/epoch-13.pt",
+    "size": 45177543,
+    "type": "1"
+  },
+  {
+    "path": "yaw-fit-grid8-s1-20260927-03/fit/started.json",
+    "size": 401,
+    "type": "1"
+  }
+]

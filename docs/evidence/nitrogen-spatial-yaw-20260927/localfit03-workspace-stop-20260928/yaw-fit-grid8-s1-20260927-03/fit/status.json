@@ -1,0 +1,385 @@
+{
+  "tag": "EXPLORATORY",
+  "recipe": {
+    "tag": "EXPLORATORY",
+    "horizon": 1,
+    "seed": 1,
+    "epochs": 26,
+    "batch": 8,
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "warmup": 500,
+    "device": "cuda",
+    "config": {
+      "channels": [
+        16,
+        32,
+        32
+      ],
+      "reduce": 8,
+      "embed": 256,
+      "hud_embed": 128,
+      "history_embed": 64,
+      "hidden": 512,
+      "global_hw": [
+        144,
+        256
+      ],
+      "crop_hw": [
+        128,
+        128
+      ],
+      "hud_hw": [
+        80,
+        200
+      ],
+      "frames": true,
+      "hud": false,
+      "history": false,
+      "regime_bit": false
+    },
+    "prev_dropout": 0.2,
+    "lag": 0,
+    "cohort": "full",
+    "run_identity": "8deecc4b7836bc30220b6acfeac64677804edea7dae740a0638b8b1de2467c1a",
+    "batch_identity": "fa052ae55bc20ea0080452464e0baad9a22302099d229e0984d11b7bdea44f4a",
+    "windows": 4697,
+    "total_steps": 15288,
+    "pos_weight": [
+      [
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0
+      ],
+      [
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0
+      ]
+    ],
+    "encoder_explore": {
+      "spatial_yaw": {
+        "base_checkpoint": "/inputs/assets/candidate-s1/epoch-26.pt",
+        "base_sha256": "9f3dfd1a9a2edb1c280f0a2a86a18cb34cfe2a7ce172931823ababca41eebf24",
+        "cache_mode": "verified-local",
+        "cutoff_receipt": "/inputs/assets/candidate-s1/evaluation.json",
+        "cutoff_sha256": "1399b086450478335e9c9b63bb4d99d8cc028f0705ebaab6ba90211a5f9b783c",
+        "dataset_root": "/inputs/yaw-extract-20260927-02/extraction/dual-grid-cache",
+        "dataset_sha256": "71e344f4f17d9e537c87c154b30f6aae12c14cc601b59d668299ac799715660e",
+        "epochs": 26,
+        "grid": 8,
+        "seed": 1,
+        "tag": "EXPLORATORY",
+        "updates": 15288
+      },
+      "head_parameters": 201187,
+      "base_tensor_sha256": "8f04e3d4045b2bba600ccff045c66e83dc2a4749ab846f6fd8966a287e4bf099",
+      "cache_precision": "bf16 tower / fp16 features"
+    }
+  },
+  "epoch_reason": "26 matched epochs for H=1/4/8: twice the inherited 13-epoch cap, because the prior curves often reached that cap while falling. Retain per-head dev curves and epoch 13; its LR is from a 26-epoch cosine schedule, so it is not a replication of the legacy 13-epoch fit. Use final epoch, not a dev-selected checkpoint; convergence is measured, not assumed.",
+  "epoch": 21,
+  "cursor": 0,
+  "updates": 12348,
+  "history": [
+    {
+      "epoch": 1,
+      "steps": 588,
+      "train_chunk_loss": 1.4010554533831927,
+      "seconds": 158.84497655400003,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.7384110374799286,
+        "total": 2.1391211943822492
+      }
+    },
+    {
+      "epoch": 2,
+      "steps": 1176,
+      "train_chunk_loss": 1.397583477959341,
+      "seconds": 332.06158125900004,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.785447652906413,
+        "total": 2.1626395020954914
+      }
+    },
+    {
+      "epoch": 3,
+      "steps": 1764,
+      "train_chunk_loss": 1.3950192034244537,
+      "seconds": 484.26948208500005,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.7946459910888275,
+        "total": 2.1672386711866984
+      }
+    },
+    {
+      "epoch": 4,
+      "steps": 2352,
+      "train_chunk_loss": 1.393506642507047,
+      "seconds": 656.274381794,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.797524281021198,
+        "total": 2.1686778161528837
+      }
+    },
+    {
+      "epoch": 5,
+      "steps": 2940,
+      "train_chunk_loss": 1.3925922912399784,
+      "seconds": 805.1770742690001,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.7981808254052702,
+        "total": 2.1690060883449203
+      }
+    },
+    {
+      "epoch": 6,
+      "steps": 3528,
+      "train_chunk_loss": 1.391296609323852,
+      "seconds": 977.2557846080001,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.804099318252842,
+        "total": 2.1719653347687062
+      }
+    },
+    {
+      "epoch": 7,
+      "steps": 4116,
+      "train_chunk_loss": 1.3909345015782077,
+      "seconds": 1128.090574216,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.8060367785919427,
+        "total": 2.1729340649382562
+      }
+    },
+    {
+      "epoch": 8,
+      "steps": 4704,
+      "train_chunk_loss": 1.3895872314365543,
+      "seconds": 1277.42594903,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.808816531308326,
+        "total": 2.174323941296448
+      }
+    },
+    {
+      "epoch": 9,
+      "steps": 5292,
+      "train_chunk_loss": 1.3890612337256776,
+      "seconds": 1428.233515256,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.811065455329636,
+        "total": 2.1754484033071027
+      }
+    },
+    {
+      "epoch": 10,
+      "steps": 5880,
+      "train_chunk_loss": 1.3875113127588414,
+      "seconds": 1578.1036164900001,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.8069437490119635,
+        "total": 2.1733875501482665
+      }
+    },
+    {
+      "epoch": 11,
+      "steps": 6468,
+      "train_chunk_loss": 1.3861995732703176,
+      "seconds": 1728.810034398,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.8160597798718485,
+        "total": 2.1779455655782094
+      }
+    },
+    {
+      "epoch": 12,
+      "steps": 7056,
+      "train_chunk_loss": 1.3855009093171073,
+      "seconds": 1880.3347575090002,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.817955067512572,
+        "total": 2.178893209398571
+      }
+    },
+    {
+      "epoch": 13,
+      "steps": 7644,
+      "train_chunk_loss": 1.3840433300352422,
+      "seconds": 2030.685612117,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.8244089314582763,
+        "total": 2.1821201413714233
+      }
+    },
+    {
+      "epoch": 14,
+      "steps": 8232,
+      "train_chunk_loss": 1.3833747909588068,
+      "seconds": 2181.835034398,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.825679170244979,
+        "total": 2.1827552607647744
+      }
+    },
+    {
+      "epoch": 15,
+      "steps": 8820,
+      "train_chunk_loss": 1.3827940215464352,
+      "seconds": 2332.772284022,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.822610285512461,
+        "total": 2.1812208183985153
+      }
+    },
+    {
+      "epoch": 16,
+      "steps": 9408,
+      "train_chunk_loss": 1.3809301326064025,
+      "seconds": 2483.200347259,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.8266218449366,
+        "total": 2.183226598110585
+      }
+    },
+    {
+      "epoch": 17,
+      "steps": 9996,
+      "train_chunk_loss": 1.3808805506651094,
+      "seconds": 2633.501187342,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.8271739520229806,
+        "total": 2.183502651653775
+      }
+    },
+    {
+      "epoch": 18,
+      "steps": 10584,
+      "train_chunk_loss": 1.379251580660035,
+      "seconds": 2783.320076425,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.832475665966462,
+        "total": 2.186153508625516
+      }
+    },
+    {
+      "epoch": 19,
+      "steps": 11172,
+      "train_chunk_loss": 1.3790618651578215,
+      "seconds": 2933.632880993,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.8367943197255348,
+        "total": 2.1883128355050525
+      }
+    },
+    {
+      "epoch": 20,
+      "steps": 11760,
+      "train_chunk_loss": 1.3783883138173292,
+      "seconds": 3105.262507623,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.8296020043425396,
+        "total": 2.1847166778135545
+      }
+    },
+    {
+      "epoch": 21,
+      "steps": 12348,
+      "train_chunk_loss": 1.377800968431291,
+      "seconds": 3257.475857364,
+      "dev_step_one": {
+        "held": 0.16959322327577725,
+        "press": 0.3275103421964471,
+        "release": 0.2728121101700606,
+        "camera": 2.8341979899543386,
+        "total": 2.187014670619454
+      }
+    }
+  ],
+  "seconds": 3265.726964982,
+  "status": "running"
+}

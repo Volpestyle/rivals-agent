@@ -1,0 +1,502 @@
+{
+  "app_id": "ap-33VJIx2k53w6cEPtLnSTmQ",
+  "app_name": "rivals-yaw-fit-grid8-s1-20260927-03",
+  "attempt_id": "yaw-fit-grid8-s1-20260927-03",
+  "bootstrap_ref": {
+    "path": "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/fullfit-local-03/bootstrap.json",
+    "sha256": "6f088c725c0005b3d60ec57f43fe7dc8486ca03d22b51e307e782cd339ebcae9"
+  },
+  "bound_usd": "2.873781",
+  "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+  "fenced_at": 1790564432.31675,
+  "fenced_monotonic": 469817.518488583,
+  "funded_until": 1790567238.312865,
+  "hold": {
+    "bootstrap": {
+      "attempt_ids": [
+        "yaw-fit-grid8-s1-20260927-03",
+        "yaw-fit-grid8-s2-20260927-03",
+        "yaw-fit-grid8-s3-20260927-03"
+      ],
+      "campaign_cap_usd": "14.63",
+      "campaign_id": "nitrogen-spatial-yaw-fullfit-local-03",
+      "cleanup_seconds": 120,
+      "concurrency": 3,
+      "mode": "EXPLORATORY_BOOTSTRAP",
+      "overhead_usd": "0.05",
+      "rate_usd_second": "0.0007178888888888888888888888889",
+      "startup_seconds": 300,
+      "work_seconds": 6300,
+      "workload": "local-hashed-dualgrid-cache-26epoch-grid8-threefits-and-local-evaluation"
+    },
+    "cleanup_seconds": 120,
+    "envelope_sha256": "6f088c725c0005b3d60ec57f43fe7dc8486ca03d22b51e307e782cd339ebcae9",
+    "overhead_usd": "0.05",
+    "rate_usd_second": "0.0007178888888888888888888888889",
+    "reserved_usd": "4.874214",
+    "startup_seconds": 300,
+    "total_seconds": 6720,
+    "work_seconds": 6300
+  },
+  "image_id": "im-FNjy4v5u4XYF29SBGvT0KD",
+  "input_volume": "rivals-yaw-extract-20260927-02-outputs",
+  "input_volume_id": "vo-ujapSF2Htu9GfKAXEyXH70",
+  "lane": "explore-policy",
+  "month": "2026-09",
+  "output_root": "/outputs/yaw-fit-grid8-s1-20260927-03",
+  "output_volume": "rivals-yaw-fit-grid8-s1-20260927-03-outputs",
+  "proof": {
+    "app_name": "rivals-yaw-fit-grid8-s1-20260927-03",
+    "attempt_id": "yaw-fit-grid8-s1-20260927-03",
+    "checked_at": 1790564451.7597508,
+    "errors": [
+      {
+        "at": 1790564446.5410628,
+        "error": "Modal query failed: App is already stopped. (Finished at 2026-09-27 22:00:44-05:00).\n"
+      },
+      {
+        "at": 1790564449.7506182,
+        "error": "Modal query failed: App is already stopped. (Finished at 2026-09-27 22:00:44-05:00).\n"
+      }
+    ],
+    "kind": "TERMINAL",
+    "snapshots": [
+      {
+        "checked_at": 1790564434.4885418,
+        "checked_monotonic": 469819.690263916,
+        "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+        "complete": true,
+        "identity": {
+          "profile": "rivals",
+          "workspace": "volpestyle",
+          "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+        },
+        "raw": {
+          "apps": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "app",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790564433.628064,
+            "completed_monotonic": 469818.829795666,
+            "queried_at": 1790564432.785409,
+            "queried_monotonic": 469817.987140958,
+            "returncode": 0,
+            "sha256": "5f1cf6d578325ef86058133f44fccec930bb7d5e652e9755b031b06e5e15b84a",
+            "stdout": "[\n  {\n    \"app_id\": \"ap-MBdVG1UvBj4TtV4f9ALrsU\",\n    \"description\": \"rivals-idm-expanded-20260928-full-01\",\n    \"state\": \"stopping...\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 20:51:51-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-vI8OJORWogCQkRRwMuA843\",\n    \"description\": \"rivals-yaw-fit-grid8-s2-20260927-03\",\n    \"state\": \"stopping...\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 20:55:21-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-33VJIx2k53w6cEPtLnSTmQ\",\n    \"description\": \"rivals-yaw-fit-grid8-s1-20260927-03\",\n    \"state\": \"stopping...\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 20:55:39-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-Zbk8QmoZnEaSqHJSdTCcDy\",\n    \"description\": \"rivals-yaw-fit-grid8-s3-20260927-03\",\n    \"state\": \"stopping...\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 20:55:58-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-sJqIahxUS2H0HuMeJ3Di7E\",\n    \"description\": \"rivals-idm-expanded-20260928-probe-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:48:37-05:00\",\n    \"stopped_at\": \"2026-09-27 20:49:42-05:00\"\n  },\n  {\n    \"app_id\": \"ap-poEbsN4BeWnnOUMd6CLFDZ\",\n    \"description\": \"rivals-idm-expanded-20260928-probe-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:41:00-05:00\",\n    \"stopped_at\": \"2026-09-27 20:42:11-05:00\"\n  },\n  {\n    \"app_id\": \"ap-2tMjxFgdV6CM32Uitcn7G1\",\n    \"description\": \"rivals-yaw-local-disk-probe-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:29:29-05:00\",\n    \"stopped_at\": \"2026-09-27 20:41:08-05:00\"\n  },\n  {\n    \"app_id\": \"ap-sbOxnxmADtyWNSBRT1NB8Z\",\n    \"description\": \"rivals-yaw-fit-grid4-s1-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:15-05:00\",\n    \"stopped_at\": \"2026-09-27 20:26:01-05:00\"\n  },\n  {\n    \"app_id\": \"ap-xl5AV9TjzB0TJVjfgEHAjm\",\n    \"description\": \"rivals-yaw-fit-grid4-s3-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:49-05:00\",\n    \"stopped_at\": \"2026-09-27 20:25:36-05:00\"\n  },\n  {\n    \"app_id\": \"ap-jcD4xTKHndUFfD00zMtykN\",\n    \"description\": \"rivals-yaw-fit-grid4-s2-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:42-05:00\",\n    \"stopped_at\": \"2026-09-27 20:24:28-05:00\"\n  },\n  {\n    \"app_id\": \"ap-mtWfzxaiOXT9s4vYDS5OY8\",\n    \"description\": \"rivals-yaw-fit-grid8-s3-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:59-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:51-05:00\"\n  },\n  {\n    \"app_id\": \"ap-FBrD9A5uFj8XBiPb5Q7g8i\",\n    \"description\": \"rivals-yaw-fit-grid8-s2-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:24-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:49-05:00\"\n  },\n  {\n    \"app_id\": \"ap-7LZrm9P3uPwwgtO7UpGgA6\",\n    \"description\": \"rivals-yaw-fit-grid8-s1-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:32-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:44-05:00\"\n  }\n]\n"
+          },
+          "containers": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "container",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790564434.4884832,
+            "completed_monotonic": 469819.690206416,
+            "queried_at": 1790564433.6280901,
+            "queried_monotonic": 469818.8298165,
+            "returncode": 0,
+            "sha256": "9bdc91953a3bacec88e4ac512a2bdb140b94a3733af985dc7381ebaeee4f9e7c",
+            "stdout": "[\n  {\n    \"container_id\": \"ta-01M3JVKRYBS312EK7VZ01GGRTR\",\n    \"app_id\": \"ap-Zbk8QmoZnEaSqHJSdTCcDy\",\n    \"app_name\": \"rivals-yaw-fit-grid8-s3-20260927-03\",\n    \"start_time\": \"2026-09-27 20:56:03-05:00\"\n  },\n  {\n    \"container_id\": \"ta-01M3JVK5VBHAZFRWP6QBH4EVYR\",\n    \"app_id\": \"ap-33VJIx2k53w6cEPtLnSTmQ\",\n    \"app_name\": \"rivals-yaw-fit-grid8-s1-20260927-03\",\n    \"start_time\": \"2026-09-27 20:55:42-05:00\"\n  },\n  {\n    \"container_id\": \"ta-01M3JVJNZVA4BKV2JVN1608JTR\",\n    \"app_id\": \"ap-vI8OJORWogCQkRRwMuA843\",\n    \"app_name\": \"rivals-yaw-fit-grid8-s2-20260927-03\",\n    \"start_time\": \"2026-09-27 20:55:26-05:00\"\n  },\n  {\n    \"container_id\": \"ta-01M3JVC7HJBT236RBHFWKD5RAR\",\n    \"app_id\": \"ap-MBdVG1UvBj4TtV4f9ALrsU\",\n    \"app_name\": \"rivals-idm-expanded-20260928-full-01\",\n    \"start_time\": \"2026-09-27 20:51:55-05:00\"\n  }\n]\n"
+          },
+          "identity": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/share/uv/tools/modal/bin/python",
+              "-m",
+              "cloud.modal_guard.provider",
+              "identity"
+            ],
+            "completed_at": 1790564432.785368,
+            "completed_monotonic": 469817.987103083,
+            "queried_at": 1790564432.3245351,
+            "queried_monotonic": 469817.526270541,
+            "returncode": 0,
+            "sha256": "115ccb5f88cfa01cad9fa5ca24d1bbdbec18847c2450f8a2446bae25e817e6ee",
+            "stdout": "{\"profile\": \"rivals\", \"workspace\": \"volpestyle\", \"workspace_id\": \"ac-kMLf5bJKqF5CAlSbfNhGh0\"}\n"
+          }
+        }
+      },
+      {
+        "checked_at": 1790564438.033233,
+        "checked_monotonic": 469823.234933541,
+        "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+        "complete": true,
+        "identity": {
+          "profile": "rivals",
+          "workspace": "volpestyle",
+          "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+        },
+        "raw": {
+          "apps": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "app",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790564437.3128388,
+            "completed_monotonic": 469822.514546208,
+            "queried_at": 1790564436.490838,
+            "queried_monotonic": 469821.69254675,
+            "returncode": 0,
+            "sha256": "5f1cf6d578325ef86058133f44fccec930bb7d5e652e9755b031b06e5e15b84a",
+            "stdout": "[\n  {\n    \"app_id\": \"ap-MBdVG1UvBj4TtV4f9ALrsU\",\n    \"description\": \"rivals-idm-expanded-20260928-full-01\",\n    \"state\": \"stopping...\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 20:51:51-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-vI8OJORWogCQkRRwMuA843\",\n    \"description\": \"rivals-yaw-fit-grid8-s2-20260927-03\",\n    \"state\": \"stopping...\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 20:55:21-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-33VJIx2k53w6cEPtLnSTmQ\",\n    \"description\": \"rivals-yaw-fit-grid8-s1-20260927-03\",\n    \"state\": \"stopping...\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 20:55:39-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-Zbk8QmoZnEaSqHJSdTCcDy\",\n    \"description\": \"rivals-yaw-fit-grid8-s3-20260927-03\",\n    \"state\": \"stopping...\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 20:55:58-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-sJqIahxUS2H0HuMeJ3Di7E\",\n    \"description\": \"rivals-idm-expanded-20260928-probe-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:48:37-05:00\",\n    \"stopped_at\": \"2026-09-27 20:49:42-05:00\"\n  },\n  {\n    \"app_id\": \"ap-poEbsN4BeWnnOUMd6CLFDZ\",\n    \"description\": \"rivals-idm-expanded-20260928-probe-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:41:00-05:00\",\n    \"stopped_at\": \"2026-09-27 20:42:11-05:00\"\n  },\n  {\n    \"app_id\": \"ap-2tMjxFgdV6CM32Uitcn7G1\",\n    \"description\": \"rivals-yaw-local-disk-probe-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:29:29-05:00\",\n    \"stopped_at\": \"2026-09-27 20:41:08-05:00\"\n  },\n  {\n    \"app_id\": \"ap-sbOxnxmADtyWNSBRT1NB8Z\",\n    \"description\": \"rivals-yaw-fit-grid4-s1-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:15-05:00\",\n    \"stopped_at\": \"2026-09-27 20:26:01-05:00\"\n  },\n  {\n    \"app_id\": \"ap-xl5AV9TjzB0TJVjfgEHAjm\",\n    \"description\": \"rivals-yaw-fit-grid4-s3-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:49-05:00\",\n    \"stopped_at\": \"2026-09-27 20:25:36-05:00\"\n  },\n  {\n    \"app_id\": \"ap-jcD4xTKHndUFfD00zMtykN\",\n    \"description\": \"rivals-yaw-fit-grid4-s2-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:42-05:00\",\n    \"stopped_at\": \"2026-09-27 20:24:28-05:00\"\n  },\n  {\n    \"app_id\": \"ap-mtWfzxaiOXT9s4vYDS5OY8\",\n    \"description\": \"rivals-yaw-fit-grid8-s3-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:59-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:51-05:00\"\n  },\n  {\n    \"app_id\": \"ap-FBrD9A5uFj8XBiPb5Q7g8i\",\n    \"description\": \"rivals-yaw-fit-grid8-s2-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:24-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:49-05:00\"\n  },\n  {\n    \"app_id\": \"ap-7LZrm9P3uPwwgtO7UpGgA6\",\n    \"description\": \"rivals-yaw-fit-grid8-s1-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:32-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:44-05:00\"\n  }\n]\n"
+          },
+          "containers": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "container",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790564438.033194,
+            "completed_monotonic": 469823.234896625,
+            "queried_at": 1790564437.31286,
+            "queried_monotonic": 469822.514563375,
+            "returncode": 0,
+            "sha256": "9bdc91953a3bacec88e4ac512a2bdb140b94a3733af985dc7381ebaeee4f9e7c",
+            "stdout": "[\n  {\n    \"container_id\": \"ta-01M3JVKRYBS312EK7VZ01GGRTR\",\n    \"app_id\": \"ap-Zbk8QmoZnEaSqHJSdTCcDy\",\n    \"app_name\": \"rivals-yaw-fit-grid8-s3-20260927-03\",\n    \"start_time\": \"2026-09-27 20:56:03-05:00\"\n  },\n  {\n    \"container_id\": \"ta-01M3JVK5VBHAZFRWP6QBH4EVYR\",\n    \"app_id\": \"ap-33VJIx2k53w6cEPtLnSTmQ\",\n    \"app_name\": \"rivals-yaw-fit-grid8-s1-20260927-03\",\n    \"start_time\": \"2026-09-27 20:55:42-05:00\"\n  },\n  {\n    \"container_id\": \"ta-01M3JVJNZVA4BKV2JVN1608JTR\",\n    \"app_id\": \"ap-vI8OJORWogCQkRRwMuA843\",\n    \"app_name\": \"rivals-yaw-fit-grid8-s2-20260927-03\",\n    \"start_time\": \"2026-09-27 20:55:26-05:00\"\n  },\n  {\n    \"container_id\": \"ta-01M3JVC7HJBT236RBHFWKD5RAR\",\n    \"app_id\": \"ap-MBdVG1UvBj4TtV4f9ALrsU\",\n    \"app_name\": \"rivals-idm-expanded-20260928-full-01\",\n    \"start_time\": \"2026-09-27 20:51:55-05:00\"\n  }\n]\n"
+          },
+          "identity": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/share/uv/tools/modal/bin/python",
+              "-m",
+              "cloud.modal_guard.provider",
+              "identity"
+            ],
+            "completed_at": 1790564436.490793,
+            "completed_monotonic": 469821.692505041,
+            "queried_at": 1790564436.047385,
+            "queried_monotonic": 469821.249096666,
+            "returncode": 0,
+            "sha256": "115ccb5f88cfa01cad9fa5ca24d1bbdbec18847c2450f8a2446bae25e817e6ee",
+            "stdout": "{\"profile\": \"rivals\", \"workspace\": \"volpestyle\", \"workspace_id\": \"ac-kMLf5bJKqF5CAlSbfNhGh0\"}\n"
+          }
+        }
+      },
+      {
+        "checked_at": 1790564441.629935,
+        "checked_monotonic": 469826.83160975,
+        "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+        "complete": true,
+        "identity": {
+          "profile": "rivals",
+          "workspace": "volpestyle",
+          "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+        },
+        "raw": {
+          "apps": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "app",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790564440.869531,
+            "completed_monotonic": 469826.071214375,
+            "queried_at": 1790564440.116145,
+            "queried_monotonic": 469825.317829875,
+            "returncode": 0,
+            "sha256": "5f1cf6d578325ef86058133f44fccec930bb7d5e652e9755b031b06e5e15b84a",
+            "stdout": "[\n  {\n    \"app_id\": \"ap-MBdVG1UvBj4TtV4f9ALrsU\",\n    \"description\": \"rivals-idm-expanded-20260928-full-01\",\n    \"state\": \"stopping...\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 20:51:51-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-vI8OJORWogCQkRRwMuA843\",\n    \"description\": \"rivals-yaw-fit-grid8-s2-20260927-03\",\n    \"state\": \"stopping...\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 20:55:21-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-33VJIx2k53w6cEPtLnSTmQ\",\n    \"description\": \"rivals-yaw-fit-grid8-s1-20260927-03\",\n    \"state\": \"stopping...\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 20:55:39-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-Zbk8QmoZnEaSqHJSdTCcDy\",\n    \"description\": \"rivals-yaw-fit-grid8-s3-20260927-03\",\n    \"state\": \"stopping...\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 20:55:58-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-sJqIahxUS2H0HuMeJ3Di7E\",\n    \"description\": \"rivals-idm-expanded-20260928-probe-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:48:37-05:00\",\n    \"stopped_at\": \"2026-09-27 20:49:42-05:00\"\n  },\n  {\n    \"app_id\": \"ap-poEbsN4BeWnnOUMd6CLFDZ\",\n    \"description\": \"rivals-idm-expanded-20260928-probe-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:41:00-05:00\",\n    \"stopped_at\": \"2026-09-27 20:42:11-05:00\"\n  },\n  {\n    \"app_id\": \"ap-2tMjxFgdV6CM32Uitcn7G1\",\n    \"description\": \"rivals-yaw-local-disk-probe-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:29:29-05:00\",\n    \"stopped_at\": \"2026-09-27 20:41:08-05:00\"\n  },\n  {\n    \"app_id\": \"ap-sbOxnxmADtyWNSBRT1NB8Z\",\n    \"description\": \"rivals-yaw-fit-grid4-s1-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:15-05:00\",\n    \"stopped_at\": \"2026-09-27 20:26:01-05:00\"\n  },\n  {\n    \"app_id\": \"ap-xl5AV9TjzB0TJVjfgEHAjm\",\n    \"description\": \"rivals-yaw-fit-grid4-s3-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:49-05:00\",\n    \"stopped_at\": \"2026-09-27 20:25:36-05:00\"\n  },\n  {\n    \"app_id\": \"ap-jcD4xTKHndUFfD00zMtykN\",\n    \"description\": \"rivals-yaw-fit-grid4-s2-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:42-05:00\",\n    \"stopped_at\": \"2026-09-27 20:24:28-05:00\"\n  },\n  {\n    \"app_id\": \"ap-mtWfzxaiOXT9s4vYDS5OY8\",\n    \"description\": \"rivals-yaw-fit-grid8-s3-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:59-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:51-05:00\"\n  },\n  {\n    \"app_id\": \"ap-FBrD9A5uFj8XBiPb5Q7g8i\",\n    \"description\": \"rivals-yaw-fit-grid8-s2-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:24-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:49-05:00\"\n  },\n  {\n    \"app_id\": \"ap-7LZrm9P3uPwwgtO7UpGgA6\",\n    \"description\": \"rivals-yaw-fit-grid8-s1-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:32-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:44-05:00\"\n  }\n]\n"
+          },
+          "containers": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "container",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790564441.629919,
+            "completed_monotonic": 469826.831596583,
+            "queried_at": 1790564440.8695512,
+            "queried_monotonic": 469826.07123075,
+            "returncode": 0,
+            "sha256": "9bdc91953a3bacec88e4ac512a2bdb140b94a3733af985dc7381ebaeee4f9e7c",
+            "stdout": "[\n  {\n    \"container_id\": \"ta-01M3JVKRYBS312EK7VZ01GGRTR\",\n    \"app_id\": \"ap-Zbk8QmoZnEaSqHJSdTCcDy\",\n    \"app_name\": \"rivals-yaw-fit-grid8-s3-20260927-03\",\n    \"start_time\": \"2026-09-27 20:56:03-05:00\"\n  },\n  {\n    \"container_id\": \"ta-01M3JVK5VBHAZFRWP6QBH4EVYR\",\n    \"app_id\": \"ap-33VJIx2k53w6cEPtLnSTmQ\",\n    \"app_name\": \"rivals-yaw-fit-grid8-s1-20260927-03\",\n    \"start_time\": \"2026-09-27 20:55:42-05:00\"\n  },\n  {\n    \"container_id\": \"ta-01M3JVJNZVA4BKV2JVN1608JTR\",\n    \"app_id\": \"ap-vI8OJORWogCQkRRwMuA843\",\n    \"app_name\": \"rivals-yaw-fit-grid8-s2-20260927-03\",\n    \"start_time\": \"2026-09-27 20:55:26-05:00\"\n  },\n  {\n    \"container_id\": \"ta-01M3JVC7HJBT236RBHFWKD5RAR\",\n    \"app_id\": \"ap-MBdVG1UvBj4TtV4f9ALrsU\",\n    \"app_name\": \"rivals-idm-expanded-20260928-full-01\",\n    \"start_time\": \"2026-09-27 20:51:55-05:00\"\n  }\n]\n"
+          },
+          "identity": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/share/uv/tools/modal/bin/python",
+              "-m",
+              "cloud.modal_guard.provider",
+              "identity"
+            ],
+            "completed_at": 1790564440.116089,
+            "completed_monotonic": 469825.317777375,
+            "queried_at": 1790564439.553354,
+            "queried_monotonic": 469824.755042666,
+            "returncode": 0,
+            "sha256": "115ccb5f88cfa01cad9fa5ca24d1bbdbec18847c2450f8a2446bae25e817e6ee",
+            "stdout": "{\"profile\": \"rivals\", \"workspace\": \"volpestyle\", \"workspace_id\": \"ac-kMLf5bJKqF5CAlSbfNhGh0\"}\n"
+          }
+        }
+      },
+      {
+        "checked_at": 1790564445.3676732,
+        "checked_monotonic": 469830.569323958,
+        "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+        "complete": true,
+        "identity": {
+          "profile": "rivals",
+          "workspace": "volpestyle",
+          "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+        },
+        "raw": {
+          "apps": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "app",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790564444.652122,
+            "completed_monotonic": 469829.853782,
+            "queried_at": 1790564443.841527,
+            "queried_monotonic": 469829.043187958,
+            "returncode": 0,
+            "sha256": "f03e565a40dcedb04556a6399a52f90186090ef463b4d828a999016af2d28d61",
+            "stdout": "[\n  {\n    \"app_id\": \"ap-MBdVG1UvBj4TtV4f9ALrsU\",\n    \"description\": \"rivals-idm-expanded-20260928-full-01\",\n    \"state\": \"stopping...\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 20:51:51-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-33VJIx2k53w6cEPtLnSTmQ\",\n    \"description\": \"rivals-yaw-fit-grid8-s1-20260927-03\",\n    \"state\": \"stopping...\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 20:55:39-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-vI8OJORWogCQkRRwMuA843\",\n    \"description\": \"rivals-yaw-fit-grid8-s2-20260927-03\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:55:21-05:00\",\n    \"stopped_at\": \"2026-09-27 22:00:42-05:00\"\n  },\n  {\n    \"app_id\": \"ap-Zbk8QmoZnEaSqHJSdTCcDy\",\n    \"description\": \"rivals-yaw-fit-grid8-s3-20260927-03\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:55:58-05:00\",\n    \"stopped_at\": \"2026-09-27 22:00:41-05:00\"\n  },\n  {\n    \"app_id\": \"ap-sJqIahxUS2H0HuMeJ3Di7E\",\n    \"description\": \"rivals-idm-expanded-20260928-probe-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:48:37-05:00\",\n    \"stopped_at\": \"2026-09-27 20:49:42-05:00\"\n  },\n  {\n    \"app_id\": \"ap-poEbsN4BeWnnOUMd6CLFDZ\",\n    \"description\": \"rivals-idm-expanded-20260928-probe-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:41:00-05:00\",\n    \"stopped_at\": \"2026-09-27 20:42:11-05:00\"\n  },\n  {\n    \"app_id\": \"ap-2tMjxFgdV6CM32Uitcn7G1\",\n    \"description\": \"rivals-yaw-local-disk-probe-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:29:29-05:00\",\n    \"stopped_at\": \"2026-09-27 20:41:08-05:00\"\n  },\n  {\n    \"app_id\": \"ap-sbOxnxmADtyWNSBRT1NB8Z\",\n    \"description\": \"rivals-yaw-fit-grid4-s1-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:15-05:00\",\n    \"stopped_at\": \"2026-09-27 20:26:01-05:00\"\n  },\n  {\n    \"app_id\": \"ap-xl5AV9TjzB0TJVjfgEHAjm\",\n    \"description\": \"rivals-yaw-fit-grid4-s3-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:49-05:00\",\n    \"stopped_at\": \"2026-09-27 20:25:36-05:00\"\n  },\n  {\n    \"app_id\": \"ap-jcD4xTKHndUFfD00zMtykN\",\n    \"description\": \"rivals-yaw-fit-grid4-s2-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:42-05:00\",\n    \"stopped_at\": \"2026-09-27 20:24:28-05:00\"\n  },\n  {\n    \"app_id\": \"ap-mtWfzxaiOXT9s4vYDS5OY8\",\n    \"description\": \"rivals-yaw-fit-grid8-s3-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:59-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:51-05:00\"\n  },\n  {\n    \"app_id\": \"ap-FBrD9A5uFj8XBiPb5Q7g8i\",\n    \"description\": \"rivals-yaw-fit-grid8-s2-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:24-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:49-05:00\"\n  },\n  {\n    \"app_id\": \"ap-7LZrm9P3uPwwgtO7UpGgA6\",\n    \"description\": \"rivals-yaw-fit-grid8-s1-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:32-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:44-05:00\"\n  }\n]\n"
+          },
+          "containers": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "container",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790564445.367657,
+            "completed_monotonic": 469830.569310041,
+            "queried_at": 1790564444.652141,
+            "queried_monotonic": 469829.853796208,
+            "returncode": 0,
+            "sha256": "0b205d8f744d27150ad6fad3809d4e911896b8f22394bafc27a958ebd45e7cbb",
+            "stdout": "[\n  {\n    \"container_id\": \"ta-01M3JVC7HJBT236RBHFWKD5RAR\",\n    \"app_id\": \"ap-MBdVG1UvBj4TtV4f9ALrsU\",\n    \"app_name\": \"rivals-idm-expanded-20260928-full-01\",\n    \"start_time\": \"2026-09-27 20:51:55-05:00\"\n  }\n]\n"
+          },
+          "identity": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/share/uv/tools/modal/bin/python",
+              "-m",
+              "cloud.modal_guard.provider",
+              "identity"
+            ],
+            "completed_at": 1790564443.8414552,
+            "completed_monotonic": 469829.043120083,
+            "queried_at": 1790564443.340279,
+            "queried_monotonic": 469828.541942333,
+            "returncode": 0,
+            "sha256": "115ccb5f88cfa01cad9fa5ca24d1bbdbec18847c2450f8a2446bae25e817e6ee",
+            "stdout": "{\"profile\": \"rivals\", \"workspace\": \"volpestyle\", \"workspace_id\": \"ac-kMLf5bJKqF5CAlSbfNhGh0\"}\n"
+          }
+        }
+      },
+      {
+        "checked_at": 1790564448.666912,
+        "checked_monotonic": 469833.86854075,
+        "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+        "complete": true,
+        "identity": {
+          "profile": "rivals",
+          "workspace": "volpestyle",
+          "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+        },
+        "raw": {
+          "apps": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "app",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790564447.99672,
+            "completed_monotonic": 469833.198356625,
+            "queried_at": 1790564447.29146,
+            "queried_monotonic": 469832.49309825,
+            "returncode": 0,
+            "sha256": "6481457ed9e35a4cceb407161f7aba83aaeb87093133a31c30909ee67e1b3d02",
+            "stdout": "[\n  {\n    \"app_id\": \"ap-MBdVG1UvBj4TtV4f9ALrsU\",\n    \"description\": \"rivals-idm-expanded-20260928-full-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 20:51:51-05:00\",\n    \"stopped_at\": \"2026-09-27 22:00:47-05:00\"\n  },\n  {\n    \"app_id\": \"ap-33VJIx2k53w6cEPtLnSTmQ\",\n    \"description\": \"rivals-yaw-fit-grid8-s1-20260927-03\",\n    \"state\": \"stopped\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 20:55:39-05:00\",\n    \"stopped_at\": \"2026-09-27 22:00:44-05:00\"\n  },\n  {\n    \"app_id\": \"ap-vI8OJORWogCQkRRwMuA843\",\n    \"description\": \"rivals-yaw-fit-grid8-s2-20260927-03\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:55:21-05:00\",\n    \"stopped_at\": \"2026-09-27 22:00:42-05:00\"\n  },\n  {\n    \"app_id\": \"ap-Zbk8QmoZnEaSqHJSdTCcDy\",\n    \"description\": \"rivals-yaw-fit-grid8-s3-20260927-03\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:55:58-05:00\",\n    \"stopped_at\": \"2026-09-27 22:00:41-05:00\"\n  },\n  {\n    \"app_id\": \"ap-sJqIahxUS2H0HuMeJ3Di7E\",\n    \"description\": \"rivals-idm-expanded-20260928-probe-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:48:37-05:00\",\n    \"stopped_at\": \"2026-09-27 20:49:42-05:00\"\n  },\n  {\n    \"app_id\": \"ap-poEbsN4BeWnnOUMd6CLFDZ\",\n    \"description\": \"rivals-idm-expanded-20260928-probe-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:41:00-05:00\",\n    \"stopped_at\": \"2026-09-27 20:42:11-05:00\"\n  },\n  {\n    \"app_id\": \"ap-2tMjxFgdV6CM32Uitcn7G1\",\n    \"description\": \"rivals-yaw-local-disk-probe-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:29:29-05:00\",\n    \"stopped_at\": \"2026-09-27 20:41:08-05:00\"\n  },\n  {\n    \"app_id\": \"ap-sbOxnxmADtyWNSBRT1NB8Z\",\n    \"description\": \"rivals-yaw-fit-grid4-s1-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:15-05:00\",\n    \"stopped_at\": \"2026-09-27 20:26:01-05:00\"\n  },\n  {\n    \"app_id\": \"ap-xl5AV9TjzB0TJVjfgEHAjm\",\n    \"description\": \"rivals-yaw-fit-grid4-s3-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:49-05:00\",\n    \"stopped_at\": \"2026-09-27 20:25:36-05:00\"\n  },\n  {\n    \"app_id\": \"ap-jcD4xTKHndUFfD00zMtykN\",\n    \"description\": \"rivals-yaw-fit-grid4-s2-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:42-05:00\",\n    \"stopped_at\": \"2026-09-27 20:24:28-05:00\"\n  },\n  {\n    \"app_id\": \"ap-mtWfzxaiOXT9s4vYDS5OY8\",\n    \"description\": \"rivals-yaw-fit-grid8-s3-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:59-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:51-05:00\"\n  },\n  {\n    \"app_id\": \"ap-FBrD9A5uFj8XBiPb5Q7g8i\",\n    \"description\": \"rivals-yaw-fit-grid8-s2-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:24-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:49-05:00\"\n  },\n  {\n    \"app_id\": \"ap-7LZrm9P3uPwwgtO7UpGgA6\",\n    \"description\": \"rivals-yaw-fit-grid8-s1-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:32-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:44-05:00\"\n  }\n]\n"
+          },
+          "containers": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "container",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790564448.666889,
+            "completed_monotonic": 469833.868522625,
+            "queried_at": 1790564447.996736,
+            "queried_monotonic": 469833.1983695,
+            "returncode": 0,
+            "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+            "stdout": "[]\n"
+          },
+          "identity": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/share/uv/tools/modal/bin/python",
+              "-m",
+              "cloud.modal_guard.provider",
+              "identity"
+            ],
+            "completed_at": 1790564447.291405,
+            "completed_monotonic": 469832.493046958,
+            "queried_at": 1790564446.7943108,
+            "queried_monotonic": 469831.995952083,
+            "returncode": 0,
+            "sha256": "115ccb5f88cfa01cad9fa5ca24d1bbdbec18847c2450f8a2446bae25e817e6ee",
+            "stdout": "{\"profile\": \"rivals\", \"workspace\": \"volpestyle\", \"workspace_id\": \"ac-kMLf5bJKqF5CAlSbfNhGh0\"}\n"
+          }
+        }
+      },
+      {
+        "checked_at": 1790564451.7597508,
+        "checked_monotonic": 469836.961360583,
+        "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+        "complete": true,
+        "identity": {
+          "profile": "rivals",
+          "workspace": "volpestyle",
+          "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+        },
+        "raw": {
+          "apps": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "app",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790564451.1602979,
+            "completed_monotonic": 469836.361914333,
+            "queried_at": 1790564450.499802,
+            "queried_monotonic": 469835.701419541,
+            "returncode": 0,
+            "sha256": "8798d081a15636a0b2250240228a55e3105219d10a6d54f5f2156a31f17924cd",
+            "stdout": "[\n  {\n    \"app_id\": \"ap-MBdVG1UvBj4TtV4f9ALrsU\",\n    \"description\": \"rivals-idm-expanded-20260928-full-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:51:51-05:00\",\n    \"stopped_at\": \"2026-09-27 22:00:47-05:00\"\n  },\n  {\n    \"app_id\": \"ap-33VJIx2k53w6cEPtLnSTmQ\",\n    \"description\": \"rivals-yaw-fit-grid8-s1-20260927-03\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:55:39-05:00\",\n    \"stopped_at\": \"2026-09-27 22:00:44-05:00\"\n  },\n  {\n    \"app_id\": \"ap-vI8OJORWogCQkRRwMuA843\",\n    \"description\": \"rivals-yaw-fit-grid8-s2-20260927-03\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:55:21-05:00\",\n    \"stopped_at\": \"2026-09-27 22:00:42-05:00\"\n  },\n  {\n    \"app_id\": \"ap-Zbk8QmoZnEaSqHJSdTCcDy\",\n    \"description\": \"rivals-yaw-fit-grid8-s3-20260927-03\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:55:58-05:00\",\n    \"stopped_at\": \"2026-09-27 22:00:41-05:00\"\n  },\n  {\n    \"app_id\": \"ap-sJqIahxUS2H0HuMeJ3Di7E\",\n    \"description\": \"rivals-idm-expanded-20260928-probe-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:48:37-05:00\",\n    \"stopped_at\": \"2026-09-27 20:49:42-05:00\"\n  },\n  {\n    \"app_id\": \"ap-poEbsN4BeWnnOUMd6CLFDZ\",\n    \"description\": \"rivals-idm-expanded-20260928-probe-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:41:00-05:00\",\n    \"stopped_at\": \"2026-09-27 20:42:11-05:00\"\n  },\n  {\n    \"app_id\": \"ap-2tMjxFgdV6CM32Uitcn7G1\",\n    \"description\": \"rivals-yaw-local-disk-probe-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:29:29-05:00\",\n    \"stopped_at\": \"2026-09-27 20:41:08-05:00\"\n  },\n  {\n    \"app_id\": \"ap-sbOxnxmADtyWNSBRT1NB8Z\",\n    \"description\": \"rivals-yaw-fit-grid4-s1-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:15-05:00\",\n    \"stopped_at\": \"2026-09-27 20:26:01-05:00\"\n  },\n  {\n    \"app_id\": \"ap-xl5AV9TjzB0TJVjfgEHAjm\",\n    \"description\": \"rivals-yaw-fit-grid4-s3-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:49-05:00\",\n    \"stopped_at\": \"2026-09-27 20:25:36-05:00\"\n  },\n  {\n    \"app_id\": \"ap-jcD4xTKHndUFfD00zMtykN\",\n    \"description\": \"rivals-yaw-fit-grid4-s2-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:42-05:00\",\n    \"stopped_at\": \"2026-09-27 20:24:28-05:00\"\n  },\n  {\n    \"app_id\": \"ap-mtWfzxaiOXT9s4vYDS5OY8\",\n    \"description\": \"rivals-yaw-fit-grid8-s3-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:59-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:51-05:00\"\n  },\n  {\n    \"app_id\": \"ap-FBrD9A5uFj8XBiPb5Q7g8i\",\n    \"description\": \"rivals-yaw-fit-grid8-s2-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:06:24-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:49-05:00\"\n  },\n  {\n    \"app_id\": \"ap-7LZrm9P3uPwwgtO7UpGgA6\",\n    \"description\": \"rivals-yaw-fit-grid8-s1-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 20:07:32-05:00\",\n    \"stopped_at\": \"2026-09-27 20:22:44-05:00\"\n  }\n]\n"
+          },
+          "containers": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "container",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790564451.759731,
+            "completed_monotonic": 469836.961343791,
+            "queried_at": 1790564451.160319,
+            "queried_monotonic": 469836.361931833,
+            "returncode": 0,
+            "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+            "stdout": "[]\n"
+          },
+          "identity": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/share/uv/tools/modal/bin/python",
+              "-m",
+              "cloud.modal_guard.provider",
+              "identity"
+            ],
+            "completed_at": 1790564450.499756,
+            "completed_monotonic": 469835.70137675,
+            "queried_at": 1790564450.0090392,
+            "queried_monotonic": 469835.210659041,
+            "returncode": 0,
+            "sha256": "115ccb5f88cfa01cad9fa5ca24d1bbdbec18847c2450f8a2446bae25e817e6ee",
+            "stdout": "{\"profile\": \"rivals\", \"workspace\": \"volpestyle\", \"workspace_id\": \"ac-kMLf5bJKqF5CAlSbfNhGh0\"}\n"
+          }
+        }
+      }
+    ],
+    "trigger_error": "Refused('workspace spend stop')"
+  },
+  "release_sha256": "5c0e979227738363bfceaef792d9852d2578fcc149f77d2f9cde61510dc8a8fd",
+  "rpc_count": 1,
+  "run_cap_usd": "4.88",
+  "stage_identity": {
+    "attempt_id": "yaw-fit-grid8-s1-20260927-03",
+    "code_sha256": "95019b573d6c22cdb6be80d3938b05741f08e25fc2ab6a1a6ac0c360df53f408",
+    "inputs_sha256": "71e344f4f17d9e537c87c154b30f6aae12c14cc601b59d668299ac799715660e",
+    "output_volume_id": "vo-e49UbqmYWphxvgJhOANhbK",
+    "recipe_sha256": "8deecc4b7836bc30220b6acfeac64677804edea7dae740a0638b8b1de2467c1a"
+  },
+  "stages": [
+    {
+      "artifacts": [
+        "epoch-26.pt",
+        "fit.json"
+      ],
+      "function": "fit",
+      "kwargs": {
+        "payload_manifest_sha256": "95019b573d6c22cdb6be80d3938b05741f08e25fc2ab6a1a6ac0c360df53f408",
+        "spec_path": "/root/cloud/yaw_payload/fit-specs/yaw-fit-grid8-s1-20260927-03.json",
+        "spec_sha256": "8deecc4b7836bc30220b6acfeac64677804edea7dae740a0638b8b1de2467c1a"
+      },
+      "module": "cloud.yaw_fit_entry",
+      "name": "fit"
+    },
+    {
+      "artifacts": [
+        "evaluation.json"
+      ],
+      "function": "evaluate",
+      "kwargs": {
+        "payload_manifest_sha256": "95019b573d6c22cdb6be80d3938b05741f08e25fc2ab6a1a6ac0c360df53f408",
+        "spec_path": "/root/cloud/yaw_payload/fit-specs/yaw-fit-grid8-s1-20260927-03.json",
+        "spec_sha256": "8deecc4b7836bc30220b6acfeac64677804edea7dae740a0638b8b1de2467c1a"
+      },
+      "module": "cloud.yaw_fit_entry",
+      "name": "evaluation"
+    }
+  ],
+  "started_at": 1790560518.312865,
+  "started_monotonic": 465903.552474541,
+  "state": "TERMINAL",
+  "state_before_fence": "RUNNING",
+  "stop_at": 1790567118.312865,
+  "terminal_seconds": 3933.4503099918365
+}
