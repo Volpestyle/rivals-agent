@@ -1,0 +1,149 @@
+{
+ "format": "admission-night-set-summary-v1",
+ "sitting": "2026-09-26-night",
+ "scope": "Exploratory idm_train accepted intervals only; no current IDM refit roster expansion",
+ "sessions": [
+  {
+   "session": "20260927T051206-888Z-150600-4",
+   "revision": "a1",
+   "receipt": {
+    "path": "docs/evidence/idm-match-admission-051206-20260927/receipt/match-admission-051206.accepted-a1.json",
+    "sha256": "1aec79937aa7dca19cb6526b5d7c9ffdcb2ba6a53c7c09fb972edf6fe0d5325e"
+   },
+   "minutes": {
+    "path": "data/human/sessions/20260927T051206-888Z-150600-4/minutes.json",
+    "sha256": "92cf05255763a844d58955e4955bc1957891782c4220e2eba1d3d3d632859804"
+   },
+   "accepted_spans": 10,
+   "counted_spans": 10,
+   "accepted_seconds": 297.66665477,
+   "counted_minutes": 4.961110912833333,
+   "eligible_30hz_rows": 8923
+  },
+  {
+   "session": "20260927T052001-827Z-150600-5",
+   "revision": "a1",
+   "receipt": {
+    "path": "docs/evidence/idm-match-pilot-052001-20260927/receipt/match-admission-052001.accepted-a1.json",
+    "sha256": "94701525132536f5794b4fefd9e06e6bdecdccb1f70c8bef0589a3b6af02c216"
+   },
+   "minutes": {
+    "path": "data/human/sessions/20260927T052001-827Z-150600-5/minutes.json",
+    "sha256": "b9d6e8a2e2b2e87f1336b2cfe1e9dfee881c9ba742392a6c7038658b937e253e"
+   },
+   "accepted_spans": 7,
+   "counted_spans": 7,
+   "accepted_seconds": 342.399986311,
+   "counted_minutes": 5.706666438516667,
+   "eligible_30hz_rows": 10267
+  },
+  {
+   "session": "20260927T053118-260Z-150600-6",
+   "revision": "initial",
+   "receipt": {
+    "path": "docs/evidence/idm-match-admission-053118-20260927/receipt/match-admission-053118.accepted.json",
+    "sha256": "90694961f689c8a5040c679b48349d4b14b049e9566eec10b56a339ee6a8260c"
+   },
+   "minutes": {
+    "path": "data/human/sessions/20260927T053118-260Z-150600-6/minutes.json",
+    "sha256": "8cdf106df37be18dbdb7cb13d1614ba6407bab8ea5a2b8d4ac6450743ec55bc8"
+   },
+   "accepted_spans": 9,
+   "counted_spans": 9,
+   "accepted_seconds": 257.649989703,
+   "counted_minutes": 4.29416649505,
+   "eligible_30hz_rows": 7723
+  },
+  {
+   "session": "20260927T053838-153Z-150600-7",
+   "revision": "initial",
+   "receipt": {
+    "path": "docs/evidence/idm-match-admission-053838-20260927/receipt/match-admission-053838.accepted.json",
+    "sha256": "535adf28f42ba37b2051c7ccb5707d0b1e175bb0463bd7502bfe72b4ce578a87"
+   },
+   "minutes": {
+    "path": "data/human/sessions/20260927T053838-153Z-150600-7/minutes.json",
+    "sha256": "e4fe770b1800054f884a6a190c6cb717b062de1ff159b526d1480fc1db4ee60b"
+   },
+   "accepted_spans": 11,
+   "counted_spans": 10,
+   "accepted_seconds": 418.541649936,
+   "counted_minutes": 6.95180527765,
+   "eligible_30hz_rows": 12549
+  },
+  {
+   "session": "20260927T055006-068Z-150600-8",
+   "revision": "initial",
+   "receipt": {
+    "path": "docs/evidence/idm-match-admission-055006-20260927/receipt/match-admission-055006.accepted.json",
+    "sha256": "27e34517ec16b694147a0a897eb8c75fcfce34061b778fbf59ca29e7c86c9819"
+   },
+   "minutes": {
+    "path": "data/human/sessions/20260927T055006-068Z-150600-8/minutes.json",
+    "sha256": "9f1bb6258256d6353645ba4d62a33e7c292a81b29944558ec498358620045991"
+   },
+   "accepted_spans": 13,
+   "counted_spans": 13,
+   "accepted_seconds": 309.391654304,
+   "counted_minutes": 5.156527571733333,
+   "eligible_30hz_rows": 9272
+  },
+  {
+   "session": "20260927T060021-195Z-150600-10",
+   "revision": "initial",
+   "receipt": {
+    "path": "docs/evidence/idm-match-admission-060021-20260927/receipt/match-admission-060021.accepted.json",
+    "sha256": "4f16079cac4e500d94b8e047e903d4b0690e0b5f87673e9ef41bfda7af822331"
+   },
+   "minutes": {
+    "path": "data/human/sessions/20260927T060021-195Z-150600-10/minutes.json",
+    "sha256": "c121acccee76e7152302a50dc6af831e4d544c7bbe0539942ec68806cf0dbe93"
+   },
+   "accepted_spans": 9,
+   "counted_spans": 9,
+   "accepted_seconds": 418.791649924,
+   "counted_minutes": 6.979860832066667,
+   "eligible_30hz_rows": 12559
+  },
+  {
+   "session": "20260927T061107-953Z-150600-11",
+   "revision": "initial",
+   "receipt": {
+    "path": "docs/evidence/idm-match-admission-061107-20260927/receipt/match-admission-061107.accepted.json",
+    "sha256": "c37d7ff11c67224005cb865f335b7798c877ec260e02a8696bbe59e687843a5d"
+   },
+   "minutes": {
+    "path": "data/human/sessions/20260927T061107-953Z-150600-11/minutes.json",
+    "sha256": "62ea689e805051b8eb556f404899b69b0957136b2eaca5486716b936ee821345"
+   },
+   "accepted_spans": 5,
+   "counted_spans": 5,
+   "accepted_seconds": 303.716654523,
+   "counted_minutes": 5.06194424205,
+   "eligible_30hz_rows": 9108
+  },
+  {
+   "session": "20260927T061900-143Z-150600-12",
+   "revision": "initial",
+   "receipt": {
+    "path": "docs/evidence/idm-match-admission-061900-20260927/receipt/match-admission-061900.accepted.json",
+    "sha256": "9f4bee42649f18d5e72db3729c1d4d94092e9a2cff54e4198d1e410edb23905e"
+   },
+   "minutes": {
+    "path": "data/human/sessions/20260927T061900-143Z-150600-12/minutes.json",
+    "sha256": "05a31b55aaa924f347d851422ad5bb8439bb235f6ed72ba62da4cdb72c24a026"
+   },
+   "accepted_spans": 8,
+   "counted_spans": 8,
+   "accepted_seconds": 406.249983758,
+   "counted_minutes": 6.770833062633334,
+   "eligible_30hz_rows": 12182
+  }
+ ],
+ "total_counted_minutes": "45.882914832533334",
+ "total_accepted_seconds": "2754.408223229",
+ "total_accepted_spans": 72,
+ "total_counted_spans": 71,
+ "total_eligible_30hz_rows": 82583,
+ "note": "Current -4a1/-5a1 supersede the historical initial receipts. Seg-002 in -7 is accepted but below the 1.6 s counted-run threshold. No held-out/sealed/DayMR media accessed for this summary."
+}
