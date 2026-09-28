@@ -23,7 +23,8 @@ tolerate re-entry: resume only from a completed, hash-checked stage, and refuse 
 
 Never train by reading frames or feature caches at random straight off a Modal Volume: stage them onto the
 container's local disk first, hash-check, then read locally. On 2026-09-27 Volume-backed random reads ran 3-15x slower
-and cost two lanes about $14 of runs that never finished (`docs/steering/spend-ledger-20260927.md`). Time a new
+and cost two lanes about $14 of runs that never finished (`docs/steering/spend-ledger-20260927.md`). The exception is a workload
+whose Volume-read path has already completed at a measured rate (e.g. the ~20 GiB 4x4 yaw cache). Time a new
 workload with a short probe before sizing its full run.
 
 Machine access: `docs/machines.md` and the `mac-remote` / `windows-pc` skills. Live input: the `rivals-live-game` skill.
