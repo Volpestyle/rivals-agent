@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "verified_unix": 1790559554.179266,
+  "upload_receipt": {
+    "appcreates": 0,
+    "bytes": 113955631920,
+    "files": 57,
+    "image_builds": 0,
+    "remote_manifest_readback_verified": true,
+    "run_manifest_sha256": "42494717650293cc4b77add3721d5168c20781e6b98ca275443824656e055580",
+    "seconds": 4729.551016807556,
+    "source_hashes_verified": true,
+    "status": "UPLOADED",
+    "upload_manifest_sha256": "bf06e8e4c5ff491515315a5f23415e8e274640bf38644a5c950add9d4ffea290",
+    "volume_id": "vo-PnBxKAp9G4Y8nNwfBOgrdU",
+    "volume_name": "rivals-idm-expanded-20260928-01-inputs",
+    "worker_payload_rehash": "required before fit"
+  },
+  "input_volume": {
+    "budgeted_days": 5,
+    "bytes_bound": 113955647924,
+    "cleanup_plan": "After refit report lands, owner checks exact ID/name via modal volume list --json, deletes once via CLI, and records receipt. No automatic deletion code.",
+    "created_unix": 1790554771.664097,
+    "expanded_campaign_cap_usd": "8.25",
+    "free_allowance_assumed": false,
+    "id": "vo-PnBxKAp9G4Y8nNwfBOgrdU",
+    "lane_cap_usd": "25",
+    "name": "rivals-idm-expanded-20260928-01-inputs",
+    "setup_cap_usd": "1.65",
+    "storage_rate_usd_gib_month": "0.09000"
+  },
+  "journal_rows": 57,
+  "fresh_volume_id_verified": true,
+  "manifest_readbacks_verified": true,
+  "runtime": "runtime-authority12",
+  "appcreates": 0
+}
