@@ -1,0 +1,16 @@
+{
+  "app_commit": "9989f32a10e3a2aa7fae11818e757abe3b5c3178",
+  "authority_commit": "6ac019fa2208eb915549c75cf59e87ca5e315950",
+  "files": 186,
+  "guard_commit": "7ead52f0845fb83b4db0ebf9fc274c6a5adb760b",
+  "image_id": "im-FNjy4v5u4XYF29SBGvT0KD",
+  "image_route": "existing image and immutable native source mount; no build",
+  "input_manifest_sha256": "42494717650293cc4b77add3721d5168c20781e6b98ca275443824656e055580",
+  "launch_performed": false,
+  "local_adapter_commit": "362ec92a910e2d9c8ed9924462bec60b76233fb0",
+  "payload_manifest_sha256": "dd62dd52c50e9e197fe28008145e50dcfe4855cfcd8eca92d7d9f38f052bbd4a",
+  "release_sha256": "4a4d57d5ec2b97566b5bc59f212c8f4b9357198fe0eb7270874902079bdd8af6",
+  "source_inventory_sha256": "1bf380ffa5d8ff74948a8bbb263031bcbb3a3a92192408ea856a588a31dfdd49",
+  "specs": [],
+  "status": "SOURCE FROZEN; accepted installation and native proof required before launch"
+}

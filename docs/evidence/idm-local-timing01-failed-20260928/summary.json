@@ -1,0 +1,15 @@
+{
+  "status": "INCOMPLETE",
+  "app_id": "ap-WWbF5IrxWLLlmy3jYFwEjh",
+  "state": "TERMINAL",
+  "error": "ValueError('progress needs integer 0 <= n <= total and total > 0')",
+  "bound_usd": "0.089506",
+  "zero_containers": true,
+  "completed_stages": [],
+  "checkpoint_present": false,
+  "throughput_result": false,
+  "failure": "copy metadata progress dictionary violates dashboard n/total contract",
+  "next": "Fresh attempt requires lead authorization; no automatic retry; input volume retained",
+  "lane_terminal_bound_usd": "9.642726068670252",
+  "storage_allocation_usd": "1.65"
+}

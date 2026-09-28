@@ -61,6 +61,35 @@ def test_admission_failure_precedes_any_local_copy(tmp_path, monkeypatch):
                       registry='never-open', input_volume_id='vo-source', output_volume_id='vo-result')
 
 
+def test_copy_metadata_uses_real_dashboard_text_contract(tmp_path, monkeypatch):
+    import json
+    from policy.idm import local_run
+    root = tmp_path/'local'
+    root.mkdir()
+    (root/'started.json').write_text(json.dumps({'identity': {
+        'inputs_sha256': 'a'*64, 'attempt_id': 'synthetic-local-status'}}))
+    monkeypatch.setattr(local_run.cloud_run, 'load_inputs', lambda **kwargs: (None, [], None, None))
+    monkeypatch.setattr(local_run.R.D, 'require_disjoint_roles', lambda rows: None)
+    monkeypatch.setattr(local_run.R.E, 'require_decode_platform', lambda rows: None)
+    observed = []
+    def prepare(loaded, **kwargs):
+        # Actual failure shape, loader timing, and real trainer n/total updates
+        # all go through the production job writer, not a mocked callback.
+        for value in [{'phase': 'local_copy', 'file': 'synthetic/frames.json',
+                       'copy_source_hash_seconds': .0007, 'reused': False},
+                      {'phase': 'loader_complete', 'seconds': 1.2, 'rows': 320},
+                      {'n': 160, 'total': 320}]:
+            kwargs['progress'](value)
+            status = json.loads((root/'jobs/idm-local-local.status.json').read_bytes())
+            observed.append(json.loads(status['progress']))
+            assert observed[-1] == value
+        return loaded, {'source_and_destination_verified': True}
+    monkeypatch.setattr(local_run.local_store, 'prepare', prepare)
+    assert local_run.run(root, phase='local', manifest='unused', manifest_sha256='a'*64,
+                         registry='unused', input_volume_id='vo-source', output_volume_id='vo-result') == 0
+    assert len(observed) == 3 and (root/'local.json').is_file()
+
+
 def test_real_trainer_tiny_pixels_stops_without_checkpoint(tmp_path):
     from test_idm_model import session, TINY
     import torch

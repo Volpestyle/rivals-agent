@@ -1,0 +1,37 @@
+2026-09-27 22:38:06-05:00 {"stage": "timing", "progress": {"phase": "local_copy", "file": "20260923T051828-422Z-33696-1/frames.json", "reused": false, "copy_source_hash_seconds": 0.0007065130000043496, "destination_verify_seconds": 0.0004466190000016468}}
+2026-09-27 22:38:06-05:00 Traceback (most recent call last):
+2026-09-27 22:38:06-05:00   File "/pkg/modal/_runtime/container_io_manager.py", line 987, in handle_input_exception
+2026-09-27 22:38:06-05:00     yield
+2026-09-27 22:38:06-05:00   File "/pkg/modal/_container_entrypoint.py", line 189, in run_input_sync
+2026-09-27 22:38:06-05:00     values = io_context.call_function_sync()
+2026-09-27 22:38:06-05:00              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-27 22:38:06-05:00   File "/pkg/modal/_runtime/container_io_manager.py", line 266, in call_function_sync
+2026-09-27 22:38:06-05:00     expected_value_or_values = self.finalized_function.callable(*args, **kwargs)
+2026-09-27 22:38:06-05:00                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-27 22:38:06-05:00   File "/root/cloud/modal_guard/runner.py", line 50, in execute_stages
+2026-09-27 22:38:06-05:00     results.append(run(Path(output_root) / name(stage["name"]), stage["name"], identity,
+2026-09-27 22:38:06-05:00                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-27 22:38:06-05:00   File "/root/cloud/modal_guard/stages.py", line 72, in run
+2026-09-27 22:38:06-05:00     code = compute(root)
+2026-09-27 22:38:06-05:00            ^^^^^^^^^^^^^
+2026-09-27 22:38:06-05:00   File "/root/cloud/modal_guard/runner.py", line 51, in <lambda>
+2026-09-27 22:38:06-05:00     stage["artifacts"], lambda root: compute(root, **stage.get("kwargs", {})),
+2026-09-27 22:38:06-05:00                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-27 22:38:06-05:00   File "/root/cloud/idm_entry.py", line 92, in run_local
+2026-09-27 22:38:06-05:00     return worker.run(root, phase=phase, manifest=input_ref(manifest["inputs"]),
+2026-09-27 22:38:06-05:00            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-27 22:38:06-05:00   File "/root/cloud/idm_payload/policy/idm/local_run.py", line 30, in run
+2026-09-27 22:38:06-05:00     loaded, copied = local_store.prepare(loaded, source_root='/inputs', cache=cache,
+2026-09-27 22:38:06-05:00                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-27 22:38:06-05:00   File "/root/cloud/idm_payload/policy/idm/local_store.py", line 116, in prepare
+2026-09-27 22:38:06-05:00     progress({'phase': 'local_copy', 'file': name, **timing})
+2026-09-27 22:38:06-05:00   File "/root/cloud/idm_payload/policy/idm/local_run.py", line 26, in progress
+2026-09-27 22:38:06-05:00     R.write('idm-local-'+phase, root=root/'jobs', owner='idm-owner', host='modal',
+2026-09-27 22:38:06-05:00   File "/root/cloud/idm_payload/scripts/job_status.py", line 82, in write
+2026-09-27 22:38:06-05:00     validate(data)
+2026-09-27 22:38:06-05:00   File "/root/cloud/idm_payload/scripts/job_status.py", line 51, in validate
+2026-09-27 22:38:06-05:00     raise ValueError("progress needs integer 0 <= n <= total and total > 0")
+2026-09-27 22:38:06-05:00 ValueError: progress needs integer 0 <= n <= total and total > 0
+2026-09-27 22:38:06-05:00 Stopping app - uncaught exception raised in remote container: ValueError('progress needs integer 0 <= n <= total and total > 0').
+2026-09-27 22:38:07-05:00 Stopping app - user stopped from CLI.
+2026-09-27 22:38:09-05:00 Stopping app - user stopped from CLI.

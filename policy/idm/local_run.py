@@ -24,7 +24,7 @@ def run(root, *, phase, manifest, manifest_sha256, registry, input_volume_id, ou
     def progress(value):
         print(json.dumps({'stage': phase, 'progress': value}), flush=True)
         R.write('idm-local-'+phase, root=root/'jobs', owner='idm-owner', host='modal',
-                stage='running', evidence=str(root/'completed.json'), progress=value)
+                stage='running', evidence=str(root/'completed.json'), progress=json.dumps(value))
     if phase not in ('zero', 'report'):
         cache = Path(tempfile.gettempdir())/('idm-native-'+attempt)
         loaded, copied = local_store.prepare(loaded, source_root='/inputs', cache=cache,

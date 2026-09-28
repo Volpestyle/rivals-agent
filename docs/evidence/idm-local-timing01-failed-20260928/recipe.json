@@ -1,0 +1,1 @@
+{"batch":16,"camera_rows_per_session":2048,"epochs":3,"full_projection_margin":0.3,"inference_samples_per_role":4096,"local_adapter_commit":"362ec92a910e2d9c8ed9924462bec60b76233fb0","retained_weights":false,"scope":"EXPLORATORY TIMING ONLY","seed":0,"updates":1000,"warmup_updates":32}
