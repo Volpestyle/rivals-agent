@@ -231,7 +231,7 @@ def test_pre_attach_gate_waits_without_constructing_pad(tmp_path):
         return "fake-pad"
     try:
         assert m.attach_after_token(factory,"fake-capture",journal,lambda:(image,now[0]),
-                                    ack,lambda f:True,180.) == "fake-pad"
+                                    ack,lambda f:True,180.,clock=lambda:now[0]) == "fake-pad"
         assert constructed[0]["settle_s"] == 0
         assert (journal.output / "ready-attach.png").exists()
     finally:
@@ -358,12 +358,14 @@ def test_initialization_refusal_closes_both_modes_without_measurement(tmp_path,m
 def test_changed_pre_attach_pose_refuses_before_pad(tmp_path):
     frame=np.random.default_rng(12).integers(0,256,(720,1280,3),dtype=np.uint8)
     changed=[False]
+    now=[0.]
     journal=m.Journal(tmp_path / 'pre-drift',{})
     try:
-        with pytest.raises(ValueError,match='pose changed'):
+        with pytest.raises(ValueError,match='pose'):
             m.attach_after_token(lambda **kw:pytest.fail('attached after stale pose'),None,journal,
                 lambda:(np.roll(frame,40 if changed[0] else 0,axis=0),0.),
-                lambda *a:changed.__setitem__(0,True),lambda f:True,180.)
+                lambda *a:changed.__setitem__(0,True),lambda f:True,180.,clock=lambda:now[0],
+                sleep=lambda dt:now.__setitem__(0,now[0]+dt))
     finally:
         journal.close()
 
@@ -414,3 +416,129 @@ def test_prime_analysis_runs_after_release_and_preserves_refusal(tmp_path, monke
         assert order == ["prime_released", "analysis"]
     finally:
         journal.close()
+
+
+def test_quality_recovery_keeps_reference_and_requires_two_successes(tmp_path, monkeypatch):
+    reference = np.zeros((360,640,3), np.uint8)
+    states = iter(["unknown", "good", "unknown", "good", "good"])
+    now, seen = [0.], []
+    journal = m.Journal(tmp_path / "quality-recovery", {})
+    def analyze(a, b):
+        assert a is reference
+        value = next(states)
+        seen.append(value)
+        if value == "unknown":
+            raise m.PoseUnprovable({"status": "unprovable"})
+        return {"status": "unchanged"}
+    monkeypatch.setattr(m, "unchanged_pose", analyze)
+    try:
+        assert m.ready_proof(reference, lambda: reference, 10., journal, clock=lambda:now[0],
+                             sleep=lambda dt:now.__setitem__(0,now[0]+dt)) is reference
+        assert seen == ["unknown", "good", "unknown", "good", "good"]
+        events = [json.loads(s) for s in (journal.output/'events.jsonl').read_text().splitlines()]
+        assert [e['kind'] for e in events] == ['pose_quality_wait','pose_quality_wait','pose_quality_recovered']
+    finally:
+        journal.close()
+
+
+@pytest.mark.parametrize('end', [.035, 10.])
+def test_quality_recovery_is_capped_by_one_second_and_block_deadline(tmp_path, monkeypatch, end):
+    now = [0.]
+    frame = np.zeros((360,640,3), np.uint8)
+    journal = m.Journal(tmp_path/'timeout',{})
+    def unknown(*a):
+        raise m.PoseUnprovable({'status':'unprovable'})
+    monkeypatch.setattr(m,'unchanged_pose',unknown)
+    try:
+        with pytest.raises(ValueError,match='deadline'):
+            m.ready_proof(frame,lambda:frame,end,journal,clock=lambda:now[0],
+                          sleep=lambda dt:now.__setitem__(0,now[0]+dt))
+        assert min(end,1.) <= now[0] < min(end,1.)+.011
+    finally:
+        journal.close()
+
+
+@pytest.mark.parametrize('failure', ['changed','guard'])
+def test_quality_recovery_never_swallows_movement_or_guard_failure(tmp_path, monkeypatch, failure):
+    frame = np.zeros((360,640,3), np.uint8)
+    journal = m.Journal(tmp_path/'hard-stop',{})
+    count = [0]
+    def proof():
+        count[0] += 1
+        if failure == 'guard' and count[0] == 2:
+            raise m.RangeLost('focus/range/idle/freshness stop')
+        return frame
+    def check(*args):
+        if count[0] == 1:
+            raise m.PoseUnprovable({'status':'unprovable'})
+        raise ValueError('ready pose changed')
+    monkeypatch.setattr(m,'unchanged_pose',check)
+    try:
+        with pytest.raises((ValueError,m.RangeLost)):
+            m.ready_proof(frame,proof,10.,journal,clock=lambda:0.,sleep=lambda dt:None)
+        assert count[0] == 2
+    finally:
+        journal.close()
+
+
+def test_recovery_capture_overrun_never_reaches_pose_acceptance(tmp_path, monkeypatch):
+    now = [0.]
+    frame = np.zeros((360,640,3), np.uint8)
+    def proof():
+        now[0] = 2.
+        return frame
+    monkeypatch.setattr(m,'unchanged_pose',lambda *a:pytest.fail('accepted late capture'))
+    journal = m.Journal(tmp_path/'overrun',{})
+    try:
+        with pytest.raises(ValueError,match='deadline during capture'):
+            m.ready_proof(frame,proof,10.,journal,clock=lambda:now[0])
+    finally:
+        journal.close()
+
+
+@pytest.mark.parametrize('attached',[False,True])
+def test_exact_pose_refusal_pair_is_encoded_only_after_neutral_close(tmp_path,monkeypatch,attached):
+    reference=np.random.default_rng(37).integers(0,256,(720,1280,3),dtype=np.uint8)
+    current=np.roll(reference,20,axis=1)
+    expected_reference,expected_current=reference.copy(),current.copy()
+    journal=m.Journal(tmp_path/'deferred',{})
+    closed=[]
+    live=SimpleNamespace(close=lambda:closed.append(True)) if attached else None
+    encoded=[]
+    real_save=m.save_native
+    def save(journal,name,frame,captured):
+        assert closed == ([True] if attached else [])
+        encoded.append(name)
+        real_save(journal,name,frame,captured)
+    monkeypatch.setattr(m,'save_native',save)
+    try:
+        with pytest.raises(m.ReadyPoseRefused) as caught:
+            m.ready_proof(reference,lambda:current,10.,journal,clock=lambda:2.,
+                          reference_t=1.,frame_time=lambda:1.99)
+        assert encoded == [] and closed == []
+        reference[:]=0
+        current[:]=0
+        m.retain_pose_refusal(live,journal,caught.value)
+        import cv2
+        assert np.array_equal(cv2.imread(str(journal.output/'refusal-reference.png')),expected_reference)
+        assert np.array_equal(cv2.imread(str(journal.output/'refusal-current.png')),expected_current)
+        receipt=json.loads((journal.output/'pose-refusal.json').read_text())
+        assert receipt['reference_captured']==1. and receipt['current_captured']==1.99
+        assert receipt['decision_t']==2.
+        assert receipt['written_after']==('pad_closed' if attached else 'no_pad_attached')
+    finally:
+        journal.close()
+
+
+def test_refusal_encoding_error_does_not_replace_original_stop(tmp_path,monkeypatch):
+    closed=[]
+    live=SimpleNamespace(close=lambda:closed.append(True))
+    exc=m.ReadyPoseRefused('original pose stop')
+    exc.frames=[('reference',np.zeros((360,640,3),np.uint8),1.)]
+    def fail(*a):
+        assert closed==[True]
+        raise OSError('synthetic disk full')
+    monkeypatch.setattr(m,'save_native',fail)
+    result=m.retain_pose_refusal(live,object(),exc)
+    assert not result['retained'] and 'disk full' in result['error']
+    assert str(exc)=='original pose stop'

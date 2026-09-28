@@ -483,7 +483,7 @@ def test_priming_never_accepts_persistently_stale_or_missing_frames(missing):
     assert worker.submitted == []
 
 
-def test_cold_proof_check_is_discarded_then_strict_after_priming():
+def test_cold_proof_delay_after_priming_is_discarded_and_reprimed():
     clock, journal, capture, worker, guards = startup_fixture()
     def proof(frame):
         if capture.calls in (1, 5):
@@ -491,9 +491,11 @@ def test_cold_proof_check_is_discarded_then_strict_after_priming():
         return True
     guards["in_range"] = proof
     result = fps.warm_start(capture, worker, journal, **guards)
-    assert result["discarded_stale_frames"] == 1
-    assert result["stop_reason"] == "stale_proof"
-    assert len(worker.submitted) == 1
+    assert result["discarded_stale_frames"] == 2
+    assert result["reprime_count"] == 1
+    assert result["stop_reason"] == "ready"
+    assert len(worker.submitted) == 4
+    assert not {1, 5}.intersection(identifier for _, identifier in worker.submitted)
     first = next(e for e in journal.events if e["kind"] == "startup_capture")
     assert first["range_duration_s"] == pytest.approx(.11)
 
@@ -585,3 +587,98 @@ def test_native_prime_overrun_is_detected_on_return():
     result = fps.warm_start(Capture(clock, duration=11.), worker, journal, **guards)
     assert result["stop_reason"] == "startup_timeout"
     assert worker.submitted == []
+
+
+def test_104ms_returned_frame_during_cold_forward_is_never_submitted():
+    clock, journal, capture, worker, guards = startup_fixture(cold=.7749)
+    grab = Capture.grab
+    def slow_sixth():
+        capture.duration = .1045121 if capture.calls == 5 else .001
+        return grab(capture)
+    capture.grab = slow_sixth
+    submit = worker.submit
+    def fresh_only(frame,captured):
+        assert clock()-captured <= .1
+        submit(frame,captured)
+    worker.submit = fresh_only
+    result = fps.warm_start(capture,worker,journal,**guards)
+    assert result['stop_reason'] == 'ready'
+    assert result['reprime_count'] == result['discarded_stale_frames'] == 1
+    assert 6 not in [identifier for _,identifier in worker.submitted]
+    assert len(result['predictions']) == 4
+    sixth = [e for e in journal.events if e['kind']=='startup_capture'][5]
+    assert sixth['prediction_pending'] and sixth['proof_age_s'] > .1
+    assert all(p['age_s'] <= .25 for p in result['predictions'][1:])
+
+
+@pytest.mark.parametrize('missing',[False,True])
+def test_persistent_stall_after_priming_cannot_reset_recovery_deadline(missing):
+    clock,journal,capture,worker,guards = startup_fixture(cold=.6)
+    def broken():
+        capture.duration = .128 if capture.calls >= 5 else .001
+        capture.missing = missing and capture.calls >= 5
+        return Capture.grab(capture)
+    capture.grab = broken
+    result = fps.warm_start(capture,worker,journal,**guards)
+    assert result['stop_reason'] == 'capture_prime_timeout'
+    assert 3 <= result['elapsed_s'] < 3.5
+    assert result['reprime_count'] == 1
+    assert len(worker.submitted) == 1
+
+
+@pytest.mark.parametrize('guard,reason', [('key_pressed','keypress'),('focused','focus_lost'),
+                                        ('in_range','range_lost'),('idle_warning','idle_warning')])
+def test_guards_refuse_during_startup_recovery(guard,reason):
+    clock,journal,capture,worker,guards = startup_fixture()
+    def stalled():
+        capture.duration = .11 if capture.calls == 4 else .001
+        return Capture.grab(capture)
+    capture.grab = stalled
+    guards[guard] = lambda *a: (capture.calls >= 6) if guard in ('key_pressed','idle_warning') else capture.calls < 6
+    result = fps.warm_start(capture,worker,journal,**guards)
+    assert result['stop_reason'] == reason
+    assert result['reprime_count'] == 1
+    assert len(worker.submitted) == 1
+
+
+def test_startup_refusal_retains_exact_last_fresh_and_failed_frame_after_loop():
+    clock,journal,capture,worker,guards = startup_fixture()
+    guards['in_range'] = lambda frame:capture.calls < 6
+    saved=[]
+    def sink(frames,metadata):
+        assert capture.calls==6
+        assert metadata['current_available'] and metadata['reference_available']
+        saved.extend((role,frame.identifier,captured) for role,frame,captured in frames)
+        return {'retained':True}
+    result=fps.warm_start(capture,worker,journal,refusal_sink=sink,**guards)
+    assert result['stop_reason']=='range_lost'
+    assert [(role,identifier) for role,identifier,_ in saved]==[('last-fresh',5),('current',6)]
+    assert saved[0][2] < saved[1][2] < result['stopped']
+    assert result['refusal_evidence']['retained']
+
+
+def test_startup_refusal_before_any_capture_reports_missing_evidence():
+    clock,journal,capture,worker,guards=startup_fixture()
+    guards['key_pressed']=lambda:True
+    saved=[]
+    def sink(frames,metadata):
+        assert not frames and not metadata['current_available'] and not metadata['reference_available']
+        saved.append(metadata)
+        return {'retained':False}
+    result=fps.warm_start(capture,worker,journal,refusal_sink=sink,**guards)
+    assert result['stop_reason']=='keypress' and saved
+    assert capture.calls==0
+
+
+def test_deferred_startup_pngs_and_timestamps_round_trip(tmp_path):
+    np=pytest.importorskip('numpy')
+    cv2=pytest.importorskip('cv2')
+    journal=Journal()
+    journal.output=tmp_path
+    image=np.full((360,640,3),41,np.uint8)
+    result=fps.save_startup_refusal(journal,[('last-fresh',image,1.),('current',image+1,1.2)],
+                                  {'decision_t':1.4})
+    assert result['written_after']=='actuator_free_startup_stopped'
+    for row,value in zip(result['frames'],(41,42)):
+        assert np.all(cv2.imread(str(tmp_path/row['path']))==value)
+    assert [r['captured'] for r in result['frames']]==[1.,1.2]

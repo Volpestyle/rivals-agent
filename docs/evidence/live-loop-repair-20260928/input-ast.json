@@ -1,0 +1,22 @@
+{
+  "base_driver_sha256": "fbc442d602bab060ad541c22d00520cc66dc101d5bb594e6c3c924d701c2ecde",
+  "candidate_driver_sha256": "6c0bb35df81187bb81a84177cfa889a7990940669610c013a36520bd82767239",
+  "collect_segment_ast_identical": true,
+  "measure_pulse_ast_identical": true,
+  "input_call_expressions_identical": true,
+  "calls": [
+    "Call(func=Attribute(value=Name(id='journal', ctx=Load()), attr='close', ctx=Load()), args=[], keywords=[])",
+    "Call(func=Attribute(value=Name(id='live', ctx=Load()), attr='close', ctx=Load()), args=[], keywords=[])",
+    "Call(func=Attribute(value=Name(id='live', ctx=Load()), attr='close', ctx=Load()), args=[], keywords=[])",
+    "Call(func=Attribute(value=Name(id='live', ctx=Load()), attr='close', ctx=Load()), args=[], keywords=[])",
+    "Call(func=Attribute(value=Name(id='live', ctx=Load()), attr='close', ctx=Load()), args=[], keywords=[])",
+    "Call(func=Attribute(value=Name(id='live', ctx=Load()), attr='release', ctx=Load()), args=[], keywords=[])",
+    "Call(func=Attribute(value=Name(id='live', ctx=Load()), attr='release', ctx=Load()), args=[], keywords=[])",
+    "Call(func=Attribute(value=Name(id='live', ctx=Load()), attr='send_guarded', ctx=Load()), args=[Dict(keys=[None, Constant(value='rx')], values=[Name(id='NEUTRAL', ctx=Load()), Name(id='deflection', ctx=Load())])], keywords=[keyword(arg='not_after', value=Name(id='until', ctx=Load())), keyword(arg='release_at', value=Name(id='until', ctx=Load())), keyword(arg='scope_not_after', value=Name(id='end', ctx=Load()))])",
+    "Call(func=Attribute(value=Name(id='live', ctx=Load()), attr='send_guarded', ctx=Load()), args=[Name(id='pad', ctx=Load())], keywords=[keyword(arg='not_after', value=Name(id='not_after', ctx=Load())), keyword(arg='release_at', value=Name(id='release_at', ctx=Load())), keyword(arg='scope_not_after', value=Name(id='scope_end', ctx=Load()))])",
+    "Call(func=Name(id='Live', ctx=Load()), args=[], keywords=[keyword(value=Name(id='kwargs', ctx=Load()))])",
+    "Call(func=Name(id='collect_segment', ctx=Load()), args=[Name(id='live', ctx=Load()), Name(id='PRIME_D', ctx=Load()), Name(id='PRIME_S', ctx=Load()), Name(id='prime_proof', ctx=Load())], keywords=[keyword(arg='scope_end', value=Name(id='scope_end', ctx=Load())), keyword(arg='clock', value=Name(id='clock', ctx=Load()))])",
+    "Call(func=Name(id='collect_segment', ctx=Load()), args=[Name(id='live', ctx=Load()), Name(id='d', ctx=Load()), Name(id='duration', ctx=Load()), Name(id='guarded_proof', ctx=Load())], keywords=[keyword(arg='scope_end', value=Name(id='end', ctx=Load())), keyword(arg='clock', value=Name(id='clock', ctx=Load()))])"
+  ],
+  "limit": "Call expressions and two input functions unchanged; pose authorization/recovery and deferred refusal handling changed and require independent review."
+}

@@ -1,0 +1,2716 @@
+{
+  "source_sha256": {
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\ready-attach.png": "46db4a96c92a122f4470fa35005a08d2123e1b27528c097de67be2f63857b9e6",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000000-before-attach.png": "46db4a96c92a122f4470fa35005a08d2123e1b27528c097de67be2f63857b9e6",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000001-before-attach.png": "b0210a002520ec355761c8b4873fcc52bcb04ff5b870850a8608f020c07ba9e4",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000002-before-attach.png": "60b410786f03ec0d03d39382894762dc175f5c6b11bf7d0837e7f37ab18b3548",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000003-before-attach.png": "a5f4bc0947bc47c23e6bd5648b436ffab34393dd32f37d5fcbe7eb14393900d3",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000004-before-attach.png": "716e1c74d579a3d01710f8566bddb3ff4a2c3f5d9a394707110f4789e5e08e74",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000005-before-attach.png": "bee385a9554d55dfba95b30cae3654e4808efa939c70acc55be0966beebb0ece",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000006-before-attach.png": "3abce29aa05342b02e9010f64e7052b3ec9f235fdd13706efc096f8d73cbfe61",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000007-before-attach.png": "77239bdc662b872891c631f9059a513c8cce5e58c2f1195cd7ea019e7fa74f2a",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000008-before-attach.png": "95c48c7de138f2d5d76a63ec48565e748cafc418adf3a274d477d19e962cb616",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000009-before-attach.png": "a1c979edf5a224351633ec4612de75d1955e2073bdf9dc28566e0928ec844d72",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000010-before-attach.png": "94650350339395a6eab28f98bc730d545e4fba05376992eb4f0e76129b2231c6",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000011-before-attach.png": "1c76afebf616ea9fea3f6f480bf3a448c7f790b56ea9e480d94965cac4b215ca",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000012-before-attach.png": "2a302cd074a18548c287183cef96d550c5b3086d080b9bc5f3064c7f38fbf65a",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000013-before-attach.png": "c6632ea73514fd2c920b9f70e42ee51d9d79c5eafcdc44469f9b5d1f159af7a6",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000014-before-attach.png": "8626826f2cae4bc0aee318ae222cc0bc2759263c5f96efa4805cc6cdf98aa843",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000015-before-attach.png": "3fc0f4a22a68f51169ae0002db7048c8e9e22e1ddc66d649942e90cf42dedbc5",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000016-before-attach.png": "0a1a3098defe7a02b40f373070c93ae21c770d955b8b17a6646dbb694a856792",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000017-before-attach.png": "fb0cab08e3fc033b2f4af8ffa966a3ace69124039b36dd3b18fdd79960f59234",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000018-before-attach.png": "5a42abb4dab09d875a8cff02a8dee53078039d626af0d4455a6c9aa51d20cfb6",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000019-before-attach.png": "18b64dfb659b5804cd4f55d69972e59dfd022f7dcd9b50bccfdca5bf5900cab8",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000020-before-attach.png": "05977537cfedf1bbfddc6360bec7e180e058d23fdc4761fb7787a40af308634c",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000021-before-attach.png": "76df18c5c4b041299ebe8204985f81f644c09bbaa4796d4dff914716e86e5997",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000022-before-attach.png": "d951dad7f4917f1ef3705cc606a709d5b864b0b7818b99e409043ea46375bc07",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000023-before-attach.png": "d6068592b4265c6d60ba49a5250a056e5ced665e5b6818092824c902c99b775e",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000024-before-attach.png": "7fd2cd352c978a808514e0ee3a64f2719be79a3d7c7e4c66a3720139e425a7d3",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000025-before-attach.png": "54c5e42ae2c08c9eed2bbbe294f30a1af4d2bbfc51f9c4a4de3d947236aea539",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000026-before-attach.png": "f99d30cde454b7adc5bc672d85ae2b1639709225b731002206a26094ea521bf6",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000027-before-attach.png": "262371c8939f8ca939f92c3c7a49a910ff64675e72f56bc597bdf70d879657f5",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000028-before-attach.png": "885fa579d97b60612665fecaf8a50e20594f2df70065831c7b0dfd2bb31812fa",
+    "data\\calibration\\alt-cam-20260928\\yaw-01\\frames\\0000029-before-attach.png": "da218ec3fb5e6ff3d0b68896653591379817518ee936405daa461bc48dbafdff",
+    "data\\calibration\\alt-cam-20260927\\yaw-01b\\initialization-motion-before.png": "007c703813f7fb5d924da3d70aacadf29cc39a8a99d49c353e47134719c0b3ac",
+    "data\\calibration\\alt-cam-20260927\\yaw-01b\\initialization-motion-after.png": "d90fe16f9e0077c1dd0d4c73dada21ebb3bf1dd3af5adb651338371722fd6bb9"
+  },
+  "analyzer_sha256": "3e1086bbad6086d877517b9fe2575ec29d4daadf6da897d642b0b0fc0504c29a",
+  "rows": [
+    {
+      "case": "0000000-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": 0.0,
+      "dy_band_px": 0.0,
+      "phase_score": 1.0,
+      "correlation": 0.9999999999999998,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.20122873783111572,
+          "dx": 0.011336299109729454,
+          "dy": -0.009175992816358568
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.029508769512176514,
+          "dx": 0.006490611663174912,
+          "dy": -0.0012806738352515012
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 1.0,
+          "uniqueness": 0.008591055870056152,
+          "dx": -0.00791631372215554,
+          "dy": -0.016641125812091255
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.047454118728637695,
+          "dx": -0.011828173122825485,
+          "dy": 0.02722391873838413
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 1.0,
+          "uniqueness": 0.01320946216583252,
+          "dx": 0.004340628898323233,
+          "dy": -0.01884778105294256
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.020711064338684082,
+          "dx": -0.0033327383450642506,
+          "dy": 0.015731821048716194
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.0015789366590553307,
+        0.0072255736067323465
+      ],
+      "patch_spread": 0.019998345131651784
+    },
+    {
+      "case": "0000001-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": 0.004402275969312086,
+      "dy_band_px": -0.0024673594788993114,
+      "phase_score": 0.9993342733029966,
+      "correlation": 0.9999470065379769,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998514652252197,
+          "uniqueness": 0.20113444328308105,
+          "dx": 0.012069493151591346,
+          "dy": -0.00953730328319697
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998728036880493,
+          "uniqueness": 0.029409945011138916,
+          "dx": 0.004701255551662956,
+          "dy": -0.0005401085069551277
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998544454574585,
+          "uniqueness": 0.008461594581604004,
+          "dx": -0.007067419461972767,
+          "dy": -0.01578241193459623
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995485544204712,
+          "uniqueness": 0.04699426889419556,
+          "dx": -0.01233981458254386,
+          "dy": 0.027725967444041696
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999561905860901,
+          "uniqueness": 0.013200700283050537,
+          "dx": 0.004277589093842577,
+          "dy": -0.0186713078382489
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999681115150452,
+          "uniqueness": 0.020680010318756104,
+          "dx": -0.0012727021459172294,
+          "dy": 0.014798343867394422
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.0017142767028728635,
+        0.007129117680219647
+      ],
+      "patch_spread": 0.020596849763822048
+    },
+    {
+      "case": "0000002-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": -0.0011996525915947132,
+      "dy_band_px": -0.006261486063067423,
+      "phase_score": 0.9996543383186246,
+      "correlation": 0.9999340748273674,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998278021812439,
+          "uniqueness": 0.20118677616119385,
+          "dx": 0.008642510729284531,
+          "dy": -0.00902728575285891
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998551607131958,
+          "uniqueness": 0.029495656490325928,
+          "dx": -0.0018820435039198385,
+          "dy": 0.0010050829006321008
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998456835746765,
+          "uniqueness": 0.008506178855895996,
+          "dx": -0.012515315363307054,
+          "dy": -0.017838729634976284
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995217323303223,
+          "uniqueness": 0.0474240779876709,
+          "dx": -0.017069233588507867,
+          "dy": 0.028781204481017564
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999343156814575,
+          "uniqueness": 0.01313638687133789,
+          "dx": 5.683427972305589e-05,
+          "dy": -0.01777700785969654
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999492764472961,
+          "uniqueness": 0.020643115043640137,
+          "dx": -0.0077104090120371305,
+          "dy": 0.016572043645429534
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        -0.004796226257978485,
+        0.008788563273030818
+      ],
+      "patch_spread": 0.019992641207986744
+    },
+    {
+      "case": "0000003-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": 0.001077743809560161,
+      "dy_band_px": 0.00023517056290245364,
+      "phase_score": 0.9984083982632483,
+      "correlation": 0.9999575089533425,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998800754547119,
+          "uniqueness": 0.2009754180908203,
+          "dx": 0.011475230507356512,
+          "dy": -0.009184024298657337
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998928308486938,
+          "uniqueness": 0.029452502727508545,
+          "dx": 0.005705579441829764,
+          "dy": -0.0007106623647857908
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998785257339478,
+          "uniqueness": 0.008503258228302002,
+          "dx": -0.010364448811839773,
+          "dy": -0.016927729878571753
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995524883270264,
+          "uniqueness": 0.04731065034866333,
+          "dx": -0.012832987386876845,
+          "dy": 0.027334370128220743
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999693632125854,
+          "uniqueness": 0.013166368007659912,
+          "dx": 0.004676715845673485,
+          "dy": -0.019024507984829138
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999761581420898,
+          "uniqueness": 0.020647704601287842,
+          "dx": -0.002947568879988271,
+          "dy": 0.015559736946400275
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.0013790052809207467,
+        0.007424537290807242
+      ],
+      "patch_spread": 0.019909832837413502
+    },
+    {
+      "case": "0000004-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": 0.007696841662323095,
+      "dy_band_px": -0.013935942393203504,
+      "phase_score": 0.9983522812407694,
+      "correlation": 0.9999404085415888,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998394846916199,
+          "uniqueness": 0.20099985599517822,
+          "dx": 0.01480179702275438,
+          "dy": -0.011098171376324427
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998540878295898,
+          "uniqueness": 0.02931499481201172,
+          "dx": 0.0018699011720921788,
+          "dy": 0.00048664729006275576
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.999861478805542,
+          "uniqueness": 0.008452296257019043,
+          "dx": -0.008535537365579804,
+          "dy": -0.015956178691037066
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9994925260543823,
+          "uniqueness": 0.04671609401702881,
+          "dx": -0.007615599614807757,
+          "dy": 0.026184345405174638
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.99994957447052,
+          "uniqueness": 0.013194918632507324,
+          "dx": 0.009940339133933081,
+          "dy": -0.020455659231763887
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.99996018409729,
+          "uniqueness": 0.02059340476989746,
+          "dx": 0.0022236340533672173,
+          "dy": 0.013623580944481883
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.0020467676127296983,
+        0.00705511411727232
+      ],
+      "patch_spread": 0.019129231287902317
+    },
+    {
+      "case": "0000005-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": -0.00020293503501989107,
+      "dy_band_px": -0.008682239751593102,
+      "phase_score": 0.9985782616697712,
+      "correlation": 0.9999389070125155,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998451471328735,
+          "uniqueness": 0.20136845111846924,
+          "dx": 0.010759207977978885,
+          "dy": -0.010563343412994065
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998611807823181,
+          "uniqueness": 0.02957671880722046,
+          "dx": 0.0019179973790775897,
+          "dy": 0.00013161604388989276
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998491406440735,
+          "uniqueness": 0.008456230163574219,
+          "dx": -0.014542814324497656,
+          "dy": -0.023143805056629677
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9994974136352539,
+          "uniqueness": 0.04718238115310669,
+          "dx": -0.009719865938424334,
+          "dy": 0.026540105434967674
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999531507492065,
+          "uniqueness": 0.013161420822143555,
+          "dx": 0.006688685906148121,
+          "dy": -0.019967132551333734
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999567270278931,
+          "uniqueness": 0.020670533180236816,
+          "dx": -0.0007312782291940459,
+          "dy": 0.01391748734274552
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.0005933595749417718,
+        0.007024551693317707
+      ],
+      "patch_spread": 0.01951555374164997
+    },
+    {
+      "case": "0000006-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": -0.0023234255737634157,
+      "dy_band_px": 0.0006487649095419101,
+      "phase_score": 0.9974435352425517,
+      "correlation": 0.9999324571883156,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998342394828796,
+          "uniqueness": 0.2012680172920227,
+          "dx": 0.010460541340602859,
+          "dy": -0.008506699652017056
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.999850869178772,
+          "uniqueness": 0.029496967792510986,
+          "dx": -0.0011814645623022622,
+          "dy": 0.001098327447506046
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998463988304138,
+          "uniqueness": 0.008559942245483398,
+          "dx": -0.01208458212874307,
+          "dy": -0.015501015994823534
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9994698762893677,
+          "uniqueness": 0.047296345233917236,
+          "dx": -0.013416235596209067,
+          "dy": 0.02798112083880608
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999458193778992,
+          "uniqueness": 0.01322174072265625,
+          "dx": 0.004852937687873417,
+          "dy": -0.01885571275562211
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999531507492065,
+          "uniqueness": 0.020717978477478027,
+          "dx": -0.0050635760099021045,
+          "dy": 0.01639782792332266
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        -0.0031225202861021833,
+        0.008748077685414354
+      ],
+      "patch_spread": 0.019233043153391725
+    },
+    {
+      "case": "0000007-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": 0.002014357481641582,
+      "dy_band_px": -0.0059998744808495985,
+      "phase_score": 0.9968410445790232,
+      "correlation": 0.9999400318242202,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998526573181152,
+          "uniqueness": 0.20118767023086548,
+          "dx": 0.010018518702894294,
+          "dy": -0.008006940757991247
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998524188995361,
+          "uniqueness": 0.029376327991485596,
+          "dx": -0.0014954535718050051,
+          "dy": 0.0013834411007197628
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998550415039062,
+          "uniqueness": 0.00851517915725708,
+          "dx": -0.010124525179210576,
+          "dy": -0.015224022770828844
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9994893670082092,
+          "uniqueness": 0.04716074466705322,
+          "dx": -0.012598606367794227,
+          "dy": 0.02717114472032864
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999579191207886,
+          "uniqueness": 0.013159334659576416,
+          "dx": 0.004905996863715097,
+          "dy": -0.019198321372191626
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999634027481079,
+          "uniqueness": 0.020599544048309326,
+          "dx": -0.003783534406692444,
+          "dy": 0.01602112606338611
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        -0.0026394939892487243,
+        0.008702283582052935
+      ],
+      "patch_spread": 0.018468861138275706
+    },
+    {
+      "case": "0000008-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": 0.0016071283623659838,
+      "dy_band_px": -0.0022074123818214275,
+      "phase_score": 0.9970466815807201,
+      "correlation": 0.9999297389238166,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998352527618408,
+          "uniqueness": 0.20131134986877441,
+          "dx": 0.011953817454776628,
+          "dy": -0.010861787583215696
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998632669448853,
+          "uniqueness": 0.029507160186767578,
+          "dx": 0.0024038407050359385,
+          "dy": -9.72482960407259e-05
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.999835193157196,
+          "uniqueness": 0.00840538740158081,
+          "dx": -0.014447248729747548,
+          "dy": -0.024488396021493084
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9994599223136902,
+          "uniqueness": 0.04713308811187744,
+          "dx": -0.0108188835043398,
+          "dy": 0.026608722807433968
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999441504478455,
+          "uniqueness": 0.013148903846740723,
+          "dx": 0.00557036160766944,
+          "dy": -0.01956613712884633
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999499320983887,
+          "uniqueness": 0.02063775062561035,
+          "dx": -0.0014841098724729042,
+          "dy": 0.014133175443695453
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.0004598654162815171,
+        0.0070179635738273636
+      ],
+      "patch_spread": 0.019590759233606606
+    },
+    {
+      "case": "0000009-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": 0.005862087762409374,
+      "dy_band_px": -0.0005479204620826295,
+      "phase_score": 0.997484692491131,
+      "correlation": 0.9999334901484908,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998365044593811,
+          "uniqueness": 0.20117533206939697,
+          "dx": 0.012047367961682714,
+          "dy": -0.010264657067623218
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998592734336853,
+          "uniqueness": 0.029507040977478027,
+          "dx": 0.0015572973334042825,
+          "dy": 0.00029859128958006133
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998507499694824,
+          "uniqueness": 0.008503258228302002,
+          "dx": -0.008497131118979748,
+          "dy": -0.016447219069239502
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995182156562805,
+          "uniqueness": 0.047103047370910645,
+          "dx": -0.010239961796065155,
+          "dy": 0.026525128592876552
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999421834945679,
+          "uniqueness": 0.013296008110046387,
+          "dx": 0.008648627608930738,
+          "dy": -0.01978116258843993
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999558329582214,
+          "uniqueness": 0.020654499530792236,
+          "dx": 0.00030018846056294163,
+          "dy": 0.014763681641161448
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.000928742896983612,
+        0.007531136465370755
+      ],
+      "patch_spread": 0.0189939921275058
+    },
+    {
+      "case": "0000010-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": 0.002008309801311725,
+      "dy_band_px": 0.0005667511312736906,
+      "phase_score": 0.9993212601697004,
+      "correlation": 0.9999420226040422,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998467564582825,
+          "uniqueness": 0.2010309100151062,
+          "dx": 0.01219864825397746,
+          "dy": -0.009145979243787907
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998686909675598,
+          "uniqueness": 0.029451489448547363,
+          "dx": 0.005628703503674237,
+          "dy": -0.0007679637737803166
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998641014099121,
+          "uniqueness": 0.008455932140350342,
+          "dx": -0.006354603811767048,
+          "dy": -0.013675851771413058
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995376467704773,
+          "uniqueness": 0.047122955322265625,
+          "dx": -0.011536092772932183,
+          "dy": 0.027418071613975328
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999569654464722,
+          "uniqueness": 0.013193011283874512,
+          "dx": 0.00465600192650453,
+          "dy": -0.018922615140838303
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999667406082153,
+          "uniqueness": 0.020696699619293213,
+          "dx": -0.0016537647846893027,
+          "dy": 0.01487159145538307
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.0019874693594924674,
+        0.007051813840801377
+      ],
+      "patch_spread": 0.02036625777317395
+    },
+    {
+      "case": "0000011-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": -0.009961584525001399,
+      "dy_band_px": -0.0033189141892648877,
+      "phase_score": 0.998254178930212,
+      "correlation": 0.9999292100074086,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998363256454468,
+          "uniqueness": 0.20134204626083374,
+          "dx": 0.010449835435172167,
+          "dy": -0.00998959490536527
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998507499694824,
+          "uniqueness": 0.0295221209526062,
+          "dx": 0.004892889964517081,
+          "dy": -0.0006783425622027911
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998510479927063,
+          "uniqueness": 0.008481919765472412,
+          "dx": -0.01156263286564626,
+          "dy": -0.024496758785397477
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995169043540955,
+          "uniqueness": 0.04742854833602905,
+          "dx": -0.014680617676171763,
+          "dy": 0.027437388774528688
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999326467514038,
+          "uniqueness": 0.013213396072387695,
+          "dx": 0.002948250117370693,
+          "dy": -0.018287323996688472
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999507069587708,
+          "uniqueness": 0.020735204219818115,
+          "dx": -0.0028681424446583255,
+          "dy": 0.015234020065991529
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.0010123737599293777,
+        0.007277838751894369
+      ],
+      "patch_spread": 0.02015955002263432
+    },
+    {
+      "case": "0000012-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": -0.006913254416247128,
+      "dy_band_px": 0.0019521315562087693,
+      "phase_score": 0.9989501906500923,
+      "correlation": 0.9999320519767279,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998313188552856,
+          "uniqueness": 0.20125991106033325,
+          "dx": 0.007748571409618519,
+          "dy": -0.008096022985287641
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.999855101108551,
+          "uniqueness": 0.029482245445251465,
+          "dx": 0.0009591458173098675,
+          "dy": 0.0006244202974165699
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998596906661987,
+          "uniqueness": 0.0084800124168396,
+          "dx": -0.014582329784230021,
+          "dy": -0.02526374236535258
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995435476303101,
+          "uniqueness": 0.04712879657745361,
+          "dx": -0.011672632797537438,
+          "dy": 0.026754180451068806
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999428987503052,
+          "uniqueness": 0.013166666030883789,
+          "dx": 0.0018087372790004839,
+          "dy": -0.017873527447229847
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999498724937439,
+          "uniqueness": 0.020675480365753174,
+          "dx": -0.007253523162767389,
+          "dy": 0.016994929951194858
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        -0.003147188672728761,
+        0.008809675124305714
+      ],
+      "patch_spread": 0.017944505326763092
+    },
+    {
+      "case": "0000013-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": -0.0017044493866080757,
+      "dy_band_px": 8.148957347486885e-05,
+      "phase_score": 1.0016400282589006,
+      "correlation": 0.9999304986944418,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.999843180179596,
+          "uniqueness": 0.20143651962280273,
+          "dx": 0.009314907709439746,
+          "dy": -0.009851920101331223
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998392462730408,
+          "uniqueness": 0.029582202434539795,
+          "dx": 0.003949595743257569,
+          "dy": -0.0006884851389038146
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998597502708435,
+          "uniqueness": 0.008512437343597412,
+          "dx": -0.01049848742171744,
+          "dy": -0.01704963703695315
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9994932413101196,
+          "uniqueness": 0.04736053943634033,
+          "dx": -0.014395762539260561,
+          "dy": 0.027461778845434343
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999430179595947,
+          "uniqueness": 0.013192534446716309,
+          "dx": 0.006606844855415424,
+          "dy": -0.019245230425432903
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999533295631409,
+          "uniqueness": 0.02064955234527588,
+          "dx": -0.0007247182949853364,
+          "dy": 0.014574569053047269
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.0016124387241361164,
+        0.006943041957071727
+      ],
+      "patch_spread": 0.020518736888362615
+    },
+    {
+      "case": "0000014-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": -0.006281779796807996,
+      "dy_band_px": -0.010287670462616916,
+      "phase_score": 1.000094399322698,
+      "correlation": 0.9999281941379031,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998311400413513,
+          "uniqueness": 0.2015829086303711,
+          "dx": 0.010115586678464199,
+          "dy": -0.01052159180879042
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998380541801453,
+          "uniqueness": 0.029480278491973877,
+          "dx": 0.001264679108905062,
+          "dy": 0.0007413871213887982
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998529553413391,
+          "uniqueness": 0.008463859558105469,
+          "dx": -0.014458862397006727,
+          "dy": -0.025871015567086732
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9994778633117676,
+          "uniqueness": 0.04709303379058838,
+          "dx": -0.010401502950795173,
+          "dy": 0.026774338780987235
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999420046806335,
+          "uniqueness": 0.01329648494720459,
+          "dx": 0.008302479904340255,
+          "dy": -0.01994795147101763
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999428987503052,
+          "uniqueness": 0.02070033550262451,
+          "dx": -0.00023054902689098234,
+          "dy": 0.014476204561510319
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.0005170650410070398,
+        0.007608795841449558
+      ],
+      "patch_spread": 0.019165542939537678
+    },
+    {
+      "case": "0000015-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": -0.008873546796138498,
+      "dy_band_px": -0.004552431258758816,
+      "phase_score": 1.0009833080150463,
+      "correlation": 0.999925580293017,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998348355293274,
+          "uniqueness": 0.20140522718429565,
+          "dx": 0.008639675901659958,
+          "dy": -0.009304821380460697
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998400211334229,
+          "uniqueness": 0.029576420783996582,
+          "dx": -0.0005137044555072973,
+          "dy": 0.0007152571506326624
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998401999473572,
+          "uniqueness": 0.008452057838439941,
+          "dx": -0.01633390505053869,
+          "dy": -0.02336158776100889
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9994812607765198,
+          "uniqueness": 0.0473136305809021,
+          "dx": -0.015038019971128825,
+          "dy": 0.027371342217683527
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999352097511292,
+          "uniqueness": 0.013174653053283691,
+          "dx": 0.003558946490433572,
+          "dy": -0.01860652143563607
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999427199363708,
+          "uniqueness": 0.020634114742279053,
+          "dx": -0.005322086457540038,
+          "dy": 0.015717672835738387
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        -0.0029178954565236676,
+        0.008216464993185525
+      ],
+      "patch_spread": 0.019154877224498004
+    },
+    {
+      "case": "0000016-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": -0.006892960897658895,
+      "dy_band_px": -0.004148496852579342,
+      "phase_score": 0.999024901472492,
+      "correlation": 0.9999263670306029,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998298287391663,
+          "uniqueness": 0.20153599977493286,
+          "dx": 0.010704007340079341,
+          "dy": -0.008655893351951278
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998502135276794,
+          "uniqueness": 0.02952498197555542,
+          "dx": 0.007214869293059315,
+          "dy": -0.0013061679507687888
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998398423194885,
+          "uniqueness": 0.008488595485687256,
+          "dx": -0.010304278501195854,
+          "dy": -0.01467445667000091
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.999512255191803,
+          "uniqueness": 0.04739946126937866,
+          "dx": -0.014507589128132721,
+          "dy": 0.028028630084652357
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999328255653381,
+          "uniqueness": 0.013193607330322266,
+          "dx": 0.0022385624247863423,
+          "dy": -0.017928789463321233
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999472498893738,
+          "uniqueness": 0.02067965269088745,
+          "dx": -0.005477856414128837,
+          "dy": 0.01650222630269958
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.0008685064394652392,
+        0.007598029175965395
+      ],
+      "patch_spread": 0.020430600908686963
+    },
+    {
+      "case": "0000017-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": -0.0077358351517489155,
+      "dy_band_px": -0.01146250813181382,
+      "phase_score": 0.9984362889513557,
+      "correlation": 0.9999337603218102,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.999840259552002,
+          "uniqueness": 0.20135968923568726,
+          "dx": 0.010663887638068498,
+          "dy": -0.010408206013867634
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998586177825928,
+          "uniqueness": 0.02944248914718628,
+          "dx": 0.002918513467439482,
+          "dy": -5.3074007736462337e-05
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998458027839661,
+          "uniqueness": 0.00847327709197998,
+          "dx": -0.013673068239169124,
+          "dy": -0.02081164857538289
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995527863502502,
+          "uniqueness": 0.0471956729888916,
+          "dx": -0.011257906208630304,
+          "dy": 0.026430856955132743
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999508857727051,
+          "uniqueness": 0.013141453266143799,
+          "dx": 0.007550827981443359,
+          "dy": -0.02029468388506115
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999546408653259,
+          "uniqueness": 0.02065509557723999,
+          "dx": -0.00028705880835115357,
+          "dy": 0.013761656328307932
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.0013157273295441641,
+        0.0068542911602857345
+      ],
+      "patch_spread": 0.01957656579484701
+    },
+    {
+      "case": "0000018-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": -0.0018581329417486359,
+      "dy_band_px": -0.0028329262309227943,
+      "phase_score": 0.997172072339941,
+      "correlation": 0.9999351915067872,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998325109481812,
+          "uniqueness": 0.20164912939071655,
+          "dx": 0.008874500535708237,
+          "dy": -0.010000530826185123
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998695850372314,
+          "uniqueness": 0.029405951499938965,
+          "dx": 0.000688706791847702,
+          "dy": 0.0004127312809460421
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.999853253364563,
+          "uniqueness": 0.008527517318725586,
+          "dx": -0.015072114346819696,
+          "dy": -0.021648052642963673
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995320439338684,
+          "uniqueness": 0.047380924224853516,
+          "dx": -0.011849598916699311,
+          "dy": 0.027016080709109765
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999489188194275,
+          "uniqueness": 0.013249039649963379,
+          "dx": 0.006444000419231926,
+          "dy": -0.019354535558496682
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.99995356798172,
+          "uniqueness": 0.020749807357788086,
+          "dx": -0.0019003746384331384,
+          "dy": 0.014919212721528846
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        -0.0006058339232927182,
+        0.007665972001237444
+      ],
+      "patch_spread": 0.01935010870787232
+    },
+    {
+      "case": "0000019-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": -0.016293830726965552,
+      "dy_band_px": -0.006978806621077638,
+      "phase_score": 0.9992167127868276,
+      "correlation": 0.9999276982033413,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998263120651245,
+          "uniqueness": 0.20158040523529053,
+          "dx": 0.007344504718116805,
+          "dy": -0.00850068393605198
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.999851644039154,
+          "uniqueness": 0.02940213680267334,
+          "dx": 0.0003210577723112542,
+          "dy": 0.0007523699609808647
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998537302017212,
+          "uniqueness": 0.008488476276397705,
+          "dx": -0.012211269433068404,
+          "dy": -0.019951177222120826
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995230436325073,
+          "uniqueness": 0.04751485586166382,
+          "dx": -0.017117609607967973,
+          "dy": 0.02816668194311386
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999350309371948,
+          "uniqueness": 0.013194859027862549,
+          "dx": 0.00317530218504998,
+          "dy": -0.018279579176059123
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999431371688843,
+          "uniqueness": 0.02068650722503662,
+          "dx": -0.006387954601672401,
+          "dy": 0.016366566233885712
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        -0.003033448414680573,
+        0.008559468097433288
+      ],
+      "patch_spread": 0.019607213845680573
+    },
+    {
+      "case": "0000020-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": 0.012642043920578772,
+      "dy_band_px": -0.004106371750182802,
+      "phase_score": 0.9976861644085543,
+      "correlation": 0.9999433316341694,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.999864935874939,
+          "uniqueness": 0.20119667053222656,
+          "dx": 0.014619998934790606,
+          "dy": -0.009619462478024076
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998579025268555,
+          "uniqueness": 0.029301047325134277,
+          "dx": 0.0010286249694467832,
+          "dy": 0.0011642811120710548
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998602867126465,
+          "uniqueness": 0.008473336696624756,
+          "dx": -0.006088042460193568,
+          "dy": -0.014176210351533623
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995721578598022,
+          "uniqueness": 0.04706650972366333,
+          "dx": -0.008793556706016708,
+          "dy": 0.026501253595018474
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999589323997498,
+          "uniqueness": 0.013273477554321289,
+          "dx": 0.00848374254047996,
+          "dy": -0.019895332966700385
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999663233757019,
+          "uniqueness": 0.02061361074447632,
+          "dx": -0.0006897350067044172,
+          "dy": 0.014891027935546844
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.00016944498137118298,
+        0.00802765452380895
+      ],
+      "patch_spread": 0.018473599071209525
+    },
+    {
+      "case": "0000021-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": 0.002630282702966724,
+      "dy_band_px": -0.011724721478017841,
+      "phase_score": 0.9981863892166702,
+      "correlation": 0.9999363704309704,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998347759246826,
+          "uniqueness": 0.20162230730056763,
+          "dx": 0.010326126241483357,
+          "dy": -0.009197866411326104
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998517036437988,
+          "uniqueness": 0.029402732849121094,
+          "dx": -0.0024836122307723627,
+          "dy": 0.0018012891605153475
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998577833175659,
+          "uniqueness": 0.008432626724243164,
+          "dx": -0.009451190156020174,
+          "dy": -0.018909741451019268
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995194673538208,
+          "uniqueness": 0.047443926334381104,
+          "dx": -0.012883505075643242,
+          "dy": 0.02695620737231524
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999533891677856,
+          "uniqueness": 0.013219892978668213,
+          "dx": 0.001919148040806076,
+          "dy": -0.018104620684137956
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999606013298035,
+          "uniqueness": 0.020708203315734863,
+          "dx": -0.005110992080929119,
+          "dy": 0.016091284393454728
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        -0.003797302155850741,
+        0.008946286776985038
+      ],
+      "patch_spread": 0.01814415318831114
+    },
+    {
+      "case": "0000022-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": 0.007668587901434876,
+      "dy_band_px": -0.007683878723653947,
+      "phase_score": 0.9991663145371426,
+      "correlation": 0.9999328229452096,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998408555984497,
+          "uniqueness": 0.2014148235321045,
+          "dx": 0.011490771833209675,
+          "dy": -0.010565552775957323
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998454451560974,
+          "uniqueness": 0.029397308826446533,
+          "dx": 0.005011244411799378,
+          "dy": -0.0005158524441823347
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998600482940674,
+          "uniqueness": 0.008517682552337646,
+          "dx": -0.010974512843150597,
+          "dy": -0.018108092780581862
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995133280754089,
+          "uniqueness": 0.047224998474121094,
+          "dx": -0.011405023954938387,
+          "dy": 0.02633674362570237
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999457597732544,
+          "uniqueness": 0.013263344764709473,
+          "dx": 0.0070239910894591895,
+          "dy": -0.01902491228386301
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999486207962036,
+          "uniqueness": 0.02074044942855835,
+          "dx": 0.0020747817240044405,
+          "dy": 0.01381694123662037
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.003543013067901909,
+        0.006650544396219018
+      ],
+      "patch_spread": 0.019686199229483354
+    },
+    {
+      "case": "0000023-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": 0.014387483932182477,
+      "dy_band_px": -0.006664609891586792,
+      "phase_score": 0.9995421012124898,
+      "correlation": 0.9999395264828923,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998487234115601,
+          "uniqueness": 0.20116311311721802,
+          "dx": 0.011876776529367262,
+          "dy": -0.009765158894142999
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998536705970764,
+          "uniqueness": 0.02939760684967041,
+          "dx": -0.0010700997662243588,
+          "dy": 0.0010098585246283334
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998568296432495,
+          "uniqueness": 0.008458375930786133,
+          "dx": -0.012049711696050004,
+          "dy": -0.0190329451216749
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995369911193848,
+          "uniqueness": 0.04725170135498047,
+          "dx": -0.011264909144275156,
+          "dy": 0.02650168293712797
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999544620513916,
+          "uniqueness": 0.01317363977432251,
+          "dx": 0.006136878744416949,
+          "dy": -0.01955556254274193
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.999964714050293,
+          "uniqueness": 0.02060645818710327,
+          "dx": -0.0008775421727911965,
+          "dy": 0.014758542060891177
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        -0.0009738209695077777,
+        0.007884200292759755
+      ],
+      "patch_spread": 0.018617482644368216
+    },
+    {
+      "case": "0000024-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": 0.004750406481775826,
+      "dy_band_px": -0.0013465349931891524,
+      "phase_score": 0.997162161650481,
+      "correlation": 0.9999410691893131,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998503923416138,
+          "uniqueness": 0.20112860202789307,
+          "dx": 0.013771446268194487,
+          "dy": -0.009896375067753451
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998553395271301,
+          "uniqueness": 0.029340684413909912,
+          "dx": -0.000612207023293289,
+          "dy": 0.0016314200033901009
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998576641082764,
+          "uniqueness": 0.008504092693328857,
+          "dx": -0.0014937065165436295,
+          "dy": -0.004807692307692308
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995297789573669,
+          "uniqueness": 0.04722374677658081,
+          "dx": -0.012099523177092201,
+          "dy": 0.02721908121643542
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999597072601318,
+          "uniqueness": 0.01323610544204712,
+          "dx": 0.00735042851289619,
+          "dy": -0.019726539881563424
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999654293060303,
+          "uniqueness": 0.020638644695281982,
+          "dx": -0.0004911962517947556,
+          "dy": 0.014584115260779094
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        -0.0005517016375440223,
+        0.008107767632084598
+      ],
+      "patch_spread": 0.019111313584350823
+    },
+    {
+      "case": "0000025-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": 0.005208151928798088,
+      "dy_band_px": -0.008439420082936522,
+      "phase_score": 1.000229811091482,
+      "correlation": 0.9999335150637987,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998365044593811,
+          "uniqueness": 0.2015480399131775,
+          "dx": 0.009976128718907915,
+          "dy": -0.010298183269107416
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998472332954407,
+          "uniqueness": 0.029500842094421387,
+          "dx": 0.0015531269470936287,
+          "dy": 0.00013315508775890288
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998488426208496,
+          "uniqueness": 0.0084913969039917,
+          "dx": -0.012548762041238755,
+          "dy": -0.01902077996014802
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995197653770447,
+          "uniqueness": 0.04710465669631958,
+          "dx": -0.011081440312566157,
+          "dy": 0.026660306350835758
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999542832374573,
+          "uniqueness": 0.013147354125976562,
+          "dx": 0.006907107189274233,
+          "dy": -0.019784906111935105
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999528527259827,
+          "uniqueness": 0.02067965269088745,
+          "dx": -0.0008652386737518489,
+          "dy": 0.014145334571138634
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.00034394413667088994,
+        0.007139244829448769
+      ],
+      "patch_spread": 0.01952106152138699
+    },
+    {
+      "case": "0000026-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": -0.0013761209241351935,
+      "dy_band_px": -0.00826408848880078,
+      "phase_score": 0.999384179621567,
+      "correlation": 0.9999303356515857,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998391270637512,
+          "uniqueness": 0.2014392614364624,
+          "dx": 0.0097284217032609,
+          "dy": -0.008235778769835975
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998456239700317,
+          "uniqueness": 0.029477477073669434,
+          "dx": -0.00011516724212465975,
+          "dy": 0.000985783390647141
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998435378074646,
+          "uniqueness": 0.00854349136352539,
+          "dx": -0.010621223878023384,
+          "dy": -0.015710910164947516
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995179772377014,
+          "uniqueness": 0.04716271162033081,
+          "dx": -0.012902628113186421,
+          "dy": 0.028276455207612173
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9999430179595947,
+          "uniqueness": 0.013218402862548828,
+          "dx": 0.004578878819124111,
+          "dy": -0.019085163791301714
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999505877494812,
+          "uniqueness": 0.020705223083496094,
+          "dx": -0.006158587857750367,
+          "dy": 0.016733996120184422
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        -0.0031368775499375137,
+        0.008859889755415781
+      ],
+      "patch_spread": 0.01941656545219639
+    },
+    {
+      "case": "0000027-before-attach.png",
+      "status": "unchanged",
+      "dx_band_px": 0.0013797047416517216,
+      "dy_band_px": 0.0001995712816977857,
+      "phase_score": 0.9972962384636019,
+      "correlation": 0.9999422093767135,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9998612403869629,
+          "uniqueness": 0.201299250125885,
+          "dx": 0.010802009976951403,
+          "dy": -0.008631265896215493
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9998636245727539,
+          "uniqueness": 0.029352307319641113,
+          "dx": -0.0008610996939444481,
+          "dy": 0.0011773184530232685
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9998461604118347,
+          "uniqueness": 0.008481442928314209,
+          "dx": -0.010479335981328637,
+          "dy": -0.01830074296914171
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9995574355125427,
+          "uniqueness": 0.0472906231880188,
+          "dx": -0.012863755619057168,
+          "dy": 0.02733476747384436
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.999962568283081,
+          "uniqueness": 0.01315981149673462,
+          "dx": 0.004954232491088189,
+          "dy": -0.01912632371171578
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9999653697013855,
+          "uniqueness": 0.020627498626708984,
+          "dx": -0.0036602180953949387,
+          "dy": 0.015605569118969528
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        -0.0022606588946696934,
+        0.008391443785996398
+      ],
+      "patch_spread": 0.01894332368784796
+    },
+    {
+      "case": "0000028-before-attach.png",
+      "status": "unprovable",
+      "dx_band_px": -0.036751604432254226,
+      "dy_band_px": -0.30665929249430235,
+      "phase_score": 0.9790175604172695,
+      "correlation": 0.9909648540450516,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9728832840919495,
+          "uniqueness": 0.16533023118972778,
+          "dx": 0.17724838845587979,
+          "dy": -0.20530219155538523
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9721977710723877,
+          "uniqueness": 0.027312636375427246,
+          "dx": 0.47981837291775364,
+          "dy": -0.1954141913565016
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9942042827606201,
+          "uniqueness": 0.005655109882354736,
+          "dx": 0.992101717833191,
+          "dy": -0.7901172881712513
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9878494143486023,
+          "uniqueness": 0.03490936756134033,
+          "dx": 0.15419737060425348,
+          "dy": -0.06522062329445587
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.993597149848938,
+          "uniqueness": 0.009110331535339355,
+          "dx": 0.24849674108313827,
+          "dy": -0.15444153533044858
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9897243976593018,
+          "uniqueness": 0.014779508113861084,
+          "dx": 0.24663227218173114,
+          "dy": -0.12109056949621332
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "insufficient_patch_agreement"
+    },
+    {
+      "case": "0000029-before-attach.png",
+      "status": "unprovable",
+      "dx_band_px": -0.022209888176206505,
+      "dy_band_px": 0.03339817590243399,
+      "phase_score": 0.9670570656105324,
+      "correlation": 0.9897071121464098,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9734835028648376,
+          "uniqueness": 0.16192179918289185,
+          "dx": -0.03080735192424255,
+          "dy": 0.05137196068353858
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.973118007183075,
+          "uniqueness": 0.02052748203277588,
+          "dx": -0.3146063209682882,
+          "dy": 0.056294452475745445
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9937931895256042,
+          "uniqueness": 0.0057048797607421875,
+          "dx": 0.6935138195272852,
+          "dy": -0.46901818181818183
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false,
+          "ncc": 0.9784491658210754,
+          "uniqueness": 0.009301841259002686,
+          "dx": -0.5429688264311165,
+          "dy": -0.08894841035025666
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9911688566207886,
+          "uniqueness": 0.003821134567260742,
+          "dx": -0.5231462826920563,
+          "dy": -0.18630792716170538
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9880293011665344,
+          "uniqueness": 0.0102003812789917,
+          "dx": -0.40038134400300296,
+          "dy": 0.0932898662568405
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "insufficient_patch_agreement"
+    },
+    {
+      "case": "yaw-01b-true-motion",
+      "status": "unprovable",
+      "dx_band_px": -67.37407461760375,
+      "dy_band_px": -6.171244725800534,
+      "phase_score": 0.09759365543318384,
+      "correlation": 0.03575301314553275,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": false
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": false
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.12076013535261154,
+          "uniqueness": 0.009927958250045776,
+          "dx": -9.428498013459278,
+          "dy": 5.74429326456651
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": false
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "insufficient_patch_agreement"
+    },
+    {
+      "case": "native-translation-1280-0-0",
+      "status": "unchanged",
+      "dx_band_px": 0.0,
+      "dy_band_px": 0.0,
+      "phase_score": 1.0,
+      "correlation": 0.9999999999999998,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.20122873783111572,
+          "dx": 0.011336299109729454,
+          "dy": -0.009175992816358568
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.029508769512176514,
+          "dx": 0.006490611663174912,
+          "dy": -0.0012806738352515012
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 1.0,
+          "uniqueness": 0.008591055870056152,
+          "dx": -0.00791631372215554,
+          "dy": -0.016641125812091255
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.047454118728637695,
+          "dx": -0.011828173122825485,
+          "dy": 0.02722391873838413
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 1.0,
+          "uniqueness": 0.01320946216583252,
+          "dx": 0.004340628898323233,
+          "dy": -0.01884778105294256
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.020711064338684082,
+          "dx": -0.0033327383450642506,
+          "dy": 0.015731821048716194
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.0015789366590553307,
+        0.0072255736067323465
+      ],
+      "patch_spread": 0.019998345131651784
+    },
+    {
+      "case": "native-translation-1280-2-0",
+      "status": "unchanged",
+      "dx_band_px": 0.9923841111340437,
+      "dy_band_px": -0.0006038493747837492,
+      "phase_score": 0.9990690967565702,
+      "correlation": 0.982983369222306,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.20122873783111572,
+          "dx": 1.0113362991097294,
+          "dy": -0.009175992816358568
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.029508769512176514,
+          "dx": 1.0064906116631749,
+          "dy": -0.0012806738352515012
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 1.0,
+          "uniqueness": 0.008591055870056152,
+          "dx": 0.9920836862778445,
+          "dy": -0.016641125812091255
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.047454118728637695,
+          "dx": 0.9881718268771745,
+          "dy": 0.02722391873838413
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 1.0,
+          "uniqueness": 0.01320946216583252,
+          "dx": 1.0043406288983232,
+          "dy": -0.01884778105294256
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.020711064338684082,
+          "dx": 0.9966672616549358,
+          "dy": 0.015731821048716194
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        1.0015789366590553,
+        0.0072255736067323465
+      ],
+      "patch_spread": 0.019998345131651784
+    },
+    {
+      "case": "native-translation-1280-4-0",
+      "status": "changed",
+      "dx_band_px": 1.9920343365347435,
+      "dy_band_px": -0.0006356887579812565,
+      "phase_score": 0.9971571350450869,
+      "correlation": 0.9527967556877217,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.20122873783111572,
+          "dx": 2.0113362991097294,
+          "dy": -0.009175992816358568
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.029508769512176514,
+          "dx": 2.006490611663175,
+          "dy": -0.0012806738352515012
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 1.0,
+          "uniqueness": 0.008591055870056152,
+          "dx": 1.9920836862778444,
+          "dy": -0.016641125812091255
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.047454118728637695,
+          "dx": 1.9881718268771744,
+          "dy": 0.02722391873838413
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 1.0,
+          "uniqueness": 0.01320946216583252,
+          "dx": 2.004340628898323,
+          "dy": -0.01884778105294256
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.020711064338684082,
+          "dx": 1.9966672616549357,
+          "dy": 0.015731821048716194
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "shift_exceeds_original_bound",
+      "agreeing_patches": 4,
+      "patch_median": [
+        2.0015789366590555,
+        0.0072255736067323465
+      ],
+      "patch_spread": 0.019998345131651784
+    },
+    {
+      "case": "native-translation-1280-0-4",
+      "status": "changed",
+      "dx_band_px": -0.004253083039742478,
+      "dy_band_px": 1.9955092141960336,
+      "phase_score": 0.9926945598684711,
+      "correlation": 0.8650756368099373,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.20122873783111572,
+          "dx": 0.011336299109729454,
+          "dy": 1.9908240071836414
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.029508769512176514,
+          "dx": 0.006490611663174912,
+          "dy": 1.9987193261647485
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 1.0,
+          "uniqueness": 0.008591055870056152,
+          "dx": -0.00791631372215554,
+          "dy": 1.9833588741879087
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.047454118728637695,
+          "dx": -0.011828173122825485,
+          "dy": 2.0272239187383843
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 1.0,
+          "uniqueness": 0.01320946216583252,
+          "dx": 0.004340628898323233,
+          "dy": 1.9811522189470574
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.020711064338684082,
+          "dx": -0.0033327383450642506,
+          "dy": 2.0157318210487163
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "shift_exceeds_original_bound",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.0015789366590553307,
+        2.0072255736067324
+      ],
+      "patch_spread": 0.019998345131651885
+    },
+    {
+      "case": "native-translation-1280-20-0",
+      "status": "changed",
+      "dx_band_px": 9.983261657482203,
+      "dy_band_px": -0.0005413382073697903,
+      "phase_score": 0.964867691770012,
+      "correlation": 0.75146117291979,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.2275904417037964,
+          "dx": 10.011336299109729,
+          "dy": -0.009175992816358568
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.03581953048706055,
+          "dx": 10.006490611663175,
+          "dy": -0.0012806738352515012
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 1.0,
+          "uniqueness": 0.008591055870056152,
+          "dx": 9.992083686277844,
+          "dy": -0.016641125812091255
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.05503028631210327,
+          "dx": 9.988171826877174,
+          "dy": 0.02722391873838413
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 1.0,
+          "uniqueness": 0.01320946216583252,
+          "dx": 10.004340628898323,
+          "dy": -0.01884778105294256
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.020719528198242188,
+          "dx": 9.996667261654936,
+          "dy": 0.015731821048716194
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "shift_exceeds_original_bound",
+      "agreeing_patches": 4,
+      "patch_median": [
+        10.001578936659055,
+        0.0072255736067323465
+      ],
+      "patch_spread": 0.019998345131651784
+    },
+    {
+      "case": "native-translation-1280-0-20",
+      "status": "changed",
+      "dx_band_px": -0.009874631723278071,
+      "dy_band_px": 9.992113942510244,
+      "phase_score": 0.9609900142292918,
+      "correlation": 0.5905011405904966,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.20122873783111572,
+          "dx": 0.011336299109729454,
+          "dy": 9.990824007183642
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.029508769512176514,
+          "dx": 0.006490611663174912,
+          "dy": 9.998719326164748
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 1.0,
+          "uniqueness": 0.008591055870056152,
+          "dx": -0.00791631372215554,
+          "dy": 9.983358874187909
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.047454118728637695,
+          "dx": -0.011828173122825485,
+          "dy": 10.027223918738384
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 1.0,
+          "uniqueness": 0.01320946216583252,
+          "dx": 0.004340628898323233,
+          "dy": 9.981152218947058
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 1.0,
+          "uniqueness": 0.020711064338684082,
+          "dx": -0.0033327383450642506,
+          "dy": 10.015731821048716
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "shift_exceeds_original_bound",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.0015789366590553307,
+        10.007225573606732
+      ],
+      "patch_spread": 0.01999834513165233
+    },
+    {
+      "case": "native-translation-1280--60-0",
+      "status": "unprovable",
+      "dx_band_px": -29.949258039568605,
+      "dy_band_px": -0.018018279039210938,
+      "phase_score": 0.8089004764321409,
+      "correlation": 0.515157594471522,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": false
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.719883143901825,
+          "uniqueness": 0.044619977474212646,
+          "dx": -11.430492162679366,
+          "dy": 6.005777581283873
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9413895606994629,
+          "uniqueness": 0.004671156406402588,
+          "dx": -5.327133707104546,
+          "dy": 7.112622778738891
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": false
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "insufficient_patch_agreement"
+    }
+  ]
+}

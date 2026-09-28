@@ -1,0 +1,35 @@
+ M docs/lanes/explore-policy.md
+ M docs/lanes/human-admission-handoff-20260927.md
+ M docs/research/evaluator-checkin.md
+?? docs/evidence/live-loop-fallback-20260927/cuda-t2/replay/
+?? docs/evidence/live-loop-fallback-20260927/prepared/events.jsonl
+?? docs/evidence/live-loop-fallback-20260927/prepared/frames.jsonl
+?? docs/evidence/nitrogen-yaw-dropout-20260928/._probe-launch-01
+?? docs/evidence/nitrogen-yaw-dropout-20260928/._probe-results-01
+?? docs/lanes/idm-gate2-anchors-results.md
+?? docs/lanes/idm-gate2-anchors.md
+?? docs/lanes/idm-gate2-assumptions-addendum-20260926.md
+?? docs/lanes/live-loop-diagnosis-20260928.md
+?? docs/research/evaluator-checkin-20260927-1630.md
+?? docs/research/evaluator-checkin-20260927-1715.md
+?? docs/research/evaluator-checkin-20260927-1800.md
+?? docs/research/evaluator-checkin-20260927-1845.md
+?? docs/research/evaluator-checkin-20260927-1930.md
+?? docs/research/evaluator-checkin-20260927-2015.md
+?? docs/research/evaluator-checkin-20260927-2145.md
+?? docs/research/evaluator-checkin-20260927-2214.md
+?? docs/research/evaluator-checkin-20260927-2230.md
+?? docs/research/evaluator-checkin-20260927-2315.md
+?? docs/research/evaluator-checkin-20260928-0015.md
+?? docs/research/evaluator-checkin-20260928-0115.md
+?? docs/research/evaluator-checkin-20260928-0315.md
+?? docs/research/evaluator-checkin-20260928-0515.md
+?? docs/research/evaluator-checkin-20260928-0915.md
+?? docs/research/evaluator-checkin-20260928-1115.md
+?? docs/research/evaluator-checkin-20260928-1215.md
+?? docs/research/evaluator-checkin-20260928-1315.md
+?? docs/research/evaluator-checkin-20260928-1715.md
+?? docs/research/idm-to-policy-priority-20260928.md
+?? docs/research/modal-guard-reliability-audit-20260928.md
+?? perception/replay_cuts.py
+?? tests/test_replay_cuts.py

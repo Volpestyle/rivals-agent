@@ -89,24 +89,35 @@ class DiscardWorker:
 
 
 def warm_start(capture, worker, journal, *, focused, key_pressed, in_range, idle_warning,
-               memory, capture_hz=30., clock=time.perf_counter, sleep=time.sleep):
+               memory, capture_hz=30., clock=time.perf_counter, sleep=time.sleep, refusal_sink=None):
     """Prime capture/proof and the SAME worker before the A/B/A clock starts.
 
     Only the first prediction gets a separate cold-start allowance. All following
     predictions must meet the unchanged steady deadline. Stale startup frames are
-    discarded before two consecutive fresh proofs; after that, any stale proof
-    aborts. Capture/proof and keyboard/focus guards continue during inference.
+    discarded throughout startup; each recovery needs two consecutive fresh
+    proofs within three seconds, still inside the ten-second total budget.
+    Capture/proof and keyboard/focus guards continue during inference.
     Native capture/proof calls cannot be interrupted; overruns fail on return.
     """
     require(math.isfinite(capture_hz) and 15 <= capture_hz <= 60, "capture Hz must be 15..60")
     require(not worker.busy, "startup worker already busy")
     started = clock()
     result = {"started": started, "stop_reason": "startup_timeout", "predictions": [],
-              "discarded_stale_frames": 0, "no_frame": 0, "capture_attempts": 0,
+              "discarded_stale_frames": 0, "reprime_count": 0, "no_frame": 0, "capture_attempts": 0,
               "shape": None, "memory_start": memory()}
     next_capture, last_fresh = started, None
     prime_count, completed = 0, 0
     primed, pending = False, None
+    recovery_started = started
+    reference, current, captured = None, None, None
+
+    def lose_prime(at, reason):
+        nonlocal primed, prime_count, recovery_started
+        if primed:
+            recovery_started = at
+            result["reprime_count"] += 1
+            journal.event(kind="startup_reprime", at=at, reason=reason)
+        primed, prime_count = False, 0
 
     def stop():
         return "keypress" if key_pressed() else "focus_lost" if not focused() else None
@@ -123,11 +134,10 @@ def warm_start(capture, worker, journal, *, focused, key_pressed, in_range, idle
                 break
             if now - started >= STARTUP_LIMIT_S:
                 break
-            if not primed and now - started >= PRIME_LIMIT_S:
-                result["stop_reason"] = "capture_prime_timeout"
-                break
             if primed and now - last_fresh > FRESH_S:
-                result["stop_reason"] = "capture_stale"
+                lose_prime(last_fresh + FRESH_S, "capture_gap")
+            if not primed and now - recovery_started >= PRIME_LIMIT_S:
+                result["stop_reason"] = "capture_prime_timeout"
                 break
             if worker.busy:
                 limit = COLD_PREDICTION_LIMIT_S if completed == 0 else PREDICTION_LIMIT_S
@@ -146,7 +156,7 @@ def warm_start(capture, worker, journal, *, focused, key_pressed, in_range, idle
                 elif now - pending >= limit:
                     result["stop_reason"] = "prediction_timeout"
                     break
-            if completed == 1 + WARM_PREDICTIONS:
+            if completed == 1 + WARM_PREDICTIONS and primed and now - last_fresh <= FRESH_S:
                 result["stop_reason"] = "ready"
                 break
             if now < next_capture:
@@ -154,7 +164,9 @@ def warm_start(capture, worker, journal, *, focused, key_pressed, in_range, idle
                 continue
             next_capture += (max(0, int((now - next_capture) * capture_hz)) + 1) / capture_hz
             captured = clock()
+            current = None
             frame = capture.grab()
+            current = frame
             acquired = clock()
             result["capture_attempts"] += 1
             reason = stop()
@@ -178,7 +190,8 @@ def warm_start(capture, worker, journal, *, focused, key_pressed, in_range, idle
             idle = idle_warning(frame)
             proof_done = clock()
             age = proof_done - captured
-            journal.event(kind="startup_capture", captured=captured, capture_duration_s=acquired - captured,
+            journal.event(kind="startup_capture", captured=captured, acquired=acquired, proof_done=proof_done,
+                          prediction_pending=worker.busy, capture_duration_s=acquired - captured,
                           range_duration_s=range_done - acquired, idle_duration_s=proof_done - range_done,
                           proof_age_s=age, range_ok=bool(range_ok), idle_warning=bool(idle), primed=primed)
             reason = stop()
@@ -187,22 +200,24 @@ def warm_start(capture, worker, journal, *, focused, key_pressed, in_range, idle
                 break
             if proof_done - started >= STARTUP_LIMIT_S:
                 break
-            if not primed and proof_done - started >= PRIME_LIMIT_S:
+            if not primed and proof_done - recovery_started >= PRIME_LIMIT_S:
                 result["stop_reason"] = "capture_prime_timeout"
                 break
             if age > FRESH_S:
-                if primed:
-                    result["stop_reason"] = "stale_proof"
-                    break
                 result["discarded_stale_frames"] += 1
-                prime_count = 0
+                lose_prime(captured, "stale_proof")
                 continue
+            if last_fresh is not None and captured - last_fresh > FRESH_S:
+                lose_prime(last_fresh + FRESH_S, "capture_gap")
             last_fresh = captured
+            # Bounded two-frame evidence, outside phase timing. Capture may
+            # reuse its buffer; preserve the last proven frame independently.
+            reference = (captured, frame.copy())
             prime_count += 1
             if not primed and prime_count >= PRIME_FRAMES:
                 primed = True
                 result["primed_at"] = clock()
-            if primed and not worker.busy and clock() - captured <= FRESH_S:
+            if primed and completed < 1 + WARM_PREDICTIONS and not worker.busy and clock() - captured <= FRESH_S:
                 worker.submit(frame, captured)
                 pending = captured
     except KeyboardInterrupt:
@@ -211,8 +226,43 @@ def warm_start(capture, worker, journal, *, focused, key_pressed, in_range, idle
         result.update(stop_reason="runtime_error", error=f"{type(exc).__name__}: {exc}")
     result.update(stopped=clock(), memory_end=memory(), prediction_pending=worker.busy)
     result["elapsed_s"] = result["stopped"] - started
+    if result["stop_reason"] != "ready":
+        metadata = {"decision_t": result["stopped"], "current_captured": captured,
+                    "reference_captured": reference[0] if reference else None,
+                    "current_available": current is not None, "reference_available": reference is not None}
+        frames = []
+        if reference is not None:
+            frames.append(("last-fresh", reference[1], reference[0]))
+        if current is not None:
+            frames.append(("current", current.copy(), captured))
+        # Startup has stopped; no capture/proof/input loop executes in the sink.
+        # This runner has no actuator. Production stops its worker before encode.
+        try:
+            result["refusal_evidence"] = refusal_sink(frames, metadata) if refusal_sink else {
+                **metadata, "retained": False, "reason": "no refusal sink (injected test runner)"}
+        except Exception as exc:
+            result["refusal_evidence"] = {**metadata, "retained": False, "error": repr(exc)}
     journal.event(kind="startup_end", **result)
     journal.write("startup.json", result)
+    return result
+
+
+def save_startup_refusal(journal, frames, metadata):
+    """Encode only after the actuator-free startup loop has stopped."""
+    import cv2
+    records = []
+    for role, frame, captured in frames:
+        ok, encoded = cv2.imencode(".png", frame, [cv2.IMWRITE_PNG_COMPRESSION, 1])
+        require(ok, "startup refusal encoding failed")
+        raw = encoded.tobytes()
+        path = "startup-refusal-" + role + ".png"
+        with (journal.output / path).open("xb") as stream:
+            stream.write(raw)
+        records.append({"role": role, "path": path, "captured": captured,
+                        "sha256": hashlib.sha256(raw).hexdigest(), "shape": list(frame.shape)})
+    result = {**metadata, "retained": bool(records), "frames": records,
+              "written_after": "actuator_free_startup_stopped"}
+    journal.write("startup-refusal.json", result)
     return result
 
 
@@ -608,7 +658,10 @@ def main(argv=None):
         worker = DiscardWorker(predictor)
         guards = dict(focused=focused, key_pressed=keys, in_range=in_range, idle_warning=idle_warning,
                       memory=lambda: memory_snapshot(a.device), capture_hz=a.capture_hz)
-        startup = warm_start(cap, worker, journal, **guards)
+        def retain_refusal(frames, metadata):
+            metadata["inference_worker_stopped"] = worker.close()
+            return save_startup_refusal(journal, frames, metadata)
+        startup = warm_start(cap, worker, journal, refusal_sink=retain_refusal, **guards)
         if startup["stop_reason"] != "ready":
             journal.write("result.json", {"stop_reason": "startup_" + startup["stop_reason"],
                           "startup": startup, "phases": [], "samples": [],

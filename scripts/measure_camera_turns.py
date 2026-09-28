@@ -27,6 +27,7 @@ from scripts import l4_measure as l4
 SIGNED = tuple(s * d for s in (1, -1) for d in (.1, .2, .3, .45, .6, .8, 1.))
 PRIME_D, PRIME_S = START_TURN_RX, START_TURN_S  # reviewed M1 initialization, never calibration
 FILES = ("scripts/measure_camera_turns.py", "tests/test_measure_camera_turns.py",
+         "perception/camera_ready_pose.py",
          "agent/controller.py", "agent/startup.py", "scripts/l4_measure.py", "scripts/record.py",
          "agent/pad_bindings.py", "agent/loop.py", "scripts/run_range_bc_live.py",
          "agent/live_range_bc.py", "scripts/capture.py")
@@ -107,27 +108,106 @@ def save_native(journal, name, frame, captured):
 
 def unchanged_pose(reference, frame):
     """A token cannot approve a view that moved after its saved ready frame."""
-    import numpy as np
-    a, b = l4.band(reference), l4.band(frame)
-    (dx, dy), score = l4.phase_shift(a, b)
-    correlation = float(np.corrcoef(a.ravel(), b.ravel())[0, 1]) if min(a.std(), b.std()) >= 1 else 0.
-    audit = {"dx_band_px": float(dx), "dy_band_px": float(dy), "phase_score": float(score),
-             "correlation": correlation}
-    require(all(math.isfinite(v) for v in audit.values()) and score >= .5
-            and max(abs(dx), abs(dy)) <= 1.5 and correlation >= .95,
-            "ready pose changed or unprovable: " + str(audit))
+    from perception.camera_ready_pose import analyze
+    audit = analyze(reference, frame)
+    if audit["status"] == "unprovable":
+        raise PoseUnprovable(audit)
+    if audit["status"] != "unchanged":
+        raise ReadyPoseRefused("ready pose changed", audit)
     return audit
 
 
-def attach_after_token(factory, capture, journal, capture_proof, acknowledge, guard, end):
+class PoseUnprovable(ValueError):
+    def __init__(self, audit):
+        super().__init__("ready pose changed or unprovable: " + str(audit))
+        self.audit = audit
+
+
+class ReadyPoseRefused(ValueError):
+    def __init__(self, reason, audit=None):
+        super().__init__(reason)
+        self.audit = audit
+        self.frames = []
+        self.times = {}
+
+
+def retain_pose_refusal(live, journal, exc):
+    """Called only on exit: neutralize/close before any synchronous encoding."""
+    if live is not None:
+        live.close()
+    if isinstance(exc, ReadyPoseRefused):
+        try:
+            for role, frame, captured in exc.frames:
+                save_native(journal, "refusal-" + role, frame, captured)
+            journal.write("pose-refusal.json", {"audit": exc.audit, **exc.times,
+                "frames": [role for role, _, _ in exc.frames],
+                "written_after": "pad_closed" if live is not None else "no_pad_attached"})
+            return {"retained": True, "metadata": "pose-refusal.json"}
+        except Exception as error:
+            return {"retained": False, "error": repr(error)}
+    return None
+
+
+def ready_proof(reference, proof, end, journal, *, clock=time.perf_counter, sleep=time.sleep,
+                reference_t=None, frame_time=lambda: None):
+    """Only while neutral: <=1 s quality recovery, never change the reference.
+
+Movement refuses immediately. After unknown quality, two consecutive proven
+frames are required. Every acquisition still runs the caller's full guards.
+"""
+    deadline = min(end, clock() + 1.)
+    recovering, consecutive = False, 0
+    frame, captured, audit = None, None, None
+    def refuse(reason, value=None):
+        decided = clock()
+        exc = ReadyPoseRefused(reason, value if value is not None else audit)
+        # Arrays only; no encoding or disk IO until the caller has closed Live.
+        exc.frames = [("reference", reference.copy(), reference_t)]
+        if frame is not None:
+            exc.frames.append(("current", frame.copy(), captured))
+        exc.times = {"reference_captured": reference_t, "current_captured": captured,
+                     "decision_t": decided, "current_available": frame is not None}
+        raise exc
+    while clock() < deadline:
+        frame = proof()
+        captured = frame_time()
+        if clock() >= deadline:
+            refuse("ready pose recovery deadline during capture")
+        try:
+            audit = unchanged_pose(reference, frame)
+        except PoseUnprovable as exc:
+            audit = exc.audit
+            recovering, consecutive = True, 0
+            journal.event(kind="pose_quality_wait", t=clock(), audit=exc.audit)
+        except ReadyPoseRefused as exc:
+            refuse(str(exc), exc.audit)
+        except Exception as exc:
+            refuse("ready pose analysis failed: " + repr(exc))
+        else:
+            if clock() >= deadline:
+                refuse("ready pose recovery deadline during analysis")
+            consecutive += 1
+            if not recovering or consecutive >= 2:
+                if recovering:
+                    journal.event(kind="pose_quality_recovered", t=clock(), audit=audit)
+                return frame
+        sleep(.01)
+    refuse("ready pose unprovable within neutral recovery deadline")
+
+
+def attach_after_token(factory, capture, journal, capture_proof, acknowledge, guard, end,
+                       *, clock=time.perf_counter, sleep=time.sleep):
     """No virtual pad exists during the first human inspection/token wait."""
     frame, captured = capture_proof()
     reference = frame.copy()
     save_native(journal, "ready-attach", reference, captured)
+    current_t = [None]
+    def acquire():
+        frame, current_t[0] = capture_proof()
+        return frame
     def fresh():
-        current, _ = capture_proof()
-        unchanged_pose(reference, current)
-        return current
+        return ready_proof(reference, acquire, end, journal, clock=clock, sleep=sleep,
+                           reference_t=captured, frame_time=lambda: current_t[0])
     acknowledge("attach", PRIME_D, fresh, end)
     fresh()  # re-prove after token acceptance, before constructing any actuator
     return factory(capture=capture, guard=guard, settle_s=0.)
@@ -190,18 +270,20 @@ def initialize_pad(live, journal, proof, scope_end, *, clock=time.perf_counter, 
     # clearance and level/bot-free pose on the subsequent ready-0 image.
     settle_start, settle_end = clock(), clock() + START_SETTLE_S
     require(settle_end < scope_end, "insufficient block time for neutral device settling")
-    stable = None
+    stable, stable_t = None, None
     while clock() < settle_end:
         frame = proof()
         if clock() >= settle_end - .5:
             if stable is None:
                 stable = frame.copy()
+                stable_t = live.frame_t
             else:
-                unchanged_pose(stable, frame)
+                ready_proof(stable, proof, scope_end, journal, clock=clock, sleep=sleep,
+                             reference_t=stable_t, frame_time=lambda: live.frame_t)
         sleep(.01)
-    after = proof()
     require(stable is not None, "no frames during final neutral stability interval")
-    unchanged_pose(stable, after)
+    after = ready_proof(stable, proof, scope_end, journal, clock=clock, sleep=sleep,
+                        reference_t=stable_t, frame_time=lambda: live.frame_t)
     save_native(journal, "initialization-after", after, live.frame_t)
     result.update(settle_started=settle_start, excluded_until=clock(), after_t=live.frame_t,
                   banner_clearance="operator_ready_0_inspection_required")
@@ -291,13 +373,13 @@ def run_block(live, deflections, duration, journal, *, proof, acknowledge, focus
             # Separate file/metadata: never compete with Journal's frame writer.
             # Encoding is synchronous only while neutral, before acknowledgement.
             reference = frame.copy()
-            save_native(journal, f"ready-{index}", reference, live.frame_t)
-            def ready_proof():
-                current = guarded_proof()
-                unchanged_pose(reference, current)
-                return current
-            acknowledge(index, d, ready_proof, end)
-            ready_proof()  # Covers even a token returned as the view starts moving.
+            reference_t = live.frame_t
+            save_native(journal, f"ready-{index}", reference, reference_t)
+            def prove_ready():
+                return ready_proof(reference, guarded_proof, end, journal, clock=clock,
+                                   reference_t=reference_t, frame_time=lambda: live.frame_t)
+            acknowledge(index, d, prove_ready, end)
+            prove_ready()  # Covers even a token returned as the view starts moving.
             if pulse_axis:
                 try:
                     result = measure_pulse(live, d, duration, pulse_axis, focal, journal, index,
@@ -494,9 +576,9 @@ def main(argv=None):
                                      "initialization_excluded": "initialization.json",
                                      "report_timing": timing, "acceptance": "raw_unreviewed"})
     except BaseException as exc:
-        if live is not None:
-            live.close()
+        refusal_evidence = retain_pose_refusal(live, journal, exc)
         journal.write("failure.json", {"error": repr(exc), "report_timing": timing, "acceptance": "failed",
+            "refusal_evidence": refusal_evidence,
             "initialization_excluded": {"interval_events": "events.jsonl", "detail_if_present": "initialization.json"}})
         raise
     finally:

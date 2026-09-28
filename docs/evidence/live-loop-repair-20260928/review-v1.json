@@ -1,0 +1,100 @@
+{
+  "format": "camera-turns-review-v1",
+  "files": {
+    "scripts/measure_camera_turns.py": "6c0bb35df81187bb81a84177cfa889a7990940669610c013a36520bd82767239",
+    "tests/test_measure_camera_turns.py": "be68f8187126138920b2f2a9aeba7b8854ef31cf79e6e752e75c4ebf329b9565",
+    "perception/camera_ready_pose.py": "2ff123e0b22995096d63fa674a26459c35158bcb25b65d3621ccdaf1fcf9c29f",
+    "agent/controller.py": "4e5bb70fca797ab17a25a8699d1ad111f0b7cd561f59d2b308a52c10b44da060",
+    "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+    "scripts/l4_measure.py": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1",
+    "agent/loop.py": "040c77c2c4ed0fff5a893e6e00991c8df7bad1e87267bf6d416964911b1e596f",
+    "scripts/run_range_bc_live.py": "446ef0bb2dc74c615f8c445dfac043ec0be4bfbd3c36195e9dfc727c8a9f7823",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547"
+  },
+  "verdict": "LAND",
+  "reviewer": "live-review (Claude Opus 5.5)",
+  "reviewed_at": "2026-09-28",
+  "scope": "live-input safety only: ready-pose guard and bounded neutral recovery in measure_camera_turns, cold-start re-prime in measure_inference_fps, refusal-frame retention; no rate, focal, map or FPS cost accepted",
+  "base_head": "bf782b6f9fed0571f1dec20b6b956dd5e815418f",
+  "head_at_review": "45676591fafcadca9923ddbef516a257c471c770",
+  "head_note": "4567659 adds IDM reader files only; no pinned file changed",
+  "additional_files": {
+    "tests/test_camera_ready_pose.py": "7cf8f039da79f27e5b923133abdc9549db97f2196eff9a20ffa9118bc64263eb",
+    "scripts/measure_inference_fps.py": "ae8ca033cdc28cdf91497617668b551680e2849533d2efddb067fe2e6ee97865",
+    "tests/test_measure_inference_fps.py": "e8ba017037d596d518d2d7f35409a4316a7bbc740bd4e824d221906813b92f9a"
+  },
+  "inputs": {
+    "docs/evidence/live-loop-repair-20260928/review-inputs.json": "617f7a5d4527c67e2bb8af05ee0f55939a02a9d46afef16c232b7ca665f6ed0c",
+    "docs/evidence/live-loop-repair-20260928/driver-delta.patch": "5583128f5109154cb6718b3fe00c04c63ffce347d7f51ef28b2d6a5ce7b1587f",
+    "docs/evidence/live-loop-repair-20260928/input-ast.json": "9acab1686ab66220a2469aa60ac1ac5a250c07a17df8f15818ac515f697f2734",
+    "docs/evidence/live-loop-repair-20260928/RESULT.md": "3a67228db70df5fc98e42f6d0e2cd82534f3b7d3cf9249dfebb68f4129351dfc",
+    "docs/evidence/live-loop-repair-20260928/pose-final.json": "49c80fbd9dd54f3e6f3c72da2fb389ffe547ba3abd2b9d4efc2bdfc8f9c58c1b",
+    "docs/evidence/live-loop-repair-20260928/fps-timing-final.json": "a8bb023e65a289d3b4f9533c870b044183eb6653e8b5ad2ff304627bd528f10a",
+    "docs/lanes/live-loop-diagnosis-20260928.md": "a7a167f5f058e6d5e17a6cabcd38c2734641f21c22482c19b897c6adc1ac4d83",
+    "data/calibration/alt-cam-20260928/SITTING.md": "59871fa2cc146073ee36047e9d30fbd0c0e4385eea45e8f74981e0b9e3349dad",
+    "docs/evidence/camera-turns-20260927/camera-turns-review-v1-a4.json": "1be5e51413ee642391f201cab98e78dc39f5fa133fa0a4a8a03a53de633caec9"
+  },
+  "tests": "tests/test_camera_ready_pose.py tests/test_measure_camera_turns.py tests/test_measure_inference_fps.py --corpus: 128 passed in 11.96 s (private uv env, perception group, CUDA hidden)",
+  "findings": [
+    {
+      "id": 1,
+      "severity": "medium",
+      "blocking": false,
+      "file": "perception/camera_ready_pose.py",
+      "line": 68,
+      "summary": "Whole-band correlation >=.95 gate dropped (undisclosed); only 3 patches contribute on the native scene, so the centre gap strip and lower-right quadrant are checked only by global phase.",
+      "failure_scenario": "Centre strip (band x112-152, 80x300 px at 1280) replaced by noise/flat colour returns unchanged (corr .816/.910); HEAD refused. A bot entering there after ready-N inspection would not stop the segment. Pad input and guards unaffected."
+    },
+    {
+      "id": 2,
+      "severity": "low",
+      "blocking": false,
+      "file": "perception/camera_ready_pose.py",
+      "line": 74,
+      "summary": "phase<.5 returns unprovable before the absolute patch-offset check, so confident agreeing motion beyond the bound under blur is treated as quality, not movement.",
+      "failure_scenario": "Horizontal blur 31 + 10 px shift: patches agree at ~5 band px, phase .459 -> unprovable; refusal waits up to 1 s neutral and logs pose_quality_wait. Never passes. Contradicts docstring 'Movement refuses immediately'."
+    },
+    {
+      "id": 3,
+      "severity": "low",
+      "blocking": false,
+      "file": "perception/camera_ready_pose.py",
+      "line": 68,
+      "summary": "Zero patch redundancy on the native scene: patch (1,1) uniqueness .016 < .02 even on identical frames; tail-frame margins .029-.035.",
+      "failure_scenario": "Any one of the three contributing patches disturbed -> unprovable -> refusal after 1 s (safe direction; retry may refuse again)."
+    },
+    {
+      "id": 4,
+      "severity": "low",
+      "blocking": false,
+      "file": "scripts/measure_inference_fps.py",
+      "line": 215,
+      "summary": "Full-resolution copy of every fresh startup frame for refusal evidence precedes the submit-freshness re-check.",
+      "failure_scenario": "~11 MB copy per frame during the cold forward can make a fresh frame miss submission; cannot cause stale submission."
+    },
+    {
+      "id": 5,
+      "severity": "info",
+      "blocking": false,
+      "file": "scripts/measure_camera_turns.py",
+      "line": 37,
+      "summary": "verify_receipt checks only format and file hashes; this receipt alone authorizes the run. CRLF rewrite on a fresh checkout fails closed.",
+      "failure_scenario": "Re-verify on the sitting checkout after commit."
+    },
+    {
+      "id": 6,
+      "severity": "info",
+      "blocking": false,
+      "file": "docs/evidence/live-loop-repair-20260928/input-ast.json",
+      "line": 1,
+      "summary": "Sorted-multiset call comparison cannot see relocation; the one relocated live.close() (main except -> retain_pose_refusal:136) was checked by the reviewer and still runs before any encoding.",
+      "failure_scenario": "None found."
+    }
+  ],
+  "limits": "Input safety only. The 0.944 failure frame is unidentified; no exact failed-frame pass is claimed. Focal, camera map, GPU FPS cost and learned-policy acceptance remain unknown.",
+  "review": "docs/evidence/live-loop-repair-20260928/review-v1.md",
+  "review_sha256": "4112c265ce5c128df2183913c69f160f9669691a4d08a77af925ea3c17dde00c"
+}
