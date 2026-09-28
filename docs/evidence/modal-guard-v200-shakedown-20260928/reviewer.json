@@ -1,0 +1,18 @@
+{
+  "reviewer": "fit-review",
+  "decision": "LAND",
+  "scope": "spend-guard",
+  "release_sha256": "e7fb306cfb7fa3f7e9047b78ef85a4824071c5a29eb17d6c85957f8d03531823",
+  "commit": "ead3e6d9a3f19c22f27fae0c39102b3d0e2f6ee9",
+  "review_date": "2026-09-28",
+  "report": "review-modal-guard-v200-ead3e6d9.md",
+  "handback_sha256": "5ca35115d91f368f0724bdbe0cfde2ecabe0cc00a9a72934fb55ce8af4ddc7ff",
+  "sha256sums_sha256": "9338bca2a21274ad37cd09863763b9b764036637a055bfc27fd235e84d279964",
+  "review_boundary": "James-authorized removal of custom financial/deadline controls; detached lifecycle and stage integrity",
+  "independent_windows_tests": "36 passed, 2 native skips",
+  "reused_pinned_mac_tests": "38 passed, SDK1.5.5; native source closure 14 files PASS",
+  "independent_sdk_inspection": "SDK1.5.5 detached app state and heartbeat-disconnect semantics verified offline",
+  "unresolved_blocking_findings": [],
+  "additional_budget_authorized": false,
+  "paid_shakedown_demonstrated": false
+}

@@ -1,0 +1,4 @@
+2026-09-28 02:47:42-05:00 Function 'execute_checked' (fu-t5f0hlBfdhh62KOrKjbITp) is waiting to be scheduled on a GPU_L40S worker. We are actively working on acquiring more capacity for your workload.
+2026-09-28 02:48:36-05:00 Task's current input(s) ["in-01M3KFNRE45JXF1D1NH7XB9AGZ:1790581596632-0"] cancelled because: Task's current input in-01M3KFNRE45JXF1D1NH7XB9AGZ:1790581596632-0 hit its timeout of 30s
+2026-09-28 02:48:36-05:00 [modal-client] 2026-09-28T07:48:36+0000 Received a cancellation signal while processing input ('in-01M3KFNRE45JXF1D1NH7XB9AGZ:1790581596632-0',)
+2026-09-28 02:48:36-05:00 [modal-client] 2026-09-28T07:48:36+0000 Successfully canceled input ('in-01M3KFNRE45JXF1D1NH7XB9AGZ:1790581596632-0',)
