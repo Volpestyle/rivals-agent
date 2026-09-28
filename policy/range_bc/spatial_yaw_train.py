@@ -31,8 +31,8 @@ BASE_PINS = {
 
 class SpatialYawPolicy(FrozenBaseYaw):
     """Packed feature adapter to the unchanged H1 trainer and block evaluator."""
-    def __init__(self, base, grid):
-        super().__init__(base, grid)
+    def __init__(self, base, grid, *, hidden_dropout=0.):
+        super().__init__(base, grid, hidden_dropout=hidden_dropout)
         self.config, self.horizon, self.grid = base.config, 1, grid
 
     def forward_pair(self, global_frames, crop_frames, hud_frames, prev, state=None, regime=None,
@@ -95,6 +95,9 @@ def checked_spec(path, digest):
                   and spec["epochs"] == 26 and spec["updates"] == 15288, "unapproved arm/schedule")
     train.require(spec["base_sha256"] == BASE_PINS[spec["seed"]][0]
                   and spec["cutoff_sha256"] == BASE_PINS[spec["seed"]][1], "base/cutoff identity differs")
+    dropout = spec.get("hidden_dropout", 0.)
+    train.require(type(dropout) in (int, float) and dropout in (0., .5)
+                  and (dropout == 0. or spec["grid"] == 4), "unapproved hidden dropout")
     return spec
 
 
@@ -129,7 +132,8 @@ def fit(root, *, spec_path, spec_sha256):
     model, _, status = fit_chunks(
         batches, base.config, stats, root, dev=dev_batches, seed=spec["seed"], epochs=26,
         device=device, resume=False, run_identity=spec_sha256,
-        model_factory=lambda config, horizon: SpatialYawPolicy(base, spec["grid"]),
+        model_factory=lambda config, horizon: SpatialYawPolicy(
+            base, spec["grid"], hidden_dropout=spec.get("hidden_dropout", 0.)),
         recipe_extra={"spatial_yaw": spec, "head_parameters": 201187,
                       "base_tensor_sha256": before, "cache_precision": "bf16 tower / fp16 features"},
         progress=lambda done, total: print(f"spatial yaw {spec['grid']} seed {spec['seed']}: {done}/{total}", flush=True))
@@ -158,7 +162,7 @@ def evaluate(root, *, spec_path, spec_sha256):
                   "not the completed final fit")
     base, _ = load_base(spec["base_checkpoint"], spec["base_sha256"], spec["seed"])
     before = tensor_digest(base)
-    model = SpatialYawPolicy(base, spec["grid"])
+    model = SpatialYawPolicy(base, spec["grid"], hidden_dropout=spec.get("hidden_dropout", 0.))
     model.load_state_dict(payload["model"], strict=True)
     train.require(tensor_digest(model.base) == before == receipt["base_tensor_sha256"], "frozen base changed")
     del payload

@@ -16,9 +16,11 @@ def pool_grid(tokens, grid):
 class SpatialYawReadout(nn.Module):
     """Same 201,187 parameters for either grid; current pixels + detached visual memory."""
 
-    def __init__(self, grid):
+    def __init__(self, grid, *, hidden_dropout=0.):
         super().__init__()
         train.require(grid in (4, 8), "only the preselected 4/8 grids")
+        train.require(hidden_dropout in (0., .5) and (hidden_dropout == 0. or grid == 4),
+                      "only the approved 4x4 hidden-dropout arm")
         self.grid = grid
         centers = (torch.arange(grid).float() + .5) * (2 / grid) - 1
         y, x = torch.meshgrid(centers, centers, indexing="ij")
@@ -26,6 +28,7 @@ class SpatialYawReadout(nn.Module):
         self.token = nn.Linear(1026, 64)
         self.score = nn.Linear(64, 4)
         self.hidden = nn.Linear(1024, 128)
+        self.hidden_dropout = nn.Dropout(hidden_dropout)
         self.out = nn.Linear(128, vocab.CAMERA_CLASSES)
         nn.init.zeros_(self.out.weight)
         nn.init.zeros_(self.out.bias)
@@ -39,19 +42,19 @@ class SpatialYawReadout(nn.Module):
 
     def forward(self, global_features, crop_features, frozen_hidden):
         joined = torch.cat((self.view(global_features), self.view(crop_features), frozen_hidden.detach()), -1)
-        return self.out(torch.relu(self.hidden(joined)))
+        return self.out(self.hidden_dropout(torch.relu(self.hidden(joined))))
 
 
 class FrozenBaseYaw(nn.Module):
     """Actions/pitch follow the original operations; only a cloned yaw slice changes."""
 
-    def __init__(self, base, grid):
+    def __init__(self, base, grid, *, hidden_dropout=0.):
         super().__init__()
         train.require(not base.config.history and not base.config.hud
                       and not base.config.regime_bit and base.config.frames
                       and base.config.hidden == 512 and base.horizon == 1, "wrong frozen base")
         self.base = base.requires_grad_(False).eval()
-        self.yaw = SpatialYawReadout(grid)
+        self.yaw = SpatialYawReadout(grid, hidden_dropout=hidden_dropout)
 
     def train(self, mode=True):
         super().train(mode)
