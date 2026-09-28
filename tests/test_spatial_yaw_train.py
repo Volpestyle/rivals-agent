@@ -35,6 +35,43 @@ def source_array():
     return train.SessionArrays(session, (frames, frames, frames, list(range(8)), {}))
 
 
+def test_fit_entry_matches_encoder_stride_before_loading_checkpoint(tmp_path, monkeypatch):
+    from policy.range_bc import spatial_yaw_train as runner
+    from policy.range_bc.explore_encoder import FeatureBatches
+
+    # Metadata only: 4,704 train windows require 588 batches/epoch and
+    # exactly 15,288 updates. The generic loader's stride 48 must fail here.
+    arrays = [SimpleNamespace(runs=[(0, 96 + 64*4703)], press_windows=None)]
+    dev = [SimpleNamespace(runs=[(0, 96 + 64*5)], press_windows=None)]
+    expected = [FeatureBatches(x, stride=64).windows for x in (arrays, dev)]
+    assert len(expected[0]) == 4704
+    assert SpatialBatches(arrays).windows != expected[0]
+    seen = []
+
+    def batches(*args, **kwargs):
+        value = SpatialBatches(*args, **kwargs)
+        seen.append(value.windows)
+        assert value.window == 96
+        return value
+
+    class CheckpointBoundary(Exception):
+        pass
+
+    def checkpoint(*args):
+        assert seen == expected
+        raise CheckpointBoundary
+
+    monkeypatch.setattr(runner, "checked_spec", lambda *args: {
+        "dataset_root": "unused", "dataset_sha256": "unused", "grid": 4,
+        "base_checkpoint": "unused", "base_sha256": "unused", "seed": 1})
+    monkeypatch.setattr(runner, "runtime", lambda: "cpu")
+    monkeypatch.setattr(runner, "load_dataset", lambda *args: (arrays, dev, {}))
+    monkeypatch.setattr(runner, "SpatialBatches", batches)
+    monkeypatch.setattr(runner, "load_base", checkpoint)
+    with pytest.raises(CheckpointBoundary):
+        runner.fit(tmp_path, spec_path="unused", spec_sha256="unused")
+
+
 def portable(tmp_path, grid):
     import hashlib
     arr = source_array()

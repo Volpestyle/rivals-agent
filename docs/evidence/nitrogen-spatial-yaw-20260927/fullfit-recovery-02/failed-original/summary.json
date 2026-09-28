@@ -1,0 +1,101 @@
+{
+  "event": "FAILED_FITS_SETTLED_AND_AUTHORIZED_RECOVERY",
+  "recorded_at_unix": 1790557262.83728,
+  "attempts": [
+    {
+      "attempt_id": "yaw-fit-grid4-s1-20260927-01",
+      "app_id": "ap-UO8aRLuRGBxgZ3DjONeBiR",
+      "state": "TERMINAL",
+      "bound_usd": "0.257817",
+      "pins": {
+        "result.json": "5288ad8aed7f91c7941e23a1193359756b29940e5c9b9a7625259ace64397ab9",
+        "teardown.json": "04930c2db5b127df04d13c8ff6378d6a042106164d84824cd52c1a4b8c74f736",
+        "call.json": "b8ad650c791bfb637d725125deb61aae4bb6b0658aca53a7086ca5b1f5226dff",
+        "watchdog.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "failure": "matched window schedule differs",
+      "before_model_and_optimizer": true
+    },
+    {
+      "attempt_id": "yaw-fit-grid4-s2-20260927-01",
+      "app_id": "ap-KXUADFXfN3hOKoC8LP4ZAg",
+      "state": "TERMINAL",
+      "bound_usd": "0.186291",
+      "pins": {
+        "result.json": "0d56dd1eb480558703bd6bf6300e0d07344c853855a5a81441038734d71ad1d9",
+        "teardown.json": "d1d3356a810ccd623598dced9fb1201ae3c40a30c971b1072a1a1d12274610fe",
+        "call.json": "ede93a5cc18f5e12f9a72a3f80bea4b6c0134815705afc05b0342f18890841c4",
+        "watchdog.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "failure": "matched window schedule differs",
+      "before_model_and_optimizer": true
+    },
+    {
+      "attempt_id": "yaw-fit-grid4-s3-20260927-01",
+      "app_id": "ap-9QqYAuzBW5NeiSOJsplYDe",
+      "state": "TERMINAL",
+      "bound_usd": "0.164103",
+      "pins": {
+        "result.json": "046bf6e026cfce1df42ea12052abb8fe905ab620ceb961d3e7ebec5787f3b797",
+        "teardown.json": "6e492a392d822e21cfa917aa6209d42474162635c3805b037086f94cbae230ae",
+        "call.json": "b60f0ea96bf7af866c44bcd702d092de0218f40bc3862f87d96b9764964d66a9",
+        "watchdog.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "failure": "matched window schedule differs",
+      "before_model_and_optimizer": true
+    },
+    {
+      "attempt_id": "yaw-fit-grid8-s1-20260927-01",
+      "app_id": "ap-aR9yrvZkq12DyLQEhWyQGM",
+      "state": "TERMINAL",
+      "bound_usd": "0.264707",
+      "pins": {
+        "result.json": "a64accde682aac60bbec84e7c5ee2dca72c3e7cb2ff2e826ecdefc0674aa569e",
+        "teardown.json": "03a1f801ff22ffbfbe739752e16975e5cbf5746a22f217ab65a705dc3197a6ff",
+        "call.json": "4a40877ae572adf83688488c3fccba0d83d40898852746a471f0c03d31c9ceef",
+        "watchdog.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "failure": "matched window schedule differs",
+      "before_model_and_optimizer": true
+    },
+    {
+      "attempt_id": "yaw-fit-grid8-s2-20260927-01",
+      "app_id": "ap-M3WzgPwxkYUdYkZLp1ipPS",
+      "state": "TERMINAL",
+      "bound_usd": "0.476790",
+      "pins": {
+        "result.json": "6f3610b74d52d973c1a3ea308499f168ca0df7b401b7fc866c3ccfd754a56824",
+        "teardown.json": "97c2cd2aaf359e806a065c08764b2c3683e132d5cfc778661dd673674dd69456",
+        "call.json": "1e140a05083f2e4c374662d958ac9cc4edb5683a1a196fe8dabffd2579fed3a4",
+        "watchdog.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "failure": "matched window schedule differs",
+      "before_model_and_optimizer": true
+    },
+    {
+      "attempt_id": "yaw-fit-grid8-s3-20260927-01",
+      "app_id": "ap-2RMTItGkQ0fXwfNm68p9B7",
+      "state": "TERMINAL",
+      "bound_usd": "0.234092",
+      "pins": {
+        "result.json": "ad9bfb459f1efd54e93081a62bd8ba83304f1821cff43eb0ded31228363de927",
+        "teardown.json": "1194a7cdecca3d570b98a72f7eb2a923dac17cd2f4f268f53dd816e2d2fa488b",
+        "call.json": "746891a9047d10220ef457de5d1634ba6f8111a88513bdd5590670c8a360b900",
+        "watchdog.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "failure": "matched window schedule differs",
+      "before_model_and_optimizer": true
+    }
+  ],
+  "failed_fits_conservative_usd": "1.583800",
+  "shakedown_conservative_usd": "1.302986",
+  "extraction_conservative_usd": "1.780898",
+  "total_prior_conservative_usd": "4.667684",
+  "recovery_full_hold_usd": "14.971080",
+  "prior_plus_recovery_usd": "19.638764",
+  "campaign_cap_usd": "24",
+  "warn_usd": "20",
+  "old_active_holds_usd": "0",
+  "no_manual_credits": true,
+  "report_is_provider_balance": false
+}

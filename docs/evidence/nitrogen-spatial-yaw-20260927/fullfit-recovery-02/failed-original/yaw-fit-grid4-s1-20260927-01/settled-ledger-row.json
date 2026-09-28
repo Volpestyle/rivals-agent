@@ -1,0 +1,310 @@
+{
+  "app_id": "ap-UO8aRLuRGBxgZ3DjONeBiR",
+  "app_name": "rivals-yaw-fit-grid4-s1-20260927-01",
+  "attempt_id": "yaw-fit-grid4-s1-20260927-01",
+  "bootstrap_ref": {
+    "path": "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/fullfit-01/bootstrap.json",
+    "sha256": "9b3d6331b8f20b726b977918936a2be184d1dc142d2bf06e65b10677c3811a4b"
+  },
+  "bound_usd": "0.257817",
+  "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+  "fenced_at": 1790556880.776292,
+  "fenced_monotonic": 462266.026497291,
+  "funded_until": 1790560006.158869,
+  "hold": {
+    "bootstrap": {
+      "attempt_ids": [
+        "yaw-fit-grid4-s1-20260927-01",
+        "yaw-fit-grid4-s2-20260927-01",
+        "yaw-fit-grid4-s3-20260927-01",
+        "yaw-fit-grid8-s1-20260927-01",
+        "yaw-fit-grid8-s2-20260927-01",
+        "yaw-fit-grid8-s3-20260927-01"
+      ],
+      "campaign_cap_usd": "15",
+      "campaign_id": "nitrogen-spatial-yaw-fullfit-01",
+      "cleanup_seconds": 120,
+      "concurrency": 6,
+      "mode": "EXPLORATORY_BOOTSTRAP",
+      "overhead_usd": "0.04",
+      "rate_usd_second": "0.0007178888888888888888888888889",
+      "startup_seconds": 300,
+      "work_seconds": 3000,
+      "workload": "26epoch-frozenbase-dualgrid-yaw-sixfits-and-evaluation"
+    },
+    "cleanup_seconds": 120,
+    "envelope_sha256": "9b3d6331b8f20b726b977918936a2be184d1dc142d2bf06e65b10677c3811a4b",
+    "overhead_usd": "0.04",
+    "rate_usd_second": "0.0007178888888888888888888888889",
+    "reserved_usd": "2.495180",
+    "startup_seconds": 300,
+    "total_seconds": 3420,
+    "work_seconds": 3000
+  },
+  "image_id": "im-FNjy4v5u4XYF29SBGvT0KD",
+  "input_volume": "rivals-yaw-extract-20260927-02-outputs",
+  "input_volume_id": "vo-ujapSF2Htu9GfKAXEyXH70",
+  "lane": "explore-policy",
+  "month": "2026-09",
+  "output_root": "/outputs/yaw-fit-grid4-s1-20260927-01",
+  "output_volume": "rivals-yaw-fit-grid4-s1-20260927-01-outputs",
+  "proof": {
+    "app_name": "rivals-yaw-fit-grid4-s1-20260927-01",
+    "attempt_id": "yaw-fit-grid4-s1-20260927-01",
+    "checked_at": 1790556889.570376,
+    "errors": [
+      {
+        "at": 1790556884.72301,
+        "error": "Modal query failed: App is already stopped. (Finished at 2026-09-27 19:54:43-05:00).\n"
+      },
+      {
+        "at": 1790556887.574431,
+        "error": "Modal query failed: App is already stopped. (Finished at 2026-09-27 19:54:43-05:00).\n"
+      }
+    ],
+    "kind": "TERMINAL",
+    "snapshots": [
+      {
+        "checked_at": 1790556883.694669,
+        "checked_monotonic": 462268.944848666,
+        "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+        "complete": true,
+        "identity": {
+          "profile": "rivals",
+          "workspace": "volpestyle",
+          "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+        },
+        "raw": {
+          "apps": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "app",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790556883.030103,
+            "completed_monotonic": 462268.280290583,
+            "queried_at": 1790556882.39304,
+            "queried_monotonic": 462267.64322975,
+            "returncode": 0,
+            "sha256": "b5083a7e5c457c958dea655e227c1b1a5b092ca2cbef74e51a575d28d203de69",
+            "stdout": "[\n  {\n    \"app_id\": \"ap-M3WzgPwxkYUdYkZLp1ipPS\",\n    \"description\": \"rivals-yaw-fit-grid8-s2-20260927-01\",\n    \"state\": \"ephemeral\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 19:50:05-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-aR9yrvZkq12DyLQEhWyQGM\",\n    \"description\": \"rivals-yaw-fit-grid8-s1-20260927-01\",\n    \"state\": \"ephemeral\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 19:50:39-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-UO8aRLuRGBxgZ3DjONeBiR\",\n    \"description\": \"rivals-yaw-fit-grid4-s1-20260927-01\",\n    \"state\": \"stopping...\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 19:51:13-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-2RMTItGkQ0fXwfNm68p9B7\",\n    \"description\": \"rivals-yaw-fit-grid8-s3-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 19:49:48-05:00\",\n    \"stopped_at\": \"2026-09-27 19:54:12-05:00\"\n  },\n  {\n    \"app_id\": \"ap-KXUADFXfN3hOKoC8LP4ZAg\",\n    \"description\": \"rivals-yaw-fit-grid4-s2-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 19:50:56-05:00\",\n    \"stopped_at\": \"2026-09-27 19:53:05-05:00\"\n  },\n  {\n    \"app_id\": \"ap-9QqYAuzBW5NeiSOJsplYDe\",\n    \"description\": \"rivals-yaw-fit-grid4-s3-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 19:50:22-05:00\",\n    \"stopped_at\": \"2026-09-27 19:52:34-05:00\"\n  },\n  {\n    \"app_id\": \"ap-wihxUdGaIOvyh9GtyREBfW\",\n    \"description\": \"rivals-yaw-extract-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 19:12:06-05:00\",\n    \"stopped_at\": \"2026-09-27 19:46:39-05:00\"\n  },\n  {\n    \"app_id\": \"ap-Bm8ykgoK7p4BBkA9endyse\",\n    \"description\": \"rivals-yaw-extract-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 19:05:43-05:00\",\n    \"stopped_at\": \"2026-09-27 19:07:38-05:00\"\n  }\n]\n"
+          },
+          "containers": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "container",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790556883.694647,
+            "completed_monotonic": 462268.94482975,
+            "queried_at": 1790556883.030119,
+            "queried_monotonic": 462268.280303958,
+            "returncode": 0,
+            "sha256": "269a4664404ec7f426d367f9075cb56519ccdab2de753e08317f6b7ceacab208",
+            "stdout": "[\n  {\n    \"container_id\": \"ta-01M3JQX6NZ50HXZWVMDM6NKYRR\",\n    \"app_id\": \"ap-UO8aRLuRGBxgZ3DjONeBiR\",\n    \"app_name\": \"rivals-yaw-fit-grid4-s1-20260927-01\",\n    \"start_time\": \"2026-09-27 19:51:17-05:00\"\n  },\n  {\n    \"container_id\": \"ta-01M3JQW5XYNBAE6H5D509CH3XR\",\n    \"app_id\": \"ap-aR9yrvZkq12DyLQEhWyQGM\",\n    \"app_name\": \"rivals-yaw-fit-grid8-s1-20260927-01\",\n    \"start_time\": \"2026-09-27 19:50:43-05:00\"\n  },\n  {\n    \"container_id\": \"ta-01M3JQV4H92RKMWDN4JVXEZJHR\",\n    \"app_id\": \"ap-M3WzgPwxkYUdYkZLp1ipPS\",\n    \"app_name\": \"rivals-yaw-fit-grid8-s2-20260927-01\",\n    \"start_time\": \"2026-09-27 19:50:10-05:00\"\n  }\n]\n"
+          },
+          "identity": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/share/uv/tools/modal/bin/python",
+              "-m",
+              "cloud.modal_guard.provider",
+              "identity"
+            ],
+            "completed_at": 1790556882.392992,
+            "completed_monotonic": 462267.643184875,
+            "queried_at": 1790556881.951713,
+            "queried_monotonic": 462267.201905708,
+            "returncode": 0,
+            "sha256": "115ccb5f88cfa01cad9fa5ca24d1bbdbec18847c2450f8a2446bae25e817e6ee",
+            "stdout": "{\"profile\": \"rivals\", \"workspace\": \"volpestyle\", \"workspace_id\": \"ac-kMLf5bJKqF5CAlSbfNhGh0\"}\n"
+          }
+        }
+      },
+      {
+        "checked_at": 1790556886.644726,
+        "checked_monotonic": 462271.894883458,
+        "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+        "complete": true,
+        "identity": {
+          "profile": "rivals",
+          "workspace": "volpestyle",
+          "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+        },
+        "raw": {
+          "apps": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "app",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790556886.089243,
+            "completed_monotonic": 462271.339407875,
+            "queried_at": 1790556885.433751,
+            "queried_monotonic": 462270.683916833,
+            "returncode": 0,
+            "sha256": "ec27674f25580b1c49fd06e9c4ab72be248880f9dd3b8730654519f7ac071402",
+            "stdout": "[\n  {\n    \"app_id\": \"ap-M3WzgPwxkYUdYkZLp1ipPS\",\n    \"description\": \"rivals-yaw-fit-grid8-s2-20260927-01\",\n    \"state\": \"ephemeral\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 19:50:05-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-aR9yrvZkq12DyLQEhWyQGM\",\n    \"description\": \"rivals-yaw-fit-grid8-s1-20260927-01\",\n    \"state\": \"ephemeral\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 19:50:39-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-UO8aRLuRGBxgZ3DjONeBiR\",\n    \"description\": \"rivals-yaw-fit-grid4-s1-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 19:51:13-05:00\",\n    \"stopped_at\": \"2026-09-27 19:54:43-05:00\"\n  },\n  {\n    \"app_id\": \"ap-2RMTItGkQ0fXwfNm68p9B7\",\n    \"description\": \"rivals-yaw-fit-grid8-s3-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 19:49:48-05:00\",\n    \"stopped_at\": \"2026-09-27 19:54:12-05:00\"\n  },\n  {\n    \"app_id\": \"ap-KXUADFXfN3hOKoC8LP4ZAg\",\n    \"description\": \"rivals-yaw-fit-grid4-s2-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 19:50:56-05:00\",\n    \"stopped_at\": \"2026-09-27 19:53:05-05:00\"\n  },\n  {\n    \"app_id\": \"ap-9QqYAuzBW5NeiSOJsplYDe\",\n    \"description\": \"rivals-yaw-fit-grid4-s3-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 19:50:22-05:00\",\n    \"stopped_at\": \"2026-09-27 19:52:34-05:00\"\n  },\n  {\n    \"app_id\": \"ap-wihxUdGaIOvyh9GtyREBfW\",\n    \"description\": \"rivals-yaw-extract-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 19:12:06-05:00\",\n    \"stopped_at\": \"2026-09-27 19:46:39-05:00\"\n  },\n  {\n    \"app_id\": \"ap-Bm8ykgoK7p4BBkA9endyse\",\n    \"description\": \"rivals-yaw-extract-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 19:05:43-05:00\",\n    \"stopped_at\": \"2026-09-27 19:07:38-05:00\"\n  }\n]\n"
+          },
+          "containers": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "container",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790556886.644709,
+            "completed_monotonic": 462271.894869375,
+            "queried_at": 1790556886.0892649,
+            "queried_monotonic": 462271.339426625,
+            "returncode": 0,
+            "sha256": "8118c8d6aadefb2bbba2fe763d4db5e19ac75fb7e8f4b2c5d0b6bdd60831f8f6",
+            "stdout": "[\n  {\n    \"container_id\": \"ta-01M3JQW5XYNBAE6H5D509CH3XR\",\n    \"app_id\": \"ap-aR9yrvZkq12DyLQEhWyQGM\",\n    \"app_name\": \"rivals-yaw-fit-grid8-s1-20260927-01\",\n    \"start_time\": \"2026-09-27 19:50:43-05:00\"\n  },\n  {\n    \"container_id\": \"ta-01M3JQV4H92RKMWDN4JVXEZJHR\",\n    \"app_id\": \"ap-M3WzgPwxkYUdYkZLp1ipPS\",\n    \"app_name\": \"rivals-yaw-fit-grid8-s2-20260927-01\",\n    \"start_time\": \"2026-09-27 19:50:10-05:00\"\n  }\n]\n"
+          },
+          "identity": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/share/uv/tools/modal/bin/python",
+              "-m",
+              "cloud.modal_guard.provider",
+              "identity"
+            ],
+            "completed_at": 1790556885.4337149,
+            "completed_monotonic": 462270.683884166,
+            "queried_at": 1790556884.983066,
+            "queried_monotonic": 462270.2332355,
+            "returncode": 0,
+            "sha256": "115ccb5f88cfa01cad9fa5ca24d1bbdbec18847c2450f8a2446bae25e817e6ee",
+            "stdout": "{\"profile\": \"rivals\", \"workspace\": \"volpestyle\", \"workspace_id\": \"ac-kMLf5bJKqF5CAlSbfNhGh0\"}\n"
+          }
+        }
+      },
+      {
+        "checked_at": 1790556889.570376,
+        "checked_monotonic": 462274.820510833,
+        "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+        "complete": true,
+        "identity": {
+          "profile": "rivals",
+          "workspace": "volpestyle",
+          "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+        },
+        "raw": {
+          "apps": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "app",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790556888.9948952,
+            "completed_monotonic": 462274.245039125,
+            "queried_at": 1790556888.285764,
+            "queried_monotonic": 462273.535908583,
+            "returncode": 0,
+            "sha256": "69683535f49236c6c423ec139882e86e347cbdf6fb080d5d0e5990e9df820b68",
+            "stdout": "[\n  {\n    \"app_id\": \"ap-M3WzgPwxkYUdYkZLp1ipPS\",\n    \"description\": \"rivals-yaw-fit-grid8-s2-20260927-01\",\n    \"state\": \"ephemeral\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 19:50:05-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-aR9yrvZkq12DyLQEhWyQGM\",\n    \"description\": \"rivals-yaw-fit-grid8-s1-20260927-01\",\n    \"state\": \"ephemeral\",\n    \"tasks\": \"1\",\n    \"created_at\": \"2026-09-27 19:50:39-05:00\",\n    \"stopped_at\": null\n  },\n  {\n    \"app_id\": \"ap-UO8aRLuRGBxgZ3DjONeBiR\",\n    \"description\": \"rivals-yaw-fit-grid4-s1-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 19:51:13-05:00\",\n    \"stopped_at\": \"2026-09-27 19:54:43-05:00\"\n  },\n  {\n    \"app_id\": \"ap-2RMTItGkQ0fXwfNm68p9B7\",\n    \"description\": \"rivals-yaw-fit-grid8-s3-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 19:49:48-05:00\",\n    \"stopped_at\": \"2026-09-27 19:54:12-05:00\"\n  },\n  {\n    \"app_id\": \"ap-KXUADFXfN3hOKoC8LP4ZAg\",\n    \"description\": \"rivals-yaw-fit-grid4-s2-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 19:50:56-05:00\",\n    \"stopped_at\": \"2026-09-27 19:53:05-05:00\"\n  },\n  {\n    \"app_id\": \"ap-9QqYAuzBW5NeiSOJsplYDe\",\n    \"description\": \"rivals-yaw-fit-grid4-s3-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 19:50:22-05:00\",\n    \"stopped_at\": \"2026-09-27 19:52:34-05:00\"\n  },\n  {\n    \"app_id\": \"ap-wihxUdGaIOvyh9GtyREBfW\",\n    \"description\": \"rivals-yaw-extract-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 19:12:06-05:00\",\n    \"stopped_at\": \"2026-09-27 19:46:39-05:00\"\n  },\n  {\n    \"app_id\": \"ap-Bm8ykgoK7p4BBkA9endyse\",\n    \"description\": \"rivals-yaw-extract-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 19:05:43-05:00\",\n    \"stopped_at\": \"2026-09-27 19:07:38-05:00\"\n  }\n]\n"
+          },
+          "containers": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/bin/modal",
+              "container",
+              "list",
+              "--profile",
+              "rivals",
+              "--json"
+            ],
+            "completed_at": 1790556889.5703418,
+            "completed_monotonic": 462274.82048575,
+            "queried_at": 1790556888.9949162,
+            "queried_monotonic": 462274.245054875,
+            "returncode": 0,
+            "sha256": "8118c8d6aadefb2bbba2fe763d4db5e19ac75fb7e8f4b2c5d0b6bdd60831f8f6",
+            "stdout": "[\n  {\n    \"container_id\": \"ta-01M3JQW5XYNBAE6H5D509CH3XR\",\n    \"app_id\": \"ap-aR9yrvZkq12DyLQEhWyQGM\",\n    \"app_name\": \"rivals-yaw-fit-grid8-s1-20260927-01\",\n    \"start_time\": \"2026-09-27 19:50:43-05:00\"\n  },\n  {\n    \"container_id\": \"ta-01M3JQV4H92RKMWDN4JVXEZJHR\",\n    \"app_id\": \"ap-M3WzgPwxkYUdYkZLp1ipPS\",\n    \"app_name\": \"rivals-yaw-fit-grid8-s2-20260927-01\",\n    \"start_time\": \"2026-09-27 19:50:10-05:00\"\n  }\n]\n"
+          },
+          "identity": {
+            "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+            "command": [
+              "/Users/james/.local/share/uv/tools/modal/bin/python",
+              "-m",
+              "cloud.modal_guard.provider",
+              "identity"
+            ],
+            "completed_at": 1790556888.285716,
+            "completed_monotonic": 462273.5358645,
+            "queried_at": 1790556887.834531,
+            "queried_monotonic": 462273.084679375,
+            "returncode": 0,
+            "sha256": "115ccb5f88cfa01cad9fa5ca24d1bbdbec18847c2450f8a2446bae25e817e6ee",
+            "stdout": "{\"profile\": \"rivals\", \"workspace\": \"volpestyle\", \"workspace_id\": \"ac-kMLf5bJKqF5CAlSbfNhGh0\"}\n"
+          }
+        }
+      }
+    ],
+    "trigger_error": "Refused('attempt fenced')"
+  },
+  "release_sha256": "5c0e979227738363bfceaef792d9852d2578fcc149f77d2f9cde61510dc8a8fd",
+  "rpc_count": 1,
+  "run_cap_usd": "2.5",
+  "stage_identity": {
+    "attempt_id": "yaw-fit-grid4-s1-20260927-01",
+    "code_sha256": "5a997b760c69ad902ee009885319735e31ff7603db50ac7170d0bdd7de0ffd4f",
+    "inputs_sha256": "71e344f4f17d9e537c87c154b30f6aae12c14cc601b59d668299ac799715660e",
+    "output_volume_id": "vo-4tPj8ncuWgDNVqqMNrwDpu",
+    "recipe_sha256": "fe480b6c7fb3ea420649df581e9328520c75734d4c569b2b152a86327df4228b"
+  },
+  "stages": [
+    {
+      "artifacts": [
+        "epoch-26.pt",
+        "fit.json"
+      ],
+      "function": "fit",
+      "kwargs": {
+        "payload_manifest_sha256": "5a997b760c69ad902ee009885319735e31ff7603db50ac7170d0bdd7de0ffd4f",
+        "spec_path": "/root/cloud/yaw_payload/fit-specs/yaw-fit-grid4-s1-20260927-01.json",
+        "spec_sha256": "fe480b6c7fb3ea420649df581e9328520c75734d4c569b2b152a86327df4228b"
+      },
+      "module": "cloud.yaw_fit_entry",
+      "name": "fit"
+    },
+    {
+      "artifacts": [
+        "evaluation.json"
+      ],
+      "function": "evaluate",
+      "kwargs": {
+        "payload_manifest_sha256": "5a997b760c69ad902ee009885319735e31ff7603db50ac7170d0bdd7de0ffd4f",
+        "spec_path": "/root/cloud/yaw_payload/fit-specs/yaw-fit-grid4-s1-20260927-01.json",
+        "spec_sha256": "fe480b6c7fb3ea420649df581e9328520c75734d4c569b2b152a86327df4228b"
+      },
+      "module": "cloud.yaw_fit_entry",
+      "name": "evaluation"
+    }
+  ],
+  "started_at": 1790556586.158869,
+  "started_monotonic": 461971.424458375,
+  "state": "TERMINAL",
+  "state_before_fence": "RUNNING",
+  "stop_at": 1790559886.158869,
+  "terminal_seconds": 303.41322588920593
+}

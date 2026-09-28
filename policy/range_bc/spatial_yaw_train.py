@@ -113,7 +113,7 @@ def fit(root, *, spec_path, spec_sha256):
     device = runtime()
     train.require(not (root / "latest.pt").exists(), "partial fit refused")
     arrays, dev, stats = load_dataset(spec["dataset_root"], spec["dataset_sha256"], spec["grid"])
-    batches, dev_batches = SpatialBatches(arrays), SpatialBatches(dev)
+    batches, dev_batches = SpatialBatches(arrays, stride=64), SpatialBatches(dev, stride=64)
     train.require(26*math.ceil(len(batches.windows)/8) == 15288, "matched window schedule differs")
     base, _ = load_base(spec["base_checkpoint"], spec["base_sha256"], spec["seed"])
     before = tensor_digest(base)

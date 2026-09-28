@@ -1,0 +1,258 @@
+{
+  "status": "PASS",
+  "window": 96,
+  "stride": 64,
+  "batch": 8,
+  "epochs": 26,
+  "updates": 15288,
+  "train_windows": 4697,
+  "dev_windows": 383,
+  "sessions": [
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "role": "train",
+      "steps_sha256": "d49224e3c4382a62ebb4c4252bcc5800138782688e1d0f60e03e46ce4b6e7edb",
+      "runs": [
+        [
+          7,
+          12557
+        ]
+      ],
+      "windows_by_stride": {
+        "48": 261,
+        "64": 196
+      }
+    },
+    {
+      "session": "20260923T200129-346Z-33696-6",
+      "role": "train",
+      "steps_sha256": "fcc9b0443e720648b899453ea3f04f82c0a6dd1735f30a420a36b3675549ba8e",
+      "runs": [
+        [
+          163,
+          22916
+        ],
+        [
+          22981,
+          48138
+        ]
+      ],
+      "windows_by_stride": {
+        "48": 998,
+        "64": 749
+      }
+    },
+    {
+      "session": "20260924T232304-170Z-12024-1",
+      "role": "train",
+      "steps_sha256": "8a6c63d4024b13d5b73ab0154f434782e6cfc853d6eaa8291bd9fa8ca8f3b1b1",
+      "runs": [
+        [
+          63,
+          9678
+        ],
+        [
+          9678,
+          15840
+        ]
+      ],
+      "windows_by_stride": {
+        "48": 328,
+        "64": 246
+      }
+    },
+    {
+      "session": "20260925T021320-371Z-7804-1",
+      "role": "train",
+      "steps_sha256": "841fe6953cf473e55c6becfe24143259fa48dca639bb9387bc04615edf6ea537",
+      "runs": [
+        [
+          114,
+          10972
+        ],
+        [
+          12618,
+          38124
+        ],
+        [
+          38189,
+          42015
+        ],
+        [
+          43697,
+          57248
+        ],
+        [
+          57313,
+          65698
+        ]
+      ],
+      "windows_by_stride": {
+        "48": 1292,
+        "64": 972
+      }
+    },
+    {
+      "session": "20260925T025230-605Z-7804-2",
+      "role": "train",
+      "steps_sha256": "84cef39b81ce8a40637bb5cf9766cdfc6f4054b32cda5d94ac1082329434c288",
+      "runs": [
+        [
+          7,
+          5257
+        ],
+        [
+          5322,
+          6666
+        ]
+      ],
+      "windows_by_stride": {
+        "48": 136,
+        "64": 103
+      }
+    },
+    {
+      "session": "20260925T203745-207Z-49728-2",
+      "role": "train",
+      "steps_sha256": "1fcfffb8fa67bcd1b48684611cfe07cafe6455670f82840eb72e99aa4d9e8373",
+      "runs": [
+        [
+          7,
+          24323
+        ],
+        [
+          24388,
+          43917
+        ],
+        [
+          43976,
+          49393
+        ],
+        [
+          49458,
+          62339
+        ],
+        [
+          62440,
+          66432
+        ],
+        [
+          69169,
+          85790
+        ]
+      ],
+      "windows_by_stride": {
+        "48": 1721,
+        "64": 1293
+      }
+    },
+    {
+      "session": "20260926T035932-508Z-63684-14",
+      "role": "train",
+      "steps_sha256": "1a98150a122f316b9bd975e82ef8453d714466454a25a2d186c341b8baf2bdc2",
+      "runs": [
+        [
+          210,
+          14719
+        ],
+        [
+          14980,
+          34360
+        ],
+        [
+          34369,
+          36019
+        ],
+        [
+          36026,
+          36277
+        ],
+        [
+          36286,
+          36397
+        ],
+        [
+          36439,
+          43436
+        ],
+        [
+          43534,
+          48210
+        ],
+        [
+          48319,
+          55015
+        ]
+      ],
+      "windows_by_stride": {
+        "48": 1127,
+        "64": 849
+      }
+    },
+    {
+      "session": "20260926T045729-166Z-79780-1",
+      "role": "train",
+      "steps_sha256": "92ba60cf62f413a87adf3cd8d8b04647c4d004b79c9f2f4bde7647b808baae38",
+      "runs": [
+        [
+          37,
+          2675
+        ],
+        [
+          2765,
+          16695
+        ],
+        [
+          16704,
+          18601
+        ]
+      ],
+      "windows_by_stride": {
+        "48": 383,
+        "64": 289
+      }
+    },
+    {
+      "session": "20260923T171533-187Z-33696-5",
+      "role": "dev",
+      "steps_sha256": "dc28b0c1511f7847c8dde08c3e04addce8b57bc6c32cc2873405962d3235559e",
+      "runs": [
+        [
+          153,
+          4783
+        ]
+      ],
+      "windows_by_stride": {
+        "48": 96,
+        "64": 72
+      }
+    },
+    {
+      "session": "20260923T205528-900Z-45572-3",
+      "role": "dev",
+      "steps_sha256": "941950f16edef6a88b14d6bc536e33a66a0e779867fa145c78e7142164e1fd98",
+      "runs": [
+        [
+          7,
+          19933
+        ]
+      ],
+      "windows_by_stride": {
+        "48": 415,
+        "64": 311
+      }
+    }
+  ],
+  "dataset_sha256": "71e344f4f17d9e537c87c154b30f6aae12c14cc601b59d668299ac799715660e",
+  "manifest_sha256": "dbf6bb571e1e281f59c709f551694a8aed0edee9707be6f932921c52c0ed9c0b",
+  "denylist_sha256": "09e8b9d350c89eb41c1581e1bce47548bfb855bca5805cf2e65955b9b23597b5",
+  "original_recipe_sha256": [
+    "1399b086450478335e9c9b63bb4d99d8cc028f0705ebaab6ba90211a5f9b783c",
+    "cacc25bbadf15e146cfef36a485d1c69783af36be639914ebfc8fa755b1e59a1",
+    "89e0f132bcac4052301381e907410d87045b0f7c066c66252c057cffb5a320fb"
+  ],
+  "pixels_opened": false,
+  "checkpoints_opened": false,
+  "device": "CPU",
+  "nice": 10
+}
