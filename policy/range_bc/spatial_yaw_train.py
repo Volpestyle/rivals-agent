@@ -122,7 +122,7 @@ def fit(root, *, spec_path, spec_sha256):
         device=device, resume=False, run_identity=spec_sha256,
         model_factory=lambda config, horizon: SpatialYawPolicy(base, spec["grid"]),
         recipe_extra={"spatial_yaw": spec, "head_parameters": 201187,
-                      "base_tensor_sha256": before, "cache_precision": "MPS bf16 tower / fp16 features"},
+                      "base_tensor_sha256": before, "cache_precision": "bf16 tower / fp16 features"},
         progress=lambda done, total: print(f"spatial yaw {spec['grid']} seed {spec['seed']}: {done}/{total}", flush=True))
     train.require(status == "complete" and tensor_digest(model.base) == before
                   and all(p.grad is None for p in model.base.parameters()), "fit incomplete or frozen base changed")
