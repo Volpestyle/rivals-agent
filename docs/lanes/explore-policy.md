@@ -1,5 +1,7 @@
 # EXPLORATORY — short action chunks (2026-09-26)
 
+Latest experiment record (2026-09-29, VUH-1346): [causal turn-onset probe](../evidence/turn-onset-probe-20260929/README.md).
+
 Owner: explore-policy. VUH-1346, Policy team, EXPLORE track. **Full caches complete; Mac H=1 running; Modal H=1/H=4/H=8 upload in progress.**
 The dated 2026-09-27 lead authorization grants a separate $30 hard Modal explore cap for device-matched H=1/H=4/H=8, with a warning before projections reach about $28. Mac H=1 continues as a cross-device check; round 3 retains its own budget and resources.
 Lead authorized an explore-only commit on 2026-09-27 once the full-run code is final.
