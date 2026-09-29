@@ -1,0 +1,7 @@
+{
+  "agent/loop.py": "96bd81b33ec5371e3abfa62d1d3b8f0efbe003875982b86ca6380633de277462",
+  "agent/controller.py": "25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+  "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+  "agent/camera_map.py": "5bcd03a0d1ec755cfac8d11f8cdc664dafd9c6182eab501135837aa6af6c60a4",
+  "tests/test_camera_map.py": "8e0d8437b3f711532413e7d98e1a5a7d9de7730962b2ae4503bf6301ec47955b"
+}

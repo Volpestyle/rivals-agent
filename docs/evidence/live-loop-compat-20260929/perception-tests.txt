@@ -1,0 +1,12 @@
+Environment: UV_PROJECT_ENVIRONMENT=C:\Users\volpe\AppData\Local\Temp\live-loop-rebind-perception-env
+Command: uv run --group perception pytest tests/test_camera_map.py tests/test_camera_compat.py tests/test_loop.py tests/test_loop_safety.py tests/test_startup.py tests/test_range_skill_loop.py tests/test_episode_collection.py tests/test_tracker.py -q
+........................................................................ [ 14%]
+........................................................................ [ 29%]
+........................................................................ [ 44%]
+........................................................................ [ 59%]
+ssssssss................................................................ [ 74%]
+........................................................................ [ 88%]
+......................................................                   [100%]
+478 passed, 8 skipped in 38.23s
+
+Exit: 0

@@ -1,0 +1,6 @@
+Environment: UV_PROJECT_ENVIRONMENT=C:\Users\volpe\AppData\Local\Temp\live-loop-safety-stdlib-env
+Command: uv run pytest tests/test_camera_compat.py -q
+...............................................................          [100%]
+63 passed in 3.01s
+
+Exit: 0

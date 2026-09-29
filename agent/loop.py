@@ -1344,6 +1344,10 @@ def make_brain(name):
 
 
 def main(argv=None):
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if "--compat" in argv:
+        from .camera_compat import main as compat_main
+        return compat_main(argv)
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     mode = ap.add_mutually_exclusive_group(required=True)
     mode.add_argument("--dry", metavar="RUN_DIR", help="offline: replay a recorded run (frames.jsonl + jpgs) through the loop, fake pad")

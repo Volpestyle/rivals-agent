@@ -1,0 +1,50 @@
+[
+  {
+    "record": "docs/evidence/camera-map-20260929b/validation.json",
+    "field": "known_stale_placeholder_test.test_file_sha256",
+    "source": "tests/test_camera_map.py",
+    "prior_sha256": "8e0d8437b3f711532413e7d98e1a5a7d9de7730962b2ae4503bf6301ec47955b",
+    "new_sha256": "6c21e16f8737ff2ce058645ec2750f9dcdb53cdabd9449b9d30be82224084480",
+    "status": "historical_after_this_delta"
+  },
+  {
+    "record": "docs/evidence/camera-map-20260929b/delivery-receipt.json",
+    "field": "preserved_test_sha256",
+    "source": "tests/test_camera_map.py",
+    "prior_sha256": "8e0d8437b3f711532413e7d98e1a5a7d9de7730962b2ae4503bf6301ec47955b",
+    "new_sha256": "6c21e16f8737ff2ce058645ec2750f9dcdb53cdabd9449b9d30be82224084480",
+    "status": "historical_after_this_delta"
+  },
+  {
+    "record": "docs/evidence/live-loop-safety-rebind-20260929-v2/base-sha256.json",
+    "field": "agent/loop.py",
+    "source": "agent/loop.py",
+    "prior_sha256": "96bd81b33ec5371e3abfa62d1d3b8f0efbe003875982b86ca6380633de277462",
+    "new_sha256": "b1abf4b76c258ff913d4c12976cce8d358bb77eff1f737098e176abeb069f392",
+    "status": "historical_after_this_delta"
+  },
+  {
+    "record": "docs/evidence/live-loop-safety-rebind-20260929-v2/review-inputs.json",
+    "field": "files.agent/loop.py",
+    "source": "agent/loop.py",
+    "prior_sha256": "96bd81b33ec5371e3abfa62d1d3b8f0efbe003875982b86ca6380633de277462",
+    "new_sha256": "b1abf4b76c258ff913d4c12976cce8d358bb77eff1f737098e176abeb069f392",
+    "status": "historical_after_this_delta"
+  },
+  {
+    "record": "docs/evidence/live-loop-safety-rebind-20260929-v2/review-v2-receipt.json",
+    "field": "files.agent/loop.py",
+    "source": "agent/loop.py",
+    "prior_sha256": "96bd81b33ec5371e3abfa62d1d3b8f0efbe003875982b86ca6380633de277462",
+    "new_sha256": "b1abf4b76c258ff913d4c12976cce8d358bb77eff1f737098e176abeb069f392",
+    "status": "historical_after_this_delta"
+  },
+  {
+    "record": "docs/evidence/live-loop-rebind-20260929/receipt.json",
+    "field": "sha256.tests/test_camera_map.py",
+    "source": "tests/test_camera_map.py",
+    "prior_sha256": "8e0d8437b3f711532413e7d98e1a5a7d9de7730962b2ae4503bf6301ec47955b",
+    "new_sha256": "6c21e16f8737ff2ce058645ec2750f9dcdb53cdabd9449b9d30be82224084480",
+    "status": "historical_after_this_delta"
+  }
+]

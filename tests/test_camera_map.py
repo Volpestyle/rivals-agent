@@ -36,21 +36,29 @@ def test_legacy_preserves_deployed_values_and_provenance():
     assert c.interpolation.sitting and c.interpolation.receipt
 
 
-def test_alt_candidate_is_only_usable_offline_and_never_mirrored():
+def test_alt_all_signed_yaw_knots_are_candidates_and_all_holes_stay_missing():
     c = load_camera_map("alt-247-124")
     assert c.rate("yaw", .45) == 154
-    for axis, d in (("yaw", -.45), ("yaw", .3), ("pitch", .5)):
+    assert c.rate("yaw", -.45) == pytest.approx(-159.09615325715495)
+    present = [m for sign in (-1, 1) for _, m in c.points("yaw", sign)]
+    assert len(present) == 14 and all(m.status == "candidate" and m.value > 0 for m in present)
+    for sign in (-1, 1):
+        for d, m in c.points("yaw", sign):
+            assert c.rate("yaw", sign*d) == sign*m.value
+            with pytest.raises(CameraMapError, match="candidate"):
+                load_camera_map("alt-247-124", live=True).rate("yaw", sign*d)
+        for d, _ in c.points("pitch", sign):
+            with pytest.raises(CameraMapError, match="missing"):
+                c.rate("pitch", sign*d)
+    for f in ("focal", "latency", "interpolation"):
         with pytest.raises(CameraMapError, match="missing"):
-            c.rate(axis, d)
-    with pytest.raises(CameraMapError, match="candidate"):
-        load_camera_map("alt-247-124", live=True).rate("yaw", .45)
-    with pytest.raises(CameraMapError, match="missing"):
-        c.require_controller()
-    present = [m for directions in c.axes.values() for points in directions.values() for _, m in points if m.value is not None]
-    assert len(present) == 1
-    assert present[0].uncertainty["plus_minus"] is None
-    assert "77" in present[0].uncertainty["note"]
-    assert present[0].uncertainty["interval"] == [151.397, 156.473]
+            c.scalar(f)
+    for query in (lambda: c.require_controller(), lambda: c.rate("yaw", .15), lambda: c.stick("yaw", 50)):
+        with pytest.raises(CameraMapError, match="missing"):
+            query()
+    positive = dict(c.points("yaw", 1))[.45]
+    assert positive.uncertainty["plus_minus"] is None
+    assert positive.uncertainty["interval"] == [151.397, 156.473]
 
 
 def test_interpolation_and_inverse_preserve_asymmetry(tmp_path):

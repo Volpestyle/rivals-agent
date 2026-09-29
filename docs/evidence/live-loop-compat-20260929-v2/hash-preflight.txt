@@ -1,0 +1,6 @@
+Command: uv run --no-sync python docs\evidence\live-loop-compat-20260929-v2\preflight_hashes.py
+Map SHA256: 0e062286bd942aad776d719cd5841321b83773ae5b9e4b74ae8443b8795709d9
+Acceptance record SHA256: a55979781567808b2b490032759d76e64e6b34fccb4594594c4e50c81a5df7df
+Map, record and pinned evidence bytes match. This is not live approval or a settings attestation.
+
+Exit: 0

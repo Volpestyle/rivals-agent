@@ -1,0 +1,135 @@
+--- v1/agent/camera_compat.py
++++ v2/agent/camera_compat.py
+@@ -110,32 +110,41 @@
+         return matches[0]
+ 
+     def pulse(self, obs, target, axis, value, converge_until):
+-        now = self.check_time()
++        self.check_time()
+         if self.pulses >= LIMITS.max_pulses or self.used_s + LIMITS.pulse_s > LIMITS.cumulative_s + 1e-9:
+             raise CompatStop("cumulative_input_limit")
+-        release_at = now + LIMITS.pulse_s
+-        response_until = now + LIMITS.response_s
+-        if response_until >= min(self.deadline, converge_until):
+-            raise CompatStop("insufficient_response_budget")
+-        if now - obs[1] > LIMITS.frame_age_s:
+-            raise CompatStop("stale_before_input")
+         if axis == 0:
+             value = self.admission.yaw_command(value)
+         elif axis != 1 or value not in (-.1, .1):
+             raise CompatStop("forbidden_compat_command")
+         if abs(value) != .1:
+             raise CompatStop("compat_pulse_strength_limit")
+-        before = self.error(target)[axis]
++        retained_t = obs[1]
+         self.retain(f"pulse-{self.pulses}-before", obs)
+-        # Recheck after disk IO, before input. Native Live independently rechecks
+-        # proof freshness and caps its lease to this absolute release deadline.
+-        if self.check_time() - obs[1] > LIMITS.frame_age_s or self.io.now() >= release_at:
++        # Disk IO happens while neutral, before the input timing window. Neither
++        # the retained frame nor the prior error can authorize the next pulse.
++        obs = self.observe()
++        target = self.target(obs, target.track)
++        errors = self.error(target)
++        if max(abs(v) for v in errors) <= LIMITS.deadband_px_1280:
++            return obs, target
++        axis = 0 if abs(errors[0]) > LIMITS.deadband_px_1280 else 1
++        value = math.copysign(.1, errors[axis]) * (1 if axis == 0 else -1)
++        if axis == 0:
++            value = self.admission.yaw_command(value)
++        before = errors[axis]
++        sent_at = self.check_time()
++        release_at = sent_at + LIMITS.pulse_s
++        response_until = sent_at + LIMITS.response_s
++        if response_until >= min(self.deadline, converge_until):
++            raise CompatStop("insufficient_response_budget")
++        if sent_at - obs[1] > LIMITS.frame_age_s:
+             raise CompatStop("stale_before_input")
+         self.pulses += 1
+         self.used_s += LIMITS.pulse_s
+-        sent_at = self.io.now()
+         self.events.append({"event": "pulse", "t": sent_at, "axis": axis, "value": value,
+-                            "release_at": release_at, "response_until": response_until, "target": target.track})
++                            "release_at": release_at, "response_until": response_until, "target": target.track,
++                            "proof_t": obs[1], "retained_before_t": retained_t})
+         try:
+             if self.response_watch:
+                 self.response_watch.arm(response_until)
+--- v1/tests/test_camera_compat.py
++++ v2/tests/test_camera_compat.py
+@@ -123,19 +123,62 @@
+     assert len(io.calls)==1 and not io.pad
+ 
+ 
+-def test_slow_detector_and_retention_refuse_before_input():
+-    for stage in ('detector', 'save'):
+-        check, io = setup()
+-        if stage=='detector':
+-            original=check.percept.wide
+-            def slow(f):
+-                io.advance(.2)
+-                return original(f)
+-            check.percept.wide=slow
+-        else:
+-            check.save=lambda *a: io.advance(.2)
+-        assert 'stale' in check.run()['result']
+-        assert io.calls == []
++def test_slow_detector_refuses_before_input():
++    check, io = setup()
++    original = check.percept.wide
++    def slow(f):
++        io.advance(.2)
++        return original(f)
++    check.percept.wide = slow
++    assert 'stale' in check.run()['result']
++    assert io.calls == []
++
++
++@pytest.mark.parametrize('save_s', [.09, .1, .12])
++def test_slow_retention_converges_with_full_pulses_from_fresh_proofs(save_s):
++    check, io = setup()
++    check.save = lambda *a: io.advance(save_s)
++    result = check.run()
++    assert result['result'] == 'passed', result['result']
++    assert result['completed_sides'] == [-1, 1]
++    assert io.calls and not io.pad
++    for sent, pad, limits in io.calls:
++        assert limits['release_at'] - sent == pytest.approx(.05)
++        assert limits['not_after'] > sent
++    for e in check.events:
++        if e['event'] == 'pulse':
++            assert e['proof_t'] > e['retained_before_t'] + save_s
++            assert 0 <= e['t'] - e['proof_t'] <= .1
++
++
++def test_fresh_error_after_save_sets_command_direction():
++    check, io = setup()
++    io.positions[0] = [625., 360.]
++    obs = check.observe()
++    target = obs[2][0]
++    def save(*a):
++        io.advance(.09)
++        io.positions[0][0] = 655.
++    check.save = save
++    check.pulse(obs, target, 0, -.1, 15.)
++    assert io.calls[0][1]['rx'] == .1
++
++
++@pytest.mark.parametrize('change', ['scope', 'stale', 'missing', 'deadline'])
++def test_retention_never_lets_an_old_proof_authorize_input(change):
++    check, io = setup()
++    obs = check.observe()
++    target = obs[2][0]
++    def save(*a):
++        io.advance(.09)
++        if change == 'scope': check.guard = lambda f: False
++        elif change == 'stale': io.stale = True
++        elif change == 'missing': io.missing = True
++        else: check.deadline = io.now()
++    check.save = save
++    with pytest.raises(C.CompatStop):
++        check.pulse(obs, target, 0, -.1, 15.)
++    assert not io.calls and not io.pad
+ 
+ 
+ @pytest.mark.parametrize('command', [.15, -.15, 0, True, float('nan')])

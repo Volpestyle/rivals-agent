@@ -1,0 +1,3 @@
+Command: uvx --offline ruff check agent/camera_acceptance.py agent/camera_compat.py agent/loop.py tests/test_camera_map.py tests/test_camera_compat.py
+All checks passed!
+Exit: 0

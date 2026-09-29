@@ -1,0 +1,6 @@
+docs/evidence\camera-map-20260929b\validation.json
+docs/evidence\camera-map-20260929b\delivery-receipt.json
+docs/evidence\live-loop-safety-rebind-20260929-v2\base-sha256.json
+docs/evidence\live-loop-safety-rebind-20260929-v2\review-inputs.json
+docs/evidence\live-loop-safety-rebind-20260929-v2\review-v2-receipt.json
+docs/evidence\live-loop-rebind-20260929\receipt.json

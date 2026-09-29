@@ -1,0 +1,46 @@
+{
+  "schema": "rivals-yaw-compat-acceptance-v1",
+  "scope": "measured_yaw_knots_pixel_compat_only",
+  "profile": "alt-247-124",
+  "map_sha256": "0e062286bd942aad776d719cd5841321b83773ae5b9e4b74ae8443b8795709d9",
+  "settings": {
+    "horizontal": 247,
+    "vertical": 124,
+    "curve": null,
+    "aim_assist": null
+  },
+  "decision": "Lead, 2026-09-29 16:21: yaw knots within measured scope only; exact-byte runtime review required before landing/live use.",
+  "yaw_knots": [
+    -1,
+    -0.8,
+    -0.6,
+    -0.45,
+    -0.3,
+    -0.2,
+    -0.1,
+    0.1,
+    0.2,
+    0.3,
+    0.45,
+    0.6,
+    0.8,
+    1
+  ],
+  "missing": [
+    "focal",
+    "pitch_degrees",
+    "latency",
+    "interpolation"
+  ],
+  "pitch_sign": {
+    "positive_ry": "look_up",
+    "negative_ry": "look_down",
+    "scope": "sign only; no angular rate or clamp bound"
+  },
+  "evidence": {
+    "docs/evidence/camera-map-20260929b/README.md": "730b29fce1b3e72cce3b86c76ae6f9d6a0f7ff9fa7d1e7af4a0259e8990c6000",
+    "docs/evidence/camera-map-20260929b/pitch-results.json": "7a8ab49e82ea82ad3a0034e12e0808522d953f8c83b9862c9a815c1a486b5c5a",
+    "docs/evidence/camera-map-20260929b/yaw-results-final.json": "0df2fa14f503ad2aa54798d03d1961c2b32b8bf1e646d560f43286f137c8dabd",
+    "docs/evidence/camera-map-20260929b/delivery-receipt.json": "0d77caa2766bfbb293c4e4e2ca2e3a784932180d885b72a663c8454298e5dae7"
+  }
+}

@@ -1,0 +1,3 @@
+Command: uv run --no-sync python docs\evidence\live-loop-compat-20260929\verify_legacy.py
+1500 exact legacy pad reports and camera states match c34e6c8
+Exit: 0
