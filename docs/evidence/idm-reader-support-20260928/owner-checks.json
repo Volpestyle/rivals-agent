@@ -1,0 +1,8 @@
+{
+  "scope": "Offline owner verification, not independent boundary review",
+  "command": "OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 uv run --no-sync pytest -q tests/test_idm_yaw_support.py tests/test_killfeed_geometry.py tests/test_match_timer_contrast.py tests/test_match_timer.py",
+  "result": "34 passed in 1.66s",
+  "native_control_sha256": "9eccc1480601a7aab2e61aa73174e51df4a48c00bc8d3e9bfa9e1b5ad9112e97",
+  "collection_recheck": "execution/verify_support_collection.py; 777 files passed",
+  "unresolved": ["Reader accuracy and positive mode recognition", "Independent boundary review before new qualification", "V-Q replay", "Cut-acceptance receipt", "Angular scale/FOV", "Fresh source admission and Gate 2"]
+}

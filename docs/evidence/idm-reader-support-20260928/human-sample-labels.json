@@ -1,0 +1,303 @@
+{
+  "scope": "Owner development inspection before reader output; not independent confirmation or timing truth",
+  "sample_bounds": [
+    100,
+    160
+  ],
+  "sources": {
+    "live": [
+      {
+        "index": 1,
+        "requested_pts": 102.5,
+        "centre_seconds": 293,
+        "feed_visible": false,
+        "state": "gameplay",
+        "view": "live_player"
+      },
+      {
+        "index": 2,
+        "requested_pts": 107.5,
+        "centre_seconds": 288,
+        "feed_visible": false,
+        "state": "gameplay",
+        "view": "live_player"
+      },
+      {
+        "index": 3,
+        "requested_pts": 112.5,
+        "centre_seconds": 283,
+        "feed_visible": false,
+        "state": "gameplay",
+        "view": "live_player"
+      },
+      {
+        "index": 4,
+        "requested_pts": 117.5,
+        "centre_seconds": 278,
+        "feed_visible": false,
+        "state": "gameplay",
+        "view": "live_player"
+      },
+      {
+        "index": 5,
+        "requested_pts": 122.5,
+        "centre_seconds": 273,
+        "feed_visible": false,
+        "state": "gameplay",
+        "view": "live_player"
+      },
+      {
+        "index": 6,
+        "requested_pts": 127.5,
+        "centre_seconds": 268,
+        "feed_visible": false,
+        "state": "gameplay",
+        "view": "live_player"
+      },
+      {
+        "index": 7,
+        "requested_pts": 132.5,
+        "centre_seconds": 263,
+        "feed_visible": false,
+        "state": "gameplay",
+        "view": "live_player"
+      },
+      {
+        "index": 8,
+        "requested_pts": 137.5,
+        "centre_seconds": 258,
+        "feed_visible": true,
+        "state": "gameplay",
+        "view": "live_player"
+      },
+      {
+        "index": 9,
+        "requested_pts": 142.5,
+        "centre_seconds": 253,
+        "feed_visible": true,
+        "state": "gameplay",
+        "view": "live_player"
+      },
+      {
+        "index": 10,
+        "requested_pts": 147.5,
+        "centre_seconds": 248,
+        "feed_visible": true,
+        "state": "gameplay",
+        "view": "live_player"
+      },
+      {
+        "index": 11,
+        "requested_pts": 152.5,
+        "centre_seconds": 243,
+        "feed_visible": true,
+        "state": "gameplay",
+        "view": "live_player"
+      },
+      {
+        "index": 12,
+        "requested_pts": 157.5,
+        "centre_seconds": 238,
+        "feed_visible": false,
+        "state": "gameplay",
+        "view": "live_player"
+      }
+    ],
+    "replay": [
+      {
+        "index": 1,
+        "requested_pts": 102.5,
+        "centre_seconds": 263,
+        "feed_visible": false,
+        "state": "gameplay",
+        "view": "self_replay_player_with_spectator_roster"
+      },
+      {
+        "index": 2,
+        "requested_pts": 107.5,
+        "centre_seconds": 258,
+        "feed_visible": true,
+        "state": "gameplay",
+        "view": "self_replay_player_with_spectator_roster"
+      },
+      {
+        "index": 3,
+        "requested_pts": 112.5,
+        "centre_seconds": 253,
+        "feed_visible": true,
+        "state": "gameplay",
+        "view": "self_replay_player_with_spectator_roster"
+      },
+      {
+        "index": 4,
+        "requested_pts": 117.5,
+        "centre_seconds": 248,
+        "feed_visible": true,
+        "state": "gameplay",
+        "view": "self_replay_player_with_spectator_roster"
+      },
+      {
+        "index": 5,
+        "requested_pts": 122.5,
+        "centre_seconds": 243,
+        "feed_visible": true,
+        "state": "gameplay",
+        "view": "self_replay_player_with_spectator_roster"
+      },
+      {
+        "index": 6,
+        "requested_pts": 127.5,
+        "centre_seconds": 238,
+        "feed_visible": false,
+        "state": "gameplay",
+        "view": "self_replay_player_with_spectator_roster"
+      },
+      {
+        "index": 7,
+        "requested_pts": 132.5,
+        "centre_seconds": 233,
+        "feed_visible": false,
+        "state": "gameplay",
+        "view": "self_replay_player_with_spectator_roster"
+      },
+      {
+        "index": 8,
+        "requested_pts": 137.5,
+        "centre_seconds": 228,
+        "feed_visible": false,
+        "state": "gameplay",
+        "view": "self_replay_player_with_spectator_roster"
+      },
+      {
+        "index": 9,
+        "requested_pts": 142.5,
+        "centre_seconds": 223,
+        "feed_visible": false,
+        "state": "gameplay",
+        "view": "self_replay_player_with_spectator_roster"
+      },
+      {
+        "index": 10,
+        "requested_pts": 147.5,
+        "centre_seconds": 218,
+        "feed_visible": false,
+        "state": "gameplay",
+        "view": "self_replay_player_with_spectator_roster"
+      },
+      {
+        "index": 11,
+        "requested_pts": 152.5,
+        "centre_seconds": 213,
+        "feed_visible": false,
+        "state": "gameplay",
+        "view": "self_replay_player_with_spectator_roster"
+      },
+      {
+        "index": 12,
+        "requested_pts": 157.5,
+        "centre_seconds": 208,
+        "feed_visible": false,
+        "state": "gameplay",
+        "view": "self_replay_player_with_spectator_roster"
+      }
+    ],
+    "competitive": [
+      {
+        "index": 1,
+        "requested_pts": 102.5,
+        "centre_seconds": null,
+        "feed_visible": null,
+        "state": "hero_selection",
+        "eligible_for_anchor": false
+      },
+      {
+        "index": 2,
+        "requested_pts": 107.5,
+        "centre_seconds": null,
+        "feed_visible": null,
+        "state": "hero_selection",
+        "eligible_for_anchor": false
+      },
+      {
+        "index": 3,
+        "requested_pts": 112.5,
+        "centre_seconds": null,
+        "feed_visible": null,
+        "state": "desktop_or_media_player_overlay",
+        "eligible_for_anchor": false
+      },
+      {
+        "index": 4,
+        "requested_pts": 117.5,
+        "centre_seconds": null,
+        "feed_visible": null,
+        "state": "desktop_or_media_player_overlay",
+        "eligible_for_anchor": false
+      },
+      {
+        "index": 5,
+        "requested_pts": 122.5,
+        "centre_seconds": null,
+        "feed_visible": null,
+        "state": "desktop_or_media_player_overlay",
+        "eligible_for_anchor": false
+      },
+      {
+        "index": 6,
+        "requested_pts": 127.5,
+        "centre_seconds": null,
+        "feed_visible": null,
+        "state": "desktop_or_media_player_overlay",
+        "eligible_for_anchor": false
+      },
+      {
+        "index": 7,
+        "requested_pts": 132.5,
+        "centre_seconds": null,
+        "feed_visible": null,
+        "state": "desktop_or_media_player_overlay",
+        "eligible_for_anchor": false
+      },
+      {
+        "index": 8,
+        "requested_pts": 137.5,
+        "centre_seconds": null,
+        "feed_visible": null,
+        "state": "desktop_or_media_player_overlay",
+        "eligible_for_anchor": false
+      },
+      {
+        "index": 9,
+        "requested_pts": 142.5,
+        "centre_seconds": null,
+        "feed_visible": null,
+        "state": "desktop_or_media_player_overlay",
+        "eligible_for_anchor": false
+      },
+      {
+        "index": 10,
+        "requested_pts": 147.5,
+        "centre_seconds": null,
+        "feed_visible": null,
+        "state": "desktop_or_media_player_overlay",
+        "eligible_for_anchor": false
+      },
+      {
+        "index": 11,
+        "requested_pts": 152.5,
+        "centre_seconds": null,
+        "feed_visible": null,
+        "state": "desktop_or_media_player_overlay",
+        "eligible_for_anchor": false
+      },
+      {
+        "index": 12,
+        "requested_pts": 157.5,
+        "centre_seconds": null,
+        "feed_visible": null,
+        "state": "menu",
+        "eligible_for_anchor": false
+      }
+    ]
+  }
+}

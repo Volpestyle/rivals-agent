@@ -1,0 +1,10 @@
+﻿{
+  "verified_files": 777,
+  "train_rows": 5632,
+  "dev_rows": 8192,
+  "feature_p99": 3.0088562451457173,
+  "dev_tail_rows": 82,
+  "statistics_exact": true,
+  "one_second_windows_all_sources": 0,
+  "limits": "TRAIN rate quantile retained from runner; no target reread here"
+}

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/james/dev/idm-data/reader-support-20260928/code-support/policy/idm/yaw_support_run.py", line 159, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/Users/james/dev/idm-data/reader-support-20260928/code-support/policy/idm/yaw_support_run.py", line 66, in main
+    if set(payload['meta']['targets'])!=set((*RANGES,*MATCHES)):raise ValueError('checkpoint TRAIN roster mismatch')
+                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: checkpoint TRAIN roster mismatch

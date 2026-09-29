@@ -1,5 +1,6 @@
 import hashlib
 import json
+from pathlib import Path
 import pytest
 np=pytest.importorskip('numpy')
 pytest.importorskip('cv2')
@@ -60,3 +61,21 @@ def test_later_clock_vetoes_hidden_clock_and_clock_never_replay(monkeypatch):
     monkeypatch.setattr(K.M,'read_frame',lambda f:dict(centre=None,team_a=1,team_b=None))
     assert K.observe(frame)['layout'] is None
     assert K.observe(frame)['reason']=='competitive_unsupported'
+
+
+def test_native_live_competitive_team_clock_refuses_replay():
+    """Authorized development frame, not a validation or sealed source."""
+    import cv2
+    path = Path(__file__).resolve().parents[1] / (
+        'docs/evidence/idm-reader-support-20260928/reader/competitive-control/0005.png'
+    )
+    raw = path.read_bytes()
+    assert hashlib.sha256(raw).hexdigest() == (
+        '9eccc1480601a7aab2e61aa73174e51df4a48c00bc8d3e9bfa9e1b5ad9112e97'
+    )
+    frame = cv2.imdecode(np.frombuffer(raw, dtype=np.uint8), cv2.IMREAD_COLOR)
+    assert frame.shape == (1440, 2560, 3)
+    assert K.M.read_frame(frame)['team_b'] is not None
+    result = K.observe(frame)
+    assert result['layout'] is None
+    assert result['reason'] == 'competitive_unsupported'

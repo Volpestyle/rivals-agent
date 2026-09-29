@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/james/dev/idm-data/reader-support-20260928/code-support-a2/policy/idm/yaw_support_run.py", line 176, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/Users/james/dev/idm-data/reader-support-20260928/code-support-a2/policy/idm/yaw_support_run.py", line 83, in main
+    checkpoint_roster(payload['meta'],m)
+  File "/Users/james/dev/idm-data/reader-support-20260928/code-support-a2/policy/idm/yaw_support_run.py", line 36, in checkpoint_roster
+    raise ValueError('checkpoint role/target/store pin differs')
+ValueError: checkpoint role/target/store pin differs

@@ -1,0 +1,119 @@
+[
+  {
+    "sid": "20260923T051828-422Z-33696-1",
+    "role": "train",
+    "checkpoint_split": "train",
+    "target_match": true,
+    "store_match": true,
+    "checkpoint_target_sha256": "2e89adf3079a27c2f64fb2d142cfdd6c39bf1b2895398491e03dc82976bc6d8d",
+    "checkpoint_store_sha256": "457637aa99f61327d70bf5775d3a711a001e0a742888ae3b2fd3e7be8059ab2c"
+  },
+  {
+    "sid": "20260923T171533-187Z-33696-5",
+    "role": "dev",
+    "checkpoint_split": "train",
+    "target_match": true,
+    "store_match": true,
+    "checkpoint_target_sha256": "427328415625e68658a34254506ff0dbc30dda61d7a29ad1535c45f6a89898e8",
+    "checkpoint_store_sha256": "8780ea7c10884a943c38a5a006a40854ee58b2a56978bd76f8249d98b644af8b"
+  },
+  {
+    "sid": "20260923T200129-346Z-33696-6",
+    "role": "train",
+    "checkpoint_split": "train",
+    "target_match": true,
+    "store_match": true,
+    "checkpoint_target_sha256": "a32a738090a1492e2ff600efdbd7ee9853699569053388ca6ea8102a4d267fd5",
+    "checkpoint_store_sha256": "a111ba075390634d2e658f7db28cdd6222b176a5be6d615b4a642b74f24a1939"
+  },
+  {
+    "sid": "20260923T205528-900Z-45572-3",
+    "role": "dev",
+    "checkpoint_split": "train",
+    "target_match": true,
+    "store_match": true,
+    "checkpoint_target_sha256": "5d51f2409b00025da95fa888a4633d3c445c7fd6a1334c06d5d589d984154f73",
+    "checkpoint_store_sha256": "14190df6abcf0b8af7dbdc828f6c326c124bee30f96eb1f6f68a2e52920bdae6"
+  },
+  {
+    "sid": "20260924T232304-170Z-12024-1",
+    "role": "train",
+    "checkpoint_split": "train",
+    "target_match": true,
+    "store_match": true,
+    "checkpoint_target_sha256": "8b00217ac5928ffcf7cda6e19004671ca044016b8ad38f90d6843a76ce607bc3",
+    "checkpoint_store_sha256": "7e9484be87e84244ffb32290b87f589ddd89a50fb9d480ec2a69260bf1b3b126"
+  },
+  {
+    "sid": "20260925T021320-371Z-7804-1",
+    "role": "train",
+    "checkpoint_split": "train",
+    "target_match": true,
+    "store_match": true,
+    "checkpoint_target_sha256": "ec36759487f4f5eb0755828808face1c90b5d7767a63c96d8aaa6c7dcc242a0a",
+    "checkpoint_store_sha256": "d6597f92180050584d193ced251d046ddf8f2197d4d5f61bc90f85bface10361"
+  },
+  {
+    "sid": "20260925T025230-605Z-7804-2",
+    "role": "train",
+    "checkpoint_split": "train",
+    "target_match": true,
+    "store_match": true,
+    "checkpoint_target_sha256": "5c815469993392eb60d562fe9497706228070748da017262e3e75ba93ed0f02c",
+    "checkpoint_store_sha256": "77c879351083eaa68aa72ab185829e46fb1f162d1c1269be4575c88611351a54"
+  },
+  {
+    "sid": "20260926T045729-166Z-79780-1",
+    "role": "train",
+    "checkpoint_split": "train",
+    "target_match": true,
+    "store_match": true,
+    "checkpoint_target_sha256": "8f8b75bdc0ccfbeb68fe585c176f139590681306550a5c2afcc5fbce76bcf629",
+    "checkpoint_store_sha256": "410176acef5c7fe48c8be7da7142d9bbc66b500120a59ff1cf3ffefe3337fa95"
+  },
+  {
+    "sid": "20260926T035932-508Z-63684-14",
+    "role": "train",
+    "checkpoint_split": "train",
+    "target_match": true,
+    "store_match": true,
+    "checkpoint_target_sha256": "52856414daefd6021af07109bc8425b55a3d9057974b6437153f0c9205991cb8",
+    "checkpoint_store_sha256": "6e7653c14bab459ec6d45ebc5018e6e1df3995ab92d8216794dd1cb8856167fa"
+  },
+  {
+    "sid": "20260925T203745-207Z-49728-2",
+    "role": "train",
+    "checkpoint_split": "train",
+    "target_match": true,
+    "store_match": true,
+    "checkpoint_target_sha256": "e091b4fdae7e61d9e8dd564687a56aaf8bc9416768e23c38873e1896a984b1e0",
+    "checkpoint_store_sha256": "185a1cf964b21155f1530766d152baefee6d6bc124ddf0353bd00bc012607eed"
+  },
+  {
+    "sid": "20260927T051206-888Z-150600-4",
+    "role": "train",
+    "checkpoint_split": "idm_train",
+    "target_match": true,
+    "store_match": true,
+    "checkpoint_target_sha256": "6f2d688ddb3479cda839f763d0bd2dc0b273d05f79657672f1b4b3aac0e0176f",
+    "checkpoint_store_sha256": "88fff9b6590ced83e1276157f89a97d407a6f4025d007441e7086faaf7ff98f4"
+  },
+  {
+    "sid": "20260927T052001-827Z-150600-5",
+    "role": "train",
+    "checkpoint_split": "idm_train",
+    "target_match": true,
+    "store_match": true,
+    "checkpoint_target_sha256": "bdb36216f6017ba345949c55d9a2874c2c08570739829150fd5b9ca1d07f2ebd",
+    "checkpoint_store_sha256": "ede74a0e8cac9bcc2831490ef307dcf7d403c4caa2d77d53651356c487e650d3"
+  },
+  {
+    "sid": "20260927T053118-260Z-150600-6",
+    "role": "train",
+    "checkpoint_split": "idm_train",
+    "target_match": true,
+    "store_match": true,
+    "checkpoint_target_sha256": "c443ea95bd037f9f276360eb1ecd805c4f823664c091a2a4065abb6e57b513b2",
+    "checkpoint_store_sha256": "1baaa7c24b99068a792bd421325e525490252f488929285a3b8f9cab39a3dcb5"
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "excerpts": {
+    "live": {
+      "path": "/Users/james/dev/idm-data/yaw-readiness-20260928/live.mkv",
+      "sha256": "bd2b4e5bd33e7f8eccc22966d3f2dc01f5f8de0f185fbb16f877db5cbe3913b8",
+      "source_sha256": "b286939f3a503a52bffa0c0a29873e8c71aac7d89dfb1b726f4818176e2efc87"
+    },
+    "replay": {
+      "path": "/Users/james/dev/idm-data/yaw-readiness-20260928/replay.mkv",
+      "sha256": "b3e7716764e65f58dd5fdde8f8dbb05cff09da34b3956b3a39d440e7489f26c9",
+      "source_sha256": "4c74f388be47e44c53002005edb548cd41aa7308ecf50ac39a34625862817e7e"
+    },
+    "competitive": {
+      "path": "/Users/james/dev/idm-data/reader-support-20260928/competitive-300.mkv",
+      "sha256": "34d08e61d08ed7e2a1e5d344f310bb7ff474e70d9d0b0b844579e89837828f8e",
+      "source_sha256": "cb9c7ad74873a3e802bae332aca7b19065162009b5bfd1c30439cbdbc71fdda2"
+    }
+  },
+  "native_root": "/Users/james/dev/idm-data/yaw-readiness-20260928",
+  "native_manifest": "/Users/james/dev/idm-data/reader-support-20260928/native-result.json",
+  "native_manifest_sha256": "98f1127f2831b6ccbd6a050bee5253b758b5dc415aba22d115eed6323b53a599",
+  "labels": "/Users/james/dev/idm-data/reader-support-20260928/human-sample-labels.json",
+  "labels_sha256": "e461a93dfafad947dc1e88cdf0f5667e305c85c2c5b69f9f3532d0555784de8c",
+  "commit": "45676591fafcadca9923ddbef516a257c471c770"
+}

@@ -1,0 +1,21 @@
+{
+  "scope": "Owner development annotation before candidate read; not independent validation or anchor acceptance",
+  "uniform_labels": "Reused frozen readiness labels without changes",
+  "competitive_control": {
+    "bounds": [300, 360],
+    "requested_pts": [302.5,307.5,312.5,317.5,322.5,327.5,332.5,337.5,342.5,347.5,352.5,357.5],
+    "state_all_12": "live competitive Spider-Man gameplay with team-clock HUD; no spectator prompt or roster",
+    "native_control": "competitive-control/0005.png at 322.504: team clocks 01:31 and 04:00, four visible feed entries, native gameplay",
+    "exclusions": "Pixel-only mode/refusal control; motor settings unresolved, no camera truth"
+  },
+  "shifted_arrivals": [
+    {"entry":"S.t4rfir3 to ShadowFox594","live_last_unshifted":139.688,"live_first_shifted":139.696,"replay_last_unshifted":109.079,"replay_first_shifted":109.088},
+    {"entry":"cowboyboopbop to Yoitscolin","live_last_unshifted":140.954,"live_first_shifted":140.963,"replay_last_unshifted":110.338,"replay_first_shifted":110.346}
+  ],
+  "timers": [
+    {"label":"timer-0348","old":"03:48","new":"03:47","last_old":137.529,"first_new":137.538},
+    {"label":"timer-0343","old":"03:43","new":"03:42","last_old":142.638,"first_new":142.646}
+  ],
+  "inspection": "All feed contact frames around each onset; all 12 competitive overview samples plus native 0005; timer every-sixth-frame overview plus all eight frames bracketing each transition. Timer values between inspections are continuity-derived, not independently frame-by-frame labelled.",
+  "limits": "Encoded PTS in milliseconds; only two paired shifts and two timer transitions, far below support floors. New entries fade in after the preceding row has already shifted. No alignment fit or physical-lag claim."
+}
