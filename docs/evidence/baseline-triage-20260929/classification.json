@@ -1,0 +1,538 @@
+{
+  "input_packet": "docs/evidence/live-loop-safety-rebind-20260929/baseline-failures.md",
+  "fixed": 0,
+  "remaining": 45,
+  "remaining_by_class": {
+    "b": 8,
+    "c": 34,
+    "a": 3
+  },
+  "production_bug_groups": 1,
+  "production_bug_verdict": "FAIL_CLOSED",
+  "refusal_probes": 12,
+  "nodes": [
+    {
+      "node": "tests/test_live_range_bc.py::test_cli_defaults_remain_cpu_and_original_preprocessor",
+      "class": "b",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Earlier test_intake_streaming leaves the snapshot root on sys.path; later import selects incomplete frozen CLI snapshot.",
+      "repair_path": "tests/test_intake_streaming.py",
+      "fixed": false,
+      "disposition": "preserve pinned test per lead",
+      "pin_references": [
+        "docs/evidence\\admission-reviews-20260927\\review-bounded-intake-b28d2e4.md"
+      ],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_live_range_bc.py::test_review_receipt_must_match_all_loaded_and_running_files",
+      "class": "b",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Earlier test_intake_streaming leaves the snapshot root on sys.path; later import selects incomplete frozen CLI snapshot.",
+      "repair_path": "tests/test_intake_streaming.py",
+      "fixed": false,
+      "disposition": "preserve pinned test per lead",
+      "pin_references": [
+        "docs/evidence\\admission-reviews-20260927\\review-bounded-intake-b28d2e4.md"
+      ],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_live_range_bc.py::test_settle_default_and_excluded_interval",
+      "class": "b",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Earlier test_intake_streaming leaves the snapshot root on sys.path; later import selects incomplete frozen CLI snapshot.",
+      "repair_path": "tests/test_intake_streaming.py",
+      "fixed": false,
+      "disposition": "preserve pinned test per lead",
+      "pin_references": [
+        "docs/evidence\\admission-reviews-20260927\\review-bounded-intake-b28d2e4.md"
+      ],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_live_range_bc.py::test_v1_review_cannot_authorize_new_inference_dependency",
+      "class": "b",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Earlier test_intake_streaming leaves the snapshot root on sys.path; later import selects incomplete frozen CLI snapshot.",
+      "repair_path": "tests/test_intake_streaming.py",
+      "fixed": false,
+      "disposition": "preserve pinned test per lead",
+      "pin_references": [
+        "docs/evidence\\admission-reviews-20260927\\review-bounded-intake-b28d2e4.md"
+      ],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_measure_inference_fps.py::test_desktop_main_requires_startup_before_ready_or_measurement[False]",
+      "class": "b",
+      "owner": "live-loop repair owner / evaluator",
+      "cause": "Optional real capture NumPy import is attempted in the pure stdlib test environment.",
+      "repair_path": "tests/test_measure_inference_fps.py",
+      "fixed": false,
+      "disposition": "preserve pinned test per lead",
+      "pin_references": [
+        "data\\calibration\\alt-cam-20260928b\\yaw-01\\manifest.json",
+        "docs/evidence\\live-loop-repair-20260928\\review-v1.json",
+        "docs/evidence\\live-loop-repair-20260928\\review-inputs.json"
+      ],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_measure_inference_fps.py::test_desktop_main_requires_startup_before_ready_or_measurement[True]",
+      "class": "b",
+      "owner": "live-loop repair owner / evaluator",
+      "cause": "Optional real capture NumPy import is attempted in the pure stdlib test environment.",
+      "repair_path": "tests/test_measure_inference_fps.py",
+      "fixed": false,
+      "disposition": "preserve pinned test per lead",
+      "pin_references": [
+        "data\\calibration\\alt-cam-20260928b\\yaw-01\\manifest.json",
+        "docs/evidence\\live-loop-repair-20260928\\review-v1.json",
+        "docs/evidence\\live-loop-repair-20260928\\review-inputs.json"
+      ],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_measure_inference_fps.py::test_fresh_process_import_audit_blocks_actuators_and_desktop_opening",
+      "class": "b",
+      "owner": "live-loop repair owner / evaluator",
+      "cause": "Optional real capture NumPy import is attempted in the pure stdlib test environment.",
+      "repair_path": "tests/test_measure_inference_fps.py",
+      "fixed": false,
+      "disposition": "preserve pinned test per lead",
+      "pin_references": [
+        "data\\calibration\\alt-cam-20260928b\\yaw-01\\manifest.json",
+        "docs/evidence\\live-loop-repair-20260928\\review-v1.json",
+        "docs/evidence\\live-loop-repair-20260928\\review-inputs.json"
+      ],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_replay_hud.py::test_identify_order_on_james_is_his",
+      "class": "b",
+      "owner": "pilot-prep / replay-HUD",
+      "cause": "Local corpus glob has no corpus opt-in marker; lead confirmed 51 admitted-only directories, no sealed breach. Reader correctness not adjudicated.",
+      "repair_path": "tests/test_replay_hud.py",
+      "fixed": false,
+      "disposition": "preserve pinned test per lead",
+      "pin_references": [
+        "docs/evidence\\replay-hud-20260923\\replay-steps-3.md"
+      ],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_sealed_denylist_v2.py::test_every_consumer_pins_v2",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_sealed_denylist_v2.py::test_v1_is_unchanged_and_v2_is_a_superset_of_it",
+      "class": "a",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Seven-row assertion predates intentional eighth denylist row (731cd7d).",
+      "repair_path": "tests/test_sealed_denylist_v2.py",
+      "fixed": false,
+      "disposition": "preserve pinned test per lead",
+      "pin_references": [
+        "docs/evidence\\sealed-takes-20260926\\admission-test-take-20260926-delta.md"
+      ],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_spatial_yaw_fallback.py::test_completed_fit_resumes_evaluation_without_refit",
+      "class": "a",
+      "owner": "explore-policy",
+      "cause": "Synthetic identity retains deadline_unix removed from guard v2 identity contract (ead3e6d).",
+      "repair_path": "tests/test_spatial_yaw_fallback.py",
+      "fixed": false,
+      "disposition": "preserve pinned test per lead",
+      "pin_references": [
+        "docs/evidence\\nitrogen-spatial-yaw-20260927\\fallback-launch\\source-pins.json"
+      ],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_spatial_yaw_fallback.py::test_partial_fit_never_recomputed",
+      "class": "a",
+      "owner": "explore-policy",
+      "cause": "Synthetic identity retains deadline_unix removed from guard v2 identity contract (ead3e6d).",
+      "repair_path": "tests/test_spatial_yaw_fallback.py",
+      "fixed": false,
+      "disposition": "preserve pinned test per lead",
+      "pin_references": [
+        "docs/evidence\\nitrogen-spatial-yaw-20260927\\fallback-launch\\source-pins.json"
+      ],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_tally_default.py::test_the_default_snapshot_is_committed_and_validates_the_live_registry",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "data/human/sessions/tally.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_a_binder_outside_any_session_blocks_deletion_and_is_named[data/human/calibration/x/notes.md-sha256]",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_a_binder_outside_any_session_blocks_deletion_and_is_named[data/human/skill-event-candidates/051828-request-timing-v1/artifact-hashes.json-sha256]",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_a_binder_outside_any_session_blocks_deletion_and_is_named[docs/evidence/range-request-human-fit-20260922/README.md-path]",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_a_pixel_format_change_fails_verification",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_an_interrupt_between_the_renames_still_leaves_a_receipt",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_an_interrupted_encode_leaves_no_partial",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_any_transcode_is_refused_while_the_game_or_obs_runs[running0-marvel-win64-shipping.exe running-hevc_nvenc]",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_any_transcode_is_refused_while_the_game_or_obs_runs[running0-marvel-win64-shipping.exe running-libx265]",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_any_transcode_is_refused_while_the_game_or_obs_runs[running1-obs64.exe running-hevc_nvenc]",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_any_transcode_is_refused_while_the_game_or_obs_runs[running1-obs64.exe running-libx265]",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_any_transcode_is_refused_while_the_game_or_obs_runs[running2-obs-ffmpeg-mux.exe running-hevc_nvenc]",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_any_transcode_is_refused_while_the_game_or_obs_runs[running2-obs-ffmpeg-mux.exe running-libx265]",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_delete_after_the_relocation_is_recorded",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_delete_is_refused_while_the_takes_own_session_holds_no_relocation",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_delete_refuses_a_receipt_intake_would_refuse",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_delete_refuses_a_relocation_that_does_not_hold[changed receipt-load_transcode_receipt|another receipt|changed]",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_delete_refuses_a_relocation_that_does_not_hold[other receipt-another receipt]",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_delete_refuses_a_relocation_that_does_not_hold[tampered output-no longer matches its receipt]",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_delete_refuses_a_relocation_that_does_not_hold[unpinned-not pinned by the session's freeze]",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_end_to_end_preserves_every_timestamp_and_writes_the_receipt",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_every_binder_must_resolve_to_a_relocated_session",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_intakes_media_hash_check_must_hold",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_plan_all_pairs_by_metadata_and_never_opens_the_sealed_folder",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_plan_only_checks_everything_and_writes_nothing",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_rounded_timestamps_fail_verification_and_leave_nothing",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_the_game_starting_mid_encode_kills_a_cpu_encode",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_the_receipt_loads_through_intakes_contract",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_the_run_lowers_its_priority_first",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_the_sealed_media_is_refused_by_path_as_a_string[C:/USERS/VOLPE/VIDEOS/2026-09-23 00-36-16.MKV]",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_the_sealed_media_is_refused_by_path_as_a_string[C:/Users/volpe/Videos/2026-09-23 00-36-16.mkv]",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_the_sealed_media_is_refused_by_path_as_a_string[C:\\\\Users\\\\volpe\\\\Videos\\\\2026-09-23 00-36-16.mkv]",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_the_sealed_session_is_refused_by_id_before_anything_is_opened",
+      "class": "c",
+      "owner": "admission owner (admission-codex)",
+      "cause": "Partial denylist re-pin: old 439c80df pin refuses current 09e8b9d3 metadata; fail closed.",
+      "repair_path": "scripts/transcode_recording.py",
+      "fixed": false,
+      "disposition": "report production bug only; no production edit authorized",
+      "pin_references": [],
+      "baseline_reproduced": true
+    }
+  ]
+}

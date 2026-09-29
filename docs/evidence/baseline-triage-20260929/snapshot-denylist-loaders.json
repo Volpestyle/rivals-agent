@@ -1,0 +1,170 @@
+[
+  {
+    "path": "agent/human_intake.py",
+    "line": 611,
+    "source_sha256": "9dbae8c7f11c6c436aa02068cadcb914e27feedfda6174683ae5268063a426da",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\n\n    Since v2 (2026-09-26, review B2) a row may carry `allowed_split` (\"test\" or \"gate2\"; absent means test). A gate2 row\n    also names its `session_group`: the pair it belongs to. Membership of a sealed split is authoritative here, never\n    in the candidate registry.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n        _require(row.get(\"allowed_split\", \"test\") in SEALED_ALLOWED, \"denylist allowed_split must be test or gate2\")\n        _require(row.get(\"allowed_split\", \"test\") != \"gate2\" or isinstance(row.get(\"session_group\"), str),\n                 \"a gate2 denylist row needs its session_group\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-fbe6693/agent/human_intake.py",
+    "line": 486,
+    "source_sha256": "3f2f6f3d9397f871f0357bf6c1b22052978d4a782c0d40daab382cfae5b472a6",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-f8fd92c-ping-20260927/agent/human_intake.py",
+    "line": 611,
+    "source_sha256": "9dbae8c7f11c6c436aa02068cadcb914e27feedfda6174683ae5268063a426da",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\n\n    Since v2 (2026-09-26, review B2) a row may carry `allowed_split` (\"test\" or \"gate2\"; absent means test). A gate2 row\n    also names its `session_group`: the pair it belongs to. Membership of a sealed split is authoritative here, never\n    in the candidate registry.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n        _require(row.get(\"allowed_split\", \"test\") in SEALED_ALLOWED, \"denylist allowed_split must be test or gate2\")\n        _require(row.get(\"allowed_split\", \"test\") != \"gate2\" or isinstance(row.get(\"session_group\"), str),\n                 \"a gate2 denylist row needs its session_group\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-86a1912/agent/human_intake.py",
+    "line": 425,
+    "source_sha256": "3f2f6f3d9397f871f0357bf6c1b22052978d4a782c0d40daab382cfae5b472a6",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-107970b-3c8a3b7e/agent/human_intake.py",
+    "line": 518,
+    "source_sha256": "9dbae8c7f11c6c436aa02068cadcb914e27feedfda6174683ae5268063a426da",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\n\n    Since v2 (2026-09-26, review B2) a row may carry `allowed_split` (\"test\" or \"gate2\"; absent means test). A gate2 row\n    also names its `session_group`: the pair it belongs to. Membership of a sealed split is authoritative here, never\n    in the candidate registry.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n        _require(row.get(\"allowed_split\", \"test\") in SEALED_ALLOWED, \"denylist allowed_split must be test or gate2\")\n        _require(row.get(\"allowed_split\", \"test\") != \"gate2\" or isinstance(row.get(\"session_group\"), str),\n                 \"a gate2 denylist row needs its session_group\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-83c05f1/agent/human_intake.py",
+    "line": 513,
+    "source_sha256": "3f2f6f3d9397f871f0357bf6c1b22052978d4a782c0d40daab382cfae5b472a6",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-f8fd92c-bounded-20260927/agent/human_intake.py",
+    "line": 582,
+    "source_sha256": "9dbae8c7f11c6c436aa02068cadcb914e27feedfda6174683ae5268063a426da",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\n\n    Since v2 (2026-09-26, review B2) a row may carry `allowed_split` (\"test\" or \"gate2\"; absent means test). A gate2 row\n    also names its `session_group`: the pair it belongs to. Membership of a sealed split is authoritative here, never\n    in the candidate registry.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n        _require(row.get(\"allowed_split\", \"test\") in SEALED_ALLOWED, \"denylist allowed_split must be test or gate2\")\n        _require(row.get(\"allowed_split\", \"test\") != \"gate2\" or isinstance(row.get(\"session_group\"), str),\n                 \"a gate2 denylist row needs its session_group\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-74db8be/agent/human_intake.py",
+    "line": 345,
+    "source_sha256": "3c8f110d33bd42bb0bc998c38a2a94568cdc5daf0b967173aa2b3425101e78c3",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-3936f94-4c9638d1/agent/human_intake.py",
+    "line": 515,
+    "source_sha256": "3f2f6f3d9397f871f0357bf6c1b22052978d4a782c0d40daab382cfae5b472a6",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-6bbb276/agent/human_intake.py",
+    "line": 515,
+    "source_sha256": "3f2f6f3d9397f871f0357bf6c1b22052978d4a782c0d40daab382cfae5b472a6",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-3936f94/agent/human_intake.py",
+    "line": 513,
+    "source_sha256": "3f2f6f3d9397f871f0357bf6c1b22052978d4a782c0d40daab382cfae5b472a6",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-6f4dba2/agent/human_intake.py",
+    "line": 397,
+    "source_sha256": "3c8f110d33bd42bb0bc998c38a2a94568cdc5daf0b967173aa2b3425101e78c3",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-f8fd92c-6046514b/agent/human_intake.py",
+    "line": 550,
+    "source_sha256": "9dbae8c7f11c6c436aa02068cadcb914e27feedfda6174683ae5268063a426da",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\n\n    Since v2 (2026-09-26, review B2) a row may carry `allowed_split` (\"test\" or \"gate2\"; absent means test). A gate2 row\n    also names its `session_group`: the pair it belongs to. Membership of a sealed split is authoritative here, never\n    in the candidate registry.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n        _require(row.get(\"allowed_split\", \"test\") in SEALED_ALLOWED, \"denylist allowed_split must be test or gate2\")\n        _require(row.get(\"allowed_split\", \"test\") != \"gate2\" or isinstance(row.get(\"session_group\"), str),\n                 \"a gate2 denylist row needs its session_group\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-f8fd92c-3c585dc1/agent/human_intake.py",
+    "line": 550,
+    "source_sha256": "9dbae8c7f11c6c436aa02068cadcb914e27feedfda6174683ae5268063a426da",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\n\n    Since v2 (2026-09-26, review B2) a row may carry `allowed_split` (\"test\" or \"gate2\"; absent means test). A gate2 row\n    also names its `session_group`: the pair it belongs to. Membership of a sealed split is authoritative here, never\n    in the candidate registry.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n        _require(row.get(\"allowed_split\", \"test\") in SEALED_ALLOWED, \"denylist allowed_split must be test or gate2\")\n        _require(row.get(\"allowed_split\", \"test\") != \"gate2\" or isinstance(row.get(\"session_group\"), str),\n                 \"a gate2 denylist row needs its session_group\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-23c8482/agent/human_intake.py",
+    "line": 425,
+    "source_sha256": "3f2f6f3d9397f871f0357bf6c1b22052978d4a782c0d40daab382cfae5b472a6",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-dfbb4dd-98e52781/agent/human_intake.py",
+    "line": 447,
+    "source_sha256": "3f2f6f3d9397f871f0357bf6c1b22052978d4a782c0d40daab382cfae5b472a6",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-dfbb4dd/agent/human_intake.py",
+    "line": 447,
+    "source_sha256": "3f2f6f3d9397f871f0357bf6c1b22052978d4a782c0d40daab382cfae5b472a6",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-e7f5045/agent/human_intake.py",
+    "line": 518,
+    "source_sha256": "9dbae8c7f11c6c436aa02068cadcb914e27feedfda6174683ae5268063a426da",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\n\n    Since v2 (2026-09-26, review B2) a row may carry `allowed_split` (\"test\" or \"gate2\"; absent means test). A gate2 row\n    also names its `session_group`: the pair it belongs to. Membership of a sealed split is authoritative here, never\n    in the candidate registry.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n        _require(row.get(\"allowed_split\", \"test\") in SEALED_ALLOWED, \"denylist allowed_split must be test or gate2\")\n        _require(row.get(\"allowed_split\", \"test\") != \"gate2\" or isinstance(row.get(\"session_group\"), str),\n                 \"a gate2 denylist row needs its session_group\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-f8fd92c-08c36e68/agent/human_intake.py",
+    "line": 582,
+    "source_sha256": "9dbae8c7f11c6c436aa02068cadcb914e27feedfda6174683ae5268063a426da",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\n\n    Since v2 (2026-09-26, review B2) a row may carry `allowed_split` (\"test\" or \"gate2\"; absent means test). A gate2 row\n    also names its `session_group`: the pair it belongs to. Membership of a sealed split is authoritative here, never\n    in the candidate registry.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n        _require(row.get(\"allowed_split\", \"test\") in SEALED_ALLOWED, \"denylist allowed_split must be test or gate2\")\n        _require(row.get(\"allowed_split\", \"test\") != \"gate2\" or isinstance(row.get(\"session_group\"), str),\n                 \"a gate2 denylist row needs its session_group\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-2ad0992/agent/human_intake.py",
+    "line": 429,
+    "source_sha256": "3f2f6f3d9397f871f0357bf6c1b22052978d4a782c0d40daab382cfae5b472a6",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-c0892ab/agent/human_intake.py",
+    "line": 342,
+    "source_sha256": "3c8f110d33bd42bb0bc998c38a2a94568cdc5daf0b967173aa2b3425101e78c3",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-f8fd92c/agent/human_intake.py",
+    "line": 518,
+    "source_sha256": "9dbae8c7f11c6c436aa02068cadcb914e27feedfda6174683ae5268063a426da",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\n\n    Since v2 (2026-09-26, review B2) a row may carry `allowed_split` (\"test\" or \"gate2\"; absent means test). A gate2 row\n    also names its `session_group`: the pair it belongs to. Membership of a sealed split is authoritative here, never\n    in the candidate registry.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n        _require(row.get(\"allowed_split\", \"test\") in SEALED_ALLOWED, \"denylist allowed_split must be test or gate2\")\n        _require(row.get(\"allowed_split\", \"test\") != \"gate2\" or isinstance(row.get(\"session_group\"), str),\n                 \"a gate2 denylist row needs its session_group\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-299ffba/agent/human_intake.py",
+    "line": 396,
+    "source_sha256": "3c8f110d33bd42bb0bc998c38a2a94568cdc5daf0b967173aa2b3425101e78c3",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  },
+  {
+    "path": "data/human/sessions/code-snapshot-b7d4592/agent/human_intake.py",
+    "line": 447,
+    "source_sha256": "3f2f6f3d9397f871f0357bf6c1b22052978d4a782c0d40daab382cfae5b472a6",
+    "load_denylist": "def load_denylist(path, *, sha256_pin=None):\n    \"\"\"The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.\"\"\"\n    path = Path(path)\n    if sha256_pin is not None:\n        _require(lf_sha256(path) == sha256_pin, \"sealed denylist differs from its pinned sha256 (LF form)\")\n    doc = json.loads(path.read_text(encoding=\"utf-8\"))\n    _require(doc.get(\"schema_version\") == 1 and isinstance(doc.get(\"sessions\"), list) and doc[\"sessions\"],\n             \"sealed denylist needs sessions\")\n    for row in doc[\"sessions\"]:\n        _require(isinstance(row.get(\"session_id\"), str) and _hex64(row.get(\"media_sha256\")), \"denylist row incomplete\")\n    return doc",
+    "_require": "def _require(condition, message):\n    if not condition:\n        raise hd.DemoError(message)"
+  }
+]

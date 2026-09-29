@@ -1,0 +1,59 @@
+{
+  "tests/test_intake_streaming.py": {
+    "LF_sha256": "52289b13143f2b0327cc386a85de00150e443c7f94d5c6855efe64ef9130e507",
+    "CRLF_sha256": "cb778bc376c254c99c2776aec8696d3f2e5dfb38ea1d79207ae73b5bdccdffe9",
+    "matches": [
+      "docs/evidence\\admission-reviews-20260927\\review-bounded-intake-b28d2e4.md"
+    ],
+    "checkpoint_698d8831_path": false
+  },
+  "tests/test_measure_inference_fps.py": {
+    "LF_sha256": "e8ba017037d596d518d2d7f35409a4316a7bbc740bd4e824d221906813b92f9a",
+    "CRLF_sha256": "b9ce753d0c313dee2a6aa395a6c5c3476a092b4426ab3270af4dbd2ae04236be",
+    "matches": [
+      "data\\calibration\\alt-cam-20260928b\\yaw-01\\manifest.json",
+      "docs/evidence\\live-loop-repair-20260928\\review-v1.json",
+      "docs/evidence\\live-loop-repair-20260928\\review-inputs.json"
+    ],
+    "checkpoint_698d8831_path": false
+  },
+  "tests/test_replay_hud.py": {
+    "LF_sha256": "b89053421e9b3659dca4f0aa8356c35e9a5c2ec9ca5152a568a625dcdf58910e",
+    "CRLF_sha256": "7f6570862274cf30403320c1078ad8c1e73abe7b3cbcf59a248058925199a5e8",
+    "matches": [
+      "docs/evidence\\replay-hud-20260923\\replay-steps-3.md"
+    ],
+    "checkpoint_698d8831_path": false
+  },
+  "tests/test_sealed_denylist_v2.py": {
+    "LF_sha256": "0191fb185cb36685393c8c2de916f50f94fbd7470b211d8987332fefc1a3a8e9",
+    "CRLF_sha256": "8e981bf9779e380f50913117ac48544704569c7353671d427cebb7fba5bd3126",
+    "matches": [
+      "docs/evidence\\sealed-takes-20260926\\admission-test-take-20260926-delta.md"
+    ],
+    "checkpoint_698d8831_path": false
+  },
+  "tests/test_spatial_yaw_fallback.py": {
+    "LF_sha256": "8e22f626880feafae56475ccfefc391983bc3573d13e9c8195f3bdfe03da2519",
+    "CRLF_sha256": "b90f95930f51b4ae12ebc39118f74fcea434c82e553b6c726370bb311fb377f2",
+    "matches": [
+      "docs/evidence\\nitrogen-spatial-yaw-20260927\\fallback-launch\\source-pins.json"
+    ],
+    "checkpoint_698d8831_path": false
+  },
+  "tests/test_transcode_recording.py": {
+    "LF_sha256": "73582d4fd643a0596b010aab550b91a3d86313131f8033b86e63416b132ae294",
+    "CRLF_sha256": "34418303da452e62379e38d4c44734e3db49f1a1418efbf0086e216540370ead",
+    "matches": [],
+    "checkpoint_698d8831_path": false
+  },
+  "tests/test_tally_default.py": {
+    "LF_sha256": "44220ed0c96c63d6522a76fea222e3f221b2f3c9eed8042b217bccee636dee60",
+    "CRLF_sha256": "859a35179b7e3b555fe6ea886ecdcb5394cdcea636fb6abc5ba6c1017dc1359a",
+    "matches": [
+      "docs/evidence\\idm-train-release-20260926\\admission-release-idm-train-20260926.reviewed-dd73a5e0.md",
+      "docs/evidence\\idm-train-release-20260926\\admission-release-idm-train-20260926.md"
+    ],
+    "checkpoint_698d8831_path": false
+  }
+}

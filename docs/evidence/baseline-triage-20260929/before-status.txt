@@ -1,0 +1,35 @@
+ M .agents/skills/rivals-live-game/SKILL.md
+ M .agents/skills/rivals-progress/SKILL.md
+ M AGENTS.md
+ M agent/loop.py
+ M docs/compute.md
+ M docs/lanes/explore-policy.md
+ M docs/lanes/human-admission-handoff-20260927.md
+ M docs/lanes/l4-controller.md
+ M docs/lanes/live-loop.md
+ M docs/lanes/range-lead.md
+ M docs/learning-plan.md
+ M docs/machines.md
+ M docs/plan.md
+ M docs/recording-log.md
+ M docs/recording-protocol.md
+ M docs/steering/charter-20260926.md
+ M scripts/padrun.sh
+ M tests/test_loop.py
+ M tests/test_range_skill_loop.py
+ M tests/test_startup.py
+?? docs/README.md
+?? docs/evidence/camera-post-attach-recovery-20260928/
+?? docs/evidence/live-loop-fallback-20260927/cuda-t2/replay/
+?? docs/evidence/live-loop-fallback-20260927/prepared/events.jsonl
+?? docs/evidence/live-loop-fallback-20260927/prepared/frames.jsonl
+?? docs/evidence/live-loop-safety-rebind-20260929/
+?? docs/evidence/nitrogen-yaw-dropout-20260928/._probe-launch-01
+?? docs/evidence/nitrogen-yaw-dropout-20260928/._probe-results-01
+?? docs/evidence/target-identity-audit-20260929/
+?? docs/lanes/idm-gate2-anchors-results.md
+?? docs/lanes/idm-gate2-anchors.md
+?? docs/lanes/idm-gate2-assumptions-addendum-20260926.md
+?? perception/replay_cuts.py
+?? tests/test_loop_safety.py
+?? tests/test_replay_cuts.py

@@ -1,0 +1,18 @@
+[
+  "agent/brain.py",
+  "agent/controller.py",
+  "agent/intents.py",
+  "agent/learned_range_skill.py",
+  "agent/loop.py",
+  "agent/startup.py",
+  "agent/state.py",
+  "agent/tracker.py",
+  "perception/hud.py",
+  "perception/outline.py",
+  "perception/scoreboard.py",
+  "policy/execution.py",
+  "policy/range_policy.py",
+  "policy/range_skill_policy.py",
+  "scripts/capture.py",
+  "scripts/record.py"
+]

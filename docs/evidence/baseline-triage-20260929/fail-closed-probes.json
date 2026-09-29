@@ -1,0 +1,110 @@
+[
+  {
+    "case": "transcode",
+    "optimized": false,
+    "result": "FAIL_CLOSED",
+    "exception": "Refused",
+    "message": "sealed denylist unusable (sealed denylist differs from its pinned sha256 (LF form)): nothing is opened without it",
+    "downstream_reached": [],
+    "intake_module": "C:\\Users\\volpe\\repos\\rivals-agent\\agent\\human_intake.py"
+  },
+  {
+    "case": "plan_all",
+    "optimized": false,
+    "result": "FAIL_CLOSED",
+    "exception": "Refused",
+    "message": "sealed denylist unusable (sealed denylist differs from its pinned sha256 (LF form)): nothing is opened without it",
+    "downstream_reached": [],
+    "intake_module": "C:\\Users\\volpe\\repos\\rivals-agent\\agent\\human_intake.py"
+  },
+  {
+    "case": "delete_disabled",
+    "optimized": false,
+    "result": "FAIL_CLOSED",
+    "exception": "Refused",
+    "message": "deletion not approved: pending D1/D2 (see docs/evidence)",
+    "downstream_reached": [],
+    "intake_module": "C:\\Users\\volpe\\repos\\rivals-agent\\agent\\human_intake.py"
+  },
+  {
+    "case": "delete_pin",
+    "optimized": false,
+    "result": "FAIL_CLOSED",
+    "exception": "Refused",
+    "message": "sealed denylist unusable (sealed denylist differs from its pinned sha256 (LF form)): nothing is opened without it",
+    "downstream_reached": [],
+    "intake_module": "C:\\Users\\volpe\\repos\\rivals-agent\\agent\\human_intake.py"
+  },
+  {
+    "case": "tally",
+    "optimized": false,
+    "result": "FAIL_CLOSED",
+    "exception": "DemoError",
+    "message": "sealed denylist differs from its pinned sha256 (LF form)",
+    "downstream_reached": [],
+    "intake_module": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\sessions\\code-snapshot-107970b-3c8a3b7e\\agent\\human_intake.py"
+  },
+  {
+    "case": "relocate",
+    "optimized": false,
+    "result": "FAIL_CLOSED",
+    "exception": "DemoError",
+    "message": "sealed denylist differs from its pinned sha256 (LF form)",
+    "downstream_reached": [],
+    "intake_module": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\sessions\\code-snapshot-107970b-3c8a3b7e\\agent\\human_intake.py"
+  },
+  {
+    "case": "transcode",
+    "optimized": true,
+    "result": "FAIL_CLOSED",
+    "exception": "Refused",
+    "message": "sealed denylist unusable (sealed denylist differs from its pinned sha256 (LF form)): nothing is opened without it",
+    "downstream_reached": [],
+    "intake_module": "C:\\Users\\volpe\\repos\\rivals-agent\\agent\\human_intake.py"
+  },
+  {
+    "case": "plan_all",
+    "optimized": true,
+    "result": "FAIL_CLOSED",
+    "exception": "Refused",
+    "message": "sealed denylist unusable (sealed denylist differs from its pinned sha256 (LF form)): nothing is opened without it",
+    "downstream_reached": [],
+    "intake_module": "C:\\Users\\volpe\\repos\\rivals-agent\\agent\\human_intake.py"
+  },
+  {
+    "case": "delete_disabled",
+    "optimized": true,
+    "result": "FAIL_CLOSED",
+    "exception": "Refused",
+    "message": "deletion not approved: pending D1/D2 (see docs/evidence)",
+    "downstream_reached": [],
+    "intake_module": "C:\\Users\\volpe\\repos\\rivals-agent\\agent\\human_intake.py"
+  },
+  {
+    "case": "delete_pin",
+    "optimized": true,
+    "result": "FAIL_CLOSED",
+    "exception": "Refused",
+    "message": "sealed denylist unusable (sealed denylist differs from its pinned sha256 (LF form)): nothing is opened without it",
+    "downstream_reached": [],
+    "intake_module": "C:\\Users\\volpe\\repos\\rivals-agent\\agent\\human_intake.py"
+  },
+  {
+    "case": "tally",
+    "optimized": true,
+    "result": "FAIL_CLOSED",
+    "exception": "DemoError",
+    "message": "sealed denylist differs from its pinned sha256 (LF form)",
+    "downstream_reached": [],
+    "intake_module": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\sessions\\code-snapshot-107970b-3c8a3b7e\\agent\\human_intake.py"
+  },
+  {
+    "case": "relocate",
+    "optimized": true,
+    "result": "FAIL_CLOSED",
+    "exception": "DemoError",
+    "message": "sealed denylist differs from its pinned sha256 (LF form)",
+    "downstream_reached": [],
+    "intake_module": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\sessions\\code-snapshot-107970b-3c8a3b7e\\agent\\human_intake.py"
+  }
+]

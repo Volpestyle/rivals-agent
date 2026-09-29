@@ -1,0 +1,10 @@
+commit 731cd7d6d17c1494676a371f1b614b4f4c396ba1
+Author:     James Volpe <volpestyle@gmail.com>
+AuthorDate: Sun Sep 27 15:24:45 2026 -0500
+Commit:     James Volpe <volpestyle@gmail.com>
+CommitDate: Sun Sep 27 15:24:45 2026 -0500
+
+    Preserve second guarded retry of ping assembly
+
+ data/human/sealed-denylist.v2.json | 9 +++++++++
+ 1 file changed, 9 insertions(+)

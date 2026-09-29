@@ -1,0 +1,60 @@
+{
+  "current_LF_sha256": "09e8b9d350c89eb41c1581e1bce47548bfb855bca5805cf2e65955b9b23597b5",
+  "consumers": [
+    {
+      "path": "scripts/transcode_recording.py",
+      "line": 72,
+      "pin": "439c80df6cd5d6daa60b48e0acb2d3a3fa833134ff14edddc4121348c2dceb20",
+      "matches_current_LF": false
+    },
+    {
+      "path": "data/human/sessions/tally.py",
+      "line": 30,
+      "pin": "439c80df6cd5d6daa60b48e0acb2d3a3fa833134ff14edddc4121348c2dceb20",
+      "matches_current_LF": false
+    },
+    {
+      "path": "data/human/sessions/relocate_session.py",
+      "line": 20,
+      "pin": "439c80df6cd5d6daa60b48e0acb2d3a3fa833134ff14edddc4121348c2dceb20",
+      "matches_current_LF": false
+    },
+    {
+      "path": "data/human/sessions/intake_session.py",
+      "line": 63,
+      "pin": "09e8b9d350c89eb41c1581e1bce47548bfb855bca5805cf2e65955b9b23597b5",
+      "matches_current_LF": true
+    },
+    {
+      "path": "data/human/sessions/assemble_session.py",
+      "line": 36,
+      "pin": "09e8b9d350c89eb41c1581e1bce47548bfb855bca5805cf2e65955b9b23597b5",
+      "matches_current_LF": true
+    },
+    {
+      "path": "policy/range_bc/steps.py",
+      "line": 112,
+      "pin": "09e8b9d350c89eb41c1581e1bce47548bfb855bca5805cf2e65955b9b23597b5",
+      "matches_current_LF": true
+    },
+    {
+      "path": "policy/idm_targets.py",
+      "line": 95,
+      "pin": "09e8b9d350c89eb41c1581e1bce47548bfb855bca5805cf2e65955b9b23597b5",
+      "matches_current_LF": true
+    }
+  ],
+  "metadata_only_probes": [
+    {
+      "pin": "09e8b9d350c89eb41c1581e1bce47548bfb855bca5805cf2e65955b9b23597b5",
+      "result": "accepted metadata",
+      "session_rows": 8
+    },
+    {
+      "pin": "439c80df6cd5d6daa60b48e0acb2d3a3fa833134ff14edddc4121348c2dceb20",
+      "result": "DemoError",
+      "message": "sealed denylist differs from its pinned sha256 (LF form)"
+    }
+  ],
+  "payloads_opened": false
+}
