@@ -1,0 +1,11 @@
+{
+  "completed_utc": "2026-09-29T07:31:26Z",
+  "examples": 48,
+  "decoded_pts_verified": 1824,
+  "all_causal_images_at_or_before_anchor": true,
+  "all_outcome_images_within_next_second": true,
+  "denylist_records": 8,
+  "no_denied_id_hash_or_basename": true,
+  "exact_train_roster": true,
+  "denylist_sha256": "4bafb1741026871a5f7ba4d8eb8b2e0bc8757c3cbd786af0f847289dc1c71716"
+}

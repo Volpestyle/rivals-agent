@@ -1,0 +1,85 @@
+{
+  "checked_at": 1790664931.605779,
+  "sources": [
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "native_source": "/Users/james/dev/range-bc-data/originals/2026-09-23 00-18-28.mkv",
+      "exists": true,
+      "size": 6892293372,
+      "resolution": [
+        2560,
+        1440
+      ]
+    },
+    {
+      "session": "20260923T200129-346Z-33696-6",
+      "native_source": "/Users/james/dev/range-bc-data/originals/2026-09-23 15-01-29.mkv",
+      "exists": true,
+      "size": 26491613134,
+      "resolution": [
+        2560,
+        1440
+      ]
+    },
+    {
+      "session": "20260924T232304-170Z-12024-1",
+      "native_source": "/Users/james/dev/range-bc-data/originals/2026-09-24 18-23-04.mkv",
+      "exists": true,
+      "size": 7809140684,
+      "resolution": [
+        2560,
+        1440
+      ]
+    },
+    {
+      "session": "20260925T021320-371Z-7804-1",
+      "native_source": "/Users/james/dev/range-bc-data/originals/2026-09-24 21-13-20.mkv",
+      "exists": true,
+      "size": 31641970672,
+      "resolution": [
+        2560,
+        1440
+      ]
+    },
+    {
+      "session": "20260925T025230-605Z-7804-2",
+      "native_source": "/Users/james/dev/range-bc-data/originals/2026-09-24 21-52-30.mkv",
+      "exists": true,
+      "size": 3448208326,
+      "resolution": [
+        2560,
+        1440
+      ]
+    },
+    {
+      "session": "20260925T203745-207Z-49728-2",
+      "native_source": "/Users/james/dev/range-bc-data/explore/originals/2026-09-25 15-37-45.mkv",
+      "exists": true,
+      "size": 42276178384,
+      "resolution": [
+        2560,
+        1440
+      ]
+    },
+    {
+      "session": "20260926T035932-508Z-63684-14",
+      "native_source": "/Users/james/dev/range-bc-data/explore/originals/2026-09-25 22-59-32.mkv",
+      "exists": true,
+      "size": 26996242485,
+      "resolution": [
+        2560,
+        1440
+      ]
+    },
+    {
+      "session": "20260926T045729-166Z-79780-1",
+      "native_source": "/Users/james/dev/range-bc-data/explore/originals/2026-09-25 23-57-29.mkv",
+      "exists": true,
+      "size": 8782661544,
+      "resolution": [
+        2560,
+        1440
+      ]
+    }
+  ]
+}

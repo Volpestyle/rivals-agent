@@ -1,0 +1,20 @@
+{
+  "completed_utc": "2026-09-29T07:39:15.024796+00:00",
+  "started_utc": "2026-09-29T06:52:37+00:00",
+  "elapsed_minutes": 46.63,
+  "cost_usd": 0,
+  "decision": "Support is sparse or neither helps",
+  "checks": [
+    "48 causal and 48 outcome contact sheets present",
+    "README and contact index links resolve",
+    "annotation byte hashes unchanged after unblinding",
+    "snapshot denylist matches current PC JSON",
+    "48 unique cases, 24 onset and 24 still",
+    "all-supported causal and nearest scores and abstentions checked",
+    "still false-start cue count checked",
+    "1824 native decoded PTS checked separately on Mac"
+  ],
+  "causal_commit": "5b55f96",
+  "outcome_commit": "004c858",
+  "no_fit_cloud_gpu_fit_live_input_or_sealed_read": true
+}

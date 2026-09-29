@@ -1,0 +1,49 @@
+id,session,kind,yaw,truth,causal_status,causal_id,causal_side,causal_confidence,prediction,nearest_id,nearest_side,outcome_target,outcome_id,oracle_side,outcome_confidence,categories
+E01,20260923T200129-346Z-33696-6,still,0.0,none,unknown,,abstain,low,abstain,,abstain,unknown,,abstain,high,traversal/reorientation
+E02,20260923T051828-422Z-33696-1,onset,0.7937712,right,multiple,,abstain,medium,abstain,B1,right,unknown,,abstain,high,multiple-target choice;traversal/reorientation
+E03,20260923T200129-346Z-33696-6,still,0.0,none,multiple,,abstain,medium,abstain,B2,right,unknown,,abstain,high,multiple-target choice;traversal/reorientation
+E04,20260925T203745-207Z-49728-2,onset,-2.5466826,left,unknown,,abstain,low,abstain,B1,right,new lower-lane bot,,abstain,high,acquisition;traversal/reorientation
+E05,20260925T021320-371Z-7804-1,still,-0.165369,none,multiple,,abstain,medium,abstain,B2,right,B2,B2,right,high,acquisition;multiple-target choice;continued engagement
+E06,20260925T021320-371Z-7804-1,still,0.1322952,none,one,B1,left,medium,abstain,B1,left,B1,B1,left,medium,continued engagement;traversal/reorientation
+E07,20260926T035932-508Z-63684-14,onset,22.0271508,right,none,,abstain,high,abstain,,abstain,unknown,,abstain,high,traversal/reorientation
+E08,20260926T045729-166Z-79780-1,onset,-0.5622546,left,multiple,,abstain,medium,abstain,B1,left,unknown,,abstain,medium,multiple-target choice;traversal/reorientation
+E09,20260925T203745-207Z-49728-2,still,0.0,none,unknown,,abstain,low,abstain,B1,left,unknown,,abstain,high,traversal/reorientation
+E10,20260924T232304-170Z-12024-1,onset,1.0583616,right,unknown,,abstain,medium,abstain,B1,right,unknown,,abstain,high,multiple-target choice;traversal/reorientation
+E11,20260925T021320-371Z-7804-1,onset,0.6284022,right,multiple,,abstain,low,abstain,B2,left,unknown,,abstain,high,traversal/reorientation;unknown
+E12,20260925T025230-605Z-7804-2,still,0.1322952,none,none,,abstain,medium,abstain,B2,left,unknown,,abstain,high,traversal/reorientation
+E13,20260926T035932-508Z-63684-14,still,-0.46303320000000003,none,one,B1,left,high,none,B1,left,unknown,,abstain,medium,traversal/reorientation;unknown
+E14,20260926T045729-166Z-79780-1,still,0.2645904,none,one,B1,left,high,left,B1,left,B1 (defeated),B1,left,high,continued engagement;traversal/reorientation
+E15,20260926T035932-508Z-63684-14,still,0.0,none,one,B1,right,high,none,B1,right,unknown,,abstain,medium,traversal/reorientation;unknown
+E16,20260924T232304-170Z-12024-1,still,-0.23151660000000002,none,one,B2,right,high,right,B2,right,B2,B2,right,high,continued engagement
+E17,20260923T051828-422Z-33696-1,onset,1.2237306000000001,right,one,B1,abstain,medium,none,B1,abstain,unknown,,abstain,medium,traversal/reorientation;unknown
+E18,20260923T051828-422Z-33696-1,onset,-5.0602914,left,unknown,,abstain,medium,abstain,B1,left,unknown,,abstain,high,traversal/reorientation
+E19,20260926T035932-508Z-63684-14,still,0.1984428,none,one,B1,right,medium,right,B1,right,B1,B1,right,high,continued engagement
+E20,20260925T025230-605Z-7804-2,still,0.165369,none,none,,abstain,medium,abstain,B1,right,unknown,,abstain,medium,traversal/reorientation;multiple-target choice
+E21,20260926T045729-166Z-79780-1,onset,-5.5894722,left,unknown,,abstain,medium,abstain,B1,right,unknown,,abstain,high,traversal/reorientation;unknown
+E22,20260925T021320-371Z-7804-1,still,-0.1984428,none,unknown,,abstain,high,abstain,B1,abstain,unknown,,abstain,high,traversal/reorientation
+E23,20260925T025230-605Z-7804-2,onset,-0.496107,left,unknown,,abstain,medium,abstain,B2,left,unknown,,abstain,high,traversal/reorientation;multiple-target choice
+E24,20260924T232304-170Z-12024-1,still,-0.23151660000000002,none,multiple,,abstain,medium,abstain,B1,right,unknown,,abstain,medium,multiple-target choice;unknown
+E25,20260923T200129-346Z-33696-6,onset,-0.5291808,left,unknown,,abstain,medium,abstain,B1,right,unknown,,abstain,high,traversal/reorientation
+E26,20260926T045729-166Z-79780-1,still,0.2645904,none,one,B1,abstain,medium,none,B1,abstain,B1,B1,abstain,high,continued engagement
+E27,20260923T200129-346Z-33696-6,still,0.0,none,unknown,,abstain,medium,abstain,B1,left,B1,B1,left,high,visible acquisition
+E28,20260923T051828-422Z-33696-1,still,0.1322952,none,unknown,,abstain,medium,abstain,B1,right,unknown,,abstain,high,traversal/reorientation;unknown
+E29,20260924T232304-170Z-12024-1,onset,-9.0291474,left,none,,abstain,high,abstain,B1,left,unknown,,abstain,high,traversal/reorientation
+E30,20260923T200129-346Z-33696-6,onset,3.3735276,right,one,B1,left,high,left,B1,left,B1,B1,left,high,continued engagement
+E31,20260923T051828-422Z-33696-1,still,0.0,none,none,,abstain,high,none,,abstain,unknown,,abstain,high,unknown
+E32,20260925T203745-207Z-49728-2,onset,2.1828708,right,unknown,,abstain,low,abstain,B1,left,unknown,,abstain,medium,traversal/reorientation;unknown
+E33,20260925T021320-371Z-7804-1,onset,-4.299594,left,multiple,,abstain,medium,abstain,B2,right,B2,B2,right,high,visible acquisition;multiple-target choice;continued engagement
+E34,20260926T045729-166Z-79780-1,onset,0.9591402,right,one,B1,left,medium,left,B1,left,unknown,,abstain,medium,traversal/reorientation;unknown
+E35,20260925T203745-207Z-49728-2,still,0.0,none,one,B1,right,high,right,B1,right,B1,B1,right,high,continued engagement
+E36,20260926T045729-166Z-79780-1,still,-0.0661476,none,one,B2,abstain,medium,none,B2,abstain,B2,B2,abstain,high,continued engagement;multiple-target choice
+E37,20260925T025230-605Z-7804-2,still,0.0,none,multiple,,abstain,high,abstain,B1,right,unknown,,abstain,high,traversal/reorientation;multiple-target choice
+E38,20260924T232304-170Z-12024-1,onset,-22.4571102,left,none,,abstain,high,abstain,B1,left,unknown,,abstain,high,traversal/reorientation
+E39,20260926T035932-508Z-63684-14,onset,-57.8460762,left,unknown,,abstain,low,abstain,B2,right,unknown,,abstain,high,traversal/reorientation
+E40,20260924T232304-170Z-12024-1,still,-0.0330738,none,one,B1,left,high,abstain,B4,abstain,unknown,,abstain,medium,traversal/reorientation;unknown
+E41,20260923T051828-422Z-33696-1,still,0.0,none,unknown,,abstain,high,abstain,B1,left,unknown,,abstain,high,traversal/reorientation
+E42,20260923T200129-346Z-33696-6,onset,22.721700600000002,right,none,,abstain,high,abstain,B1,left,unknown,,abstain,high,traversal/reorientation
+E43,20260925T021320-371Z-7804-1,onset,0.6945498,right,one,B1,abstain,high,none,B1,abstain,B1,B1,abstain,high,continued engagement
+E44,20260925T203745-207Z-49728-2,still,0.0,none,unknown,,abstain,low,abstain,B1,right,B1,B1,right,high,visible acquisition
+E45,20260925T025230-605Z-7804-2,onset,32.4453978,right,one,B1,right,high,right,B1,right,B1,B1,right,high,continued engagement
+E46,20260925T203745-207Z-49728-2,onset,-4.299594,left,none,,abstain,high,abstain,B1,right,unknown,,abstain,high,traversal/reorientation
+E47,20260925T025230-605Z-7804-2,onset,0.5953284,right,one,B1,abstain,medium,none,B2,right,B2,B2,right,high,multiple-target choice;continued engagement
+E48,20260926T035932-508Z-63684-14,onset,12.2042322,right,none,,abstain,high,abstain,B1,left,unknown,,abstain,high,traversal/reorientation

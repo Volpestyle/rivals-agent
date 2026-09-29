@@ -1,0 +1,674 @@
+{
+  "all": {
+    "onset_n": 24,
+    "still_n": 24,
+    "causal_status": {
+      "unknown": 15,
+      "multiple": 8,
+      "one": 16,
+      "none": 9
+    },
+    "onset_causal_status": {
+      "multiple": 4,
+      "unknown": 8,
+      "none": 6,
+      "one": 6
+    },
+    "still_causal_status": {
+      "unknown": 7,
+      "multiple": 4,
+      "one": 10,
+      "none": 3
+    },
+    "causal": {
+      "supported": 6,
+      "supported_ids": [
+        "E17",
+        "E30",
+        "E34",
+        "E43",
+        "E45",
+        "E47"
+      ],
+      "target_center_abstain": 3,
+      "nearest_abstain": 2,
+      "both_directional": 3,
+      "paired_ids": [
+        "E30",
+        "E34",
+        "E45"
+      ],
+      "target_correct": 1,
+      "nearest_correct": 1,
+      "wins": [],
+      "losses": [],
+      "ties": 3
+    },
+    "oracle": {
+      "supported": 5,
+      "supported_ids": [
+        "E30",
+        "E33",
+        "E43",
+        "E45",
+        "E47"
+      ],
+      "target_center_abstain": 1,
+      "nearest_abstain": 1,
+      "both_directional": 4,
+      "paired_ids": [
+        "E30",
+        "E33",
+        "E45",
+        "E47"
+      ],
+      "target_correct": 2,
+      "nearest_correct": 2,
+      "wins": [],
+      "losses": [],
+      "ties": 4
+    },
+    "outcome_unknown": 32,
+    "outcome_known_unlinked": [
+      "E04"
+    ],
+    "onset_outcome_unknown": 18,
+    "still_outcome_unknown": 14,
+    "still_offcenter_focus": [
+      "E06",
+      "E13",
+      "E14",
+      "E15",
+      "E16",
+      "E19",
+      "E35",
+      "E40"
+    ],
+    "still_center_focus": [
+      "E26",
+      "E36"
+    ],
+    "still_directional_prediction": [
+      "E14",
+      "E16",
+      "E19",
+      "E35"
+    ],
+    "still_nearest_directional": [
+      "E03",
+      "E05",
+      "E06",
+      "E09",
+      "E12",
+      "E13",
+      "E14",
+      "E15",
+      "E16",
+      "E19",
+      "E20",
+      "E24",
+      "E27",
+      "E28",
+      "E35",
+      "E37",
+      "E41",
+      "E44"
+    ],
+    "categories": {
+      "traversal/reorientation": 33,
+      "multiple-target choice": 12,
+      "acquisition": 2,
+      "continued engagement": 13,
+      "unknown": 11,
+      "visible acquisition": 3
+    }
+  },
+  "sessions": {
+    "20260923T051828-422Z-33696-1": {
+      "onset_n": 3,
+      "still_n": 3,
+      "causal_status": {
+        "multiple": 1,
+        "one": 1,
+        "unknown": 3,
+        "none": 1
+      },
+      "onset_causal_status": {
+        "multiple": 1,
+        "one": 1,
+        "unknown": 1
+      },
+      "still_causal_status": {
+        "unknown": 2,
+        "none": 1
+      },
+      "causal": {
+        "supported": 1,
+        "supported_ids": [
+          "E17"
+        ],
+        "target_center_abstain": 1,
+        "nearest_abstain": 1,
+        "both_directional": 0,
+        "paired_ids": [],
+        "target_correct": 0,
+        "nearest_correct": 0,
+        "wins": [],
+        "losses": [],
+        "ties": 0
+      },
+      "oracle": {
+        "supported": 0,
+        "supported_ids": [],
+        "target_center_abstain": 0,
+        "nearest_abstain": 0,
+        "both_directional": 0,
+        "paired_ids": [],
+        "target_correct": 0,
+        "nearest_correct": 0,
+        "wins": [],
+        "losses": [],
+        "ties": 0
+      },
+      "outcome_unknown": 6,
+      "outcome_known_unlinked": [],
+      "onset_outcome_unknown": 3,
+      "still_outcome_unknown": 3,
+      "still_offcenter_focus": [],
+      "still_center_focus": [],
+      "still_directional_prediction": [],
+      "still_nearest_directional": [
+        "E28",
+        "E41"
+      ],
+      "categories": {
+        "multiple-target choice": 1,
+        "traversal/reorientation": 5,
+        "unknown": 3
+      }
+    },
+    "20260923T200129-346Z-33696-6": {
+      "onset_n": 3,
+      "still_n": 3,
+      "causal_status": {
+        "unknown": 3,
+        "multiple": 1,
+        "one": 1,
+        "none": 1
+      },
+      "onset_causal_status": {
+        "unknown": 1,
+        "one": 1,
+        "none": 1
+      },
+      "still_causal_status": {
+        "unknown": 2,
+        "multiple": 1
+      },
+      "causal": {
+        "supported": 1,
+        "supported_ids": [
+          "E30"
+        ],
+        "target_center_abstain": 0,
+        "nearest_abstain": 0,
+        "both_directional": 1,
+        "paired_ids": [
+          "E30"
+        ],
+        "target_correct": 0,
+        "nearest_correct": 0,
+        "wins": [],
+        "losses": [],
+        "ties": 1
+      },
+      "oracle": {
+        "supported": 1,
+        "supported_ids": [
+          "E30"
+        ],
+        "target_center_abstain": 0,
+        "nearest_abstain": 0,
+        "both_directional": 1,
+        "paired_ids": [
+          "E30"
+        ],
+        "target_correct": 0,
+        "nearest_correct": 0,
+        "wins": [],
+        "losses": [],
+        "ties": 1
+      },
+      "outcome_unknown": 4,
+      "outcome_known_unlinked": [],
+      "onset_outcome_unknown": 2,
+      "still_outcome_unknown": 2,
+      "still_offcenter_focus": [],
+      "still_center_focus": [],
+      "still_directional_prediction": [],
+      "still_nearest_directional": [
+        "E03",
+        "E27"
+      ],
+      "categories": {
+        "traversal/reorientation": 4,
+        "multiple-target choice": 1,
+        "visible acquisition": 1,
+        "continued engagement": 1
+      }
+    },
+    "20260924T232304-170Z-12024-1": {
+      "onset_n": 3,
+      "still_n": 3,
+      "causal_status": {
+        "unknown": 1,
+        "one": 2,
+        "multiple": 1,
+        "none": 2
+      },
+      "onset_causal_status": {
+        "unknown": 1,
+        "none": 2
+      },
+      "still_causal_status": {
+        "one": 2,
+        "multiple": 1
+      },
+      "causal": {
+        "supported": 0,
+        "supported_ids": [],
+        "target_center_abstain": 0,
+        "nearest_abstain": 0,
+        "both_directional": 0,
+        "paired_ids": [],
+        "target_correct": 0,
+        "nearest_correct": 0,
+        "wins": [],
+        "losses": [],
+        "ties": 0
+      },
+      "oracle": {
+        "supported": 0,
+        "supported_ids": [],
+        "target_center_abstain": 0,
+        "nearest_abstain": 0,
+        "both_directional": 0,
+        "paired_ids": [],
+        "target_correct": 0,
+        "nearest_correct": 0,
+        "wins": [],
+        "losses": [],
+        "ties": 0
+      },
+      "outcome_unknown": 5,
+      "outcome_known_unlinked": [],
+      "onset_outcome_unknown": 3,
+      "still_outcome_unknown": 2,
+      "still_offcenter_focus": [
+        "E16",
+        "E40"
+      ],
+      "still_center_focus": [],
+      "still_directional_prediction": [
+        "E16"
+      ],
+      "still_nearest_directional": [
+        "E16",
+        "E24"
+      ],
+      "categories": {
+        "multiple-target choice": 2,
+        "traversal/reorientation": 4,
+        "continued engagement": 1,
+        "unknown": 2
+      }
+    },
+    "20260925T021320-371Z-7804-1": {
+      "onset_n": 3,
+      "still_n": 3,
+      "causal_status": {
+        "multiple": 3,
+        "one": 2,
+        "unknown": 1
+      },
+      "onset_causal_status": {
+        "multiple": 2,
+        "one": 1
+      },
+      "still_causal_status": {
+        "multiple": 1,
+        "one": 1,
+        "unknown": 1
+      },
+      "causal": {
+        "supported": 1,
+        "supported_ids": [
+          "E43"
+        ],
+        "target_center_abstain": 1,
+        "nearest_abstain": 1,
+        "both_directional": 0,
+        "paired_ids": [],
+        "target_correct": 0,
+        "nearest_correct": 0,
+        "wins": [],
+        "losses": [],
+        "ties": 0
+      },
+      "oracle": {
+        "supported": 2,
+        "supported_ids": [
+          "E33",
+          "E43"
+        ],
+        "target_center_abstain": 1,
+        "nearest_abstain": 1,
+        "both_directional": 1,
+        "paired_ids": [
+          "E33"
+        ],
+        "target_correct": 0,
+        "nearest_correct": 0,
+        "wins": [],
+        "losses": [],
+        "ties": 1
+      },
+      "outcome_unknown": 2,
+      "outcome_known_unlinked": [],
+      "onset_outcome_unknown": 1,
+      "still_outcome_unknown": 1,
+      "still_offcenter_focus": [
+        "E06"
+      ],
+      "still_center_focus": [],
+      "still_directional_prediction": [],
+      "still_nearest_directional": [
+        "E05",
+        "E06"
+      ],
+      "categories": {
+        "acquisition": 1,
+        "multiple-target choice": 2,
+        "continued engagement": 4,
+        "traversal/reorientation": 3,
+        "unknown": 1,
+        "visible acquisition": 1
+      }
+    },
+    "20260925T025230-605Z-7804-2": {
+      "onset_n": 3,
+      "still_n": 3,
+      "causal_status": {
+        "none": 2,
+        "unknown": 1,
+        "multiple": 1,
+        "one": 2
+      },
+      "onset_causal_status": {
+        "unknown": 1,
+        "one": 2
+      },
+      "still_causal_status": {
+        "none": 2,
+        "multiple": 1
+      },
+      "causal": {
+        "supported": 2,
+        "supported_ids": [
+          "E45",
+          "E47"
+        ],
+        "target_center_abstain": 1,
+        "nearest_abstain": 0,
+        "both_directional": 1,
+        "paired_ids": [
+          "E45"
+        ],
+        "target_correct": 1,
+        "nearest_correct": 1,
+        "wins": [],
+        "losses": [],
+        "ties": 1
+      },
+      "oracle": {
+        "supported": 2,
+        "supported_ids": [
+          "E45",
+          "E47"
+        ],
+        "target_center_abstain": 0,
+        "nearest_abstain": 0,
+        "both_directional": 2,
+        "paired_ids": [
+          "E45",
+          "E47"
+        ],
+        "target_correct": 2,
+        "nearest_correct": 2,
+        "wins": [],
+        "losses": [],
+        "ties": 2
+      },
+      "outcome_unknown": 4,
+      "outcome_known_unlinked": [],
+      "onset_outcome_unknown": 1,
+      "still_outcome_unknown": 3,
+      "still_offcenter_focus": [],
+      "still_center_focus": [],
+      "still_directional_prediction": [],
+      "still_nearest_directional": [
+        "E12",
+        "E20",
+        "E37"
+      ],
+      "categories": {
+        "traversal/reorientation": 4,
+        "multiple-target choice": 4,
+        "continued engagement": 2
+      }
+    },
+    "20260925T203745-207Z-49728-2": {
+      "onset_n": 3,
+      "still_n": 3,
+      "causal_status": {
+        "unknown": 4,
+        "one": 1,
+        "none": 1
+      },
+      "onset_causal_status": {
+        "unknown": 2,
+        "none": 1
+      },
+      "still_causal_status": {
+        "unknown": 2,
+        "one": 1
+      },
+      "causal": {
+        "supported": 0,
+        "supported_ids": [],
+        "target_center_abstain": 0,
+        "nearest_abstain": 0,
+        "both_directional": 0,
+        "paired_ids": [],
+        "target_correct": 0,
+        "nearest_correct": 0,
+        "wins": [],
+        "losses": [],
+        "ties": 0
+      },
+      "oracle": {
+        "supported": 0,
+        "supported_ids": [],
+        "target_center_abstain": 0,
+        "nearest_abstain": 0,
+        "both_directional": 0,
+        "paired_ids": [],
+        "target_correct": 0,
+        "nearest_correct": 0,
+        "wins": [],
+        "losses": [],
+        "ties": 0
+      },
+      "outcome_unknown": 3,
+      "outcome_known_unlinked": [
+        "E04"
+      ],
+      "onset_outcome_unknown": 2,
+      "still_outcome_unknown": 1,
+      "still_offcenter_focus": [
+        "E35"
+      ],
+      "still_center_focus": [],
+      "still_directional_prediction": [
+        "E35"
+      ],
+      "still_nearest_directional": [
+        "E09",
+        "E35",
+        "E44"
+      ],
+      "categories": {
+        "acquisition": 1,
+        "traversal/reorientation": 4,
+        "unknown": 1,
+        "continued engagement": 1,
+        "visible acquisition": 1
+      }
+    },
+    "20260926T035932-508Z-63684-14": {
+      "onset_n": 3,
+      "still_n": 3,
+      "causal_status": {
+        "none": 2,
+        "one": 3,
+        "unknown": 1
+      },
+      "onset_causal_status": {
+        "none": 2,
+        "unknown": 1
+      },
+      "still_causal_status": {
+        "one": 3
+      },
+      "causal": {
+        "supported": 0,
+        "supported_ids": [],
+        "target_center_abstain": 0,
+        "nearest_abstain": 0,
+        "both_directional": 0,
+        "paired_ids": [],
+        "target_correct": 0,
+        "nearest_correct": 0,
+        "wins": [],
+        "losses": [],
+        "ties": 0
+      },
+      "oracle": {
+        "supported": 0,
+        "supported_ids": [],
+        "target_center_abstain": 0,
+        "nearest_abstain": 0,
+        "both_directional": 0,
+        "paired_ids": [],
+        "target_correct": 0,
+        "nearest_correct": 0,
+        "wins": [],
+        "losses": [],
+        "ties": 0
+      },
+      "outcome_unknown": 5,
+      "outcome_known_unlinked": [],
+      "onset_outcome_unknown": 3,
+      "still_outcome_unknown": 2,
+      "still_offcenter_focus": [
+        "E13",
+        "E15",
+        "E19"
+      ],
+      "still_center_focus": [],
+      "still_directional_prediction": [
+        "E19"
+      ],
+      "still_nearest_directional": [
+        "E13",
+        "E15",
+        "E19"
+      ],
+      "categories": {
+        "traversal/reorientation": 5,
+        "unknown": 2,
+        "continued engagement": 1
+      }
+    },
+    "20260926T045729-166Z-79780-1": {
+      "onset_n": 3,
+      "still_n": 3,
+      "causal_status": {
+        "multiple": 1,
+        "one": 4,
+        "unknown": 1
+      },
+      "onset_causal_status": {
+        "multiple": 1,
+        "unknown": 1,
+        "one": 1
+      },
+      "still_causal_status": {
+        "one": 3
+      },
+      "causal": {
+        "supported": 1,
+        "supported_ids": [
+          "E34"
+        ],
+        "target_center_abstain": 0,
+        "nearest_abstain": 0,
+        "both_directional": 1,
+        "paired_ids": [
+          "E34"
+        ],
+        "target_correct": 0,
+        "nearest_correct": 0,
+        "wins": [],
+        "losses": [],
+        "ties": 1
+      },
+      "oracle": {
+        "supported": 0,
+        "supported_ids": [],
+        "target_center_abstain": 0,
+        "nearest_abstain": 0,
+        "both_directional": 0,
+        "paired_ids": [],
+        "target_correct": 0,
+        "nearest_correct": 0,
+        "wins": [],
+        "losses": [],
+        "ties": 0
+      },
+      "outcome_unknown": 3,
+      "outcome_known_unlinked": [],
+      "onset_outcome_unknown": 3,
+      "still_outcome_unknown": 0,
+      "still_offcenter_focus": [
+        "E14"
+      ],
+      "still_center_focus": [
+        "E26",
+        "E36"
+      ],
+      "still_directional_prediction": [
+        "E14"
+      ],
+      "still_nearest_directional": [
+        "E14"
+      ],
+      "categories": {
+        "multiple-target choice": 2,
+        "traversal/reorientation": 4,
+        "continued engagement": 3,
+        "unknown": 2
+      }
+    }
+  }
+}

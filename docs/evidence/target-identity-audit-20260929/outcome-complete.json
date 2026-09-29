@@ -1,0 +1,9 @@
+{
+  "completed_at": 1790666105.7051468,
+  "causal_sha256": "73d29d5c8964de4f41d4c22b9fac9330a2ab943e8bf0a1fe13ed2e0d5be2ddc7",
+  "causal_commit": "5b55f96",
+  "examples": 48,
+  "native_frames": 1440,
+  "peak_parent_rss": 1246478336,
+  "peak_child_rss": 173785088
+}
