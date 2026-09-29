@@ -1,0 +1,51 @@
+{
+  "receipt": "docs/evidence/camera-pitch-20260929/review-inputs.json",
+  "receipt_sha256": "d3f0a89637526e1d856b74df38655ffff59e9f4da945fbe616ff4fc2aff27773",
+  "files": {
+    "scripts/calibrate_camera_schedule.py": {
+      "expected": "3f336ea04c558f068c1f8eb0e65675aee33b98cbe6ed758f02780be9bd69b2fd",
+      "actual": "3f336ea04c558f068c1f8eb0e65675aee33b98cbe6ed758f02780be9bd69b2fd",
+      "matches": true
+    },
+    "agent/camera_calibration.py": {
+      "expected": "eda24c010a49d5815e59ec0ddfe540d1355201b4283c93d27c8328da4a3cd402",
+      "actual": "eda24c010a49d5815e59ec0ddfe540d1355201b4283c93d27c8328da4a3cd402",
+      "matches": true
+    },
+    "agent/controller.py": {
+      "expected": "25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+      "actual": "25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+      "matches": true
+    },
+    "agent/startup.py": {
+      "expected": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+      "actual": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+      "matches": true
+    },
+    "agent/live_range_bc.py": {
+      "expected": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+      "actual": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+      "matches": true
+    },
+    "scripts/capture.py": {
+      "expected": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547",
+      "actual": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547",
+      "matches": true
+    },
+    "scripts/record.py": {
+      "expected": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+      "actual": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+      "matches": true
+    },
+    "scripts/l4_measure.py": {
+      "expected": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+      "actual": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+      "matches": true
+    },
+    "agent/pad_bindings.py": {
+      "expected": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1",
+      "actual": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1",
+      "matches": true
+    }
+  }
+}

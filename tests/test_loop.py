@@ -404,13 +404,16 @@ def test_closing_ends_lives_watchdog_and_a_send_after_it_is_harmless_to_the_exit
 def test_main_closes_live_even_when_the_brain_cannot_be_built(monkeypatch):
     import agent.loop as L
     made = []
-    monkeypatch.setattr(L, "LiveIO", lambda: made.append(live_io()) or made[-1][0])
+    monkeypatch.setattr(L, "_open_live_io", lambda *a: made.append(live_io()) or made[-1][0])
+    monkeypatch.setattr(L, "foreground_pid_guard", lambda pid: lambda: True)
+    monkeypatch.setattr(L, "human_takeover_guard", lambda: lambda: False)
+    monkeypatch.setattr(L, "_scoreboard_readers", lambda: (lambda f: True, lambda f: True))
     monkeypatch.setattr(L, "make_brain", lambda name: (_ for _ in ()).throw(RuntimeError("no JEV_KEY")))
     monkeypatch.setattr(L, "default_perception", lambda: readers())
     monkeypatch.setattr(L, "_plaza_view", lambda: (lambda f: True))                  # the start phase (agent/startup.py) runs first:
     monkeypatch.setattr(L, "start_pose", lambda *a, **k: {"frames": [("range", 1.0), ("range", 1.1)], "turns": 1, "ms": {}})   # it passes here
     with pytest.raises(RuntimeError, match="no JEV_KEY"):
-        L.main(["--live", "--cooldowns", "off", "--brain", "jev"])
+        L.main(["--live", "--game-pid", "123", "--cooldowns", "off", "--brain", "jev"])
     _, live, _, pad = made[0]
     assert live._closed.is_set() and pad.neutral()
 

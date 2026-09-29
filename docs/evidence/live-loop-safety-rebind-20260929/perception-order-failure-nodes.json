@@ -1,0 +1,7 @@
+[
+  "tests/test_intake_streaming.py",
+  "tests/test_live_range_bc.py::test_settle_default_and_excluded_interval",
+  "tests/test_live_range_bc.py::test_review_receipt_must_match_all_loaded_and_running_files",
+  "tests/test_live_range_bc.py::test_cli_defaults_remain_cpu_and_original_preprocessor",
+  "tests/test_live_range_bc.py::test_v1_review_cannot_authorize_new_inference_dependency"
+]

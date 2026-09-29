@@ -173,17 +173,26 @@ def test_any_exception_closes_live():
 class FakeIO:
     def __init__(self):
         self.live, self.closed = object(), False
+        self.t0 = 0.0
 
     def close(self):
         self.closed = True
 
 
+def _scope_stubs(monkeypatch, io, order):
+    monkeypatch.setattr(L, "foreground_pid_guard", lambda pid: lambda: True)
+    monkeypatch.setattr(L, "human_takeover_guard", lambda: lambda: False)
+    monkeypatch.setattr(L, "_scoreboard_readers", lambda: (lambda f: True, lambda f: True))
+    monkeypatch.setattr(L, "_open_live_io", lambda *a: order.append("pad") or io)
+    monkeypatch.setattr(L, "default_perception", lambda: order.append("perception") or
+                       L.Perception(lambda f: True, lambda f: False, None, None, None, None, None))
+
+
 def _main(monkeypatch, start, written=None):
     order = []
     io = FakeIO()
+    _scope_stubs(monkeypatch, io, order)
     monkeypatch.setattr(L, "_write_start_steps", lambda out, steps, save=None: (written if written is not None else []).append(steps) or "x")
-    monkeypatch.setattr(L, "LiveIO", lambda: order.append("pad") or io)
-    monkeypatch.setattr(L, "default_perception", lambda: order.append("perception") or type("P", (), {"in_range": None, "idle": None})())
     monkeypatch.setattr(L, "_plaza_view", lambda: order.append("plaza_view") or (lambda f: True))
     monkeypatch.setattr(L, "start_pose", lambda *a, **k: order.append("start") or start())
     monkeypatch.setattr(L, "make_brain", lambda name: order.append("brain") or (lambda s, m: None))
@@ -199,7 +208,7 @@ def _main(monkeypatch, start, written=None):
             order.append("run")
             return {}
     monkeypatch.setattr(L, "Loop", FakeLoop)
-    code = L.main(["--live", "--cooldowns", "off", "--run", "t"])
+    code = L.main(["--live", "--game-pid", "123", "--cooldowns", "off", "--run", "t"])
     return code, order, made, io
 
 
@@ -520,11 +529,10 @@ def test_an_interrupt_during_output_still_propagates(monkeypatch):
 
 
 # --- --pose-only: exactly the start phase, then stop (M2) ------------------------------------------------------------------------------
-def _pose_only(monkeypatch, start, argv=("--live", "--pose-only", "--run", "t")):
+def _pose_only(monkeypatch, start, argv=("--live", "--game-pid", "123", "--pose-only", "--run", "t")):
     order, saved, written = [], [], []
     io = FakeIO()
-    monkeypatch.setattr(L, "LiveIO", lambda: order.append("pad") or io)
-    monkeypatch.setattr(L, "default_perception", lambda: order.append("perception") or type("P", (), {"in_range": None, "idle": None})())
+    _scope_stubs(monkeypatch, io, order)
     monkeypatch.setattr(L, "_plaza_view", lambda: order.append("plaza_view") or (lambda f: True))
     monkeypatch.setattr(L, "start_pose", lambda *a, **k: order.append("start") or start())
     monkeypatch.setattr(L, "_save_start", lambda out, rec: saved.append(dict(rec)))

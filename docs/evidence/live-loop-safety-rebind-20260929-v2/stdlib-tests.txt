@@ -1,0 +1,11 @@
+Environment: UV_PROJECT_ENVIRONMENT=C:\Users\volpe\AppData\Local\Temp\live-loop-safety-stdlib-env
+Command: uv run pytest tests/test_loop.py tests/test_startup.py tests/test_loop_safety.py tests/test_range_skill_loop.py tests/test_episode_collection.py -q
+warning: `VIRTUAL_ENV=.venv` does not match the project environment path `C:\Users\volpe\AppData\Local\Temp\live-loop-safety-stdlib-env` and will be ignored; use `--active` to target the active environment instead
+........................................................................ [ 20%]
+.............................s.......................................... [ 41%]
+..........................................................ssssssss...... [ 62%]
+........................................................................ [ 83%]
+.........................................................                [100%]
+336 passed, 9 skipped in 38.86s
+
+Exit: 0

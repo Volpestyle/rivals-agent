@@ -1,0 +1,62 @@
+{
+  "format": "live-loop-safety-rebind-freeze-v2",
+  "status": "offline_preparation_delta_review_pending",
+  "base_commit": "5b55f964c0e1667eaa21c3cf2c3b453bd090c6cb",
+  "prior_freeze": {
+    "path": "docs/evidence/live-loop-safety-rebind-20260929/review-inputs.json",
+    "sha256": "17c7ece41b75f51580d7994ba86f6447c38a665530b58afdb7bf6b7fe85aa10e"
+  },
+  "prior_review_receipt": {
+    "path": "docs/evidence/live-loop-safety-rebind-20260929/review-v1-receipt.json",
+    "sha256": "b8711867c1e1603359a553268825adc5dc73b4b65b3af4ee7df417b13e57661a"
+  },
+  "owned_active_paths": [
+    "agent/loop.py",
+    "tests/test_loop_safety.py",
+    "tests/test_loop.py",
+    "tests/test_startup.py",
+    "tests/test_range_skill_loop.py"
+  ],
+  "changed_since_v1": [
+    "agent/loop.py",
+    "tests/test_loop_safety.py"
+  ],
+  "files": {
+    "agent/loop.py": "96bd81b33ec5371e3abfa62d1d3b8f0efbe003875982b86ca6380633de277462",
+    "tests/test_loop_safety.py": "2c59b9b82f0777435a81f0718259cc7a991fec62546d745b3c7bd257e029c320",
+    "tests/test_loop.py": "c0e950e4c5a8a31a00147eb0436a6912625255872e9784241145323b7a28f811",
+    "tests/test_startup.py": "c358147c5e7fcf9613918ac1b4c333617d44c8be22c53a1cdb4ce85a906deaa0",
+    "tests/test_range_skill_loop.py": "7cb7e675e0577c4517bd382ce322292b292b0d3628fc45d36f2ea5c143db4064",
+    "agent/camera_map.py": "5bcd03a0d1ec755cfac8d11f8cdc664dafd9c6182eab501135837aa6af6c60a4",
+    "agent/camera_maps/legacy-265-75.json": "ce78170d1a33dba124cc3629ced91cfdb946e49cc488e1636f382456e4486e36",
+    "agent/camera_maps/alt-247-124.json": "975294c46d2f098e32dfdcc74884098a8435027ef7898c0a83cb62e80842a79d",
+    "scripts/calibrate_camera_schedule.py": "3f336ea04c558f068c1f8eb0e65675aee33b98cbe6ed758f02780be9bd69b2fd",
+    "agent/camera_calibration.py": "eda24c010a49d5815e59ec0ddfe540d1355201b4283c93d27c8328da4a3cd402",
+    "agent/controller.py": "25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+    "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "scripts/l4_measure.py": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+    "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1"
+  },
+  "support_files": {
+    "docs/evidence/live-loop-safety-rebind-20260929-v2/base-sha256.json": "1a0d7bd759c89b0378f03a06e8a708ac99cc2ca99abeeea63f5a4484424e3869",
+    "docs/evidence/live-loop-safety-rebind-20260929-v2/calibration-pins.json": "663abc06d4ab907b2d33f289de8a26d665eb5f9ab5aa2e412d61aa898c46cba3",
+    "docs/evidence/live-loop-safety-rebind-20260929-v2/delta.diff": "4ea9b517e77175e8487d4f9a8e6d6c13b44ce2948f03a0ab14d36814018b806c",
+    "docs/evidence/live-loop-safety-rebind-20260929-v2/integration-delta.diff": "d313409dfc41b8cb53b963849aa47edae3638567a96f17f192bec1d73d60f1b0",
+    "docs/evidence/live-loop-safety-rebind-20260929-v2/integration-tests.txt": "4db09b8a1be49c8bd16917da37c5fe7f1edb58d3ff6fb71db98fbe7c5aff6cd5",
+    "docs/evidence/live-loop-safety-rebind-20260929-v2/integration.patch": "b9eb06ab38524489a326cd91400ee53680e0795898f91f8872cd6fdb07282d5b",
+    "docs/evidence/live-loop-safety-rebind-20260929-v2/owner-ruff.txt": "b934655bca89b2ea9186addf24577989aaab032b3d2ec36c9badd302d31b89dc",
+    "docs/evidence/live-loop-safety-rebind-20260929-v2/owner-tests.txt": "6e4c1a43d79cfd99f9471637ab1b576aaf7e7bbb4c00047e6c25dfa5fbdfe416",
+    "docs/evidence/live-loop-safety-rebind-20260929-v2/patched-sha256.json": "6ef6cbae24d15db017fe3a8eab1c198f72d2bc19cee30e7efe8de3497679ac83",
+    "docs/evidence/live-loop-safety-rebind-20260929-v2/pre-v2/agent/loop.py": "00047fd5675bc6dc1f0bb672c79c2044ca4add538cc9754adf1f174631d4a412",
+    "docs/evidence/live-loop-safety-rebind-20260929-v2/pre-v2/tests/test_loop_safety.py": "21557294b6fdcc7155d3f35cd004e8949c0e72e71a10bcf0653089dc31ef64b5",
+    "docs/evidence/live-loop-safety-rebind-20260929-v2/README.md": "865245d018c3f8b63f29ce079d2d52a4544c8b1a045a36dc0dbd0bc9169eb22d",
+    "docs/evidence/live-loop-safety-rebind-20260929-v2/safety.diff": "d0b2bde3d6b5f4c9c2f3775e75a5e4c70396176cb90a081ba7a63f2fbe8b1e38",
+    "docs/evidence/live-loop-safety-rebind-20260929-v2/stdlib-integration-tests.txt": "5be9ff13f57928b5d9d907f81acbf324ee07d0e9b1f4957d24fd9e99100049cb",
+    "docs/evidence/live-loop-safety-rebind-20260929-v2/stdlib-tests.txt": "1b9a9e2e44f72888811b04e78e086d53d82fa7395882008cebfdb507b3be08df",
+    "docs/evidence/live-loop-safety-rebind-20260929-v2/verify_patch.py": "6ddc968e031b35f9fccea7fcae0c3af96e294ebc133760a64cfc019850ced299",
+    "docs/lanes/live-loop.md": "d6b744625de12cdc611b9687b8a06b8b8d4b97832ea0d7c7b5eaa2b47ff4c2de"
+  }
+}

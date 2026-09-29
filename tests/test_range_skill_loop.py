@@ -431,6 +431,7 @@ def live_cli(native_entry, monkeypatch, tmp_path):
             h.focus_lost_at = h.t
         return h.focus
     monkeypatch.setattr(runtime, "foreground_pid_guard", lambda pid: focused)
+    monkeypatch.setattr(runtime, "human_takeover_guard", lambda: lambda: False)
     read_factory, plaza_factory = runtime.default_perception, runtime._plaza_view
     def load_readers():
         p = read_factory()
@@ -610,11 +611,13 @@ def test_live_cli_preserves_real_scoreboard_and_opening_session_proofs(live_cli,
     assert h.device.neutral()
 
 
-def test_live_cli_legacy_pose_only_retains_no_pid_requirement(live_cli):
+def test_live_cli_pose_only_now_requires_pid_before_readers_or_attach(live_cli):
     h = live_cli
-    assert runtime.main(["--live", "--pose-only", "--run", "focus-test", "--save-fps", "0"]) == 0
+    with pytest.raises(SystemExit) as error:
+        runtime.main(["--live", "--pose-only", "--run", "focus-test", "--save-fps", "0"])
+    assert error.value.code == 2
     assert "loader" not in h.events and "board_readers_loaded" not in h.events
-    assert len(h.lives) == 1 and h.device.neutral()
+    assert not h.lives and not h.device.reports
 
 
 @pytest.mark.parametrize("seconds", ["20.01", "nan", "0", "-1"])

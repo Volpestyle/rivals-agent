@@ -228,17 +228,12 @@ class LiveIO:
 
     def scoreboard(self, hold_s):
         self.board_capture_interval = None
-        if self.safety is not None:
-            self.safety.begin_scoreboard(hold_s)
         try:
             board = self.live.scoreboard(hold_s)
         except RangeLost:
             if self.safety is not None:
                 self.safety.stop("range_lost")
             raise
-        finally:
-            if self.safety is not None:
-                self.safety.end_scoreboard()
         interval = getattr(self.live, "scoreboard_frame_interval", None)
         if board is not None and interval is not None:
             self.board_capture_interval = tuple(t - self.t0 for t in interval)
@@ -1217,23 +1212,6 @@ class LiveSafety:
         self._lock, self._close_lock = threading.Lock(), threading.Lock()
         self._done = threading.Event()
         self._thread = None
-        self._scoreboard_until = None
-
-    def begin_scoreboard(self, hold_s):
-        # Live still requires a true range proof before pressing BACK and uses
-        # its own RETURN_S limit after release. This only suspends the latch;
-        # it never turns a negative proof into permission to send input.
-        from .controller import FRESH_S, RETURN_S
-        if not math.isfinite(hold_s) or hold_s < 0:
-            raise ValueError("finite nonnegative scoreboard hold required")
-        with self._lock:
-            if self._scoreboard_until is not None:
-                raise RuntimeError("scoreboard transition already active")
-            self._scoreboard_until = min(self.deadline, self.clock() + hold_s + RETURN_S + 2 * FRESH_S)
-
-    def end_scoreboard(self):
-        with self._lock:
-            self._scoreboard_until = None
 
     def check(self):
         # Serialize GetAsyncKeyState's consuming transition bits. A detected tap
@@ -1301,10 +1279,7 @@ class LiveSafety:
             # A negative board test may still be a valid scoreboard transition;
             # Live tries the session/banner proof before refusing that frame.
             if range_required and not valid:
-                with self._lock:
-                    transitioning = self._scoreboard_until is not None and self.clock() < self._scoreboard_until
-                if not transitioning:
-                    self.stop("range_lost")
+                self.stop("range_lost")
             return self.check() and valid
         return proof
 

@@ -1,0 +1,32 @@
+{
+  "agent/controller.py": {
+    "8331c45_matches_parent_after_LF_normalization": true,
+    "raw_bytes_changed": true,
+    "current_equals_8331c45": true,
+    "8331c45_sha256": "25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c"
+  },
+  "agent/startup.py": {
+    "8331c45_matches_parent_after_LF_normalization": true,
+    "raw_bytes_changed": true,
+    "current_equals_8331c45": true,
+    "8331c45_sha256": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a"
+  },
+  "scripts/capture.py": {
+    "8331c45_matches_parent_after_LF_normalization": true,
+    "raw_bytes_changed": true,
+    "current_equals_8331c45": true,
+    "8331c45_sha256": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547"
+  },
+  "scripts/record.py": {
+    "8331c45_matches_parent_after_LF_normalization": true,
+    "raw_bytes_changed": true,
+    "current_equals_8331c45": true,
+    "8331c45_sha256": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead"
+  },
+  "scripts/l4_measure.py": {
+    "8331c45_matches_parent_after_LF_normalization": true,
+    "raw_bytes_changed": true,
+    "current_equals_8331c45": true,
+    "8331c45_sha256": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b"
+  }
+}

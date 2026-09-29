@@ -1,0 +1,171 @@
+--- v1/agent/loop.py
++++ v2/agent/loop.py
+@@ -228,12 +228,17 @@
+ 
+     def scoreboard(self, hold_s):
+         self.board_capture_interval = None
++        if self.safety is not None:
++            self.safety.begin_scoreboard(hold_s)
+         try:
+             board = self.live.scoreboard(hold_s)
+         except RangeLost:
+             if self.safety is not None:
+                 self.safety.stop("range_lost")
+             raise
++        finally:
++            if self.safety is not None:
++                self.safety.end_scoreboard()
+         interval = getattr(self.live, "scoreboard_frame_interval", None)
+         if board is not None and interval is not None:
+             self.board_capture_interval = tuple(t - self.t0 for t in interval)
+@@ -1212,6 +1217,23 @@
+         self._lock, self._close_lock = threading.Lock(), threading.Lock()
+         self._done = threading.Event()
+         self._thread = None
++        self._scoreboard_until = None
++
++    def begin_scoreboard(self, hold_s):
++        # Live still requires a true range proof before pressing BACK and uses
++        # its own RETURN_S limit after release. This only suspends the latch;
++        # it never turns a negative proof into permission to send input.
++        from .controller import FRESH_S, RETURN_S
++        if not math.isfinite(hold_s) or hold_s < 0:
++            raise ValueError("finite nonnegative scoreboard hold required")
++        with self._lock:
++            if self._scoreboard_until is not None:
++                raise RuntimeError("scoreboard transition already active")
++            self._scoreboard_until = min(self.deadline, self.clock() + hold_s + RETURN_S + 2 * FRESH_S)
++
++    def end_scoreboard(self):
++        with self._lock:
++            self._scoreboard_until = None
+ 
+     def check(self):
+         # Serialize GetAsyncKeyState's consuming transition bits. A detected tap
+@@ -1279,7 +1301,10 @@
+             # A negative board test may still be a valid scoreboard transition;
+             # Live tries the session/banner proof before refusing that frame.
+             if range_required and not valid:
+-                self.stop("range_lost")
++                with self._lock:
++                    transitioning = self._scoreboard_until is not None and self.clock() < self._scoreboard_until
++                if not transitioning:
++                    self.stop("range_lost")
+             return self.check() and valid
+         return proof
+ 
+--- v1/tests/test_loop_safety.py
++++ v2/tests/test_loop_safety.py
+@@ -273,3 +273,112 @@
+     with pytest.raises(SystemExit) as error:
+         L.main(args)
+     assert error.value.code == 2 and cli.device is None
++
++
++@pytest.mark.parametrize("fade_s", [0, .05, .2, 1.7])
++def test_real_live_scoreboard_returns_after_fade_or_stops_at_return_limit(fade_s):
++    io, native, safety, device, capture, flags = fading_live(fade_s)
++    try:
++        if fade_s > 1.5:
++            with pytest.raises(L.RangeLost, match="did not come back"):
++                io.scoreboard(.01)
++            assert safety.status["stop_reason"] == "range_lost" and native._dead
++        else:
++            assert io.scoreboard(.01) == "board"
++            assert safety.status["stop_reason"] is None and not native._dead
++            assert io.board_capture_interval is not None
++        assert safety._scoreboard_until is None and device.neutral()
++        # The exemption ends with the call; even one later missing HUD latches.
++        assert not native._in_range("fade")
++        assert safety.status["stop_reason"] == "range_lost" and native._dead
++    finally:
++        safety.close()
++
++
++def fading_live(fade_s, stop=None):
++    from agent.controller import Live
++    from test_loop import Pad
++    pad = Pad()
++    flags = SimpleNamespace(focus=True, takeover=False)
++    safety = L.LiveSafety(lambda: flags.focus, lambda: flags.takeover, time.perf_counter() + 20)
++    class Capture:
++        held = False
++        released = None
++        def grab(self):
++            if pad.reports and "BACK" in pad.reports[-1][0]:
++                self.held = True
++                return "board"
++            if self.held and self.released is None:
++                self.released = time.perf_counter()
++                if stop == "focus_lost":
++                    flags.focus = False
++                elif stop == "human_takeover":
++                    flags.takeover = True
++                elif stop == "deadline":
++                    safety.deadline = time.perf_counter() - 1
++            if self.released is not None and time.perf_counter() - self.released < fade_s:
++                return "fade"
++            return "range"
++    capture = Capture()
++    def idle(frame):
++        if frame == "fade" and stop == "pixel_guard_error":
++            raise RuntimeError("reader failed during fade")
++        return frame == "fade" and stop == "idle_warning"
++    native = Live(pad_factory=lambda: pad, capture=capture, settle_s=0,
++                  guard=safety.proof(lambda f: f == "range", idle, range_required=True),
++                  board_guard=safety.proof(lambda f: f == "board", idle),
++                  session_guard=safety.proof(lambda f: f in ("board", "fade"), idle))
++    safety.bind(native)
++    safety.start()
++    return L.LiveIO(native, safety=safety), native, safety, pad, capture, flags
++
++
++@pytest.mark.parametrize("reason", ["focus_lost", "human_takeover", "deadline", "idle_warning", "pixel_guard_error"])
++def test_real_scoreboard_fade_never_suppresses_hard_stops(reason):
++    io, native, safety, pad, capture, flags = fading_live(.2, stop=reason)
++    original = safety._close_live
++    stopped = []
++    def close():
++        original()
++        if capture.released is not None:
++            stopped.append(time.perf_counter() - capture.released)
++    safety._close_live = close
++    try:
++        with pytest.raises(RuntimeError):
++            io.scoreboard(.01)
++        assert stopped and min(stopped) < .1
++        assert safety.status["stop_reason"] == reason
++        assert native._dead and pad.neutral() and safety._scoreboard_until is None
++    finally:
++        safety.close()
++
++
++def test_transition_window_is_bounded_and_never_grants_a_true_proof():
++    now = [1.]
++    safety, device, _ = scope(clock=lambda: now[0])
++    safety.begin_scoreboard(.1)
++    proof = safety.proof(lambda f: False, lambda f: False, range_required=True)
++    assert not proof("fade") and safety.status["stop_reason"] is None
++    now[0] = safety._scoreboard_until
++    assert not proof("fade") and safety.status["stop_reason"] == "range_lost"
++    assert device.closed.is_set()
++    safety.end_scoreboard()
++
++
++@pytest.mark.parametrize("hold", [float("nan"), float("inf"), -1])
++def test_invalid_transition_hold_never_opens_window(hold):
++    safety, device, _ = scope()
++    with pytest.raises(ValueError):
++        safety.begin_scoreboard(hold)
++    assert safety._scoreboard_until is None
++
++
++def test_scoreboard_exception_always_ends_window():
++    safety, device, _ = scope()
++    device.frame_t = 1
++    device.scoreboard = lambda _: (_ for _ in ()).throw(OSError("capture failed"))
++    with pytest.raises(OSError):
++        L.LiveIO(device, safety=safety).scoreboard(1)
++    assert safety._scoreboard_until is None
++    assert not safety.proof(lambda f: False, lambda f: False, range_required=True)("fade")
++    assert device.closed.is_set()

@@ -1,0 +1,321 @@
+--- a/agent/controller.py
++++ b/agent/controller.py
+@@ -298,29 +298,45 @@
+ from .tracker import CLOSE_H, CLOSE_RATIO, PIECE_INSIDE, PIECE_PAD, SIZE_RATIO  # noqa: E402
+ 
+ 
++from .camera_map import CameraMap, load_camera_map  # noqa: E402
++
++_LEGACY_CAMERA = load_camera_map().require_controller()
++
++
+ @dataclass
+ class Cal:
+-    """HISTORICAL, STALE for James's alt Spider-Man at H/V 247/124 (2026-09-26).
+-
+-    Old measurements: docs/lanes/l4-controller.md, Linear, assist 0, 265/75.
+-    Retained for offline baselines only; no new gains are inferred from sensitivity.
+-    Recalibrate camera, press floor and hold behavior before any alt agent run.
+-    See docs/pad-bindings.md for the required PC procedure.
++    """Legacy defaults for compatibility; select a versioned profile via from_profile.
++
++    Direct Cal overrides remain an offline/testing API. Live entry points must
++    load and validate the selected map before capture or pad attachment.
+     """
+-    # Horizontal FOV ~108 deg. Pinned by timing a full 360 deg turn at 0.45 stick (2.08 s = 173 deg/s) and choosing the
+-    # focal length at which still-frame pixel shifts give the same rate. (Solving it from pixel shifts alone is
+-    # ill-conditioned: it gave 590-860.)
+-    focal_1280: float = 465.0            # px at 1280 wide: screen offset = focal * tan(angle)
+-    # (stick, deg/s), ascending, l4_measure.py yawmap at Horizontal / Vertical Sensitivity 265 / 75, Linear curve,
+-    # aim assist 0. The response is immediate at every deflection (first 60 ms average = steady rate within 6 %).
+-    yaw_map: tuple = ((0.0, 0.0), (0.1, 18.5), (0.2, 61.5), (0.3, 110.0), (0.45, 172.0), (0.6, 241.0), (0.8, 320.0), (1.0, 415.0))
+-    pitch_map: tuple = ((0.0, 0.0), (0.5, 43.0), (1.0, 99.0))
+-    # Stick deflection below which the camera does not turn, per axis. None = unmeasured: the maps above interpolate
+-    # linearly to (0, 0), which the game's Min Input Deadzone 5 (l4-controller settings) makes optimistic below
+-    # 0.1 yaw / 0.5 pitch. To be measured on the live pad with the low-end map (end-to-end fit lane, K3).
++    focal_1280: float = _LEGACY_CAMERA.scalar("focal")
++    yaw_map: tuple = _LEGACY_CAMERA.table("yaw", 1)
++    pitch_map: tuple = _LEGACY_CAMERA.table("pitch", 1)
+     yaw_deadzone: float | None = None
+     pitch_deadzone: float | None = None
+-    latency_s: float = 0.045             # pad -> screen is 17-20 ms (measured); the rest is capture + perception + one loop period
++    latency_s: float = _LEGACY_CAMERA.scalar("latency")
++    camera_map: CameraMap | None = None
++
++    @classmethod
++    def from_profile(cls, profile="legacy-265-75", *, live=False):
++        camera = load_camera_map(profile, live=live).require_controller()
++        return cls(focal_1280=camera.scalar("focal"), latency_s=camera.scalar("latency"),
++                   yaw_map=camera.table("yaw", 1), pitch_map=camera.table("pitch", 1), camera_map=camera)
++
++    def rate(self, axis, stick):
++        if self.camera_map is not None:
++            return self.camera_map.rate(axis, stick)
++        return math.copysign(_interp(abs(stick), getattr(self, axis + "_map")), stick)
++
++    def stick_for(self, axis, rate):
++        if self.camera_map is not None:
++            return self.camera_map.stick(axis, rate)
++        return stick_for(rate, getattr(self, axis + "_map"))
++
++    def turn_seconds(self, axis, stick, degrees):
++        return degrees / abs(self.rate(axis, stick))
++
+     press_s: float = 0.033               # an 8 ms press of A registered 6/6; two 60 Hz periods leaves margin
+     strike_s: float = 0.7                # web_strike: RB to arrival
+     pull_s: float = 0.8                  # pull: RB to the enemy arriving
+@@ -540,16 +556,19 @@
+             # Absolute re-level. The game pitches the camera itself (web strike, uppercut, falls), which no model of our
+             # own stick sees: the first live loop run searched the floor for 23 s. Run the pitch into its upper clamp, then
+             # come down a measured 1.8 s at half stick (live: that is level). Once 2 s into a search, then every 12 s.
+-            cyc = (t - self.phase_t) % 12.0
+-            if 2.0 <= cyc < 3.8:
++            # Preserve the old nominal sweep angles, using each signed rate.
++            up_end = 2.0 + self.cal.turn_seconds("pitch", 1.0, 178.2)
++            down_end = up_end + self.cal.turn_seconds("pitch", -0.5, 77.4)
++            cyc = (t - self.phase_t) % max(12.0, down_end)
++            if 2.0 <= cyc < up_end:
+                 out["ry"] = 1.0
+-            elif 3.8 <= cyc < 5.6:
++            elif up_end <= cyc < down_end:
+                 out["ry"] = -0.5
+                 self.pitch_used = 0.0
+             else:
+                 out["ry"] = -math.copysign(0.5, self.pitch_used) if abs(self.pitch_used) > 0.03 else 0.0
+         elif isinstance(intent, Disengage):
+-            turn_s = 180.0 / self.cal.yaw_map[-1][1]
++            turn_s = self.cal.turn_seconds("yaw", 1.0, 180.0)
+             if t - self.phase_t < turn_s:
+                 out["rx"] = 1.0
+             else:
+@@ -965,8 +984,7 @@
+     # -- target tracking and aim ---------------------------------------------
+     def _advance(self, t, dt):
+         """Integrate the camera angle we have commanded, from the sticks actually sent last step."""
+-        self.rate_cmd = tuple(math.copysign(_interp(abs(v), m), v) for v, m in
+-                              zip(self.stick, (self.cal.yaw_map, self.cal.pitch_map)))
++        self.rate_cmd = tuple(self.cal.rate(axis, v) for axis, v in zip(("yaw", "pitch"), self.stick))
+         self.cam = [self.cam[0] + self.rate_cmd[0] * dt, self.cam[1] + self.rate_cmd[1] * dt]
+         self.pitch_used += self.stick[1] * dt
+         self.cam_hist.append((t, *self.cam))
+@@ -1103,7 +1121,7 @@
+             rates.append(0.0 if abs(err) < AIM_DONE_DEG else KP * err + KI * self.integ[i])
+         if abs(self.pitch_used) > MAX_PITCH_STICK_S and rates[1] * self.pitch_used > 0:
+             rates[1] = 0.0   # a close bot's nameplate sits overhead: chasing it ran the camera into the ceiling
+-        out["rx"] = stick_for(rates[0], self.cal.yaw_map)
+-        out["ry"] = stick_for(rates[1], self.cal.pitch_map)
++        out["rx"] = self.cal.stick_for("yaw", rates[0])
++        out["ry"] = self.cal.stick_for("pitch", rates[1])
+         fresh = state.t - tr.seen_t < 0.1
+         return fresh and abs(tr.ex) <= max(4.0, 0.5 * tr.w) and abs(tr.ey) <= max(4.0, 0.5 * tr.h)
+--- a/agent/startup.py
++++ b/agent/startup.py
+@@ -133,7 +133,7 @@
+         live.release()
+ 
+ 
+-def start_pose(live, in_range, idle, plaza_view, *, attached_t=None, steps=None, clock=time.perf_counter, sleep=time.sleep, log=print):
++def start_pose(live, in_range, idle, plaza_view, *, cal=None, attached_t=None, steps=None, clock=time.perf_counter, sleep=time.sleep, log=print):
+     """Run the start phase on an open controller.Live. Returns {"frames": [(frame, stamp), (frame, stamp)], "turns": n, "ms": {...}}: the
+     two confirming frames with the time each grab started; the second is the accepted start pose. Raises StartRefused after closing Live.
+     `attached_t`: a clock time the pad had attached by (no frame grabbed at or before it proves anything). `steps`: a list the step
+@@ -192,6 +192,9 @@
+             raise StartRefused(f"{REFUSAL}: {START_TURNS} turns taken")
+         proof = frame()                                                # proven after the attach / the last delay, before any write
+         rx = START_TURN_RX if turns == 0 else SEARCH_TURN_RX           # the prime, then the search the other way
++        # Default hand-tool callers retain the measured legacy pulse. The loop
++        # supplies its validated profile before attaching; preserve nominal angle.
++        turn_s = START_TURN_S if cal is None else cal.turn_seconds("yaw", rx, 51.6)
+         turns += 1
+ 
+         def sent(t):
+@@ -199,9 +202,9 @@
+                 timing["first_send_returned"] = t - t0
+                 if attached_t is not None:
+                     timing["attached_t_to_first_send_returned"] = t - attached_t
+-        what = f"{'prime' if turns == 1 else 'search'} pulse {turns} of {START_TURNS}: right stick {rx:+.2f} up to {START_TURN_S:.1f} s"
++        what = f"{'prime' if turns == 1 else 'search'} pulse {turns} of {START_TURNS}: right stick {rx:+.2f} up to {turn_s:.3f} s"
+         try:
+-            camera_pulse(live, START_TURN_S, rx, in_range, idle, clock=clock, sleep=sleep, on_write=sent, deadline=deadline,
++            camera_pulse(live, turn_s, rx, in_range, idle, clock=clock, sleep=sleep, on_write=sent, deadline=deadline,
+                          on_frame=seen)
+         except BaseException as e:                                     # neutral already (camera_pulse's finally, or Live's refusal)
+             note(f"{what}: INTERRUPTED ({e}), neutral", latest)
+--- a/agent/loop.py
++++ b/agent/loop.py
+@@ -35,7 +35,7 @@
+ from .pad_bindings import ATTACK_BUTTONS, COMBAT_BUTTONS, combat_controls, controls
+ from . import brain as scripted
+ from .brain import Memory
+-from .controller import NEUTRAL, RANGE_SKILL_VALID_S, Controller, InputExpired, RangeLost
++from .controller import NEUTRAL, RANGE_SKILL_VALID_S, Cal, Controller, InputExpired, RangeLost
+ from .demos import COOLDOWNS
+ from .intents import Disengage, Idle, RangeSkill
+ from .jev import pct
+@@ -1076,6 +1076,8 @@
+                 "decision_lag_ms": spread(dec.lag), "missed_decisions": dec.missed, "sources": dict(self.sources),
+                 "intents": dict(self.intents), "keepalives": self.keepalives, "range_gaps": self.gaps,
+                 "scoreboards": self.boards, "errors": self.errors, "native": list(self.size) if self.size else None,
++                **({"camera_map": self.ctrl.cal.camera_map.receipt()}
++                   if getattr(getattr(self.ctrl, "cal", None), "camera_map", None) is not None else {}),
+                 **({"start": self.start} if self.start is not None else {}),
+                 **({"executor_events": deepcopy(self.executor_events)} if self.range_skill_mode or self.collect_episode else {}),
+                 **({"episode_collection": deepcopy(self.collection)} if self.collect_episode else {}),
+@@ -1323,6 +1325,8 @@
+     mode = ap.add_mutually_exclusive_group(required=True)
+     mode.add_argument("--dry", metavar="RUN_DIR", help="offline: replay a recorded run (frames.jsonl + jpgs) through the loop, fake pad")
+     mode.add_argument("--live", action="store_true", help="the PC, desktop session, game in the Practice Range, one real pad")
++    ap.add_argument("--camera-map", default="legacy-265-75",
++                    help="versioned camera profile name or JSON path; live requires accepted complete map")
+     ap.add_argument("--brain", choices=("scripted", "jev", "learned", "range", "range-skill"), default="scripted")
+     ap.add_argument("--range-checkpoint", help="range: explicitly selected reviewed checkpoint")
+     ap.add_argument("--range-sha256", help="range: externally pinned checkpoint SHA-256")
+@@ -1412,6 +1416,12 @@
+                          "scope": ("learned_web_start_timing_scripted_target_aim_movement_pulse"
+                                    if a.brain == "range-skill" else "legacy_idle_engage_offline_diagnostic")}
+ 
++    # Resolve even for pose-only, before perception/capture/pad (attach moves the view).
++    try:
++        cal = Cal.from_profile(a.camera_map, live=a.live)
++    except (OSError, ValueError, TypeError) as e:
++        ap.error(f"camera map refused: {e}")
++
+     focused = takeover = None
+     if a.live:
+         if a.game_pid is None or not 0 < a.game_pid <= 0xffffffff:
+@@ -1456,7 +1466,7 @@
+             opened = time.perf_counter()                    # LiveIO has returned: the pad attached before this
+             steps = []
+             try:
+-                start = start_pose(source.live, start_guard, percept.idle, plaza, attached_t=opened, steps=steps)
++                start = start_pose(source.live, start_guard, percept.idle, plaza, cal=cal, attached_t=opened, steps=steps)
+             except StartRefused as e:                       # Live is closed and nothing else was built; the process ends, and the device with it
+                 _write_start_steps(ROOT / "data" / "l1" / a.run, steps)   # the evidence first: the message below may fail
+                 _say(f"loop: STOP: {e}")
+@@ -1468,7 +1478,7 @@
+             if "attached_t_to_first_send_returned" in ms:   # measured from LiveIO's return, not from the device's attach
+                 ms["liveio_return_to_first_send_return"] = ms.pop("attached_t_to_first_send_returned")
+             start = {"turns": start["turns"], "stamps_s_after_liveio_return": [round(t - opened, 4) for _, t in start["frames"]], "ms": ms,
+-                     "liveio_ms": round((opened - t_open) * 1e3, 1), "frames": start["frames"], "steps": steps}
++                     "camera_map": cal.camera_map.receipt(), "liveio_ms": round((opened - t_open) * 1e3, 1), "frames": start["frames"], "steps": steps}
+             if scope is not None:
+                 start["live_scope"] = scope
+             out, save_fps, threaded = ROOT / "data" / "l1" / a.run, a.save_fps, True
+@@ -1490,7 +1500,7 @@
+                 start["confirm_frames"] = [log.save(f"start-confirm-{k}", f) if log else None for k, (f, _) in enumerate(frames, 1)]
+                 start["steps_file"] = _write_start_steps(out, start.pop("steps"), log.save if log else None)
+             loop = Loop(source, pad, percept or default_perception(), brain, threaded=threaded, brain_name=a.brain,
+-                        log=log, reflex_hz=a.reflex_hz, decision_hz=a.decision_hz, max_s=a.max_s,
++                        log=log, controller=Controller(cal=cal), reflex_hz=a.reflex_hz, decision_hz=a.decision_hz, max_s=a.max_s,
+                         scoreboard=not a.no_scoreboard, scoreboard_every_s=a.scoreboard_every, cooldowns=a.cooldowns or "unknown",
+                         warmup=not a.live, start=start,
+                         patch=range_runtime.patch if range_runtime else range_identity.patch if range_identity else None,
+--- /dev/null
++++ b/tests/test_camera_rebind.py
+@@ -0,0 +1,106 @@
++"""Pending integration checks, all fake input and synthetic maps."""
++import json
++import math
++import pytest
++from agent.camera_map import MAPS, LEGACY
++from agent.controller import Cal, Controller, NEUTRAL
++from agent.intents import Search, Disengage, Engage, Idle
++from agent.state import State, Detection, ENEMY
++
++
++def synthetic_map(tmp_path, candidate=False):
++    data=json.loads((MAPS / (LEGACY+'.json')).read_text())
++    data['profile']='synthetic-asymmetric'
++    data['focal']['value']=600.
++    for axis in ('yaw','pitch'):
++        for direction,factor in [('positive',.5),('negative',.25)]:
++            for point in data[axis][direction]:
++                point['measurement']['value']*=factor
++                if candidate:
++                    point['measurement']['status']='candidate'
++    path=tmp_path/'synthetic.json'
++    path.write_text(json.dumps(data))
++    return path
++
++
++def test_legacy_profile_outputs_match_default_controller():
++    old, mapped = Controller(), Controller(cal=Cal.from_profile(live=True))
++    bot=Detection(ENEMY,(630,300,650,420),.9)
++    for i in range(1500):
++        intent=(Search() if i<400 else Disengage() if i<500 else Engage(bot) if i<900 else Idle())
++        state=State(t=i/60,frame=(1280,720),detections=[bot])
++        assert mapped.step(state,intent)==old.step(state,intent)
++        assert mapped.cam==pytest.approx(old.cam)
++
++
++def test_signed_map_controls_prediction_and_aim_geometry(tmp_path):
++    cal=Cal.from_profile(synthetic_map(tmp_path),live=True)
++    c=Controller(cal=cal)
++    c.stick=(-.45,-.5)
++    c._advance(1.,.1)
++    assert c.cam==pytest.approx([-4.3,-1.075])
++    assert cal.stick_for('yaw',-43)==-.45
++    assert cal.stick_for('yaw',86)==.45
++    bot=Detection(ENEMY,(710,350,730,370),.9)
++    c=Controller(cal=cal)
++    c.aim_only(State(t=0.,frame=(1280,720),detections=[bot]),bot)
++    assert c.track.yaw==pytest.approx(math.degrees(math.atan2(80,600)))
++
++
++def test_search_relevel_and_disengage_scale_with_current_map(tmp_path):
++    cal=Cal.from_profile(synthetic_map(tmp_path),live=True)
++    c=Controller(cal=cal)
++    c.step(State(t=0.,frame=(1280,720)),Search())
++    assert c.step(State(t=4.,frame=(1280,720)),Search())['ry']==1
++    assert c.step(State(t=6.,frame=(1280,720)),Search())['ry']==-.5
++    d=Controller(cal=cal)
++    d.step(State(t=0.,frame=(1280,720)),Disengage())
++    assert d.step(State(t=.6,frame=(1280,720)),Disengage())['rx']==1
++    assert d.step(State(t=1.,frame=(1280,720)),Disengage())['ly']==1
++
++
++def test_startup_uses_separate_signed_rates(tmp_path,monkeypatch):
++    from test_startup import S, Clock, FakeLive, frames, run
++    cal=Cal.from_profile(synthetic_map(tmp_path),live=True)
++    clock=Clock()
++    live=FakeLive(clock,frames('plaza'))
++    pulses=[]
++    def pulse(live,seconds,rx,*args,**kwargs):
++        pulses.append((seconds,rx))
++    monkeypatch.setattr(S,'camera_pulse',pulse)
++    monkeypatch.setattr(S,'START_SETTLE_S',0)
++    seen=iter([False,True,True])
++    run(live,lambda f: next(seen),clock,cal=cal)
++    assert pulses==[(.6,.45),(1.2,-.45)]
++
++
++@pytest.mark.parametrize('pose_only',[False,True])
++def test_cli_refuses_alt_before_any_hardware(tmp_path,monkeypatch,pose_only,capsys):
++    import agent.loop as L
++    touched=[]
++    monkeypatch.setattr(L,'default_perception',lambda: touched.append('perception'))
++    monkeypatch.setattr(L,'LiveIO',lambda: touched.append('pad'))
++    args=['--live','--game-pid','123','--cooldowns','normal','--camera-map','alt-247-124']
++    if pose_only:
++        args.append('--pose-only')
++    with pytest.raises(SystemExit) as e:
++        L.main(args)
++    assert e.value.code==2 and touched==[]
++    assert "camera map refused" in capsys.readouterr().err
++
++
++def test_complete_candidate_map_is_offline_only(tmp_path,monkeypatch):
++    from agent.camera_map import CameraMapError
++    path=synthetic_map(tmp_path,candidate=True)
++    assert Cal.from_profile(path).rate('yaw',.45)==86
++    with pytest.raises(CameraMapError,match='candidate'):
++        Cal.from_profile(path,live=True)
++
++
++def test_run_metadata_pins_selected_map(tmp_path):
++    from test_loop import Frames, timeline, readers, idle, FakePad, Loop
++    cal=Cal.from_profile(synthetic_map(tmp_path),live=True)
++    loop=Loop(Frames(timeline(.2)),FakePad(),readers(),idle,controller=Controller(cal=cal),warmup=False)
++    result=loop.run()
++    assert result['camera_map']==cal.camera_map.receipt()
++    assert len(result['camera_map']['sha256'])==64

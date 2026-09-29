@@ -1,0 +1,11 @@
+Environment: UV_PROJECT_ENVIRONMENT=C:\Users\volpe\AppData\Local\Temp\live-loop-safety-stdlib-env
+Command: uv run python docs\evidence\live-loop-safety-rebind-20260929-v2\verify_patch.py --root .
+warning: `VIRTUAL_ENV=.venv` does not match the project environment path `C:\Users\volpe\AppData\Local\Temp\live-loop-safety-stdlib-env` and will be ignored; use `--active` to target the active environment instead
+1500 exact pad reports and camera states match the pinned pre-patch controller
+........................................................................ [ 31%]
+........................................................................ [ 62%]
+........................................................................ [ 94%]
+.............                                                            [100%]
+229 passed in 4.04s
+
+Exit: 0

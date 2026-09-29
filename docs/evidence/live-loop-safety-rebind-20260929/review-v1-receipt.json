@@ -1,0 +1,48 @@
+{
+  "format": "live-loop-safety-review-v1",
+  "verdict": "FIX",
+  "reviewer": "live-review w2:p3E (Claude Opus 5.5, independent of the live-loop lane)",
+  "reviewed_at": "2026-09-29T02:40-05:00",
+  "review_inputs_sha256": "17c7ece41b75f51580d7994ba86f6447c38a665530b58afdb7bf6b7fe85aa10e",
+  "base_commit": "7e2b2e3f131e0d5d79a2172bcc77cf260b23a014",
+  "review_sha256": "055216eace759872477e99b864580fd1099153452db0a342e9daed3f2c6a5780",
+  "files": {
+    "agent/loop.py": "00047fd5675bc6dc1f0bb672c79c2044ca4add538cc9754adf1f174631d4a412",
+    "tests/test_loop_safety.py": "21557294b6fdcc7155d3f35cd004e8949c0e72e71a10bcf0653089dc31ef64b5",
+    "tests/test_loop.py": "c0e950e4c5a8a31a00147eb0436a6912625255872e9784241145323b7a28f811",
+    "tests/test_startup.py": "c358147c5e7fcf9613918ac1b4c333617d44c8be22c53a1cdb4ce85a906deaa0",
+    "tests/test_range_skill_loop.py": "7cb7e675e0577c4517bd382ce322292b292b0d3628fc45d36f2ea5c143db4064",
+    "agent/camera_map.py": "5bcd03a0d1ec755cfac8d11f8cdc664dafd9c6182eab501135837aa6af6c60a4",
+    "agent/camera_maps/legacy-265-75.json": "ce78170d1a33dba124cc3629ced91cfdb946e49cc488e1636f382456e4486e36",
+    "agent/camera_maps/alt-247-124.json": "975294c46d2f098e32dfdcc74884098a8435027ef7898c0a83cb62e80842a79d",
+    "scripts/calibrate_camera_schedule.py": "3f336ea04c558f068c1f8eb0e65675aee33b98cbe6ed758f02780be9bd69b2fd",
+    "agent/camera_calibration.py": "eda24c010a49d5815e59ec0ddfe540d1355201b4283c93d27c8328da4a3cd402",
+    "agent/controller.py": "25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+    "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "scripts/l4_measure.py": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+    "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1"
+  },
+  "item1_agent_loop_safety": {
+    "verdict": "FIX",
+    "blocking": [
+      "L1: latching range proof fires during Live.scoreboard's RETURN_S wait; any fade-out frame stops the run, loses the board and makes every --collect-episode refuse at baseline (reproduced with real Live/LiveSafety/LiveIO + fakes; pre-delta control returns the board)"
+    ],
+    "non_blocking": [
+      "L2: LOST_GRACE_S tolerance removed for scripted/jev/learned (AGENTS-consistent; disclose, lead confirms)",
+      "L3: scripts/range_cast_probe.py live path uses LiveIO/Loop without takeover or monitor (outside delta)",
+      "L4: owner-tests.txt lacks command; 331 = 4 named files + test_episode_collection.py in live venv"
+    ]
+  },
+  "item2_integration_patch_design": {
+    "receipt": null,
+    "findings": [
+      "P1 high: live default --camera-map legacy-265-75 is fully accepted but stale for James's 247/124; require explicit map live",
+      "P2 high: map provenance self-declared (status strings, any JSON path); pin sha256 via reviewed acceptance",
+      "P3 low: map-derived startup/relevel/disengage durations unbounded locally (deadline-capped)"
+    ]
+  },
+  "conditions": "No live authority. Re-review the L1 fix delta (and L2 disclosure) only; integration.patch gets its own exact-byte review after map acceptance."
+}

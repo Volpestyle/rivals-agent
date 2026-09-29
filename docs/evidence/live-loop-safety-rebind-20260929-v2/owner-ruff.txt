@@ -1,0 +1,4 @@
+Command: uv run --no-sync python docs\evidence\live-loop-safety-rebind-20260929-v2\verify_patch.py --root . --lint
+All checks passed!
+
+Exit: 0

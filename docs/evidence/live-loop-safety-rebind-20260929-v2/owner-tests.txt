@@ -1,0 +1,10 @@
+Command: uv run --no-sync pytest tests/test_loop.py tests/test_startup.py tests/test_loop_safety.py tests/test_range_skill_loop.py tests/test_episode_collection.py -q
+Environment: shared .venv, --no-sync (torch/numpy/cv2 installed); synthetic offline inputs only.
+........................................................................ [ 20%]
+........................................................................ [ 41%]
+........................................................................ [ 62%]
+........................................................................ [ 83%]
+.........................................................                [100%]
+345 passed in 47.68s
+
+Exit: 0

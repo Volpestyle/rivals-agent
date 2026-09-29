@@ -1,0 +1,366 @@
+{
+  "baseline": "8331c45 loop; five rewritten runtime files byte-equal to 8331c45; all other lanes files left current",
+  "caused_by_lane_outstanding": [],
+  "preexisting": [
+    {
+      "node": "tests/test_live_range_bc.py::test_cli_defaults_remain_cpu_and_original_preprocessor",
+      "stdlib": false,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Earlier intake test leaves snapshot import path active",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_live_range_bc.py::test_review_receipt_must_match_all_loaded_and_running_files",
+      "stdlib": false,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Earlier intake test leaves snapshot import path active",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_live_range_bc.py::test_settle_default_and_excluded_interval",
+      "stdlib": false,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Earlier intake test leaves snapshot import path active",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_live_range_bc.py::test_v1_review_cannot_authorize_new_inference_dependency",
+      "stdlib": false,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Earlier intake test leaves snapshot import path active",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_measure_inference_fps.py::test_desktop_main_requires_startup_before_ready_or_measurement[False]",
+      "stdlib": true,
+      "perception": false,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Optional NumPy import in the stdlib environment",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_measure_inference_fps.py::test_desktop_main_requires_startup_before_ready_or_measurement[True]",
+      "stdlib": true,
+      "perception": false,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Optional NumPy import in the stdlib environment",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_measure_inference_fps.py::test_fresh_process_import_audit_blocks_actuators_and_desktop_opening",
+      "stdlib": true,
+      "perception": false,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Optional NumPy import in the stdlib environment",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_replay_hud.py::test_identify_order_on_james_is_his",
+      "stdlib": false,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "HUD slot-mapping assertion: observed 5, expected 0",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_sealed_denylist_v2.py::test_every_consumer_pins_v2",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_sealed_denylist_v2.py::test_v1_is_unchanged_and_v2_is_a_superset_of_it",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_spatial_yaw_fallback.py::test_completed_fit_resumes_evaluation_without_refit",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Incomplete stage identity in test fixture",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_spatial_yaw_fallback.py::test_partial_fit_never_recomputed",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Incomplete stage identity in test fixture",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_tally_default.py::test_the_default_snapshot_is_committed_and_validates_the_live_registry",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_a_binder_outside_any_session_blocks_deletion_and_is_named[data/human/calibration/x/notes.md-sha256]",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_a_binder_outside_any_session_blocks_deletion_and_is_named[data/human/skill-event-candidates/051828-request-timing-v1/artifact-hashes.json-sha256]",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_a_binder_outside_any_session_blocks_deletion_and_is_named[docs/evidence/range-request-human-fit-20260922/README.md-path]",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_a_pixel_format_change_fails_verification",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_an_interrupt_between_the_renames_still_leaves_a_receipt",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_an_interrupted_encode_leaves_no_partial",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_any_transcode_is_refused_while_the_game_or_obs_runs[running0-marvel-win64-shipping.exe running-hevc_nvenc]",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_any_transcode_is_refused_while_the_game_or_obs_runs[running0-marvel-win64-shipping.exe running-libx265]",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_any_transcode_is_refused_while_the_game_or_obs_runs[running1-obs64.exe running-hevc_nvenc]",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_any_transcode_is_refused_while_the_game_or_obs_runs[running1-obs64.exe running-libx265]",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_any_transcode_is_refused_while_the_game_or_obs_runs[running2-obs-ffmpeg-mux.exe running-hevc_nvenc]",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_any_transcode_is_refused_while_the_game_or_obs_runs[running2-obs-ffmpeg-mux.exe running-libx265]",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_delete_after_the_relocation_is_recorded",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_delete_is_refused_while_the_takes_own_session_holds_no_relocation",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_delete_refuses_a_receipt_intake_would_refuse",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_delete_refuses_a_relocation_that_does_not_hold[changed receipt-load_transcode_receipt|another receipt|changed]",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_delete_refuses_a_relocation_that_does_not_hold[other receipt-another receipt]",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_delete_refuses_a_relocation_that_does_not_hold[tampered output-no longer matches its receipt]",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_delete_refuses_a_relocation_that_does_not_hold[unpinned-not pinned by the session's freeze]",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_end_to_end_preserves_every_timestamp_and_writes_the_receipt",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_every_binder_must_resolve_to_a_relocated_session",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_intakes_media_hash_check_must_hold",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_plan_all_pairs_by_metadata_and_never_opens_the_sealed_folder",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_plan_only_checks_everything_and_writes_nothing",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_rounded_timestamps_fail_verification_and_leave_nothing",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_the_game_starting_mid_encode_kills_a_cpu_encode",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_the_receipt_loads_through_intakes_contract",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_the_run_lowers_its_priority_first",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_the_sealed_media_is_refused_by_path_as_a_string[C:/USERS/VOLPE/VIDEOS/2026-09-23 00-36-16.MKV]",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_the_sealed_media_is_refused_by_path_as_a_string[C:/Users/volpe/Videos/2026-09-23 00-36-16.mkv]",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_the_sealed_media_is_refused_by_path_as_a_string[C:\\\\Users\\\\volpe\\\\Videos\\\\2026-09-23 00-36-16.mkv]",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    },
+    {
+      "node": "tests/test_transcode_recording.py::test_the_sealed_session_is_refused_by_id_before_anything_is_opened",
+      "stdlib": true,
+      "perception": true,
+      "baseline_8331c45_reproduced": true,
+      "reason": "Denylist content/pin mismatch (LF-normalized pin)",
+      "crlf_8331c45_can_explain": false
+    }
+  ]
+}

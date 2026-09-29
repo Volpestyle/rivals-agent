@@ -1,0 +1,422 @@
+--- v1/integration.patch
++++ v2/integration.patch
+@@ -1,12 +1,21 @@
+ --- a/agent/controller.py
+ +++ b/agent/controller.py
+-@@ -298,29 +298,45 @@
++@@ -298,29 +298,79 @@
+  from .tracker import CLOSE_H, CLOSE_RATIO, PIECE_INSIDE, PIECE_PAD, SIZE_RATIO  # noqa: E402
+  
+  
+-+from .camera_map import CameraMap, load_camera_map  # noqa: E402
+++from .camera_map import CameraMap, CameraMapError, load_camera_map  # noqa: E402
+++from .camera_acceptance import load_reviewed_camera_map  # noqa: E402
+ +
+ +_LEGACY_CAMERA = load_camera_map().require_controller()
+++MAX_CAMERA_DURATION_FACTOR = 4.0
+++_TIMED_CAMERA_TURNS = {
+++    "startup_positive": ("yaw", .45, 51.6),
+++    "startup_negative": ("yaw", -.45, 51.6),
+++    "search_up": ("pitch", 1.0, 178.2),
+++    "search_down": ("pitch", -.5, 77.4),
+++    "disengage": ("yaw", 1.0, 180.0),
+++}
+ +
+ +
+  @dataclass
+@@ -41,12 +50,22 @@
+ -    latency_s: float = 0.045             # pad -> screen is 17-20 ms (measured); the rest is capture + perception + one loop period
+ +    latency_s: float = _LEGACY_CAMERA.scalar("latency")
+ +    camera_map: CameraMap | None = None
+++    camera_acceptance: dict | None = None
+ +
+ +    @classmethod
+-+    def from_profile(cls, profile="legacy-265-75", *, live=False):
+-+        camera = load_camera_map(profile, live=live).require_controller()
+-+        return cls(focal_1280=camera.scalar("focal"), latency_s=camera.scalar("latency"),
+-+                   yaw_map=camera.table("yaw", 1), pitch_map=camera.table("pitch", 1), camera_map=camera)
+++    def from_profile(cls, profile=None, *, live=False, settings_match=None):
+++        acceptance = None
+++        if live:
+++            if profile is None:
+++                raise CameraMapError("live requires an explicit --camera-map")
+++            camera, acceptance = load_reviewed_camera_map(profile, settings_match=settings_match)
+++        else:
+++            camera = load_camera_map(profile or "legacy-265-75").require_controller()
+++        cal = cls(focal_1280=camera.scalar("focal"), latency_s=camera.scalar("latency"),
+++                  yaw_map=camera.table("yaw", 1), pitch_map=camera.table("pitch", 1),
+++                  camera_map=camera, camera_acceptance=acceptance)
+++        cal.timed_durations()  # bound every map-derived hold before capture/attach
+++        return cal
+ +
+ +    def rate(self, axis, stick):
+ +        if self.camera_map is not None:
+@@ -59,12 +78,27 @@
+ +        return stick_for(rate, getattr(self, axis + "_map"))
+ +
+ +    def turn_seconds(self, axis, stick, degrees):
+-+        return degrees / abs(self.rate(axis, stick))
+++        rate = abs(self.rate(axis, stick))
+++        if not math.isfinite(degrees) or degrees <= 0 or not math.isfinite(rate) or rate <= 0:
+++            raise CameraMapError("timed camera turn requires finite positive angle and rate")
+++        duration = degrees / rate
+++        limit = MAX_CAMERA_DURATION_FACTOR * degrees / abs(_LEGACY_CAMERA.rate(axis, stick))
+++        if not math.isfinite(duration) or duration > limit + 1e-12:
+++            raise CameraMapError("camera duration exceeds 4x legacy local bound")
+++        return duration
+++
+++    def timed_durations(self):
+++        return {name: self.turn_seconds(*turn) for name, turn in _TIMED_CAMERA_TURNS.items()}
+++
+++    def receipt(self):
+++        return {**self.camera_map.receipt(), "acceptance": self.camera_acceptance,
+++                "timed_durations_s": self.timed_durations(),
+++                "max_duration_factor": MAX_CAMERA_DURATION_FACTOR}
+ +
+      press_s: float = 0.033               # an 8 ms press of A registered 6/6; two 60 Hz periods leaves margin
+      strike_s: float = 0.7                # web_strike: RB to arrival
+      pull_s: float = 0.8                  # pull: RB to the enemy arriving
+-@@ -540,16 +556,19 @@
++@@ -540,16 +590,19 @@
+              # Absolute re-level. The game pitches the camera itself (web strike, uppercut, falls), which no model of our
+              # own stick sees: the first live loop run searched the floor for 23 s. Run the pitch into its upper clamp, then
+              # come down a measured 1.8 s at half stick (live: that is level). Once 2 s into a search, then every 12 s.
+@@ -88,7 +122,7 @@
+              if t - self.phase_t < turn_s:
+                  out["rx"] = 1.0
+              else:
+-@@ -965,8 +984,7 @@
++@@ -965,8 +1018,7 @@
+      # -- target tracking and aim ---------------------------------------------
+      def _advance(self, t, dt):
+          """Integrate the camera angle we have commanded, from the sticks actually sent last step."""
+@@ -98,7 +132,7 @@
+          self.cam = [self.cam[0] + self.rate_cmd[0] * dt, self.cam[1] + self.rate_cmd[1] * dt]
+          self.pitch_used += self.stick[1] * dt
+          self.cam_hist.append((t, *self.cam))
+-@@ -1103,7 +1121,7 @@
++@@ -1103,7 +1155,7 @@
+              rates.append(0.0 if abs(err) < AIM_DONE_DEG else KP * err + KI * self.integ[i])
+          if abs(self.pitch_used) > MAX_PITCH_STICK_S and rates[1] * self.pitch_used > 0:
+              rates[1] = 0.0   # a close bot's nameplate sits overhead: chasing it ran the camera into the ceiling
+@@ -152,38 +186,40 @@
+  from .demos import COOLDOWNS
+  from .intents import Disengage, Idle, RangeSkill
+  from .jev import pct
+-@@ -1076,6 +1076,8 @@
++@@ -1081,6 +1081,8 @@
+                  "decision_lag_ms": spread(dec.lag), "missed_decisions": dec.missed, "sources": dict(self.sources),
+                  "intents": dict(self.intents), "keepalives": self.keepalives, "range_gaps": self.gaps,
+                  "scoreboards": self.boards, "errors": self.errors, "native": list(self.size) if self.size else None,
+-+                **({"camera_map": self.ctrl.cal.camera_map.receipt()}
+++                **({"camera_map": self.ctrl.cal.receipt()}
+ +                   if getattr(getattr(self.ctrl, "cal", None), "camera_map", None) is not None else {}),
+                  **({"start": self.start} if self.start is not None else {}),
+                  **({"executor_events": deepcopy(self.executor_events)} if self.range_skill_mode or self.collect_episode else {}),
+                  **({"episode_collection": deepcopy(self.collection)} if self.collect_episode else {}),
+-@@ -1323,6 +1325,8 @@
++@@ -1348,6 +1350,10 @@
+      mode = ap.add_mutually_exclusive_group(required=True)
+      mode.add_argument("--dry", metavar="RUN_DIR", help="offline: replay a recorded run (frames.jsonl + jpgs) through the loop, fake pad")
+      mode.add_argument("--live", action="store_true", help="the PC, desktop session, game in the Practice Range, one real pad")
+-+    ap.add_argument("--camera-map", default="legacy-265-75",
+-+                    help="versioned camera profile name or JSON path; live requires accepted complete map")
+++    ap.add_argument("--camera-map",
+++                    help="explicit profile or JSON path; live requires a reviewed whole-map acceptance")
+++    ap.add_argument("--camera-settings-match", metavar="PROFILE",
+++                    help="operator declares current game settings match this reviewed camera profile")
+      ap.add_argument("--brain", choices=("scripted", "jev", "learned", "range", "range-skill"), default="scripted")
+      ap.add_argument("--range-checkpoint", help="range: explicitly selected reviewed checkpoint")
+      ap.add_argument("--range-sha256", help="range: externally pinned checkpoint SHA-256")
+-@@ -1412,6 +1416,12 @@
++@@ -1437,6 +1443,12 @@
+                           "scope": ("learned_web_start_timing_scripted_target_aim_movement_pulse"
+                                     if a.brain == "range-skill" else "legacy_idle_engage_offline_diagnostic")}
+  
+ +    # Resolve even for pose-only, before perception/capture/pad (attach moves the view).
+ +    try:
+-+        cal = Cal.from_profile(a.camera_map, live=a.live)
+++        cal = Cal.from_profile(a.camera_map, live=a.live, settings_match=a.camera_settings_match)
+ +    except (OSError, ValueError, TypeError) as e:
+ +        ap.error(f"camera map refused: {e}")
+ +
+      focused = takeover = None
+      if a.live:
+          if a.game_pid is None or not 0 < a.game_pid <= 0xffffffff:
+-@@ -1456,7 +1466,7 @@
++@@ -1481,7 +1493,7 @@
+              opened = time.perf_counter()                    # LiveIO has returned: the pad attached before this
+              steps = []
+              try:
+@@ -192,16 +228,16 @@
+              except StartRefused as e:                       # Live is closed and nothing else was built; the process ends, and the device with it
+                  _write_start_steps(ROOT / "data" / "l1" / a.run, steps)   # the evidence first: the message below may fail
+                  _say(f"loop: STOP: {e}")
+-@@ -1468,7 +1478,7 @@
++@@ -1493,7 +1505,7 @@
+              if "attached_t_to_first_send_returned" in ms:   # measured from LiveIO's return, not from the device's attach
+                  ms["liveio_return_to_first_send_return"] = ms.pop("attached_t_to_first_send_returned")
+              start = {"turns": start["turns"], "stamps_s_after_liveio_return": [round(t - opened, 4) for _, t in start["frames"]], "ms": ms,
+ -                     "liveio_ms": round((opened - t_open) * 1e3, 1), "frames": start["frames"], "steps": steps}
+-+                     "camera_map": cal.camera_map.receipt(), "liveio_ms": round((opened - t_open) * 1e3, 1), "frames": start["frames"], "steps": steps}
+++                     "camera_map": cal.receipt(), "liveio_ms": round((opened - t_open) * 1e3, 1), "frames": start["frames"], "steps": steps}
+              if scope is not None:
+                  start["live_scope"] = scope
+              out, save_fps, threaded = ROOT / "data" / "l1" / a.run, a.save_fps, True
+-@@ -1490,7 +1500,7 @@
++@@ -1515,7 +1527,7 @@
+                  start["confirm_frames"] = [log.save(f"start-confirm-{k}", f) if log else None for k, (f, _) in enumerate(frames, 1)]
+                  start["steps_file"] = _write_start_steps(out, start.pop("steps"), log.save if log else None)
+              loop = Loop(source, pad, percept or default_perception(), brain, threaded=threaded, brain_name=a.brain,
+@@ -211,8 +247,68 @@
+                          warmup=not a.live, start=start,
+                          patch=range_runtime.patch if range_runtime else range_identity.patch if range_identity else None,
+ --- /dev/null
+++++ b/agent/camera_acceptance.py
++@@ -0,0 +1,57 @@
+++"""Live admission for whole camera maps; no accepted profile ships in this delta.
+++
+++Only independent review may add a profile -> (record path, SHA-256) entry to
+++REVIEWED_ACCEPTANCES. Neither CLI arguments nor map status strings extend it.
+++The pinned record binds a whole map, settings and retained evidence bytes.
+++"""
+++import hashlib
+++import json
+++from pathlib import Path
+++
+++from .camera_map import CameraMapError, load_camera_map
+++
+++ROOT = Path(__file__).resolve().parents[1]
+++REVIEWED_ACCEPTANCES: dict[str, tuple[str, str]] = {}
+++
+++
+++def _pinned_bytes(relative, digest):
+++    if not isinstance(relative, str) or not isinstance(digest, str) or len(digest) != 64:
+++        raise CameraMapError("invalid acceptance artifact pin")
+++    path = (ROOT / relative).resolve()
+++    if Path(relative).is_absolute() or not path.is_relative_to(ROOT.resolve()):
+++        raise CameraMapError("acceptance artifact must stay within repository")
+++    raw = path.read_bytes()
+++    if hashlib.sha256(raw).hexdigest() != digest:
+++        raise CameraMapError(f"acceptance artifact hash mismatch: {relative}")
+++    return raw
+++
+++
+++def load_reviewed_camera_map(profile, *, settings_match):
+++    """Validate before hardware. The settings declaration is operator evidence,
+++    not pixel verification; it must name this exact reviewed profile.
+++    """
+++    camera = load_camera_map(profile, live=True).require_controller()
+++    try:
+++        entry = REVIEWED_ACCEPTANCES.get(camera.profile)
+++        if entry is None:
+++            raise CameraMapError(f"no reviewed camera acceptance for {camera.profile}")
+++        record_path, record_sha256 = entry
+++        record = json.loads(_pinned_bytes(record_path, record_sha256))
+++        if (record["schema"] != "rivals-camera-acceptance-v1"
+++                or record["scope"] != "controller_complete"
+++                or record["profile"] != camera.profile
+++                or record["map_sha256"] != camera.sha256
+++                or record["settings"] != camera.settings):
+++            raise CameraMapError("reviewed acceptance does not match camera map/settings")
+++        evidence = record["evidence"]
+++        if not isinstance(evidence, dict) or not evidence:
+++            raise CameraMapError("reviewed acceptance requires pinned evidence")
+++        for path, digest in evidence.items():
+++            _pinned_bytes(path, digest)
+++        if settings_match != camera.profile:
+++            raise CameraMapError("explicit operator settings match must name the reviewed profile")
+++        receipt = {"record": record_path, "sha256": record_sha256,
+++                   "evidence": evidence, "operator_settings_match": settings_match}
+++        return camera, receipt
+++    except (OSError, KeyError, TypeError, json.JSONDecodeError) as e:
+++        raise CameraMapError(f"invalid reviewed camera acceptance: {e}") from e
++--- /dev/null
+ +++ b/tests/test_camera_rebind.py
+-@@ -0,0 +1,106 @@
++@@ -0,0 +1,241 @@
+ +"""Pending integration checks, all fake input and synthetic maps."""
+ +import json
+ +import math
+@@ -239,7 +335,7 @@
+ +
+ +
+ +def test_legacy_profile_outputs_match_default_controller():
+-+    old, mapped = Controller(), Controller(cal=Cal.from_profile(live=True))
+++    old, mapped = Controller(), Controller(cal=Cal.from_profile())
+ +    bot=Detection(ENEMY,(630,300,650,420),.9)
+ +    for i in range(1500):
+ +        intent=(Search() if i<400 else Disengage() if i<500 else Engage(bot) if i<900 else Idle())
+@@ -249,7 +345,7 @@
+ +
+ +
+ +def test_signed_map_controls_prediction_and_aim_geometry(tmp_path):
+-+    cal=Cal.from_profile(synthetic_map(tmp_path),live=True)
+++    cal=Cal.from_profile(synthetic_map(tmp_path))
+ +    c=Controller(cal=cal)
+ +    c.stick=(-.45,-.5)
+ +    c._advance(1.,.1)
+@@ -263,7 +359,7 @@
+ +
+ +
+ +def test_search_relevel_and_disengage_scale_with_current_map(tmp_path):
+-+    cal=Cal.from_profile(synthetic_map(tmp_path),live=True)
+++    cal=Cal.from_profile(synthetic_map(tmp_path))
+ +    c=Controller(cal=cal)
+ +    c.step(State(t=0.,frame=(1280,720)),Search())
+ +    assert c.step(State(t=4.,frame=(1280,720)),Search())['ry']==1
+@@ -276,7 +372,7 @@
+ +
+ +def test_startup_uses_separate_signed_rates(tmp_path,monkeypatch):
+ +    from test_startup import S, Clock, FakeLive, frames, run
+-+    cal=Cal.from_profile(synthetic_map(tmp_path),live=True)
+++    cal=Cal.from_profile(synthetic_map(tmp_path))
+ +    clock=Clock()
+ +    live=FakeLive(clock,frames('plaza'))
+ +    pulses=[]
+@@ -314,8 +410,143 @@
+ +
+ +def test_run_metadata_pins_selected_map(tmp_path):
+ +    from test_loop import Frames, timeline, readers, idle, FakePad, Loop
+-+    cal=Cal.from_profile(synthetic_map(tmp_path),live=True)
+++    cal=Cal.from_profile(synthetic_map(tmp_path))
+ +    loop=Loop(Frames(timeline(.2)),FakePad(),readers(),idle,controller=Controller(cal=cal),warmup=False)
+ +    result=loop.run()
+-+    assert result['camera_map']==cal.camera_map.receipt()
+++    assert result['camera_map']==cal.receipt()
+ +    assert len(result['camera_map']['sha256'])==64
+++
+++
+++# Synthetic acceptance records below are admitted only through monkeypatch.
+++# The production trust registry stays empty: no map is accepted by this patch.
+++import hashlib
+++from agent import camera_acceptance as A
+++from agent.camera_map import CameraMapError
+++from test_loop_safety import cli as safety_cli  # noqa: F401
+++from test_loop_safety import (  # noqa: F401
+++    test_every_basic_live_mode_uses_scope_and_closes,
+++    test_every_post_attach_failure_closes_device_and_monitor,
+++    test_scope_refusals_precede_capture_and_attach,
+++)
+++
+++
+++def reviewed(tmp_path, monkeypatch, path=None):
+++    path = path or MAPS / (LEGACY + '.json')
+++    camera = json.loads(path.read_text())
+++    evidence = tmp_path / 'measurement.txt'
+++    evidence.write_text('synthetic reviewed evidence; not a real calibration')
+++    record = dict(schema='rivals-camera-acceptance-v1', scope='controller_complete',
+++                  profile=camera['profile'], settings=camera['settings'],
+++                  map_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+++                  evidence={evidence.name: hashlib.sha256(evidence.read_bytes()).hexdigest()})
+++    receipt = tmp_path / 'acceptance.json'
+++    receipt.write_text(json.dumps(record))
+++    registry = {camera['profile']: (receipt.name, hashlib.sha256(receipt.read_bytes()).hexdigest())}
+++    monkeypatch.setattr(A, 'ROOT', tmp_path)
+++    monkeypatch.setattr(A, 'REVIEWED_ACCEPTANCES', registry)
+++    return path, camera['profile'], receipt, evidence
+++
+++
+++@pytest.fixture
+++def cli(safety_cli, tmp_path, monkeypatch):
+++    path, profile, _, _ = reviewed(tmp_path, monkeypatch)
+++    safety_cli.argv += ['--camera-map', str(path), '--camera-settings-match', profile]
+++    return safety_cli
+++
+++
+++def test_no_profile_is_accepted_by_default():
+++    assert A.REVIEWED_ACCEPTANCES == {}
+++    with pytest.raises(CameraMapError, match='explicit --camera-map'):
+++        Cal.from_profile(live=True)
+++    with pytest.raises(CameraMapError, match='no reviewed camera acceptance'):
+++        Cal.from_profile(LEGACY, live=True, settings_match=LEGACY)
+++
+++
+++@pytest.mark.parametrize('change', ['record', 'evidence', 'map', 'settings', 'missing_evidence', 'missing_record', 'scope'])
+++def test_reviewed_record_pins_whole_map_settings_and_evidence(tmp_path, monkeypatch, change):
+++    path = synthetic_map(tmp_path)
+++    path, profile, receipt, evidence = reviewed(tmp_path, monkeypatch, path)
+++    if change in ('record', 'evidence', 'map'):
+++        target = {'record': receipt, 'evidence': evidence, 'map': path}[change]
+++        target.write_bytes(target.read_bytes() + b' ')
+++    elif change == 'missing_evidence':
+++        evidence.unlink()
+++    elif change == 'missing_record':
+++        receipt.unlink()
+++    else:
+++        record = json.loads(receipt.read_text())
+++        record['settings' if change == 'settings' else 'scope'] = 'wrong'
+++        receipt.write_text(json.dumps(record))
+++        # Even a trusted record must match the map's settings and whole-map scope.
+++        A.REVIEWED_ACCEPTANCES[profile] = (receipt.name, hashlib.sha256(receipt.read_bytes()).hexdigest())
+++    with pytest.raises(CameraMapError):
+++        Cal.from_profile(path, live=True, settings_match=profile)
+++
+++
+++@pytest.mark.parametrize('declaration', [None, 'alt-247-124', ''])
+++def test_settings_match_is_explicit_and_profile_specific(tmp_path, monkeypatch, declaration):
+++    path, profile, _, _ = reviewed(tmp_path, monkeypatch)
+++    with pytest.raises(CameraMapError, match='operator settings match'):
+++        Cal.from_profile(path, live=True, settings_match=declaration)
+++
+++
+++def test_reviewed_profile_and_byte_identical_external_path_have_same_receipt(tmp_path, monkeypatch):
+++    path, profile, receipt, _ = reviewed(tmp_path, monkeypatch)
+++    copy = tmp_path / 'map.json'
+++    copy.write_bytes(path.read_bytes())
+++    by_name = Cal.from_profile(profile, live=True, settings_match=profile)
+++    by_path = Cal.from_profile(copy, live=True, settings_match=profile)
+++    assert by_name.receipt() == by_path.receipt()
+++    assert by_name.receipt()['acceptance']['sha256'] == hashlib.sha256(receipt.read_bytes()).hexdigest()
+++    assert by_name.receipt()['timed_durations_s'] == pytest.approx(dict(
+++        startup_positive=.3, startup_negative=.3, search_up=1.8, search_down=1.8, disengage=180/415))
+++
+++
+++@pytest.mark.parametrize('mode', ['scripted', 'jev', 'learned', 'pose-only'])
+++def test_cli_never_implies_legacy_for_live(tmp_path, monkeypatch, mode, capsys):
+++    import agent.loop as L
+++    monkeypatch.setattr(L, 'foreground_pid_guard', lambda *_: pytest.fail('no hardware'))
+++    args = ['--live', '--game-pid', '123', '--cooldowns', 'normal']
+++    args += ['--pose-only'] if mode == 'pose-only' else ['--brain', mode]
+++    with pytest.raises(SystemExit) as error:
+++        L.main(args)
+++    assert error.value.code == 2
+++    assert 'explicit --camera-map' in capsys.readouterr().err
+++
+++
+++def test_unreviewed_self_declared_accepted_map_refuses_before_hardware(tmp_path, monkeypatch, capsys):
+++    import agent.loop as L
+++    path = synthetic_map(tmp_path)
+++    monkeypatch.setattr(L, 'foreground_pid_guard', lambda *_: pytest.fail('no hardware'))
+++    with pytest.raises(SystemExit):
+++        L.main(['--live', '--game-pid', '123', '--cooldowns', 'normal', '--camera-map', str(path),
+++                '--camera-settings-match', 'synthetic-asymmetric'])
+++    assert 'no reviewed camera acceptance' in capsys.readouterr().err
+++
+++
+++@pytest.mark.parametrize('axis,direction', [('yaw','positive'), ('yaw','negative'), ('pitch','positive'), ('pitch','negative')])
+++def test_slow_maps_refuse_before_any_timed_hold(tmp_path, monkeypatch, axis, direction):
+++    path = synthetic_map(tmp_path)
+++    data = json.loads(path.read_text())
+++    for point in data[axis][direction]:
+++        point['measurement']['value'] *= .99 if direction == 'negative' else .49
+++    path.write_text(json.dumps(data))
+++    path, profile, _, _ = reviewed(tmp_path, monkeypatch, path)
+++    with pytest.raises(CameraMapError, match='4x legacy local bound'):
+++        Cal.from_profile(path, live=True, settings_match=profile)
+++    with pytest.raises(CameraMapError, match='4x legacy local bound'):
+++        Cal.from_profile(path)
+++
+++
+++def test_local_duration_bound_still_enforced_after_preflight(tmp_path):
+++    cal = Cal.from_profile(synthetic_map(tmp_path))
+++    cal.rate = lambda *_: .0001
+++    with pytest.raises(CameraMapError, match='4x legacy local bound'):
+++        cal.turn_seconds('yaw', .45, 51.6)
+++
+++
+++def test_candidate_even_with_synthetic_review_still_refuses(tmp_path, monkeypatch):
+++    path = synthetic_map(tmp_path, candidate=True)
+++    path, profile, _, _ = reviewed(tmp_path, monkeypatch, path)
+++    with pytest.raises(CameraMapError, match='candidate'):
+++        Cal.from_profile(path, live=True, settings_match=profile)

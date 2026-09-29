@@ -1,0 +1,6 @@
+{
+  "agent/controller.py": "f877c6786250d3fb901f3e1be31f83d5cd56ae94e7c16efea78ae11c5a4d7e58",
+  "agent/startup.py": "cf854b1bb18d50c6a044fa11e397d8e7e4b2a092bc42a3f4e8df55b9ec0258b7",
+  "agent/loop.py": "5a9e64579a6f1acd848e70372d717dc970121c90119f6f76d8a2021526993ba2",
+  "tests/test_camera_rebind.py": "b3fdbbe25955b5683767ced57734c079281e3fcb38577a15d0bcb81720348111"
+}

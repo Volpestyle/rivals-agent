@@ -1,0 +1,10 @@
+Command: uv run --no-sync python docs\evidence\live-loop-safety-rebind-20260929-v2\verify_patch.py --root .
+Environment: shared .venv, --no-sync. Patch applied only inside TemporaryDirectory.
+1500 exact pad reports and camera states match the pinned pre-patch controller
+........................................................................ [ 31%]
+........................................................................ [ 62%]
+........................................................................ [ 94%]
+.............                                                            [100%]
+229 passed in 1.73s
+
+Exit: 0
