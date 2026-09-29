@@ -1,0 +1,40 @@
+{
+  "format": "camera-ready-delta-review-inputs-v1",
+  "status": "unreviewed_uncommitted_no_live_use",
+  "base_commit": "e91a2d4f6bf03da8c624967a1c578e7da3f3c0c1",
+  "worktree_head_at_packet": "551c51b9f93d8961b8f1c1691dfeaab39826c4c9",
+  "diff_command": "git diff e91a2d4f6bf03da8c624967a1c578e7da3f3c0c1 -- perception/camera_ready_pose.py scripts/measure_camera_turns.py tests/test_camera_ready_pose.py tests/test_measure_camera_turns.py",
+  "diff_sha256": "1be69ca9ff4d4a7cbe35aed24af16bba2ec2118ead93cebb24d427f7313aebf9",
+  "files": {
+    "scripts/measure_camera_turns.py": "bfc51b551da79e375857bda906eab6ab0cc41a9930640016f56bdac1ba44eda9",
+    "tests/test_measure_camera_turns.py": "a174681fc82b1d4040866292b8535152a56a249d9dcf153a2db553819d624ca4",
+    "perception/camera_ready_pose.py": "f4ee95f38f652040b24a61ae44b484a5be98321a8417cb92a9d76b848600c8c2",
+    "agent/controller.py": "4e5bb70fca797ab17a25a8699d1ad111f0b7cd561f59d2b308a52c10b44da060",
+    "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+    "scripts/l4_measure.py": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1",
+    "agent/loop.py": "040c77c2c4ed0fff5a893e6e00991c8df7bad1e87267bf6d416964911b1e596f",
+    "scripts/run_range_bc_live.py": "446ef0bb2dc74c615f8c445dfac043ec0be4bfbd3c36195e9dfc727c8a9f7823",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547"
+  },
+  "additional_files": {
+    "tests/test_camera_ready_pose.py": "d5b6d36c6e6cb39c5c5ee194945e671ab305e1539da1ea9a413e969c091be46c"
+  },
+  "prior_review": {
+    "path": "docs/evidence/live-loop-repair-20260928/review-v1.json",
+    "sha256": "d14ffbbff86c85082c37a608206ea492c7005496b2f5ca44d7c9ccf988b42e4a"
+  },
+  "changed_runtime_paths": [
+    "perception/camera_ready_pose.py",
+    "scripts/measure_camera_turns.py",
+    "tests/test_camera_ready_pose.py",
+    "tests/test_measure_camera_turns.py"
+  ],
+  "ast_evidence": "ast-delta.json",
+  "tests": "final-tests.txt",
+  "native_replay": "native-replay.json",
+  "scope": "pose findings 1-3 plus audit/frame retention; no prime/segment/lease/token/deadline or FPS changes",
+  "limits": "Sparse native frames cannot prove continuous recovery; no calibration/rate/focal acceptance"
+}

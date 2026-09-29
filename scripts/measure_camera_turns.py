@@ -142,7 +142,9 @@ def retain_pose_refusal(live, journal, exc):
             journal.write("pose-refusal.json", {"audit": exc.audit, **exc.times,
                 "frames": [role for role, _, _ in exc.frames],
                 "written_after": "pad_closed" if live is not None else "no_pad_attached"})
-            return {"retained": True, "metadata": "pose-refusal.json"}
+            return {"retained": True, "metadata": "pose-refusal.json",
+                    "refusal_frame_role": exc.times.get("refusal_frame_role"),
+                    "audit_frame_role": exc.times.get("audit_frame_role")}
         except Exception as error:
             return {"retained": False, "error": repr(error)}
     return None
@@ -158,39 +160,60 @@ frames are required. Every acquisition still runs the caller's full guards.
     deadline = min(end, clock() + 1.)
     recovering, consecutive = False, 0
     frame, captured, audit = None, None, None
-    def refuse(reason, value=None):
+    analyzed_frame, analyzed_captured, analyzed_t = None, None, None
+    frame_analyzed, terminal_analysis_status = False, "not_run"
+    def record_analysis(value):
+        nonlocal audit, analyzed_frame, analyzed_captured, analyzed_t, frame_analyzed
+        audit, analyzed_frame, analyzed_captured = value, frame, captured
+        analyzed_t, frame_analyzed = clock(), True
+    def refuse(reason):
         decided = clock()
-        exc = ReadyPoseRefused(reason, value if value is not None else audit)
+        exc = ReadyPoseRefused(reason, audit)
         # Arrays only; no encoding or disk IO until the caller has closed Live.
         exc.frames = [("reference", reference.copy(), reference_t)]
-        if frame is not None:
-            exc.frames.append(("current", frame.copy(), captured))
-        exc.times = {"reference_captured": reference_t, "current_captured": captured,
-                     "decision_t": decided, "current_available": frame is not None}
+        if analyzed_frame is not None:
+            exc.frames.append(("current", analyzed_frame.copy(), analyzed_captured))
+        terminal = frame is not None and not frame_analyzed
+        if terminal:
+            exc.frames.append(("terminal-unanalyzed", frame.copy(), captured))
+        audit_role = "current" if analyzed_frame is not None else None
+        exc.times = {"reference_captured": reference_t, "current_captured": analyzed_captured,
+                     "audit_decision_t": analyzed_t, "audit_frame_role": audit_role,
+                     "decision_t": decided, "current_available": analyzed_frame is not None,
+                     "terminal_captured": captured if terminal else None,
+                     "terminal_analysis_status": terminal_analysis_status if terminal else None,
+                     "refusal_frame_role": "terminal-unanalyzed" if terminal else audit_role}
         raise exc
     while clock() < deadline:
         frame = proof()
         captured = frame_time()
+        frame_analyzed, terminal_analysis_status = False, "not_run"
         if clock() >= deadline:
             refuse("ready pose recovery deadline during capture")
         try:
-            audit = unchanged_pose(reference, frame)
+            value = unchanged_pose(reference, frame)
         except PoseUnprovable as exc:
-            audit = exc.audit
+            record_analysis(exc.audit)
             recovering, consecutive = True, 0
-            journal.event(kind="pose_quality_wait", t=clock(), audit=exc.audit)
+            journal.event(kind="pose_quality_wait", t=analyzed_t, captured=captured, audit=audit)
         except ReadyPoseRefused as exc:
-            refuse(str(exc), exc.audit)
+            record_analysis(exc.audit)
+            refuse(str(exc))
         except Exception as exc:
+            terminal_analysis_status = "failed"
             refuse("ready pose analysis failed: " + repr(exc))
         else:
+            record_analysis(value)
             if clock() >= deadline:
                 refuse("ready pose recovery deadline during analysis")
             consecutive += 1
             if not recovering or consecutive >= 2:
                 if recovering:
-                    journal.event(kind="pose_quality_recovered", t=clock(), audit=audit)
+                    journal.event(kind="pose_quality_recovered", t=analyzed_t, captured=captured, audit=audit)
                 return frame
+        # Protect the last analyzed image from capture buffers reused by proof().
+        # No copy is added to the successful return's freshness-critical span.
+        analyzed_frame = analyzed_frame.copy()
         sleep(.01)
     refuse("ready pose unprovable within neutral recovery deadline")
 

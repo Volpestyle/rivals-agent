@@ -1,0 +1,33 @@
+{
+  "perception/camera_ready_pose.py": {
+    "changed_definitions": [
+      "analyze"
+    ],
+    "unchanged_definitions": [
+      "band",
+      "_offset"
+    ]
+  },
+  "scripts/measure_camera_turns.py": {
+    "changed_definitions": [
+      "retain_pose_refusal",
+      "ready_proof"
+    ],
+    "unchanged_definitions": [
+      "verify_receipt",
+      "validate",
+      "return_candidates",
+      "collect_segment",
+      "save_native",
+      "unchanged_pose",
+      "PoseUnprovable",
+      "ReadyPoseRefused",
+      "attach_after_token",
+      "initialize_pad",
+      "measure_pulse",
+      "run_block",
+      "focal_from_sweeps",
+      "main"
+    ]
+  }
+}

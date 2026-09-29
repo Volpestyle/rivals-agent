@@ -542,3 +542,107 @@ def test_refusal_encoding_error_does_not_replace_original_stop(tmp_path,monkeypa
     result=m.retain_pose_refusal(live,object(),exc)
     assert not result['retained'] and 'disk full' in result['error']
     assert str(exc)=='original pose stop'
+
+
+@pytest.mark.parametrize('analysis_error', [False, True])
+def test_refusal_keeps_prior_audit_pair_separate_from_terminal_capture(tmp_path, monkeypatch, analysis_error):
+    now, captured, calls, analyzed = [0.], [None], [], []
+    reference = np.zeros((360,640,3), np.uint8)
+    # A reused capture buffer must not overwrite the last analyzed failing image.
+    buffer = reference.copy()
+    closed, encoded = [], []
+    journal = m.Journal(tmp_path/'separate-pairs', {})
+    live = SimpleNamespace(close=lambda:closed.append(True))
+    def proof():
+        calls.append(True)
+        buffer[:] = 40 if len(calls) == 1 else 80
+        captured[0] = .1 if len(calls) == 1 else .2 if analysis_error else 1.1
+        now[0] = captured[0]
+        return buffer
+    prior_audit = {'status':'unprovable', 'reason':'first_frame_failed'}
+    def analyze(a, b):
+        assert a is reference
+        analyzed.append(int(b[0,0,0]))
+        if len(analyzed) == 1:
+            now[0] = .12
+            raise m.PoseUnprovable(prior_audit)
+        if analysis_error:
+            raise RuntimeError('second analysis failed')
+        pytest.fail('terminal passing frame arrived after deadline and must not be analyzed')
+    real_save = m.save_native
+    def save(*args):
+        assert closed == [True]
+        encoded.append(args[1])
+        real_save(*args)
+    monkeypatch.setattr(m, 'unchanged_pose', analyze)
+    monkeypatch.setattr(m, 'save_native', save)
+    try:
+        reason = 'analysis failed' if analysis_error else 'deadline during capture'
+        with pytest.raises(m.ReadyPoseRefused, match=reason) as caught:
+            m.ready_proof(reference, proof, 10., journal, clock=lambda:now[0],
+                          sleep=lambda dt:now.__setitem__(0,now[0]+dt),
+                          reference_t=-1., frame_time=lambda:captured[0])
+        exc = caught.value
+        assert encoded == [] and closed == []
+        assert len(calls) == 2 and analyzed == ([40,80] if analysis_error else [40])
+        buffer[:] = 0
+        evidence = m.retain_pose_refusal(live, journal, exc)
+        assert evidence['refusal_frame_role'] == 'terminal-unanalyzed'
+        assert evidence['audit_frame_role'] == 'current'
+        import cv2
+        assert np.all(cv2.imread(str(journal.output/'refusal-current.png')) == 40)
+        assert np.all(cv2.imread(str(journal.output/'refusal-terminal-unanalyzed.png')) == 80)
+        metadata = json.loads((journal.output/'pose-refusal.json').read_text())
+        assert metadata['audit'] == prior_audit
+        assert metadata['current_captured'] == .1 and metadata['audit_decision_t'] == .12
+        assert metadata['terminal_captured'] == (.2 if analysis_error else 1.1)
+        assert metadata['terminal_analysis_status'] == ('failed' if analysis_error else 'not_run')
+        assert metadata['decision_t'] == (.2 if analysis_error else 1.1)
+        assert metadata['written_after'] == 'pad_closed'
+    finally:
+        journal.close()
+
+
+def test_capture_deadline_without_prior_analysis_has_no_audit(tmp_path, monkeypatch):
+    now = [0.]
+    frame = np.zeros((360,640,3), np.uint8)
+    def proof():
+        now[0] = 1.1
+        return frame
+    journal = m.Journal(tmp_path/'no-audit', {})
+    monkeypatch.setattr(m, 'unchanged_pose', lambda *args:pytest.fail('analysis after deadline'))
+    try:
+        with pytest.raises(m.ReadyPoseRefused) as caught:
+            m.ready_proof(frame, proof, 10., journal, clock=lambda:now[0], frame_time=lambda:1.1)
+        assert caught.value.audit is None
+        assert caught.value.times['audit_frame_role'] is None
+        assert caught.value.times['audit_decision_t'] is None
+        assert caught.value.times['refusal_frame_role'] == 'terminal-unanalyzed'
+        assert [f[0] for f in caught.value.frames] == ['reference', 'terminal-unanalyzed']
+    finally:
+        journal.close()
+
+
+def test_real_failing_frame_then_late_passing_pose_still_refuses(tmp_path, monkeypatch):
+    reference = np.random.default_rng(88).integers(0,256,(720,1280,3),dtype=np.uint8)
+    assert m.unchanged_pose(reference, reference)['status'] == 'unchanged'
+    failing = np.full_like(reference, 42)
+    with pytest.raises(m.PoseUnprovable):
+        m.unchanged_pose(reference, failing)
+    now, calls = [0.], []
+    def proof():
+        calls.append(True)
+        now[0] = .1 if len(calls) == 1 else 1.1
+        return failing if len(calls) == 1 else reference
+    journal = m.Journal(tmp_path/'late-good', {})
+    try:
+        with pytest.raises(m.ReadyPoseRefused, match='deadline during capture') as caught:
+            m.ready_proof(reference, proof, 10., journal, clock=lambda:now[0],
+                          sleep=lambda dt:now.__setitem__(0,now[0]+dt), frame_time=lambda:now[0])
+        assert len(calls) == 2
+        assert caught.value.audit['status'] == 'unprovable'
+        frames = {role: frame for role, frame, _ in caught.value.frames}
+        assert np.array_equal(frames['current'], failing)
+        assert np.array_equal(frames['terminal-unanalyzed'], reference)
+    finally:
+        journal.close()

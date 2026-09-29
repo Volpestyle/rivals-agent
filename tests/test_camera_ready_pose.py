@@ -1,4 +1,6 @@
 """Fixed-reference geometry controls; recorded PNG cases are explicit opt-in."""
+import hashlib
+import json
 from pathlib import Path
 
 import pytest
@@ -62,6 +64,65 @@ def test_fixed_reference_catches_accumulated_drift(scenery):
 def test_geometry_change_is_not_quality_recovery(scenery):
     with pytest.raises(ValueError, match="geometry"):
         pose.analyze(scenery, scenery[:360])
+
+
+@pytest.mark.parametrize("dx,dy", [(4,0), (-4,0), (0,4), (0,-4)])
+def test_agreeing_patch_motion_is_changed_even_with_low_phase(scenery, monkeypatch, dx, dy):
+    monkeypatch.setattr(pose.cv2, "phaseCorrelate", lambda *a: ((0., 0.), .1))
+    result = pose.analyze(scenery, np.roll(scenery, (dy, dx), (0,1)))
+    assert result["agreeing_patches"] >= 3 and result["patch_spread"] <= .75
+    assert result["status"] == "changed"
+    assert result["reason"] == "shift_exceeds_original_bound"
+    assert "registered_band_correlation" not in result
+
+
+def test_low_phase_with_stationary_patches_still_cannot_pass(scenery, monkeypatch):
+    monkeypatch.setattr(pose.cv2, "phaseCorrelate", lambda *a: ((0., 0.), .1))
+    result = pose.analyze(scenery, scenery)
+    assert result["agreeing_patches"] == 6
+    assert result["status"] == "unprovable" and result["reason"] == "low_phase_confidence"
+
+
+@pytest.mark.parametrize("kind", ["noise", "flat"])
+def test_centre_content_change_is_not_hidden_by_outer_patch_agreement(scenery, kind):
+    current = scenery.copy()
+    current[120:420, 884:964] = (100 if kind == "flat" else
+        np.random.default_rng(8).integers(0, 256, (300,80,3), np.uint8))
+    result = pose.analyze(scenery, current)
+    assert result["status"] != "unchanged"
+
+
+def _pinned_native(relative, expected_sha256):
+    raw = (ROOT / relative).read_bytes()
+    assert hashlib.sha256(raw).hexdigest() == expected_sha256, relative
+    image = cv2.imdecode(np.frombuffer(raw, np.uint8), cv2.IMREAD_COLOR)
+    assert image is not None
+    return image
+
+
+@pytest.mark.corpus
+def test_september28b_terminal_and_prior_journal_frames():
+    evidence = ROOT / "docs/evidence/camera-ready-proposal-20260928b"
+    pins = json.loads((evidence / "probe.json").read_text())["source_sha256"]
+    base = "data/calibration/alt-cam-20260928b/yaw-01/"
+    reference = _pinned_native(base + "refusal-reference.png", pins[base + "refusal-reference.png"])
+    terminal = _pinned_native(base + "refusal-current.png", pins[base + "refusal-current.png"])
+    assert pose.analyze(reference, terminal)["status"] == "unchanged"
+    # These are sampled journal frames, NOT the lost exact final audit frame.
+    rows = json.loads((evidence / "preceding-frames.json").read_text())
+    for number, status in ((150, "unchanged"), (148, "unprovable")):
+        row = next(r for r in rows if r["path"].endswith(f"{number:07d}-guard.png"))
+        current = _pinned_native(row["path"], row["sha256"])
+        assert pose.analyze(reference, current)["status"] == status
+    for kind in ("noise", "flat"):
+        current = reference.copy()
+        current[240:840, 1768:1928] = (100 if kind == "flat" else
+            np.random.default_rng(8).integers(0, 256, (600,160,3), np.uint8))
+        result = pose.analyze(reference, current)
+        assert result["status"] == "unprovable"
+        assert result["registered_band_correlation"] < .95
+    for dx,dy in ((8,0),(-8,0),(0,8),(0,-8),(40,0),(0,40)):
+        assert pose.analyze(reference,np.roll(reference,(dy,dx),(0,1)))["status"] != "unchanged"
 
 
 @pytest.mark.corpus

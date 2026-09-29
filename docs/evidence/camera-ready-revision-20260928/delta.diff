@@ -1,0 +1,309 @@
+diff --git a/perception/camera_ready_pose.py b/perception/camera_ready_pose.py
+index 7f39bab..81fdc59 100644
+--- a/perception/camera_ready_pose.py
++++ b/perception/camera_ready_pose.py
+@@ -46,7 +46,7 @@ def analyze(reference, frame):
+     if phase >= .5 and max(abs(dx), abs(dy)) > SHIFT_LIMIT:
+         return {**result, "status": "changed", "reason": "global_shift_exceeds_original_bound"}
+     for row, y in enumerate((16, 74)):
+-        for col, x in enumerate((16, 152)):
++        for col, x in enumerate((16, 84, 152)):
+             patch = a[y:y+60, x:x+96]
+             audit = {"row": row, "col": col, "accepted": False}
+             result["patches"].append(audit)
+@@ -71,8 +71,18 @@ def analyze(reference, frame):
+     median = np.median(offsets, axis=0)
+     spread = float(np.max(np.abs(offsets - median)))
+     result.update(agreeing_patches=len(good), patch_median=median.tolist(), patch_spread=spread)
+-    if spread > .75 or phase < .5:
++    if spread > .75:
+         return {**result, "reason": "inconsistent_or_unconfident_motion"}
+     if max(abs(dx), abs(dy), float(np.max(np.abs(offsets)))) > SHIFT_LIMIT:
+         return {**result, "status": "changed", "reason": "shift_exceeds_original_bound"}
++    if phase < .5:
++        return {**result, "reason": "low_phase_confidence"}
++    # Bound displacement BEFORE registration: alignment cannot erase a turn.
++    registered = cv2.warpAffine(b, np.float32([[1, 0, -median[0]], [0, 1, -median[1]]]),
++                                (265, 150), flags=cv2.INTER_LINEAR)
++    # Two-pixel inset excludes interpolation borders for shifts <=1.5 pixels.
++    residual = float(np.corrcoef(a[2:-2, 2:-2].ravel(), registered[2:-2, 2:-2].ravel())[0, 1])
++    result["registered_band_correlation"] = residual if math.isfinite(residual) else None
++    if not math.isfinite(residual) or residual < .95:
++        return {**result, "reason": "scene_content_changed_or_unprovable"}
+     return {**result, "status": "unchanged", "reason": "scenery_agrees"}
+diff --git a/scripts/measure_camera_turns.py b/scripts/measure_camera_turns.py
+index b5fb08d..2b0f0c6 100644
+--- a/scripts/measure_camera_turns.py
++++ b/scripts/measure_camera_turns.py
+@@ -142,7 +142,9 @@ def retain_pose_refusal(live, journal, exc):
+             journal.write("pose-refusal.json", {"audit": exc.audit, **exc.times,
+                 "frames": [role for role, _, _ in exc.frames],
+                 "written_after": "pad_closed" if live is not None else "no_pad_attached"})
+-            return {"retained": True, "metadata": "pose-refusal.json"}
++            return {"retained": True, "metadata": "pose-refusal.json",
++                    "refusal_frame_role": exc.times.get("refusal_frame_role"),
++                    "audit_frame_role": exc.times.get("audit_frame_role")}
+         except Exception as error:
+             return {"retained": False, "error": repr(error)}
+     return None
+@@ -158,39 +160,60 @@ frames are required. Every acquisition still runs the caller's full guards.
+     deadline = min(end, clock() + 1.)
+     recovering, consecutive = False, 0
+     frame, captured, audit = None, None, None
+-    def refuse(reason, value=None):
++    analyzed_frame, analyzed_captured, analyzed_t = None, None, None
++    frame_analyzed, terminal_analysis_status = False, "not_run"
++    def record_analysis(value):
++        nonlocal audit, analyzed_frame, analyzed_captured, analyzed_t, frame_analyzed
++        audit, analyzed_frame, analyzed_captured = value, frame, captured
++        analyzed_t, frame_analyzed = clock(), True
++    def refuse(reason):
+         decided = clock()
+-        exc = ReadyPoseRefused(reason, value if value is not None else audit)
++        exc = ReadyPoseRefused(reason, audit)
+         # Arrays only; no encoding or disk IO until the caller has closed Live.
+         exc.frames = [("reference", reference.copy(), reference_t)]
+-        if frame is not None:
+-            exc.frames.append(("current", frame.copy(), captured))
+-        exc.times = {"reference_captured": reference_t, "current_captured": captured,
+-                     "decision_t": decided, "current_available": frame is not None}
++        if analyzed_frame is not None:
++            exc.frames.append(("current", analyzed_frame.copy(), analyzed_captured))
++        terminal = frame is not None and not frame_analyzed
++        if terminal:
++            exc.frames.append(("terminal-unanalyzed", frame.copy(), captured))
++        audit_role = "current" if analyzed_frame is not None else None
++        exc.times = {"reference_captured": reference_t, "current_captured": analyzed_captured,
++                     "audit_decision_t": analyzed_t, "audit_frame_role": audit_role,
++                     "decision_t": decided, "current_available": analyzed_frame is not None,
++                     "terminal_captured": captured if terminal else None,
++                     "terminal_analysis_status": terminal_analysis_status if terminal else None,
++                     "refusal_frame_role": "terminal-unanalyzed" if terminal else audit_role}
+         raise exc
+     while clock() < deadline:
+         frame = proof()
+         captured = frame_time()
++        frame_analyzed, terminal_analysis_status = False, "not_run"
+         if clock() >= deadline:
+             refuse("ready pose recovery deadline during capture")
+         try:
+-            audit = unchanged_pose(reference, frame)
++            value = unchanged_pose(reference, frame)
+         except PoseUnprovable as exc:
+-            audit = exc.audit
++            record_analysis(exc.audit)
+             recovering, consecutive = True, 0
+-            journal.event(kind="pose_quality_wait", t=clock(), audit=exc.audit)
++            journal.event(kind="pose_quality_wait", t=analyzed_t, captured=captured, audit=audit)
+         except ReadyPoseRefused as exc:
+-            refuse(str(exc), exc.audit)
++            record_analysis(exc.audit)
++            refuse(str(exc))
+         except Exception as exc:
++            terminal_analysis_status = "failed"
+             refuse("ready pose analysis failed: " + repr(exc))
+         else:
++            record_analysis(value)
+             if clock() >= deadline:
+                 refuse("ready pose recovery deadline during analysis")
+             consecutive += 1
+             if not recovering or consecutive >= 2:
+                 if recovering:
+-                    journal.event(kind="pose_quality_recovered", t=clock(), audit=audit)
++                    journal.event(kind="pose_quality_recovered", t=analyzed_t, captured=captured, audit=audit)
+                 return frame
++        # Protect the last analyzed image from capture buffers reused by proof().
++        # No copy is added to the successful return's freshness-critical span.
++        analyzed_frame = analyzed_frame.copy()
+         sleep(.01)
+     refuse("ready pose unprovable within neutral recovery deadline")
+ 
+diff --git a/tests/test_camera_ready_pose.py b/tests/test_camera_ready_pose.py
+index 7000be8..6a53b60 100644
+--- a/tests/test_camera_ready_pose.py
++++ b/tests/test_camera_ready_pose.py
+@@ -1,4 +1,6 @@
+ """Fixed-reference geometry controls; recorded PNG cases are explicit opt-in."""
++import hashlib
++import json
+ from pathlib import Path
+ 
+ import pytest
+@@ -64,6 +66,65 @@ def test_geometry_change_is_not_quality_recovery(scenery):
+         pose.analyze(scenery, scenery[:360])
+ 
+ 
++@pytest.mark.parametrize("dx,dy", [(4,0), (-4,0), (0,4), (0,-4)])
++def test_agreeing_patch_motion_is_changed_even_with_low_phase(scenery, monkeypatch, dx, dy):
++    monkeypatch.setattr(pose.cv2, "phaseCorrelate", lambda *a: ((0., 0.), .1))
++    result = pose.analyze(scenery, np.roll(scenery, (dy, dx), (0,1)))
++    assert result["agreeing_patches"] >= 3 and result["patch_spread"] <= .75
++    assert result["status"] == "changed"
++    assert result["reason"] == "shift_exceeds_original_bound"
++    assert "registered_band_correlation" not in result
++
++
++def test_low_phase_with_stationary_patches_still_cannot_pass(scenery, monkeypatch):
++    monkeypatch.setattr(pose.cv2, "phaseCorrelate", lambda *a: ((0., 0.), .1))
++    result = pose.analyze(scenery, scenery)
++    assert result["agreeing_patches"] == 6
++    assert result["status"] == "unprovable" and result["reason"] == "low_phase_confidence"
++
++
++@pytest.mark.parametrize("kind", ["noise", "flat"])
++def test_centre_content_change_is_not_hidden_by_outer_patch_agreement(scenery, kind):
++    current = scenery.copy()
++    current[120:420, 884:964] = (100 if kind == "flat" else
++        np.random.default_rng(8).integers(0, 256, (300,80,3), np.uint8))
++    result = pose.analyze(scenery, current)
++    assert result["status"] != "unchanged"
++
++
++def _pinned_native(relative, expected_sha256):
++    raw = (ROOT / relative).read_bytes()
++    assert hashlib.sha256(raw).hexdigest() == expected_sha256, relative
++    image = cv2.imdecode(np.frombuffer(raw, np.uint8), cv2.IMREAD_COLOR)
++    assert image is not None
++    return image
++
++
++@pytest.mark.corpus
++def test_september28b_terminal_and_prior_journal_frames():
++    evidence = ROOT / "docs/evidence/camera-ready-proposal-20260928b"
++    pins = json.loads((evidence / "probe.json").read_text())["source_sha256"]
++    base = "data/calibration/alt-cam-20260928b/yaw-01/"
++    reference = _pinned_native(base + "refusal-reference.png", pins[base + "refusal-reference.png"])
++    terminal = _pinned_native(base + "refusal-current.png", pins[base + "refusal-current.png"])
++    assert pose.analyze(reference, terminal)["status"] == "unchanged"
++    # These are sampled journal frames, NOT the lost exact final audit frame.
++    rows = json.loads((evidence / "preceding-frames.json").read_text())
++    for number, status in ((150, "unchanged"), (148, "unprovable")):
++        row = next(r for r in rows if r["path"].endswith(f"{number:07d}-guard.png"))
++        current = _pinned_native(row["path"], row["sha256"])
++        assert pose.analyze(reference, current)["status"] == status
++    for kind in ("noise", "flat"):
++        current = reference.copy()
++        current[240:840, 1768:1928] = (100 if kind == "flat" else
++            np.random.default_rng(8).integers(0, 256, (600,160,3), np.uint8))
++        result = pose.analyze(reference, current)
++        assert result["status"] == "unprovable"
++        assert result["registered_band_correlation"] < .95
++    for dx,dy in ((8,0),(-8,0),(0,8),(0,-8),(40,0),(0,40)):
++        assert pose.analyze(reference,np.roll(reference,(dy,dx),(0,1)))["status"] != "unchanged"
++
++
+ @pytest.mark.corpus
+ def test_retained_yaw01_frames_and_translated_native_controls():
+     directory = ROOT / "data/calibration/alt-cam-20260928/yaw-01"
+diff --git a/tests/test_measure_camera_turns.py b/tests/test_measure_camera_turns.py
+index 913c9a2..9a561b5 100644
+--- a/tests/test_measure_camera_turns.py
++++ b/tests/test_measure_camera_turns.py
+@@ -542,3 +542,107 @@ def test_refusal_encoding_error_does_not_replace_original_stop(tmp_path,monkeypa
+     result=m.retain_pose_refusal(live,object(),exc)
+     assert not result['retained'] and 'disk full' in result['error']
+     assert str(exc)=='original pose stop'
++
++
++@pytest.mark.parametrize('analysis_error', [False, True])
++def test_refusal_keeps_prior_audit_pair_separate_from_terminal_capture(tmp_path, monkeypatch, analysis_error):
++    now, captured, calls, analyzed = [0.], [None], [], []
++    reference = np.zeros((360,640,3), np.uint8)
++    # A reused capture buffer must not overwrite the last analyzed failing image.
++    buffer = reference.copy()
++    closed, encoded = [], []
++    journal = m.Journal(tmp_path/'separate-pairs', {})
++    live = SimpleNamespace(close=lambda:closed.append(True))
++    def proof():
++        calls.append(True)
++        buffer[:] = 40 if len(calls) == 1 else 80
++        captured[0] = .1 if len(calls) == 1 else .2 if analysis_error else 1.1
++        now[0] = captured[0]
++        return buffer
++    prior_audit = {'status':'unprovable', 'reason':'first_frame_failed'}
++    def analyze(a, b):
++        assert a is reference
++        analyzed.append(int(b[0,0,0]))
++        if len(analyzed) == 1:
++            now[0] = .12
++            raise m.PoseUnprovable(prior_audit)
++        if analysis_error:
++            raise RuntimeError('second analysis failed')
++        pytest.fail('terminal passing frame arrived after deadline and must not be analyzed')
++    real_save = m.save_native
++    def save(*args):
++        assert closed == [True]
++        encoded.append(args[1])
++        real_save(*args)
++    monkeypatch.setattr(m, 'unchanged_pose', analyze)
++    monkeypatch.setattr(m, 'save_native', save)
++    try:
++        reason = 'analysis failed' if analysis_error else 'deadline during capture'
++        with pytest.raises(m.ReadyPoseRefused, match=reason) as caught:
++            m.ready_proof(reference, proof, 10., journal, clock=lambda:now[0],
++                          sleep=lambda dt:now.__setitem__(0,now[0]+dt),
++                          reference_t=-1., frame_time=lambda:captured[0])
++        exc = caught.value
++        assert encoded == [] and closed == []
++        assert len(calls) == 2 and analyzed == ([40,80] if analysis_error else [40])
++        buffer[:] = 0
++        evidence = m.retain_pose_refusal(live, journal, exc)
++        assert evidence['refusal_frame_role'] == 'terminal-unanalyzed'
++        assert evidence['audit_frame_role'] == 'current'
++        import cv2
++        assert np.all(cv2.imread(str(journal.output/'refusal-current.png')) == 40)
++        assert np.all(cv2.imread(str(journal.output/'refusal-terminal-unanalyzed.png')) == 80)
++        metadata = json.loads((journal.output/'pose-refusal.json').read_text())
++        assert metadata['audit'] == prior_audit
++        assert metadata['current_captured'] == .1 and metadata['audit_decision_t'] == .12
++        assert metadata['terminal_captured'] == (.2 if analysis_error else 1.1)
++        assert metadata['terminal_analysis_status'] == ('failed' if analysis_error else 'not_run')
++        assert metadata['decision_t'] == (.2 if analysis_error else 1.1)
++        assert metadata['written_after'] == 'pad_closed'
++    finally:
++        journal.close()
++
++
++def test_capture_deadline_without_prior_analysis_has_no_audit(tmp_path, monkeypatch):
++    now = [0.]
++    frame = np.zeros((360,640,3), np.uint8)
++    def proof():
++        now[0] = 1.1
++        return frame
++    journal = m.Journal(tmp_path/'no-audit', {})
++    monkeypatch.setattr(m, 'unchanged_pose', lambda *args:pytest.fail('analysis after deadline'))
++    try:
++        with pytest.raises(m.ReadyPoseRefused) as caught:
++            m.ready_proof(frame, proof, 10., journal, clock=lambda:now[0], frame_time=lambda:1.1)
++        assert caught.value.audit is None
++        assert caught.value.times['audit_frame_role'] is None
++        assert caught.value.times['audit_decision_t'] is None
++        assert caught.value.times['refusal_frame_role'] == 'terminal-unanalyzed'
++        assert [f[0] for f in caught.value.frames] == ['reference', 'terminal-unanalyzed']
++    finally:
++        journal.close()
++
++
++def test_real_failing_frame_then_late_passing_pose_still_refuses(tmp_path, monkeypatch):
++    reference = np.random.default_rng(88).integers(0,256,(720,1280,3),dtype=np.uint8)
++    assert m.unchanged_pose(reference, reference)['status'] == 'unchanged'
++    failing = np.full_like(reference, 42)
++    with pytest.raises(m.PoseUnprovable):
++        m.unchanged_pose(reference, failing)
++    now, calls = [0.], []
++    def proof():
++        calls.append(True)
++        now[0] = .1 if len(calls) == 1 else 1.1
++        return failing if len(calls) == 1 else reference
++    journal = m.Journal(tmp_path/'late-good', {})
++    try:
++        with pytest.raises(m.ReadyPoseRefused, match='deadline during capture') as caught:
++            m.ready_proof(reference, proof, 10., journal, clock=lambda:now[0],
++                          sleep=lambda dt:now.__setitem__(0,now[0]+dt), frame_time=lambda:now[0])
++        assert len(calls) == 2
++        assert caught.value.audit['status'] == 'unprovable'
++        frames = {role: frame for role, frame, _ in caught.value.frames}
++        assert np.array_equal(frames['current'], failing)
++        assert np.array_equal(frames['terminal-unanalyzed'], reference)
++    finally:
++        journal.close()

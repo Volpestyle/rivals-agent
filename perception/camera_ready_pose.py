@@ -46,7 +46,7 @@ def analyze(reference, frame):
     if phase >= .5 and max(abs(dx), abs(dy)) > SHIFT_LIMIT:
         return {**result, "status": "changed", "reason": "global_shift_exceeds_original_bound"}
     for row, y in enumerate((16, 74)):
-        for col, x in enumerate((16, 152)):
+        for col, x in enumerate((16, 84, 152)):
             patch = a[y:y+60, x:x+96]
             audit = {"row": row, "col": col, "accepted": False}
             result["patches"].append(audit)
@@ -71,8 +71,18 @@ def analyze(reference, frame):
     median = np.median(offsets, axis=0)
     spread = float(np.max(np.abs(offsets - median)))
     result.update(agreeing_patches=len(good), patch_median=median.tolist(), patch_spread=spread)
-    if spread > .75 or phase < .5:
+    if spread > .75:
         return {**result, "reason": "inconsistent_or_unconfident_motion"}
     if max(abs(dx), abs(dy), float(np.max(np.abs(offsets)))) > SHIFT_LIMIT:
         return {**result, "status": "changed", "reason": "shift_exceeds_original_bound"}
+    if phase < .5:
+        return {**result, "reason": "low_phase_confidence"}
+    # Bound displacement BEFORE registration: alignment cannot erase a turn.
+    registered = cv2.warpAffine(b, np.float32([[1, 0, -median[0]], [0, 1, -median[1]]]),
+                                (265, 150), flags=cv2.INTER_LINEAR)
+    # Two-pixel inset excludes interpolation borders for shifts <=1.5 pixels.
+    residual = float(np.corrcoef(a[2:-2, 2:-2].ravel(), registered[2:-2, 2:-2].ravel())[0, 1])
+    result["registered_band_correlation"] = residual if math.isfinite(residual) else None
+    if not math.isfinite(residual) or residual < .95:
+        return {**result, "reason": "scene_content_changed_or_unprovable"}
     return {**result, "status": "unchanged", "reason": "scenery_agrees"}
