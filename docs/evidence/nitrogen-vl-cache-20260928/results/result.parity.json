@@ -1,0 +1,117 @@
+{
+  "pass_": true,
+  "max_abs": 0.0,
+  "tolerance": 1e-06,
+  "decoded_buttons_and_stick_signs_equal": true,
+  "aba_cache_reset": true,
+  "rows": [
+    {
+      "fixture": 0,
+      "seed": 0,
+      "max_abs": 0.0,
+      "decoded_equal": true,
+      "calls": 16,
+      "computes": 1,
+      "input_sha256": "5ed693e8fdda81755888a4357cb1b5d91d1ac2f1172a62a40216bfd166ea3995"
+    },
+    {
+      "fixture": 0,
+      "seed": 1,
+      "max_abs": 0.0,
+      "decoded_equal": true,
+      "calls": 16,
+      "computes": 1,
+      "input_sha256": "5ed693e8fdda81755888a4357cb1b5d91d1ac2f1172a62a40216bfd166ea3995"
+    },
+    {
+      "fixture": 0,
+      "seed": 2,
+      "max_abs": 0.0,
+      "decoded_equal": true,
+      "calls": 16,
+      "computes": 1,
+      "input_sha256": "5ed693e8fdda81755888a4357cb1b5d91d1ac2f1172a62a40216bfd166ea3995"
+    },
+    {
+      "fixture": 1,
+      "seed": 0,
+      "max_abs": 0.0,
+      "decoded_equal": true,
+      "calls": 16,
+      "computes": 1,
+      "input_sha256": "3089a4af2ac5c76ba904cf8bebc6cb2cceb1a9361dbaa894f59999667726eca6"
+    },
+    {
+      "fixture": 1,
+      "seed": 1,
+      "max_abs": 0.0,
+      "decoded_equal": true,
+      "calls": 16,
+      "computes": 1,
+      "input_sha256": "3089a4af2ac5c76ba904cf8bebc6cb2cceb1a9361dbaa894f59999667726eca6"
+    },
+    {
+      "fixture": 1,
+      "seed": 2,
+      "max_abs": 0.0,
+      "decoded_equal": true,
+      "calls": 16,
+      "computes": 1,
+      "input_sha256": "3089a4af2ac5c76ba904cf8bebc6cb2cceb1a9361dbaa894f59999667726eca6"
+    },
+    {
+      "fixture": 2,
+      "seed": 0,
+      "max_abs": 0.0,
+      "decoded_equal": true,
+      "calls": 16,
+      "computes": 1,
+      "input_sha256": "22a792f851be5284d2853f1c9b3f9cb3c68a7a51f699b73a57f15342fd319bf1"
+    },
+    {
+      "fixture": 2,
+      "seed": 1,
+      "max_abs": 0.0,
+      "decoded_equal": true,
+      "calls": 16,
+      "computes": 1,
+      "input_sha256": "22a792f851be5284d2853f1c9b3f9cb3c68a7a51f699b73a57f15342fd319bf1"
+    },
+    {
+      "fixture": 2,
+      "seed": 2,
+      "max_abs": 0.0,
+      "decoded_equal": true,
+      "calls": 16,
+      "computes": 1,
+      "input_sha256": "22a792f851be5284d2853f1c9b3f9cb3c68a7a51f699b73a57f15342fd319bf1"
+    },
+    {
+      "fixture": 0,
+      "seed": 0,
+      "max_abs": 0.0,
+      "decoded_equal": true,
+      "calls": 16,
+      "computes": 1,
+      "input_sha256": "5ed693e8fdda81755888a4357cb1b5d91d1ac2f1172a62a40216bfd166ea3995"
+    },
+    {
+      "fixture": 1,
+      "seed": 0,
+      "max_abs": 0.0,
+      "decoded_equal": true,
+      "calls": 16,
+      "computes": 1,
+      "input_sha256": "3089a4af2ac5c76ba904cf8bebc6cb2cceb1a9361dbaa894f59999667726eca6"
+    },
+    {
+      "fixture": 0,
+      "seed": 0,
+      "max_abs": 0.0,
+      "decoded_equal": true,
+      "calls": 16,
+      "computes": 1,
+      "input_sha256": "5ed693e8fdda81755888a4357cb1b5d91d1ac2f1172a62a40216bfd166ea3995"
+    }
+  ]
+}

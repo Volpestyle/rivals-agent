@@ -1,0 +1,2 @@
+* -text
+results/* -text whitespace=cr-at-eol

@@ -675,3 +675,22 @@ explicitly allowed only after recording stop was verified. $0/no Modal/no sealed
 or dataset reads/no model checkpoint. Raw runtime receipt SHA256
 0c8e7d93125c60fc5328aac910f6dbcc202af977478c5cdcc3e37b4b55c02dba.
 Lead owns any new runtime-optimization dispatch and VUH-1346 reconciliation.
+
+## One VL-cache attempt, 2026-09-28 19:20 CDT: full actor PARKED
+
+Lead-authorized single static-VL cache wrapper completed inside the time box;
+[report and exact receipts](../evidence/nitrogen-vl-cache-20260928/REPORT.md).
+Baseline repeated raw outputs: max error 0; tolerance fixed to absolute 1e-6,
+relative 0 before cached parity or timing. Nine fixture/seed pairs plus A/B/A
+reset: cached max raw error 0, identical decoded buttons/stick signs; 16 wrapper
+calls/one original mixer evaluation per sampler call, context reset verified.
+
+Thirty standalone calls: uncached p50/p95 385.446/459.477 ms; cached
+303.055/344.696 ms. Cached p95 exceeds the pre-stated 150 ms cutoff, so STOP/PARK;
+28/30 cached calls also exceed 250 ms. One-call VL profile totals 79.035 ms over
+16 mixer evaluations. Weights, FP32/BF16 precision, 18 actions and all 16 Euler
+steps unchanged; only call-local mixer output reuse, no vendored package edits.
+No next optimization or native-label adaptation proposal/fit. Total probe 47.031 s
+including loading, below five-minute GPU limit; owner start 19:12:46, release 19:17:31.
+GPU released directly to lead, no worker remains, $0 cloud. Lead owns VUH-1346
+publication and the next portfolio decision; this is not a policy-quality verdict.

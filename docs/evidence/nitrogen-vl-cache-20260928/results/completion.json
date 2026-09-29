@@ -1,0 +1,17 @@
+{
+  "owner_start": "2026-09-28T19:12:46-05:00",
+  "owner_deadline": "2026-09-28T19:57:46-05:00",
+  "parent_pid": 168608,
+  "process_absent": true,
+  "gpu_released_notified": "2026-09-28T19:17:31-05:00",
+  "total_probe_seconds": 47.03100000007544,
+  "gpu_budget_seconds": 300,
+  "cloud_spend_usd": 0,
+  "after_exit_gpu_memory_mib": 1060,
+  "phase_written_ns": {
+    "result.repeatability.json": 1790640990720977000,
+    "result.parity.json": 1790640994279770400,
+    "result.json": 1790641017163847800
+  },
+  "completion_evidence": "Final result, job status done, empty stderr, parent process absent. No launcher exit-code receipt."
+}

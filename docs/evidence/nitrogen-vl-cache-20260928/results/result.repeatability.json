@@ -1,0 +1,84 @@
+{
+  "max_abs": 0.0,
+  "absolute_tolerance": 1e-06,
+  "relative_tolerance": 0,
+  "hard_tolerance_ceiling": 1e-05,
+  "decoded_equal": true,
+  "rows": [
+    {
+      "fixture": 0,
+      "seed": 0,
+      "max_abs": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "fixture": 0,
+      "seed": 1,
+      "max_abs": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "fixture": 0,
+      "seed": 2,
+      "max_abs": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "fixture": 1,
+      "seed": 0,
+      "max_abs": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "fixture": 1,
+      "seed": 1,
+      "max_abs": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "fixture": 1,
+      "seed": 2,
+      "max_abs": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "fixture": 2,
+      "seed": 0,
+      "max_abs": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "fixture": 2,
+      "seed": 1,
+      "max_abs": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "fixture": 2,
+      "seed": 2,
+      "max_abs": [
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "protocol_sha256": "03482b9eca0a2d6177b9b1900895bdcc3dd21e7065b92f7077ff78b7bdd444a7",
+  "script_sha256": "3c08810d51b3ba5faf40fd18be8d43cfe1391beec66111607c7ba857c34aeb60",
+  "wrapper_sha256": "6ec278d550d6055f7a7c82848a8723c2a84c0e95c7073299e98d801607509803"
+}

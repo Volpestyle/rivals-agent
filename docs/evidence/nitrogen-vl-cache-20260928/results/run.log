@@ -1,0 +1,19 @@
+Total number of DiT parameters:  121992192
+Total number of SelfAttentionTransformer parameters:  50384896
+Tune action head multi_projector: True
+Tune action head diffusion model: True
+Tune action head vision tower: True
+Tune action head mm_projector: True
+Tune action head vl_mixing: True
+total number of parameters: %e 468440089
+{
+  "verdict": "PARK: cached p95 above 150 ms",
+  "parity_max": 0.0,
+  "tolerance": 1e-06,
+  "baseline_p50": 385.446350031998,
+  "baseline_p95": 459.47659497614944,
+  "cached_p50": 303.05530002806336,
+  "cached_p95": 344.6956000174396,
+  "mixer_sum_ms": 79.03452754020691,
+  "elapsed_s": 47.03100000007544
+}

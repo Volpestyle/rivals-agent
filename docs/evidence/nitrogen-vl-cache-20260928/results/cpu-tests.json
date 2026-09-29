@@ -1,0 +1,12 @@
+{
+  "tests": 3,
+  "passed": 3,
+  "seconds": 0.005,
+  "scope": [
+    "per-call reset/restoration",
+    "changed-context refusal/restoration",
+    "training-mode refusal"
+  ],
+  "source_sha256": "1f70df8e1fd58bde64865314f7f5ca9a3fecc89ecb7d2e50ac05b3106b49dc04",
+  "gpu_used": false
+}
