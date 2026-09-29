@@ -1,0 +1,67 @@
+{
+  "format": "camera-turns-review-v1",
+  "files": {
+    "scripts/measure_camera_turns.py": "bfc51b551da79e375857bda906eab6ab0cc41a9930640016f56bdac1ba44eda9",
+    "tests/test_measure_camera_turns.py": "a174681fc82b1d4040866292b8535152a56a249d9dcf153a2db553819d624ca4",
+    "perception/camera_ready_pose.py": "cf8f16ae9855730b4e1f58810a56ac0180f10375d89a7f4ead8ede4c8b4ae16f",
+    "agent/controller.py": "4e5bb70fca797ab17a25a8699d1ad111f0b7cd561f59d2b308a52c10b44da060",
+    "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+    "scripts/l4_measure.py": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1",
+    "agent/loop.py": "040c77c2c4ed0fff5a893e6e00991c8df7bad1e87267bf6d416964911b1e596f",
+    "scripts/run_range_bc_live.py": "446ef0bb2dc74c615f8c445dfac043ec0be4bfbd3c36195e9dfc727c8a9f7823",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547"
+  },
+  "verdict": "LAND",
+  "reviewer": "live-review (Claude Opus 5.5)",
+  "reviewed_at": "2026-09-28",
+  "scope": "delta review v3, adfe13f -> worktree: patch NCC scored at the already-estimated fractional offset (perception/camera_ready_pose.py analyze only); live-input safety only; no rate, focal, map or prime-analyzer acceptance",
+  "base_commit": "adfe13f6a1516d5987424acbda9cfbe1211929d2",
+  "head_at_issue": "7707f383634cf88e46b5f2a6233e5015dcc0dcff",
+  "landed_commit": null,
+  "bytes_verified": "all 12 files hashed by the reviewer from the sitting-checkout working tree as they would land (CRLF where on disk); only perception/camera_ready_pose.py differs from the v2 receipt",
+  "additional_files": {
+    "tests/test_camera_ready_pose.py": "ecc47bfbae3f23929effff649f711fb3be2cee60952f9cc87bcd5e5aa082885a"
+  },
+  "prior_review": {
+    "path": "docs/evidence/camera-ready-revision-20260928/review-v2.json",
+    "sha256": "dc95111750b8c28f1d42415034ec93eb4f672361525e66900d1811d469439a57"
+  },
+  "inputs": {
+    "docs/evidence/camera-ready-fractional-20260928/review-inputs.json": "bf4191efcc85d03388c2f7ba85ac0e85a6349a063d7e6b11b748a948a771c6d3",
+    "docs/evidence/camera-ready-fractional-20260928/delta.diff": "8746711d84d77dfc249d3a231dba201b8139da5f3297e20171be554a55910441",
+    "docs/evidence/camera-ready-fractional-20260928/README.md": "af67b2a57456dab98326ff81bb82c14c1cbf919e119a8936181c25ad976a6117",
+    "docs/evidence/camera-ready-fractional-20260928/native-replay.json": "9b1342dbba99e5b96dfdfa55b81d897cfe78e6707f8a9f1909c1e8bdd8241fc4",
+    "docs/evidence/camera-ready-fractional-20260928/final-tests.txt": "2ccc683eb2d441f175b4480af594d178b972cb0c748c47e390f34544282a6c0d",
+    "docs/research/evaluator-checkin-20260928-2015.md": "b7ecf6ff2964bf37e5d37294b44c4a74fa373357207e5fddd33498ae3365f569",
+    "data/calibration/alt-cam-20260928c/SITTING.md": "fbba5880d0d77d4981cfc41b8d9dedc6e7448df1ff43986f90ba941d231926c2"
+  },
+  "tests": "tests/test_camera_ready_pose.py tests/test_measure_camera_turns.py --corpus: 95 passed in 11.33 s (reviewer's private uv env, perception group, CUDA hidden), on these bytes",
+  "differential_probe": "468 base-vs-new cases (2 native references + synthetic stripes/low-texture; shifts 0-20 band px, blur, JPEG, noise, occlusion, unrelated/blank): no true displacement >1.5 band px returned unchanged; 8 flips, all on sitting-c reference: 4 sub-bound -> unchanged (intended), 4 at-bound -> changed (stricter)",
+  "findings": [
+    {
+      "id": 1,
+      "severity": "info",
+      "blocking": false,
+      "file": "perception/camera_ready_pose.py",
+      "line": 68,
+      "summary": "At-bound shifts (1.41-1.5 band px) can now return changed where the base returned unchanged/unprovable.",
+      "failure_scenario": "Conservative: an extra accepted patch's offset estimate slightly above 1.5 refuses."
+    },
+    {
+      "id": 2,
+      "severity": "info",
+      "blocking": false,
+      "file": "perception/camera_ready_pose.py",
+      "line": 65,
+      "summary": "Native support for the fix is one analyzed pair (sitting-c yaw-01r); engineering gates, not calibrated bounds.",
+      "failure_scenario": "None found; v2 findings 1-3 carry over unchanged."
+    }
+  ],
+  "carried_findings": "v2 findings 1-3 stand (row-1 support on yaw-01 reference; unmeasurable motion takes the 1 s quality wait; residual misses small/low-contrast content changes)",
+  "limits": "Input safety only. Thresholds have narrow native support. No yaw-rate, focal, map, prime or learned-policy acceptance.",
+  "review": "docs/evidence/camera-ready-fractional-20260928/review-v3.md",
+  "review_sha256": "fbd9cfa5d71158abdc383503b620553ec8694e383db36aa9b1c6a1263f15cbef"
+}

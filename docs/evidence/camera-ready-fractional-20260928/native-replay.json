@@ -1,0 +1,3513 @@
+{
+  "scope": "CPU saved PNGs only; no video, GPU, capture or input",
+  "analyzer_sha256": "cf8f16ae9855730b4e1f58810a56ac0180f10375d89a7f4ead8ede4c8b4ae16f",
+  "source_sha256": {
+    "data/calibration/alt-cam-20260928b/yaw-01/refusal-reference.png": "1aad9d4d0b5c40bcd27e9571aa27f0a1c097a9cae790fb14492a5da608156ce9",
+    "data/calibration/alt-cam-20260928b/yaw-01/refusal-current.png": "d7bca94a1a56856107833c36fd15a1e0a84625b3ca1bef5ee5b323d7b8b9c8b7",
+    "data/calibration/alt-cam-20260928b/yaw-01/frames/0000150-guard.png": "93f60a7304d1db0dd357ca9ee3c4d4798758d06e9c88a85dd52789e61803d8b3",
+    "data/calibration/alt-cam-20260928b/yaw-01/frames/0000148-guard.png": "7682bba66039b43f18f774ddba050e0a368cad46417eafda2038a7c521ae62b4",
+    "data/calibration/alt-cam-20260928/yaw-01/ready-attach.png": "46db4a96c92a122f4470fa35005a08d2123e1b27528c097de67be2f63857b9e6",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000000-before-attach.png": "46db4a96c92a122f4470fa35005a08d2123e1b27528c097de67be2f63857b9e6",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000001-before-attach.png": "b0210a002520ec355761c8b4873fcc52bcb04ff5b870850a8608f020c07ba9e4",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000002-before-attach.png": "60b410786f03ec0d03d39382894762dc175f5c6b11bf7d0837e7f37ab18b3548",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000003-before-attach.png": "a5f4bc0947bc47c23e6bd5648b436ffab34393dd32f37d5fcbe7eb14393900d3",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000004-before-attach.png": "716e1c74d579a3d01710f8566bddb3ff4a2c3f5d9a394707110f4789e5e08e74",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000005-before-attach.png": "bee385a9554d55dfba95b30cae3654e4808efa939c70acc55be0966beebb0ece",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000006-before-attach.png": "3abce29aa05342b02e9010f64e7052b3ec9f235fdd13706efc096f8d73cbfe61",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000007-before-attach.png": "77239bdc662b872891c631f9059a513c8cce5e58c2f1195cd7ea019e7fa74f2a",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000008-before-attach.png": "95c48c7de138f2d5d76a63ec48565e748cafc418adf3a274d477d19e962cb616",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000009-before-attach.png": "a1c979edf5a224351633ec4612de75d1955e2073bdf9dc28566e0928ec844d72",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000010-before-attach.png": "94650350339395a6eab28f98bc730d545e4fba05376992eb4f0e76129b2231c6",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000011-before-attach.png": "1c76afebf616ea9fea3f6f480bf3a448c7f790b56ea9e480d94965cac4b215ca",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000012-before-attach.png": "2a302cd074a18548c287183cef96d550c5b3086d080b9bc5f3064c7f38fbf65a",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000013-before-attach.png": "c6632ea73514fd2c920b9f70e42ee51d9d79c5eafcdc44469f9b5d1f159af7a6",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000014-before-attach.png": "8626826f2cae4bc0aee318ae222cc0bc2759263c5f96efa4805cc6cdf98aa843",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000015-before-attach.png": "3fc0f4a22a68f51169ae0002db7048c8e9e22e1ddc66d649942e90cf42dedbc5",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000016-before-attach.png": "0a1a3098defe7a02b40f373070c93ae21c770d955b8b17a6646dbb694a856792",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000017-before-attach.png": "fb0cab08e3fc033b2f4af8ffa966a3ace69124039b36dd3b18fdd79960f59234",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000018-before-attach.png": "5a42abb4dab09d875a8cff02a8dee53078039d626af0d4455a6c9aa51d20cfb6",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000019-before-attach.png": "18b64dfb659b5804cd4f55d69972e59dfd022f7dcd9b50bccfdca5bf5900cab8",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000020-before-attach.png": "05977537cfedf1bbfddc6360bec7e180e058d23fdc4761fb7787a40af308634c",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000021-before-attach.png": "76df18c5c4b041299ebe8204985f81f644c09bbaa4796d4dff914716e86e5997",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000022-before-attach.png": "d951dad7f4917f1ef3705cc606a709d5b864b0b7818b99e409043ea46375bc07",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000023-before-attach.png": "d6068592b4265c6d60ba49a5250a056e5ced665e5b6818092824c902c99b775e",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000024-before-attach.png": "7fd2cd352c978a808514e0ee3a64f2719be79a3d7c7e4c66a3720139e425a7d3",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000025-before-attach.png": "54c5e42ae2c08c9eed2bbbe294f30a1af4d2bbfc51f9c4a4de3d947236aea539",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000026-before-attach.png": "f99d30cde454b7adc5bc672d85ae2b1639709225b731002206a26094ea521bf6",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000027-before-attach.png": "262371c8939f8ca939f92c3c7a49a910ff64675e72f56bc597bdf70d879657f5",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000028-before-attach.png": "885fa579d97b60612665fecaf8a50e20594f2df70065831c7b0dfd2bb31812fa",
+    "data/calibration/alt-cam-20260928/yaw-01/frames/0000029-before-attach.png": "da218ec3fb5e6ff3d0b68896653591379817518ee936405daa461bc48dbafdff",
+    "data/calibration/alt-cam-20260927/yaw-01b/initialization-motion-before.png": "007c703813f7fb5d924da3d70aacadf29cc39a8a99d49c353e47134719c0b3ac",
+    "data/calibration/alt-cam-20260927/yaw-01b/initialization-motion-after.png": "d90fe16f9e0077c1dd0d4c73dada21ebb3bf1dd3af5adb651338371722fd6bb9",
+    "data/calibration/alt-cam-20260928c/yaw-01r/refusal-reference.png": "3e992481bcb3f3d941ac92f8c0c0ceb48faac2ec0fe331c442049385f88fcaf8",
+    "data/calibration/alt-cam-20260928c/yaw-01r/refusal-current.png": "1987561f1593789194d8786d24bbcab5f4028173783d003de78e478263e9cf69"
+  },
+  "cases": [
+    {
+      "case": "terminal_capture_not_last_failed_audit",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.08883428726377929,
+        "dy_band_px": 0.5673088109974032,
+        "phase_score": 1.0020807589307243,
+        "correlation": 0.9450234325654657,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.987422825794118,
+            "integer_ncc": 0.9746291041374207,
+            "uniqueness": 0.045210182666778564,
+            "dx": 0.5294207686649655,
+            "dy": 0.9107251989816131
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9700145342670442,
+            "integer_ncc": 0.9392731785774231,
+            "uniqueness": 0.3073943853378296,
+            "dx": 0.04587935757979324,
+            "dy": 0.6996254778773986
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9763237636600688,
+            "integer_ncc": 0.9504820704460144,
+            "uniqueness": 0.2971271276473999,
+            "dx": -0.01480726310707861,
+            "dy": 0.6949012753024383
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": false,
+            "ncc": 0.9904834006542941,
+            "integer_ncc": 0.9872046113014221,
+            "uniqueness": 0.008234024047851562,
+            "dx": 1.5570628894652225,
+            "dy": 0.9491853526183437
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9799663736451402,
+            "integer_ncc": 0.9570320248603821,
+            "uniqueness": 0.05977517366409302,
+            "dx": 0.3721405425911979,
+            "dy": 0.6574696926044958
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.981752645651573,
+            "integer_ncc": 0.95997554063797,
+            "uniqueness": 0.10909038782119751,
+            "dx": 0.1547814093638404,
+            "dy": 0.6706102094464093
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 5,
+        "patch_median": [
+          0.1547814093638404,
+          0.6949012753024383
+        ],
+        "patch_spread": 0.374639359301125,
+        "registered_band_correlation": 0.9870446331820594
+      }
+    },
+    {
+      "case": "journal_150_prior_two_patch_refusal",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.08898245622637546,
+        "dy_band_px": 0.5640018313279427,
+        "phase_score": 1.0021504477041738,
+        "correlation": 0.9449897330613181,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.987441615733197,
+            "integer_ncc": 0.9745332598686218,
+            "uniqueness": 0.04497027397155762,
+            "dx": 0.5251268263404125,
+            "dy": 0.9111971218256203
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9699771321317381,
+            "integer_ncc": 0.9387587308883667,
+            "uniqueness": 0.3070330023765564,
+            "dx": 0.0433081277854361,
+            "dy": 0.6969232435967234
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9762660252448583,
+            "integer_ncc": 0.9498469233512878,
+            "uniqueness": 0.297057569026947,
+            "dx": -0.017926494698423945,
+            "dy": 0.6912671817789158
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": false,
+            "ncc": 0.990534095240952,
+            "integer_ncc": 0.9872416853904724,
+            "uniqueness": 0.008368611335754395,
+            "dx": 1.549456257005863,
+            "dy": 0.9502033337697264
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9800114176563357,
+            "integer_ncc": 0.9572455883026123,
+            "uniqueness": 0.05998438596725464,
+            "dx": 0.36910753764792054,
+            "dy": 0.6581344528464226
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9817922160683455,
+            "integer_ncc": 0.9601321220397949,
+            "uniqueness": 0.10918951034545898,
+            "dx": 0.154017254733313,
+            "dy": 0.6713470872781188
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 5,
+        "patch_median": [
+          0.154017254733313,
+          0.6912671817789158
+        ],
+        "patch_spread": 0.3711095716070995,
+        "registered_band_correlation": 0.9870886127931784
+      }
+    },
+    {
+      "case": "journal_148_inconsistent_motion_still_refuses",
+      "expected": "unprovable",
+      "result": {
+        "status": "unprovable",
+        "dx_band_px": -0.08531319952328431,
+        "dy_band_px": 1.2933943396597556,
+        "phase_score": 0.9971859982337481,
+        "correlation": 0.8551595764900529,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.993732143692076,
+            "integer_ncc": 0.9886815547943115,
+            "uniqueness": 0.10757100582122803,
+            "dx": -0.3208146530010855,
+            "dy": 1.2018736527417198
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9755322498017385,
+            "integer_ncc": 0.9573585391044617,
+            "uniqueness": 0.30837196111679077,
+            "dx": -0.08194733464948825,
+            "dy": 1.2373882462958494
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9787954104926591,
+            "integer_ncc": 0.9642128944396973,
+            "uniqueness": 0.31316226720809937,
+            "dx": -0.05825075586142509,
+            "dy": 1.2274408881434575
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9955489619322131,
+            "integer_ncc": 0.9951719045639038,
+            "uniqueness": 0.025729119777679443,
+            "dx": -0.9929523904831002,
+            "dy": 1.0502431474677514
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9893637918881347,
+            "integer_ncc": 0.9838817119598389,
+            "uniqueness": 0.08221441507339478,
+            "dx": -0.18354244067334508,
+            "dy": 1.1612515933586407
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.989798967060387,
+            "integer_ncc": 0.9836829900741577,
+            "uniqueness": 0.13704043626785278,
+            "dx": -0.05716986456120895,
+            "dy": 1.1768300452255356
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "inconsistent_or_unconfident_motion",
+        "agreeing_patches": 6,
+        "patch_median": [
+          -0.13274488766141668,
+          1.1893518489836277
+        ],
+        "patch_spread": 0.8602075028216836
+      }
+    },
+    {
+      "case": "centre_noise",
+      "expected": "unprovable",
+      "result": {
+        "status": "unprovable",
+        "dx_band_px": 0.08860763908276681,
+        "dy_band_px": -0.04984592700418489,
+        "phase_score": 0.6488306263111255,
+        "correlation": 0.9386170361766448,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9995710688051489,
+            "integer_ncc": 0.9999996423721313,
+            "uniqueness": 0.11366504430770874,
+            "dx": -0.10557554696090912,
+            "dy": -0.01314885134684567
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.7090171082277689,
+            "integer_ncc": 0.7063907980918884,
+            "uniqueness": 0.176169753074646,
+            "dx": -0.04427153220341107,
+            "dy": -0.015571025239029618
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9999730232278898,
+            "integer_ncc": 0.9999998807907104,
+            "uniqueness": 0.3439016342163086,
+            "dx": 0.01436419584061416,
+            "dy": 0.001688137200914931
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.999925227852705,
+            "integer_ncc": 0.9999998807907104,
+            "uniqueness": 0.043054044246673584,
+            "dx": -0.10026908865916799,
+            "dy": -0.006172265318061984
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.8414070853189325,
+            "integer_ncc": 0.8406513333320618,
+            "uniqueness": 0.08021974563598633,
+            "dx": -0.006137986166923687,
+            "dy": -0.01621102341778927
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9999912712447586,
+            "integer_ncc": 0.9999998211860657,
+            "uniqueness": 0.15771275758743286,
+            "dx": 0.010681701852337898,
+            "dy": 0.002501485909423044
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scene_content_changed_or_unprovable",
+        "agreeing_patches": 4,
+        "patch_median": [
+          -0.04479369340341505,
+          -0.0022420640585735264
+        ],
+        "patch_spread": 0.060781853557494075,
+        "registered_band_correlation": 0.9394970264201792
+      }
+    },
+    {
+      "case": "centre_flat",
+      "expected": "unprovable",
+      "result": {
+        "status": "unprovable",
+        "dx_band_px": 0.06330818325480436,
+        "dy_band_px": -0.024395370148965867,
+        "phase_score": 0.672483652656461,
+        "correlation": 0.9264377236579193,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9999339443559007,
+            "integer_ncc": 0.9999996423721313,
+            "uniqueness": 0.11366504430770874,
+            "dx": -0.03999863414172881,
+            "dy": -0.01314885134684567
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.7379436000300633,
+            "integer_ncc": 0.7377596497535706,
+            "uniqueness": 0.2457047402858734,
+            "dx": -0.006468934007175927,
+            "dy": 0.00664724319493451
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9999847592732087,
+            "integer_ncc": 0.9999998807907104,
+            "uniqueness": 0.3439016342163086,
+            "dx": 0.01062554116277603,
+            "dy": 0.001688137200914931
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.99979387987755,
+            "integer_ncc": 0.9999998807907104,
+            "uniqueness": 0.043054044246673584,
+            "dx": -0.1647541886450697,
+            "dy": -0.006172265318061984
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.7597531427005098,
+            "integer_ncc": 0.7600173950195312,
+            "uniqueness": 0.06185668706893921,
+            "dx": -0.0729458622215666,
+            "dy": -0.030977682719174934
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9999800967267952,
+            "integer_ncc": 0.9999998211860657,
+            "uniqueness": 0.15771275758743286,
+            "dx": 0.016797256262294575,
+            "dy": 0.002501485909423044
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scene_content_changed_or_unprovable",
+        "agreeing_patches": 4,
+        "patch_median": [
+          -0.014686546489476388,
+          -0.0022420640585735264
+        ],
+        "patch_spread": 0.1500676421555933,
+        "registered_band_correlation": 0.925690666509857
+      }
+    },
+    {
+      "case": "native_translation_8_0",
+      "expected": "changed",
+      "result": {
+        "status": "changed",
+        "dx_band_px": 1.9962460761240663,
+        "dy_band_px": 6.246071718862822e-05,
+        "phase_score": 0.9981790983882951,
+        "correlation": 0.8944431918396964,
+        "patches": [],
+        "shift_limit_band_px": 1.5,
+        "reason": "global_shift_exceeds_original_bound"
+      }
+    },
+    {
+      "case": "native_translation_-8_0",
+      "expected": "changed",
+      "result": {
+        "status": "changed",
+        "dx_band_px": -2.0000446370473526,
+        "dy_band_px": -0.00046209188846546567,
+        "phase_score": 0.9979727536130835,
+        "correlation": 0.8943926231882227,
+        "patches": [],
+        "shift_limit_band_px": 1.5,
+        "reason": "global_shift_exceeds_original_bound"
+      }
+    },
+    {
+      "case": "native_translation_0_8",
+      "expected": "changed",
+      "result": {
+        "status": "changed",
+        "dx_band_px": 0.001953455558151518,
+        "dy_band_px": 2.0005008353731313,
+        "phase_score": 0.9935510056107133,
+        "correlation": 0.786479685458705,
+        "patches": [],
+        "shift_limit_band_px": 1.5,
+        "reason": "global_shift_exceeds_original_bound"
+      }
+    },
+    {
+      "case": "native_translation_0_-8",
+      "expected": "changed",
+      "result": {
+        "status": "changed",
+        "dx_band_px": -0.003848880505586294,
+        "dy_band_px": -1.9968470557066667,
+        "phase_score": 0.9950601553387112,
+        "correlation": 0.7871122756392697,
+        "patches": [],
+        "shift_limit_band_px": 1.5,
+        "reason": "global_shift_exceeds_original_bound"
+      }
+    },
+    {
+      "case": "native_translation_40_0",
+      "expected": "changed",
+      "result": {
+        "status": "changed",
+        "dx_band_px": 9.987023635950294,
+        "dy_band_px": -0.000634021086256098,
+        "phase_score": 0.982994425488107,
+        "correlation": 0.6397339992791561,
+        "patches": [],
+        "shift_limit_band_px": 1.5,
+        "reason": "global_shift_exceeds_original_bound"
+      }
+    },
+    {
+      "case": "native_translation_0_40",
+      "expected": "changed",
+      "result": {
+        "status": "changed",
+        "dx_band_px": 0.0004760624209723119,
+        "dy_band_px": 10.003660487185329,
+        "phase_score": 0.942268968405547,
+        "correlation": 0.5053993126087675,
+        "patches": [],
+        "shift_limit_band_px": 1.5,
+        "reason": "global_shift_exceeds_original_bound"
+      }
+    },
+    {
+      "case": "previous_ready_0",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.0,
+        "dy_band_px": 0.0,
+        "phase_score": 1.0,
+        "correlation": 0.9999999999999998,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9999925672427089,
+            "integer_ncc": 1.0,
+            "uniqueness": 0.13506090641021729,
+            "dx": 0.010661536008474757,
+            "dy": 0.005920016653965788
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999962423207571,
+            "integer_ncc": 1.0,
+            "uniqueness": 0.027463853359222412,
+            "dx": -0.003269240666703898,
+            "dy": 0.004380967900362799
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9999744927771251,
+            "integer_ncc": 1.0,
+            "uniqueness": 0.05888950824737549,
+            "dx": 0.00185176072661537,
+            "dy": -0.023390596750532983
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9999704908171354,
+            "integer_ncc": 1.0,
+            "uniqueness": 0.050256192684173584,
+            "dx": 0.005130205414111096,
+            "dy": -0.014882418908127028
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999999867850975,
+            "integer_ncc": 0.9999997615814209,
+            "uniqueness": 0.009710192680358887,
+            "dx": 0.00025220120690691556,
+            "dy": -0.0004155903396947496
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999949512449303,
+            "integer_ncc": 1.0,
+            "uniqueness": 0.01584792137145996,
+            "dx": -0.0020748175748823844,
+            "dy": 0.007561968664482926
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.003490983070363233,
+          -0.005250725503882114
+        ],
+        "patch_spread": 0.018139871246650868,
+        "registered_band_correlation": 0.9999974143511132
+      }
+    },
+    {
+      "case": "previous_ready_1",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.004402275969312086,
+        "dy_band_px": -0.0024673594788993114,
+        "phase_score": 0.9993342733029966,
+        "correlation": 0.9999470065379769,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9999014959222163,
+            "integer_ncc": 0.9999052286148071,
+            "uniqueness": 0.13500475883483887,
+            "dx": 0.010673483203133289,
+            "dy": 0.00570576289988581
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999171479585457,
+            "integer_ncc": 0.9999197721481323,
+            "uniqueness": 0.027366578578948975,
+            "dx": -0.001909750820896342,
+            "dy": 0.003791140289166968
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998580697579024,
+            "integer_ncc": 0.9998811483383179,
+            "uniqueness": 0.058784306049346924,
+            "dx": 0.005214855699761778,
+            "dy": -0.02610109514657881
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998903430577872,
+            "integer_ncc": 0.9999154210090637,
+            "uniqueness": 0.050302088260650635,
+            "dx": 0.005622464227443209,
+            "dy": -0.014854449089625094
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.99996776181473,
+            "integer_ncc": 0.9999675154685974,
+            "uniqueness": 0.00969761610031128,
+            "dx": 0.0012538064310745683,
+            "dy": -0.0007222227574119208
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.99996303840293,
+            "integer_ncc": 0.9999662637710571,
+            "uniqueness": 0.01584988832473755,
+            "dx": 0.0008202210491165516,
+            "dy": 0.0063522855865879285
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.005418659963602494,
+          -0.005531654400229063
+        ],
+        "patch_spread": 0.020569440746349747,
+        "registered_band_correlation": 0.9999460668629138
+      }
+    },
+    {
+      "case": "previous_ready_2",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.0011996525915947132,
+        "dy_band_px": -0.006261486063067423,
+        "phase_score": 0.9996543383186246,
+        "correlation": 0.9999340748273674,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998820176932521,
+            "integer_ncc": 0.9998876452445984,
+            "uniqueness": 0.13502424955368042,
+            "dx": 0.006763798430093466,
+            "dy": 0.006701702179879862
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999031492850919,
+            "integer_ncc": 0.999907910823822,
+            "uniqueness": 0.02742159366607666,
+            "dx": -0.006586702558147718,
+            "dy": 0.0051868388398143795
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998438951203431,
+            "integer_ncc": 0.9998673796653748,
+            "uniqueness": 0.05890011787414551,
+            "dx": 0.0014653669536641987,
+            "dy": -0.024814714071339283
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998780127553891,
+            "integer_ncc": 0.9999033212661743,
+            "uniqueness": 0.0500602126121521,
+            "dx": 0.0001687289088863892,
+            "dy": -0.012911135087385539
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999544785931449,
+            "integer_ncc": 0.9999537467956543,
+            "uniqueness": 0.009685814380645752,
+            "dx": -0.003450763873639301,
+            "dy": 0.0005702954311739583
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999460824991662,
+            "integer_ncc": 0.999950647354126,
+            "uniqueness": 0.015802443027496338,
+            "dx": -0.004099722182673107,
+            "dy": 0.007758975543449193
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.000817047931275294,
+          -0.0038621481237855796
+        ],
+        "patch_spread": 0.020952565947553705,
+        "registered_band_correlation": 0.9999337174414155
+      }
+    },
+    {
+      "case": "previous_ready_3",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.001077743809560161,
+        "dy_band_px": 0.00023517056290245364,
+        "phase_score": 0.9984083982632483,
+        "correlation": 0.9999575089533425,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9999205158550966,
+            "integer_ncc": 0.9999274015426636,
+            "uniqueness": 0.1349514126777649,
+            "dx": 0.010920454475297527,
+            "dy": 0.0059757091993626185
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999321065103218,
+            "integer_ncc": 0.9999357461929321,
+            "uniqueness": 0.027407348155975342,
+            "dx": -0.003187945447416199,
+            "dy": 0.004475314653575315
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998789309776948,
+            "integer_ncc": 0.9999011754989624,
+            "uniqueness": 0.05888396501541138,
+            "dx": 0.002130039739062002,
+            "dy": -0.02377615169308597
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998972342256884,
+            "integer_ncc": 0.9999257326126099,
+            "uniqueness": 0.05018818378448486,
+            "dx": 0.004345803601299731,
+            "dy": -0.014550290213792644
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999762531286531,
+            "integer_ncc": 0.9999765753746033,
+            "uniqueness": 0.009678065776824951,
+            "dx": 0.0008314456679716654,
+            "dy": -0.000813950781387072
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999711799090636,
+            "integer_ncc": 0.9999762773513794,
+            "uniqueness": 0.015811681747436523,
+            "dx": -0.0012836113118818676,
+            "dy": 0.007240241099334243
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.0032379216701808665,
+          -0.0050374877801086645
+        ],
+        "patch_spread": 0.018738663912977304,
+        "registered_band_correlation": 0.9999561730697051
+      }
+    },
+    {
+      "case": "previous_ready_4",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.007696841662323095,
+        "dy_band_px": -0.013935942393203504,
+        "phase_score": 0.9983522812407694,
+        "correlation": 0.9999404085415888,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998884394730296,
+            "integer_ncc": 0.9998937845230103,
+            "uniqueness": 0.1349593997001648,
+            "dx": 0.011930117007245519,
+            "dy": 0.004898501786290646
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999051201382895,
+            "integer_ncc": 0.9999096393585205,
+            "uniqueness": 0.027380168437957764,
+            "dx": -0.004853216183323934,
+            "dy": 0.005050882884353371
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998604143178651,
+            "integer_ncc": 0.9998835921287537,
+            "uniqueness": 0.05885845422744751,
+            "dx": 0.0007659793425961178,
+            "dy": -0.022120404868924144
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.999867713854583,
+            "integer_ncc": 0.9999000430107117,
+            "uniqueness": 0.049892425537109375,
+            "dx": 0.006340923139141844,
+            "dy": -0.015536596401625259
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999638850974188,
+            "integer_ncc": 0.9999640583992004,
+            "uniqueness": 0.009592890739440918,
+            "dx": 0.005821433927711605,
+            "dy": -0.001834351153719309
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999576019420381,
+            "integer_ncc": 0.9999608993530273,
+            "uniqueness": 0.01587432622909546,
+            "dx": 0.004390989626962931,
+            "dy": 0.005497093114447624
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.003553451240868981,
+          -0.005319047307667307
+        ],
+        "patch_spread": 0.016801357561256836,
+        "registered_band_correlation": 0.9999398237625579
+      }
+    },
+    {
+      "case": "previous_ready_5",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.00020293503501989107,
+        "dy_band_px": -0.008682239751593102,
+        "phase_score": 0.9985782616697712,
+        "correlation": 0.9999389070125155,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998871611910612,
+            "integer_ncc": 0.9998946189880371,
+            "uniqueness": 0.13512587547302246,
+            "dx": 0.008859937130321975,
+            "dy": 0.0053635165245828976
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999065598814056,
+            "integer_ncc": 0.9999116659164429,
+            "uniqueness": 0.02749180793762207,
+            "dx": -0.005457777856009717,
+            "dy": 0.0049592848486470584
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998475385948944,
+            "integer_ncc": 0.9998694062232971,
+            "uniqueness": 0.05890083312988281,
+            "dx": 0.0008942358183037594,
+            "dy": -0.023583264670877964
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998680328907623,
+            "integer_ncc": 0.9998990297317505,
+            "uniqueness": 0.05000889301300049,
+            "dx": 0.005055415909532364,
+            "dy": -0.01531895916009872
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999643412588437,
+            "integer_ncc": 0.9999641180038452,
+            "uniqueness": 0.00962752103805542,
+            "dx": 0.0025601375926028198,
+            "dy": -0.0013778930777723238
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999548567727904,
+            "integer_ncc": 0.9999586939811707,
+            "uniqueness": 0.015840113162994385,
+            "dx": 0.0016256079993842117,
+            "dy": 0.005765152538065019
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.0029748258639180616,
+          -0.005179837155725831
+        ],
+        "patch_spread": 0.018403427515152133,
+        "registered_band_correlation": 0.999938122519883
+      }
+    },
+    {
+      "case": "previous_ready_6",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.0023234255737634157,
+        "dy_band_px": 0.0006487649095419101,
+        "phase_score": 0.9974435352425517,
+        "correlation": 0.9999324571883156,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.999881900682975,
+            "integer_ncc": 0.9998874664306641,
+            "uniqueness": 0.1350184679031372,
+            "dx": 0.008692153798575209,
+            "dy": 0.006763951676942343
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9998980366309043,
+            "integer_ncc": 0.9999036192893982,
+            "uniqueness": 0.027422666549682617,
+            "dx": -0.004718299475573337,
+            "dy": 0.004991828376153883
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998427008605291,
+            "integer_ncc": 0.9998671412467957,
+            "uniqueness": 0.05892080068588257,
+            "dx": 0.005493505784621303,
+            "dy": -0.026759810564734317
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998773891741396,
+            "integer_ncc": 0.9999039173126221,
+            "uniqueness": 0.050092458724975586,
+            "dx": 0.0035735287206251354,
+            "dy": -0.01472456867116441
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.99995979233734,
+            "integer_ncc": 0.9999598264694214,
+            "uniqueness": 0.009679317474365234,
+            "dx": 0.0006343322543594027,
+            "dy": -0.000642528593655625
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999513703430353,
+            "integer_ncc": 0.9999556541442871,
+            "uniqueness": 0.01587885618209839,
+            "dx": -0.0019704118790555896,
+            "dy": 0.007604969668910713
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.004533517252623219,
+          -0.004866370147505263
+        ],
+        "patch_spread": 0.021893440417229054,
+        "registered_band_correlation": 0.9999329285131077
+      }
+    },
+    {
+      "case": "previous_ready_7",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.002014357481641582,
+        "dy_band_px": -0.0059998744808495985,
+        "phase_score": 0.9968410445790232,
+        "correlation": 0.9999400318242202,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.999896697842436,
+            "integer_ncc": 0.9999043345451355,
+            "uniqueness": 0.13481634855270386,
+            "dx": 0.008729508140446561,
+            "dy": 0.006894593623505941
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999027475817565,
+            "integer_ncc": 0.9999080896377563,
+            "uniqueness": 0.027287304401397705,
+            "dx": -0.006844516896506146,
+            "dy": 0.0058054889083413086
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998545645455645,
+            "integer_ncc": 0.9998763203620911,
+            "uniqueness": 0.0587884783744812,
+            "dx": 0.0006664718986232334,
+            "dy": -0.022123488485282256
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998799904116699,
+            "integer_ncc": 0.9999094009399414,
+            "uniqueness": 0.049960434436798096,
+            "dx": 0.0034405501203531893,
+            "dy": -0.014337824866922946
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999673277005694,
+            "integer_ncc": 0.9999675154685974,
+            "uniqueness": 0.009635210037231445,
+            "dx": 0.0009733580985758234,
+            "dy": -0.0006289265259145024
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999592228540698,
+            "integer_ncc": 0.999964714050293,
+            "uniqueness": 0.01582348346710205,
+            "dx": -0.0019643701371760713,
+            "dy": 0.007671775094686065
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.0020535110094882115,
+          -0.004266167979290818
+        ],
+        "patch_spread": 0.01785732050599144,
+        "registered_band_correlation": 0.9999408796887737
+      }
+    },
+    {
+      "case": "previous_ready_8",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.0016071283623659838,
+        "dy_band_px": -0.0022074123818214275,
+        "phase_score": 0.9970466815807201,
+        "correlation": 0.9999297389238166,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998806410327326,
+            "integer_ncc": 0.9998876452445984,
+            "uniqueness": 0.13504445552825928,
+            "dx": 0.009490374005190578,
+            "dy": 0.005499701394525259
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.999904495584357,
+            "integer_ncc": 0.9999085664749146,
+            "uniqueness": 0.02742224931716919,
+            "dx": -0.0043250624743472795,
+            "dy": 0.004628994767518952
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998445866495809,
+            "integer_ncc": 0.9998661875724792,
+            "uniqueness": 0.058891475200653076,
+            "dx": 0.0010830202727857311,
+            "dy": -0.02347210082362636
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998646321017811,
+            "integer_ncc": 0.9998941421508789,
+            "uniqueness": 0.04996758699417114,
+            "dx": 0.003656569978628792,
+            "dy": -0.014847719386466857
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999579956154792,
+            "integer_ncc": 0.9999582171440125,
+            "uniqueness": 0.00962144136428833,
+            "dx": 0.0018804550937862195,
+            "dy": -0.0008922911615135123
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999478674810005,
+            "integer_ncc": 0.9999517202377319,
+            "uniqueness": 0.015796363353729248,
+            "dx": 0.001276983718686437,
+            "dy": 0.005921908540625607
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.0023697951257072615,
+          -0.005109362309473953
+        ],
+        "patch_spread": 0.018362738514152408,
+        "registered_band_correlation": 0.9999308208769124
+      }
+    },
+    {
+      "case": "previous_ready_9",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.005862087762409374,
+        "dy_band_px": -0.0005479204620826295,
+        "phase_score": 0.997484692491131,
+        "correlation": 0.9999334901484908,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998840861771933,
+            "integer_ncc": 0.9998881816864014,
+            "uniqueness": 0.13500016927719116,
+            "dx": 0.01037741729334381,
+            "dy": 0.0057491145446550455
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.99990345632792,
+            "integer_ncc": 0.9999064207077026,
+            "uniqueness": 0.02741551399230957,
+            "dx": -0.002795617140589811,
+            "dy": 0.004128026615176815
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998464782447378,
+            "integer_ncc": 0.999870240688324,
+            "uniqueness": 0.05890005826950073,
+            "dx": 0.0055925446597955295,
+            "dy": -0.02719834402916267
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998803920498519,
+            "integer_ncc": 0.9999077916145325,
+            "uniqueness": 0.05025303363800049,
+            "dx": 0.006090535733509857,
+            "dy": -0.01542117898899204
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999590161006646,
+            "integer_ncc": 0.9999585747718811,
+            "uniqueness": 0.009656667709350586,
+            "dx": 0.004526626679074811,
+            "dy": -0.0013215883985724806
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999528207002936,
+            "integer_ncc": 0.9999554753303528,
+            "uniqueness": 0.015950143337249756,
+            "dx": 0.0028152208023470514,
+            "dy": 0.0062688812473324015
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.005841540196652693,
+          -0.005646576186907613
+        ],
+        "patch_spread": 0.021551767842255057,
+        "registered_band_correlation": 0.9999347523125074
+      }
+    },
+    {
+      "case": "previous_ready_10",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.002008309801311725,
+        "dy_band_px": 0.0005667511312736906,
+        "phase_score": 0.9993212601697004,
+        "correlation": 0.9999420226040422,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998953101311993,
+            "integer_ncc": 0.9999004602432251,
+            "uniqueness": 0.13500338792800903,
+            "dx": 0.01070555592483737,
+            "dy": 0.005801040494967514
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999145030726935,
+            "integer_ncc": 0.9999174475669861,
+            "uniqueness": 0.027434051036834717,
+            "dx": -0.002112680698470037,
+            "dy": 0.0038811544991511036
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998628788816317,
+            "integer_ncc": 0.9998841881752014,
+            "uniqueness": 0.05880844593048096,
+            "dx": 0.004254632605318421,
+            "dy": -0.02557042274539949
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.999890953599987,
+            "integer_ncc": 0.9999160766601562,
+            "uniqueness": 0.050225138664245605,
+            "dx": 0.004719350538643294,
+            "dy": -0.014890480375494338
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999685036156769,
+            "integer_ncc": 0.9999681711196899,
+            "uniqueness": 0.009692549705505371,
+            "dx": 0.0014644613601478558,
+            "dy": -0.0008515482644176419
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999630450166597,
+            "integer_ncc": 0.9999663829803467,
+            "uniqueness": 0.01583874225616455,
+            "dx": 0.000686136395156169,
+            "dy": 0.006478675902162702
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.004486991571980858,
+          -0.005504662938171617
+        ],
+        "patch_spread": 0.020065759807227874,
+        "registered_band_correlation": 0.9999431324634144
+      }
+    },
+    {
+      "case": "previous_ready_11",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.009961584525001399,
+        "dy_band_px": -0.0033189141892648877,
+        "phase_score": 0.998254178930212,
+        "correlation": 0.9999292100074086,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998798575579779,
+            "integer_ncc": 0.9998846650123596,
+            "uniqueness": 0.13509690761566162,
+            "dx": 0.00931909281904273,
+            "dy": 0.005609343558925469
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999005838793286,
+            "integer_ncc": 0.9999032616615295,
+            "uniqueness": 0.0274580717086792,
+            "dx": -0.000541617682800092,
+            "dy": 0.0031642617522606073
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998451701111403,
+            "integer_ncc": 0.9998701810836792,
+            "uniqueness": 0.05893677473068237,
+            "dx": 0.006398415940704666,
+            "dy": -0.028246432587306407
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998793104274216,
+            "integer_ncc": 0.9999021887779236,
+            "uniqueness": 0.05027288198471069,
+            "dx": 0.002119525895825044,
+            "dy": -0.014550719312632923
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999531238641084,
+            "integer_ncc": 0.9999528527259827,
+            "uniqueness": 0.009699583053588867,
+            "dx": -0.00037457485101839987,
+            "dy": -0.00040110870414392064
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.999945603074549,
+            "integer_ncc": 0.9999485611915588,
+            "uniqueness": 0.015866518020629883,
+            "dx": 0.001509912906472931,
+            "dy": 0.006029238676848818
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.004258970918264856,
+          -0.005693228780186158
+        ],
+        "patch_spread": 0.02255320380712025,
+        "registered_band_correlation": 0.9999303706648944
+      }
+    },
+    {
+      "case": "previous_ready_12",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.006913254416247128,
+        "dy_band_px": 0.0019521315562087693,
+        "phase_score": 0.9989501906500923,
+        "correlation": 0.9999320519767279,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998830127604628,
+            "integer_ncc": 0.9998883008956909,
+            "uniqueness": 0.13496506214141846,
+            "dx": 0.006807134167059417,
+            "dy": 0.006795652688188672
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999031671598829,
+            "integer_ncc": 0.9999059438705444,
+            "uniqueness": 0.02738100290298462,
+            "dx": -0.002013568795286074,
+            "dy": 0.003945192599044241
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998544255293261,
+            "integer_ncc": 0.9998764395713806,
+            "uniqueness": 0.058876097202301025,
+            "dx": 0.006663474063788726,
+            "dy": -0.028198621120262043
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998824857866386,
+            "integer_ncc": 0.9999069571495056,
+            "uniqueness": 0.05016970634460449,
+            "dx": 0.00144930528551945,
+            "dy": -0.014087680653021312
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999593150894067,
+            "integer_ncc": 0.999959409236908,
+            "uniqueness": 0.009682714939117432,
+            "dx": -0.001817497136461346,
+            "dy": 0.00037795811815447477
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999480970400326,
+            "integer_ncc": 0.9999526739120483,
+            "uniqueness": 0.015815377235412598,
+            "dx": -0.0036593674143697067,
+            "dy": 0.008141437459173902
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.004056389674654088,
+          -0.0050712440269885355
+        ],
+        "patch_spread": 0.023127377093273508,
+        "registered_band_correlation": 0.9999323719418092
+      }
+    },
+    {
+      "case": "previous_ready_13",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.0017044493866080757,
+        "dy_band_px": 8.148957347486885e-05,
+        "phase_score": 1.0016400282589006,
+        "correlation": 0.9999304986944418,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998775627223919,
+            "integer_ncc": 0.9998849034309387,
+            "uniqueness": 0.13522833585739136,
+            "dx": 0.00844562965157791,
+            "dy": 0.005548821737754914
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9998927543446381,
+            "integer_ncc": 0.9998951554298401,
+            "uniqueness": 0.02747178077697754,
+            "dx": -8.367758585760717e-05,
+            "dy": 0.002722078445413444
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998455638677984,
+            "integer_ncc": 0.9998684525489807,
+            "uniqueness": 0.058854103088378906,
+            "dx": 0.007882953243777985,
+            "dy": -0.029918424008271806
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.999872235354699,
+            "integer_ncc": 0.9999013543128967,
+            "uniqueness": 0.05006098747253418,
+            "dx": 0.0026293244711740253,
+            "dy": -0.01469000552198766
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999561278943048,
+            "integer_ncc": 0.9999558925628662,
+            "uniqueness": 0.009590685367584229,
+            "dx": 0.0024393327924301655,
+            "dy": -0.0009196759416075514
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999463380142977,
+            "integer_ncc": 0.9999507069587708,
+            "uniqueness": 0.015799641609191895,
+            "dx": 0.002361814578286721,
+            "dy": 0.005925828741362722
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.005256138857476006,
+          -0.005983963538287108
+        ],
+        "patch_spread": 0.023934460469984698,
+        "registered_band_correlation": 0.999930125392862
+      }
+    },
+    {
+      "case": "previous_ready_14",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.006281779796807996,
+        "dy_band_px": -0.010287670462616916,
+        "phase_score": 1.000094399322698,
+        "correlation": 0.9999281941379031,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998790030040373,
+            "integer_ncc": 0.9998844265937805,
+            "uniqueness": 0.13517707586288452,
+            "dx": 0.00799339533408784,
+            "dy": 0.005801190874769938
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.999895705708496,
+            "integer_ncc": 0.9999002814292908,
+            "uniqueness": 0.027452826499938965,
+            "dx": -0.006525381365941014,
+            "dy": 0.005728376542671369
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998502655715696,
+            "integer_ncc": 0.9998714923858643,
+            "uniqueness": 0.058888018131256104,
+            "dx": -0.001424442153085598,
+            "dy": -0.02117736466379976
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998738700486616,
+            "integer_ncc": 0.999897837638855,
+            "uniqueness": 0.05016368627548218,
+            "dx": 0.004237220383428471,
+            "dy": -0.015266331029008179
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999582426183458,
+            "integer_ncc": 0.9999575614929199,
+            "uniqueness": 0.0096360445022583,
+            "dx": 0.004003108602902058,
+            "dy": -0.0012845009593395258
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.999943827479826,
+            "integer_ncc": 0.9999457597732544,
+            "uniqueness": 0.015921711921691895,
+            "dx": 0.003134116892908264,
+            "dy": 0.0056912262307959715
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.0014063891151714367,
+          -0.0047689772431684044
+        ],
+        "patch_spread": 0.016408387420631353,
+        "registered_band_correlation": 0.9999306665298998
+      }
+    },
+    {
+      "case": "previous_ready_15",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.008873546796138498,
+        "dy_band_px": -0.004552431258758816,
+        "phase_score": 1.0009833080150463,
+        "correlation": 0.999925580293017,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998723555191287,
+            "integer_ncc": 0.9998796582221985,
+            "uniqueness": 0.13513541221618652,
+            "dx": 0.0067640404874912425,
+            "dy": 0.006283314380547511
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9998918362451644,
+            "integer_ncc": 0.9998971819877625,
+            "uniqueness": 0.02745157480239868,
+            "dx": -0.005442719289164562,
+            "dy": 0.005089916065331876
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998357862286242,
+            "integer_ncc": 0.9998601675033569,
+            "uniqueness": 0.058902859687805176,
+            "dx": 0.001453581178371546,
+            "dy": -0.024934286869546973
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998684391364796,
+            "integer_ncc": 0.9998963475227356,
+            "uniqueness": 0.050044894218444824,
+            "dx": 0.0014751228885974783,
+            "dy": -0.01407446229428915
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999536034953052,
+            "integer_ncc": 0.9999535083770752,
+            "uniqueness": 0.009639561176300049,
+            "dx": -0.0002520611248227695,
+            "dy": -0.00021968253174313115
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.999939464544458,
+            "integer_ncc": 0.9999440908432007,
+            "uniqueness": 0.015806138515472412,
+            "dx": -0.0009011649205069969,
+            "dy": 0.006742349900061119
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.0014643520334845122,
+          -0.004492273114478636
+        ],
+        "patch_spread": 0.020442013755068336,
+        "registered_band_correlation": 0.9999265092574771
+      }
+    },
+    {
+      "case": "previous_ready_16",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.006892960897658895,
+        "dy_band_px": -0.004148496852579342,
+        "phase_score": 0.999024901472492,
+        "correlation": 0.9999263670306029,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.999879010823971,
+            "integer_ncc": 0.9998824596405029,
+            "uniqueness": 0.13511991500854492,
+            "dx": 0.010148810967506998,
+            "dy": 0.005962757523590534
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9998969391197298,
+            "integer_ncc": 0.9998995661735535,
+            "uniqueness": 0.027482986450195312,
+            "dx": 0.0003329209362220176,
+            "dy": 0.003055065082521899
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998373556418925,
+            "integer_ncc": 0.9998617172241211,
+            "uniqueness": 0.0589025616645813,
+            "dx": 0.006419147057295725,
+            "dy": -0.026832458333078676
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998716921982557,
+            "integer_ncc": 0.999898374080658,
+            "uniqueness": 0.05007833242416382,
+            "dx": 0.0015239078087375302,
+            "dy": -0.013934584324872934
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999515439180489,
+            "integer_ncc": 0.9999515414237976,
+            "uniqueness": 0.009679973125457764,
+            "dx": -0.0011386659546732422,
+            "dy": 6.846392519307678e-05
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999429335689753,
+            "integer_ncc": 0.9999473094940186,
+            "uniqueness": 0.01582658290863037,
+            "dx": -0.002070215572844911,
+            "dy": 0.007477494131059646
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.003971527433016628,
+          -0.005439759621175518
+        ],
+        "patch_spread": 0.021392698711903156,
+        "registered_band_correlation": 0.9999267993118364
+      }
+    },
+    {
+      "case": "previous_ready_17",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.0077358351517489155,
+        "dy_band_px": -0.01146250813181382,
+        "phase_score": 0.9984362889513557,
+        "correlation": 0.9999337603218102,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998818013154347,
+            "integer_ncc": 0.9998902678489685,
+            "uniqueness": 0.1350027322769165,
+            "dx": 0.008495211390874379,
+            "dy": 0.005412413656619749
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999060430862229,
+            "integer_ncc": 0.9999105930328369,
+            "uniqueness": 0.02746826410293579,
+            "dx": -0.0045792412863470055,
+            "dy": 0.004512670198130845
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998511135685321,
+            "integer_ncc": 0.9998753666877747,
+            "uniqueness": 0.05896008014678955,
+            "dx": 0.001517238871958543,
+            "dy": -0.02420983691488465
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998656046917406,
+            "integer_ncc": 0.9999004602432251,
+            "uniqueness": 0.0498957633972168,
+            "dx": 0.00514711376529621,
+            "dy": -0.015464566408330481
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999610890577515,
+            "integer_ncc": 0.9999611973762512,
+            "uniqueness": 0.00960850715637207,
+            "dx": 0.0035318896860396234,
+            "dy": -0.0016051725325631693
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999525745257445,
+            "integer_ncc": 0.9999566078186035,
+            "uniqueness": 0.015797734260559082,
+            "dx": 0.0019035242234226044,
+            "dy": 0.0057007900798742425
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.0033321763186273767,
+          -0.005475948105099818
+        ],
+        "patch_spread": 0.01873388880978483,
+        "registered_band_correlation": 0.9999341088756597
+      }
+    },
+    {
+      "case": "previous_ready_18",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.0018581329417486359,
+        "dy_band_px": -0.0028329262309227943,
+        "phase_score": 0.997172072339941,
+        "correlation": 0.9999351915067872,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998833035023287,
+            "integer_ncc": 0.9998878240585327,
+            "uniqueness": 0.13521164655685425,
+            "dx": 0.007571763357520579,
+            "dy": 0.00565969944727376
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999097613024688,
+            "integer_ncc": 0.9999138116836548,
+            "uniqueness": 0.027401089668273926,
+            "dx": -0.004423700095424981,
+            "dy": 0.0046864722338266045
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998568352118874,
+            "integer_ncc": 0.9998788237571716,
+            "uniqueness": 0.05894482135772705,
+            "dx": 0.0009397359374532571,
+            "dy": -0.02396820671007292
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998867668737073,
+            "integer_ncc": 0.9999096393585205,
+            "uniqueness": 0.05025559663772583,
+            "dx": 0.003046392748567698,
+            "dy": -0.014979219686913839
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999635553186303,
+            "integer_ncc": 0.9999632239341736,
+            "uniqueness": 0.009711742401123047,
+            "dx": 0.001989574577166606,
+            "dy": -0.0009211064146824475
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999535892222337,
+            "integer_ncc": 0.9999561905860901,
+            "uniqueness": 0.01590132713317871,
+            "dx": 0.0009618811413110676,
+            "dy": 0.006242079872494112
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.0019930643430104778,
+          -0.005146373726543617
+        ],
+        "patch_spread": 0.018821832983529303,
+        "registered_band_correlation": 0.9999371729035794
+      }
+    },
+    {
+      "case": "previous_ready_19",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.016293830726965552,
+        "dy_band_px": -0.006978806621077638,
+        "phase_score": 0.9992167127868276,
+        "correlation": 0.9999276982033413,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998782547814961,
+            "integer_ncc": 0.9998847842216492,
+            "uniqueness": 0.1352781057357788,
+            "dx": 0.005987294207144382,
+            "dy": 0.006634531943450082
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999034828387434,
+            "integer_ncc": 0.9999080300331116,
+            "uniqueness": 0.02739638090133667,
+            "dx": -0.006357599132879599,
+            "dy": 0.005447717075374796
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998523651349747,
+            "integer_ncc": 0.9998761415481567,
+            "uniqueness": 0.05887937545776367,
+            "dx": 0.0010008724216939587,
+            "dy": -0.02351158482962695
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998787836703605,
+            "integer_ncc": 0.9999028444290161,
+            "uniqueness": 0.05018049478530884,
+            "dx": 0.000609021780270447,
+            "dy": -0.013868746985358308
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999540291726507,
+            "integer_ncc": 0.9999541640281677,
+            "uniqueness": 0.009639620780944824,
+            "dx": -0.0007595679368039476,
+            "dy": 0.00011857752360203341
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999399542244118,
+            "integer_ncc": 0.9999445080757141,
+            "uniqueness": 0.01582115888595581,
+            "dx": -0.0026630550011332147,
+            "dy": 0.007513151882829257
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.0008049471009822028,
+          -0.004210514954991756
+        ],
+        "patch_spread": 0.019301069874635195,
+        "registered_band_correlation": 0.9999289925905388
+      }
+    },
+    {
+      "case": "previous_ready_20",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.012642043920578772,
+        "dy_band_px": -0.004106371750182802,
+        "phase_score": 0.9976861644085543,
+        "correlation": 0.9999433316341694,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9999068694173449,
+            "integer_ncc": 0.999910831451416,
+            "uniqueness": 0.134879469871521,
+            "dx": 0.012039834488194148,
+            "dy": 0.006411744894138221
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999133937193051,
+            "integer_ncc": 0.9999175667762756,
+            "uniqueness": 0.027360379695892334,
+            "dx": -0.005792002462810463,
+            "dy": 0.0058390414759234375
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998586207981129,
+            "integer_ncc": 0.9998805522918701,
+            "uniqueness": 0.05881112813949585,
+            "dx": 0.001190834287172716,
+            "dy": -0.02176453617277196
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998923274515117,
+            "integer_ncc": 0.9999198317527771,
+            "uniqueness": 0.049958765506744385,
+            "dx": 0.006170094242085934,
+            "dy": -0.014522581234841866
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999697713181154,
+            "integer_ncc": 0.9999696612358093,
+            "uniqueness": 0.009608149528503418,
+            "dx": 0.0043636963506249,
+            "dy": -0.0010131329953386235
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999633222451384,
+            "integer_ncc": 0.9999669194221497,
+            "uniqueness": 0.015872538089752197,
+            "dx": 0.0011656246688566282,
+            "dy": 0.0067456276210587736
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.003680464264629325,
+          -0.004341769879459214
+        ],
+        "patch_spread": 0.01742276629331275,
+        "registered_band_correlation": 0.9999449400420727
+      }
+    },
+    {
+      "case": "previous_ready_21",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.002630282702966724,
+        "dy_band_px": -0.011724721478017841,
+        "phase_score": 0.9981863892166702,
+        "correlation": 0.9999363704309704,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998888926968397,
+            "integer_ncc": 0.9998916983604431,
+            "uniqueness": 0.1351839303970337,
+            "dx": 0.007207006443445199,
+            "dy": 0.00699796429313761
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999061868167552,
+            "integer_ncc": 0.9999101758003235,
+            "uniqueness": 0.027439355850219727,
+            "dx": -0.006571627336389632,
+            "dy": 0.005611084625578324
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998526185486781,
+            "integer_ncc": 0.9998751282691956,
+            "uniqueness": 0.05891752243041992,
+            "dx": 0.0017255734268186713,
+            "dy": -0.023719110672913424
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998872266505839,
+            "integer_ncc": 0.9999104738235474,
+            "uniqueness": 0.0500868558883667,
+            "dx": 0.0019343965358329927,
+            "dy": -0.013715625974064593
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999667938567889,
+            "integer_ncc": 0.9999663829803467,
+            "uniqueness": 0.009682178497314453,
+            "dx": -0.0014644138295009496,
+            "dy": 0.00021575077015370187
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999571130917485,
+            "integer_ncc": 0.9999611377716064,
+            "uniqueness": 0.015823662281036377,
+            "dx": -0.0024904920089118044,
+            "dy": 0.007409240420609167
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.001829984981325832,
+          -0.004052270674243135
+        ],
+        "patch_spread": 0.01966683999867029,
+        "registered_band_correlation": 0.9999380023680641
+      }
+    },
+    {
+      "case": "previous_ready_22",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.007668587901434876,
+        "dy_band_px": -0.007683878723653947,
+        "phase_score": 0.9991663145371426,
+        "correlation": 0.9999328229452096,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998867012236555,
+            "integer_ncc": 0.9998915195465088,
+            "uniqueness": 0.1351161003112793,
+            "dx": 0.009592295780074166,
+            "dy": 0.005487054464220024
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9998998730642484,
+            "integer_ncc": 0.9999032616615295,
+            "uniqueness": 0.027427971363067627,
+            "dx": -0.003335909580335969,
+            "dy": 0.004376319523211147
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998522877980877,
+            "integer_ncc": 0.999876081943512,
+            "uniqueness": 0.05894893407821655,
+            "dx": 0.0017750429740382033,
+            "dy": -0.024083127417587353
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998804832312049,
+            "integer_ncc": 0.9999059438705444,
+            "uniqueness": 0.05007326602935791,
+            "dx": 0.004785488366983563,
+            "dy": -0.014853393985986688
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.999961956475984,
+            "integer_ncc": 0.9999617338180542,
+            "uniqueness": 0.00965648889541626,
+            "dx": 0.003233396723039158,
+            "dy": -0.0007499480107820255
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999503143847529,
+            "integer_ncc": 0.9999517798423767,
+            "uniqueness": 0.01592034101486206,
+            "dx": 0.004657056405364172,
+            "dy": 0.005210051944049528
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.0032802656705108835,
+          -0.00523853723138777
+        ],
+        "patch_spread": 0.018844590186199585,
+        "registered_band_correlation": 0.9999349474058511
+      }
+    },
+    {
+      "case": "previous_ready_23",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.014387483932182477,
+        "dy_band_px": -0.006664609891586792,
+        "phase_score": 0.9995421012124898,
+        "correlation": 0.9999395264828923,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998910227156004,
+            "integer_ncc": 0.9998985528945923,
+            "uniqueness": 0.13502395153045654,
+            "dx": 0.00951246719070075,
+            "dy": 0.006216699989800963
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999036857071156,
+            "integer_ncc": 0.9999086856842041,
+            "uniqueness": 0.027404189109802246,
+            "dx": -0.00501842345431787,
+            "dy": 0.0049898945306146155
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998547982110446,
+            "integer_ncc": 0.9998770952224731,
+            "uniqueness": 0.05893588066101074,
+            "dx": 0.0035257281281978934,
+            "dy": -0.025830451895648438
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998857741692688,
+            "integer_ncc": 0.999915361404419,
+            "uniqueness": 0.05011343955993652,
+            "dx": 0.004869995683360734,
+            "dy": -0.015149580969037027
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999670409842154,
+            "integer_ncc": 0.9999671578407288,
+            "uniqueness": 0.00964432954788208,
+            "dx": 0.0030571490051800963,
+            "dy": -0.0013059264863931434
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999598278752811,
+            "integer_ncc": 0.9999641180038452,
+            "uniqueness": 0.015868663787841797,
+            "dx": 0.0013539460473569653,
+            "dy": 0.006438569305660683
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.004197861905779313,
+          -0.005079843219211205
+        ],
+        "patch_spread": 0.020750608676437233,
+        "registered_band_correlation": 0.9999402520903523
+      }
+    },
+    {
+      "case": "previous_ready_24",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.004750406481775826,
+        "dy_band_px": -0.0013465349931891524,
+        "phase_score": 0.997162161650481,
+        "correlation": 0.9999410691893131,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9999007596574441,
+            "integer_ncc": 0.9999052882194519,
+            "uniqueness": 0.13484913110733032,
+            "dx": 0.011680196626907013,
+            "dy": 0.006154286861319974
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999100862951555,
+            "integer_ncc": 0.9999141693115234,
+            "uniqueness": 0.027333378791809082,
+            "dx": -0.005667947217138492,
+            "dy": 0.005749162021674091
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998561706515534,
+            "integer_ncc": 0.9998798370361328,
+            "uniqueness": 0.05870240926742554,
+            "dx": 0.0024922175139772407,
+            "dy": -0.02179846906855621
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998860286107156,
+            "integer_ncc": 0.9999151825904846,
+            "uniqueness": 0.04999542236328125,
+            "dx": 0.005254942946824859,
+            "dy": -0.014515946350793662
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999694450629427,
+            "integer_ncc": 0.9999692440032959,
+            "uniqueness": 0.00964123010635376,
+            "dx": 0.0038658276534229907,
+            "dy": -0.0011591754680238314
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999619682365614,
+            "integer_ncc": 0.9999654293060303,
+            "uniqueness": 0.01587522029876709,
+            "dx": 0.0017566167725386812,
+            "dy": 0.006307192820461178
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.00387358023040105,
+          -0.004383392164559786
+        ],
+        "patch_spread": 0.017415076903996424,
+        "registered_band_correlation": 0.9999426875775267
+      }
+    },
+    {
+      "case": "previous_ready_25",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.005208151928798088,
+        "dy_band_px": -0.008439420082936522,
+        "phase_score": 1.000229811091482,
+        "correlation": 0.9999335150637987,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998820845200896,
+            "integer_ncc": 0.9998897314071655,
+            "uniqueness": 0.1350988745689392,
+            "dx": 0.00796330079143201,
+            "dy": 0.005672638611582011
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9998987017121791,
+            "integer_ncc": 0.999904453754425,
+            "uniqueness": 0.02745509147644043,
+            "dx": -0.006186569358175774,
+            "dy": 0.004916189634860539
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998448093235714,
+            "integer_ncc": 0.9998666644096375,
+            "uniqueness": 0.05896073579788208,
+            "dx": 0.0004264170566822673,
+            "dy": -0.02360276848633736
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998700413143066,
+            "integer_ncc": 0.9999024868011475,
+            "uniqueness": 0.049934446811676025,
+            "dx": 0.0047379870716283325,
+            "dy": -0.015368803582007772
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.999963271494112,
+            "integer_ncc": 0.9999635815620422,
+            "uniqueness": 0.009615182876586914,
+            "dx": 0.0029017610506321787,
+            "dy": -0.001149979639331806
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999521072924565,
+            "integer_ncc": 0.9999558329582214,
+            "uniqueness": 0.015827655792236328,
+            "dx": 0.0018250080124536422,
+            "dy": 0.005848302640381298
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.0025822020641553,
+          -0.005226306973573617
+        ],
+        "patch_spread": 0.01837646151276374,
+        "registered_band_correlation": 0.9999345472977689
+      }
+    },
+    {
+      "case": "previous_ready_26",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.0013761209241351935,
+        "dy_band_px": -0.00826408848880078,
+        "phase_score": 0.999384179621567,
+        "correlation": 0.9999303356515857,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.999883003500434,
+            "integer_ncc": 0.9998887777328491,
+            "uniqueness": 0.1351165771484375,
+            "dx": 0.007756544852319086,
+            "dy": 0.0070135727199062865
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9998976988545254,
+            "integer_ncc": 0.9999018907546997,
+            "uniqueness": 0.0274735689163208,
+            "dx": -0.004438668718357093,
+            "dy": 0.004906571634312379
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9998409231632428,
+            "integer_ncc": 0.9998644590377808,
+            "uniqueness": 0.05896306037902832,
+            "dx": 0.005361259944796233,
+            "dy": -0.026159554957669418
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998774918420966,
+            "integer_ncc": 0.9999046325683594,
+            "uniqueness": 0.05008667707443237,
+            "dx": 0.0027363155539748283,
+            "dy": -0.01448956717133745
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999573932245674,
+            "integer_ncc": 0.9999570846557617,
+            "uniqueness": 0.009676337242126465,
+            "dx": 0.0002364881638327284,
+            "dy": -0.0006405795671281449
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999481546335172,
+            "integer_ncc": 0.9999527931213379,
+            "uniqueness": 0.01586371660232544,
+            "dx": -0.0027175898192656664,
+            "dy": 0.007808432178806573
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.004048787749385531,
+          -0.004791497768512535
+        ],
+        "patch_spread": 0.02136805718915688,
+        "registered_band_correlation": 0.9999310350123423
+      }
+    },
+    {
+      "case": "previous_ready_27",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.0013797047416517216,
+        "dy_band_px": 0.0001995712816977857,
+        "phase_score": 0.9972962384636019,
+        "correlation": 0.9999422093767135,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998972779900742,
+            "integer_ncc": 0.9999045133590698,
+            "uniqueness": 0.13488376140594482,
+            "dx": 0.00912289802802675,
+            "dy": 0.006860174222126931
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9999087209919536,
+            "integer_ncc": 0.9999141693115234,
+            "uniqueness": 0.027323424816131592,
+            "dx": -0.007104260794589244,
+            "dy": 0.005892130895333202
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.999853021859103,
+            "integer_ncc": 0.9998763203620911,
+            "uniqueness": 0.058873772621154785,
+            "dx": 1.1734824264487292e-05,
+            "dy": -0.02239995602462621
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9998896267936569,
+            "integer_ncc": 0.9999185800552368,
+            "uniqueness": 0.05008465051651001,
+            "dx": 0.003042470403179071,
+            "dy": -0.014402025924551665
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9999694317466807,
+            "integer_ncc": 0.9999693036079407,
+            "uniqueness": 0.009639620780944824,
+            "dx": 0.00041654293020212187,
+            "dy": -0.0005426350860058136
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9999610194369115,
+            "integer_ncc": 0.9999665021896362,
+            "uniqueness": 0.015796899795532227,
+            "dx": -0.0018754262332348261,
+            "dy": 0.007405392526704523
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.0015271026137217791,
+          -0.004254947514609231
+        ],
+        "patch_spread": 0.018145008510016977,
+        "registered_band_correlation": 0.9999432451888941
+      }
+    },
+    {
+      "case": "previous_ready_28",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.036751604432254226,
+        "dy_band_px": -0.30665929249430235,
+        "phase_score": 0.9790175604172695,
+        "correlation": 0.9909648540450516,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9754662897478855,
+            "integer_ncc": 0.9769670963287354,
+            "uniqueness": 0.11051726341247559,
+            "dx": 0.22116431628357167,
+            "dy": -0.17296607439643957
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9771645978886513,
+            "integer_ncc": 0.9790151119232178,
+            "uniqueness": 0.022599399089813232,
+            "dx": 0.35439662881675293,
+            "dy": -0.17833853128482396
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9861259980070599,
+            "integer_ncc": 0.9866219758987427,
+            "uniqueness": 0.03311270475387573,
+            "dx": 0.30183832125926247,
+            "dy": -0.1773298049425925
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9876233761492783,
+            "integer_ncc": 0.989311933517456,
+            "uniqueness": 0.034550368785858154,
+            "dx": 0.24076444004296096,
+            "dy": -0.1592778458984489
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9943553109471394,
+            "integer_ncc": 0.995154857635498,
+            "uniqueness": 0.006303071975708008,
+            "dx": 0.2674312879420283,
+            "dy": -0.14765789713474162
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9892229465177607,
+            "integer_ncc": 0.9904749393463135,
+            "uniqueness": 0.011043906211853027,
+            "dx": 0.2737236909183599,
+            "dy": -0.13718159843387093
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 4,
+        "patch_median": [
+          0.2713013806511117,
+          -0.17514793966951603
+        ],
+        "patch_spread": 0.08309524816564123,
+        "registered_band_correlation": 0.9894752712426276
+      }
+    },
+    {
+      "case": "previous_ready_29",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.022209888176206505,
+        "dy_band_px": 0.03339817590243399,
+        "phase_score": 0.9670570656105324,
+        "correlation": 0.9897071121464098,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9749077291491215,
+            "integer_ncc": 0.9761075973510742,
+            "uniqueness": 0.09856700897216797,
+            "dx": -0.087962340965772,
+            "dy": 0.07873298185559967
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9780252100781506,
+            "integer_ncc": 0.979243278503418,
+            "uniqueness": 0.01757723093032837,
+            "dx": -0.2934094124304442,
+            "dy": 0.0713872266532742
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9861944662948797,
+            "integer_ncc": 0.9864534139633179,
+            "uniqueness": 0.029422402381896973,
+            "dx": 0.07695129306076891,
+            "dy": 0.06522729689090052
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9861245585072811,
+            "integer_ncc": 0.9862151741981506,
+            "uniqueness": 0.032885968685150146,
+            "dx": -0.2659066208516758,
+            "dy": 0.05702044232505782
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false,
+            "ncc": 0.9934283303252995,
+            "integer_ncc": 0.9936431646347046,
+            "uniqueness": 0.0030249357223510742,
+            "dx": -0.5026865213386552,
+            "dy": -0.17067282439005718
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false,
+            "ncc": 0.9887163563786197,
+            "integer_ncc": 0.989061713218689,
+            "uniqueness": 0.007418572902679443,
+            "dx": -0.4104890598477979,
+            "dy": 0.07718268995921912
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 3,
+        "patch_median": [
+          -0.087962340965772,
+          0.06522729689090052
+        ],
+        "patch_spread": 0.17794427988590383,
+        "registered_band_correlation": 0.9894664990960594
+      }
+    },
+    {
+      "case": "yaw01b_prime_true_motion",
+      "expected": "unprovable",
+      "result": {
+        "status": "unprovable",
+        "dx_band_px": -67.37407461760375,
+        "dy_band_px": -6.171244725800534,
+        "phase_score": 0.09759365543318384,
+        "correlation": 0.03575301314553275,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": false
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": false
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": false
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": false
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": false
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": false
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "insufficient_patch_agreement"
+      }
+    },
+    {
+      "case": "yaw01r_fractional_pair",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.3096353404207548,
+        "dy_band_px": -0.5271374243549332,
+        "phase_score": 0.9753975398687669,
+        "correlation": 0.9257251895075133,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9770577144131316,
+            "integer_ncc": 0.9368719458580017,
+            "uniqueness": 0.20610153675079346,
+            "dx": -0.24123514623747877,
+            "dy": -0.6298083983623519
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9720203800776369,
+            "integer_ncc": 0.9364445805549622,
+            "uniqueness": 0.15888375043869019,
+            "dx": -0.04156449219631332,
+            "dy": -0.6448019080344641
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9755775869927906,
+            "integer_ncc": 0.9384067058563232,
+            "uniqueness": 0.0648576021194458,
+            "dx": -0.1118484391042701,
+            "dy": -0.5978777542587195
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9762536144640682,
+            "integer_ncc": 0.9395430684089661,
+            "uniqueness": 0.22056442499160767,
+            "dx": -0.3743828092482719,
+            "dy": -0.5635342897765183
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9639052510734345,
+            "integer_ncc": 0.918367326259613,
+            "uniqueness": 0.3524351716041565,
+            "dx": -0.21452180685645833,
+            "dy": -0.6450301582064137
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9705681778951214,
+            "integer_ncc": 0.9407463073730469,
+            "uniqueness": 0.22691237926483154,
+            "dx": -0.17775126503566996,
+            "dy": -0.6588482296489728
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 6,
+        "patch_median": [
+          -0.19613653594606414,
+          -0.637305153198408
+        ],
+        "patch_spread": 0.17824627330220774,
+        "registered_band_correlation": 0.9783149556636059
+      }
+    },
+    {
+      "case": "band_translation_-0.5_0",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.43053612825673326,
+        "dy_band_px": -0.01116629118622825,
+        "phase_score": 1.00682022829409,
+        "correlation": 0.9766362750036095,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9898073656646974,
+            "integer_ncc": 0.9633300304412842,
+            "uniqueness": 0.21889495849609375,
+            "dx": -0.49232210384581054,
+            "dy": 0.022642351508854828
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9913827024202698,
+            "integer_ncc": 0.9710897207260132,
+            "uniqueness": 0.17680877447128296,
+            "dx": -0.4661165313099589,
+            "dy": -0.03541140721270461
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9946150695996177,
+            "integer_ncc": 0.9835191369056702,
+            "uniqueness": 0.08743458986282349,
+            "dx": -0.49445420442308124,
+            "dy": -0.012504064588657163
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9905860484216945,
+            "integer_ncc": 0.968485414981842,
+            "uniqueness": 0.21573501825332642,
+            "dx": -0.4878911302148969,
+            "dy": 0.07234791748046189
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9855012740100454,
+            "integer_ncc": 0.9441211223602295,
+            "uniqueness": 0.3509753346443176,
+            "dx": -0.511502918851183,
+            "dy": 0.0011880056588556083
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9840066265599741,
+            "integer_ncc": 0.9534026980400085,
+            "uniqueness": 0.21753555536270142,
+            "dx": -0.4998415692517604,
+            "dy": -0.019204524835077435
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 6,
+        "patch_median": [
+          -0.4933881541344459,
+          -0.005658029464900778
+        ],
+        "patch_spread": 0.07800594694536267,
+        "registered_band_correlation": 0.9926814390320299
+      }
+    },
+    {
+      "case": "band_translation_0.5_0",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.5692791124021994,
+        "dy_band_px": -0.010825212793506012,
+        "phase_score": 1.0069712010136358,
+        "correlation": 0.9762988243908506,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9898073673195056,
+            "integer_ncc": 0.9633300304412842,
+            "uniqueness": 0.21889495849609375,
+            "dx": 0.5076778961541895,
+            "dy": 0.022642351508854828
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9913827024202698,
+            "integer_ncc": 0.9710897207260132,
+            "uniqueness": 0.17680877447128296,
+            "dx": 0.5338834686900411,
+            "dy": -0.03541140721270461
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9946150695996177,
+            "integer_ncc": 0.9835191369056702,
+            "uniqueness": 0.08743458986282349,
+            "dx": 0.5055457955769187,
+            "dy": -0.012504064588657163
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9905860484216945,
+            "integer_ncc": 0.968485414981842,
+            "uniqueness": 0.21573501825332642,
+            "dx": 0.5121088697851031,
+            "dy": 0.07234791748046189
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9855012740100454,
+            "integer_ncc": 0.9441211223602295,
+            "uniqueness": 0.3509753346443176,
+            "dx": 0.4884970811488169,
+            "dy": 0.0011880056588556083
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9840066265599741,
+            "integer_ncc": 0.9534026980400085,
+            "uniqueness": 0.21753555536270142,
+            "dx": 0.5001584307482396,
+            "dy": -0.019204524835077435
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 6,
+        "patch_median": [
+          0.5066118458655541,
+          -0.005658029464900778
+        ],
+        "patch_spread": 0.07800594694536267,
+        "registered_band_correlation": 0.9926814385825546
+      }
+    },
+    {
+      "case": "band_translation_0_-0.5",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": 0.0001805177190590257,
+        "dy_band_px": -0.5307288076283783,
+        "phase_score": 0.9936696426956741,
+        "correlation": 0.9469950757876407,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9810584223181966,
+            "integer_ncc": 0.9322746396064758,
+            "uniqueness": 0.20565193891525269,
+            "dx": 0.08924122383431064,
+            "dy": -0.49373604021989603
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9809298507247883,
+            "integer_ncc": 0.9305592179298401,
+            "uniqueness": 0.153728187084198,
+            "dx": -0.08940253740402238,
+            "dy": -0.4798952365349035
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9824260238444248,
+            "integer_ncc": 0.9364194869995117,
+            "uniqueness": 0.06483674049377441,
+            "dx": -0.051018746207645384,
+            "dy": -0.4883281867968897
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9809789629377647,
+            "integer_ncc": 0.9444602727890015,
+            "uniqueness": 0.24752920866012573,
+            "dx": -0.19286043419507284,
+            "dy": -0.5364687919675419
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9755935602722354,
+            "integer_ncc": 0.9226862192153931,
+            "uniqueness": 0.3721480369567871,
+            "dx": -0.007673337292005182,
+            "dy": -0.5296348130019501
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9823753649611345,
+            "integer_ncc": 0.9436342716217041,
+            "uniqueness": 0.23441404104232788,
+            "dx": -0.019767947240121694,
+            "dy": -0.4982569092775583
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 6,
+        "patch_median": [
+          -0.03539334672388354,
+          -0.49599647474872716
+        ],
+        "patch_spread": 0.15746708747118932,
+        "registered_band_correlation": 0.9841026493074136
+      }
+    },
+    {
+      "case": "band_translation_0_0.5",
+      "expected": "unchanged",
+      "result": {
+        "status": "unchanged",
+        "dx_band_px": -0.0016286100703837292,
+        "dy_band_px": 0.46568641397441013,
+        "phase_score": 0.9939443958423756,
+        "correlation": 0.9476750265905036,
+        "patches": [
+          {
+            "row": 0,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9810584223181966,
+            "integer_ncc": 0.9322746396064758,
+            "uniqueness": 0.20565193891525269,
+            "dx": 0.08924122383431064,
+            "dy": 0.506263959780104
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9809298507247883,
+            "integer_ncc": 0.9305592179298401,
+            "uniqueness": 0.153728187084198,
+            "dx": -0.08940253740402238,
+            "dy": 0.5201047634650965
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9824260238444248,
+            "integer_ncc": 0.9364194869995117,
+            "uniqueness": 0.06483674049377441,
+            "dx": -0.051018746207645384,
+            "dy": 0.5116718132031103
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "accepted": true,
+            "ncc": 0.9809789629377647,
+            "integer_ncc": 0.9444602727890015,
+            "uniqueness": 0.24752920866012573,
+            "dx": -0.19286043419507284,
+            "dy": 0.46353120803245806
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "accepted": true,
+            "ncc": 0.9755935602722354,
+            "integer_ncc": 0.9226862192153931,
+            "uniqueness": 0.3721480369567871,
+            "dx": -0.007673337292005182,
+            "dy": 0.4703651869980499
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "accepted": true,
+            "ncc": 0.9823753649611345,
+            "integer_ncc": 0.9436342716217041,
+            "uniqueness": 0.23441404104232788,
+            "dx": -0.019767947240121694,
+            "dy": 0.5017430907224417
+          }
+        ],
+        "shift_limit_band_px": 1.5,
+        "reason": "scenery_agrees",
+        "agreeing_patches": 6,
+        "patch_median": [
+          -0.03539334672388354,
+          0.5040035252512729
+        ],
+        "patch_spread": 0.15746708747118932,
+        "registered_band_correlation": 0.9841026523033785
+      }
+    },
+    {
+      "case": "band_translation_-2_0",
+      "expected": "changed",
+      "result": {
+        "status": "changed",
+        "dx_band_px": -1.9978365864247394,
+        "dy_band_px": -0.0020973881877779377,
+        "phase_score": 0.9989323749895449,
+        "correlation": 0.8626254769793956,
+        "patches": [],
+        "shift_limit_band_px": 1.5,
+        "reason": "global_shift_exceeds_original_bound"
+      }
+    },
+    {
+      "case": "band_translation_2_0",
+      "expected": "changed",
+      "result": {
+        "status": "changed",
+        "dx_band_px": 1.9976859565878726,
+        "dy_band_px": -0.0004248043289294401,
+        "phase_score": 0.9988306310324021,
+        "correlation": 0.8636384688537239,
+        "patches": [],
+        "shift_limit_band_px": 1.5,
+        "reason": "global_shift_exceeds_original_bound"
+      }
+    },
+    {
+      "case": "band_translation_0_-2",
+      "expected": "changed",
+      "result": {
+        "status": "changed",
+        "dx_band_px": 0.0013121122522647966,
+        "dy_band_px": -1.9974486381580903,
+        "phase_score": 0.9968682262161631,
+        "correlation": 0.7135675607744489,
+        "patches": [],
+        "shift_limit_band_px": 1.5,
+        "reason": "global_shift_exceeds_original_bound"
+      }
+    },
+    {
+      "case": "band_translation_0_2",
+      "expected": "changed",
+      "result": {
+        "status": "changed",
+        "dx_band_px": -0.0014843745863117874,
+        "dy_band_px": 1.9948138637372637,
+        "phase_score": 0.9973290836487287,
+        "correlation": 0.7080519982540499,
+        "patches": [],
+        "shift_limit_band_px": 1.5,
+        "reason": "global_shift_exceeds_original_bound"
+      }
+    }
+  ],
+  "all_expected_statuses_match": true,
+  "prior_42_outcomes_unchanged": true
+}

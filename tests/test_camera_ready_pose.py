@@ -145,3 +145,40 @@ def test_yesterday_accepted_prime_is_motion_and_never_ready():
     after = cv2.imread(str(directory / "initialization-motion-after.png"))
     assert response(before,after,direction=-1)["motion_present"]
     assert pose.analyze(before,after)["status"] != "unchanged"
+
+
+def _sitting_c_reference():
+    return _pinned_native("data/calibration/alt-cam-20260928c/yaw-01r/refusal-reference.png",
+                          "3e992481bcb3f3d941ac92f8c0c0ceb48faac2ec0fe331c442049385f88fcaf8")
+
+
+@pytest.mark.corpus
+def test_fractional_scoring_accepts_sitting_c_without_changing_estimated_motion():
+    reference = _sitting_c_reference()
+    current = _pinned_native("data/calibration/alt-cam-20260928c/yaw-01r/refusal-current.png",
+                            "1987561f1593789194d8786d24bbcab5f4028173783d003de78e478263e9cf69")
+    result = pose.analyze(reference, current)
+    assert result["status"] == "unchanged" and result["agreeing_patches"] == 6
+    assert all(p["integer_ncc"] < .95 and p["ncc"] >= .95 for p in result["patches"])
+    assert result["registered_band_correlation"] == pytest.approx(.97831496, abs=1e-6)
+    # The original failed audit is useful specifically for unchanged offsets and
+    # uniqueness: only the NCC sampling location changes in this repair.
+    saved = json.loads((ROOT / "data/calibration/alt-cam-20260928c/yaw-01r/pose-refusal.json").read_text())["audit"]
+    for old, new in zip(saved["patches"], result["patches"]):
+        for key in ("dx", "dy", "uniqueness"):
+            assert new[key] == pytest.approx(old[key], abs=1e-6)
+        assert new["integer_ncc"] == pytest.approx(old["ncc"], abs=1e-6)
+
+
+@pytest.mark.corpus
+@pytest.mark.parametrize("dx,dy,status", [(-.5,0,"unchanged"), (.5,0,"unchanged"),
+    (0,-.5,"unchanged"), (0,.5,"unchanged"), (-2,0,"changed"), (2,0,"changed"),
+    (0,-2,"changed"), (0,2,"changed")])
+def test_fractional_band_pixel_sampling_keeps_original_motion_bound(dx, dy, status):
+    reference = _sitting_c_reference()
+    # 2560 native pixels -> 265-pixel band: one band pixel is four native pixels.
+    translated = cv2.warpAffine(reference, np.float32([[1,0,4*dx], [0,1,4*dy]]),
+                                (reference.shape[1], reference.shape[0]), flags=cv2.INTER_LINEAR)
+    result = pose.analyze(reference, translated)
+    assert result["status"] == status
+    assert result["shift_limit_band_px"] == 1.5

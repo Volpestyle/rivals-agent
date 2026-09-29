@@ -62,8 +62,14 @@ def analyze(reference, frame):
             margin = float(peak - others.max())
             px = ix - SEARCH + _offset(scores[iy], ix)
             py = iy - SEARCH + _offset(scores[:, ix], iy)
-            audit.update(ncc=float(peak), uniqueness=margin, dx=float(px), dy=float(py))
-            audit["accepted"] = bool(peak >= PATCH_NCC and margin >= PATCH_MARGIN)
+            # Score the correspondence at the SAME fractional displacement
+            # used below. Integer-grid NCC penalizes a valid half-pixel shift.
+            # Keep uniqueness on the original search surface (no rescore boost).
+            aligned = cv2.getRectSubPix(b, (96, 60), (x+47.5+px, y+29.5+py))
+            ncc = float(np.corrcoef(patch.ravel(), aligned.ravel())[0, 1]) if aligned.std() > 0 else 0.
+            audit.update(ncc=ncc if math.isfinite(ncc) else None, integer_ncc=float(peak),
+                         uniqueness=margin, dx=float(px), dy=float(py))
+            audit["accepted"] = bool(math.isfinite(ncc) and ncc >= PATCH_NCC and margin >= PATCH_MARGIN)
     good = [p for p in result["patches"] if p["accepted"]]
     if len(good) < 3 or len({p["row"] for p in good}) < 2 or len({p["col"] for p in good}) < 2:
         return result
