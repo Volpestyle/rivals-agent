@@ -1,0 +1,48 @@
+{
+  "sitting": "alt-cam-20260928d",
+  "verified_utc": "2026-09-29T01:50:56.292010+00:00",
+  "source_commit": "6e3b7b0622478ab39c4af4263044821245b7c086",
+  "checkout": "C:\\Users\\volpe\\repos\\rivals-agent",
+  "head_at_verification": "6e3b7b0622478ab39c4af4263044821245b7c086",
+  "receipt": "docs\\evidence\\camera-ready-fractional-20260928\\review-v3.json",
+  "receipt_sha256": "3e9bea22084523b8b11f5908b32094e9e716d3f202ba12591bd335e77cca8ec6",
+  "verify_receipt": "accepted",
+  "superseded_v2": "stale measurement review: perception/camera_ready_pose.py",
+  "files": {
+    "scripts/measure_camera_turns.py": "bfc51b551da79e375857bda906eab6ab0cc41a9930640016f56bdac1ba44eda9",
+    "tests/test_measure_camera_turns.py": "a174681fc82b1d4040866292b8535152a56a249d9dcf153a2db553819d624ca4",
+    "perception/camera_ready_pose.py": "cf8f16ae9855730b4e1f58810a56ac0180f10375d89a7f4ead8ede4c8b4ae16f",
+    "agent/controller.py": "4e5bb70fca797ab17a25a8699d1ad111f0b7cd561f59d2b308a52c10b44da060",
+    "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+    "scripts/l4_measure.py": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1",
+    "agent/loop.py": "040c77c2c4ed0fff5a893e6e00991c8df7bad1e87267bf6d416964911b1e596f",
+    "scripts/run_range_bc_live.py": "446ef0bb2dc74c615f8c445dfac043ec0be4bfbd3c36195e9dfc727c8a9f7823",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547"
+  },
+  "additional_files": {
+    "tests/test_camera_ready_pose.py": "ecc47bfbae3f23929effff649f711fb3be2cee60952f9cc87bcd5e5aa082885a"
+  },
+  "fps_runtime_unchanged": {
+    "agent/controller.py": "4e5bb70fca797ab17a25a8699d1ad111f0b7cd561f59d2b308a52c10b44da060",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "policy/range_bc/live_inference.py": "d0331d60ed05807cb13b4dc78e59fa0072d36e3b35c940dd532eefb54baa5e0a",
+    "policy/range_bc/vocab.py": "9f57c02a977921cc0f8fef003a19eb647136ff51af34a7913f76fb22ec811f3e",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "scripts/measure_inference_fps.py": "ae8ca033cdc28cdf91497617668b551680e2849533d2efddb067fe2e6ee97865"
+  },
+  "offline_analyzers_unchanged": {
+    "perception/camera_prime_response.py": "465fc4792697802802db778320e2450ea1054eba501ef5eec7c0a341b4308d31",
+    "perception/camera_turn_analysis.py": "18eef96c2dfa54d991afbd38b269f89c5abc66261552d8bebf3f83f263a5da37"
+  },
+  "reused_focus_gate_preflight": "docs/evidence/live-loop-sitting-prep-20260928c/dry-result.json",
+  "dry_run_repeated": false,
+  "deployment": "same sitting checkout only; no mirror copy",
+  "gpu_used": false,
+  "desktop_opened": false,
+  "input_sent": false,
+  "operator_sha256": "7a907845d260bb59adeadecb45b60ed7a3019cd6595f7b8388bba4a0a207cbb4"
+}
