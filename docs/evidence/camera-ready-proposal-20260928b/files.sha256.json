@@ -1,0 +1,13 @@
+{
+  ".gitattributes": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da",
+  "candidate.py": "7b6345c360017db61e9cc35bcfdf7a7c0897cde476bf5e08674ef7405b133931",
+  "failure.json": "0f465bf869e9bbfe71956368425f6ee8267ae7a8773e4d629b481ae394ff1c4f",
+  "frame-retention.json": "07d51e5e0186e5959a49a129519f97098a0874a2b6142a3a8717c0383376296c",
+  "pose-refusal.json": "502a7053e52a45de8b0b1322c552e3991d95980afa7ebf523fb23572cc03f240",
+  "preceding-frames.json": "1401bdbd2b9dcaa047f5693c737c6ba647327e15cbe9cf7f76e53de26c377c58",
+  "probe.json": "4c1f0fd1e8d91e8fd1684fdd08f1b5e2ded6cfc4050ca9b2cc380342b74f81a0",
+  "probe.py": "12bf0365bae46f5a3d89bea8d0d58a1a658e2150bc0c024e068b810383041938",
+  "PROPOSAL.md": "67b6cd6186c0f0b578597d6df418e82c626b70f61a24674a8d5106f388e75f24",
+  "refusal-current-frame.json": "8430b2d2d69a935b787ae1d498cc830dd3c898cd1d3fdd9036aae2737b323c7b",
+  "refusal-reference-frame.json": "2750da13e5b5959fbfb6d27070e2152a4780fd15e6d55e7a565dd7be2768b4d4"
+}

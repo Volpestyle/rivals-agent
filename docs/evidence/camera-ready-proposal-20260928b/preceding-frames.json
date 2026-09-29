@@ -1,0 +1,1138 @@
+[
+  {
+    "path": "data\\calibration\\alt-cam-20260928b\\yaw-01\\frames\\0000142-guard.png",
+    "sha256": "0ad7dd6d5643224a6c1db406e61bb799f0a16b51705d9cf45744287d4f7565fa",
+    "baseline": {
+      "status": "unprovable",
+      "dx_band_px": 0.08870267042587443,
+      "dy_band_px": 0.5632521024052721,
+      "phase_score": 1.002270013032136,
+      "correlation": 0.9450845538758378,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9743608832359314,
+          "uniqueness": 0.044672489166259766,
+          "dx": 0.5238689920515689,
+          "dy": 0.9103596110539754
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9499614238739014,
+          "uniqueness": 0.29698288440704346,
+          "dx": -0.01874245747075108,
+          "dy": 0.6905347796475965
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false,
+          "ncc": 0.9874259829521179,
+          "uniqueness": 0.008680999279022217,
+          "dx": 1.5449918340348063,
+          "dy": 0.9516668679916496
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9602358341217041,
+          "uniqueness": 0.10952478647232056,
+          "dx": 0.1525111660303024,
+          "dy": 0.6708899286785082
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "insufficient_patch_agreement"
+    },
+    "candidate": {
+      "status": "unchanged",
+      "dx_band_px": 0.08870267042587443,
+      "dy_band_px": 0.5632521024052721,
+      "phase_score": 1.002270013032136,
+      "correlation": 0.9450845538758378,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9743608832359314,
+          "uniqueness": 0.044672489166259766,
+          "dx": 0.5238689920515689,
+          "dy": 0.9103596110539754
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9388822317123413,
+          "uniqueness": 0.3077980875968933,
+          "dx": 0.04217506347864299,
+          "dy": 0.6968071379907432
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9499614238739014,
+          "uniqueness": 0.29698288440704346,
+          "dx": -0.01874245747075108,
+          "dy": 0.6905347796475965
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false,
+          "ncc": 0.9874259829521179,
+          "uniqueness": 0.008680999279022217,
+          "dx": 1.5449918340348063,
+          "dy": 0.9516668679916496
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9574064612388611,
+          "uniqueness": 0.06035393476486206,
+          "dx": 0.3657514471824426,
+          "dy": 0.6578204302935687
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9602358341217041,
+          "uniqueness": 0.10952478647232056,
+          "dx": 0.1525111660303024,
+          "dy": 0.6708899286785082
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 3,
+      "patch_median": [
+        0.3657514471824426,
+        0.6708899286785082
+      ],
+      "patch_spread": 0.23946968237546729,
+      "registered_band_correlation": 0.9837277723409196
+    }
+  },
+  {
+    "path": "data\\calibration\\alt-cam-20260928b\\yaw-01\\frames\\0000143-guard.png",
+    "sha256": "5e8732cae4c6447f2390c9b5cd68fe3748c3ae7a219652f05632039fc7287bdf",
+    "baseline": {
+      "status": "unchanged",
+      "dx_band_px": 0.0852144423308232,
+      "dy_band_px": 0.5751624556718298,
+      "phase_score": 0.9999347300588349,
+      "correlation": 0.9450720740633053,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9743661284446716,
+          "uniqueness": 0.044992923736572266,
+          "dx": 0.5284173708789824,
+          "dy": 0.9093563965803129
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9501456618309021,
+          "uniqueness": 0.29733115434646606,
+          "dx": -0.017149580587881127,
+          "dy": 0.6942850216489266
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false,
+          "ncc": 0.987293004989624,
+          "uniqueness": 0.008491158485412598,
+          "dx": 1.55460379806765,
+          "dy": 0.9505100398743245
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9597511291503906,
+          "uniqueness": 0.10925513505935669,
+          "dx": 0.15394106490972276,
+          "dy": 0.6683315358317174
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 3,
+      "patch_median": [
+        0.15394106490972276,
+        0.6942850216489266
+      ],
+      "patch_spread": 0.3744763059692597
+    },
+    "candidate": {
+      "status": "unchanged",
+      "dx_band_px": 0.0852144423308232,
+      "dy_band_px": 0.5751624556718298,
+      "phase_score": 0.9999347300588349,
+      "correlation": 0.9450720740633053,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9743661284446716,
+          "uniqueness": 0.044992923736572266,
+          "dx": 0.5284173708789824,
+          "dy": 0.9093563965803129
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9386438727378845,
+          "uniqueness": 0.3076710104942322,
+          "dx": 0.043985624909436506,
+          "dy": 0.697984956274394
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9501456618309021,
+          "uniqueness": 0.29733115434646606,
+          "dx": -0.017149580587881127,
+          "dy": 0.6942850216489266
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false,
+          "ncc": 0.987293004989624,
+          "uniqueness": 0.008491158485412598,
+          "dx": 1.55460379806765,
+          "dy": 0.9505100398743245
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.956807017326355,
+          "uniqueness": 0.05995398759841919,
+          "dx": 0.3687000323283215,
+          "dy": 0.6547678331182749
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9597511291503906,
+          "uniqueness": 0.10925513505935669,
+          "dx": 0.15394106490972276,
+          "dy": 0.6683315358317174
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.2613205486190221,
+        0.681308278740322
+      ],
+      "patch_spread": 0.2784701292069032,
+      "registered_band_correlation": 0.9858338613027473
+    }
+  },
+  {
+    "path": "data\\calibration\\alt-cam-20260928b\\yaw-01\\frames\\0000144-guard.png",
+    "sha256": "7cf8c96b1f9a26ea24006cd6329053df1fc6bc19722f7481903f1917960bc827",
+    "baseline": {
+      "status": "unprovable",
+      "dx_band_px": 0.08076059557308213,
+      "dy_band_px": 0.5612625201880093,
+      "phase_score": 1.002287722175504,
+      "correlation": 0.9455308531618472,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9744624495506287,
+          "uniqueness": 0.04485863447189331,
+          "dx": 0.5255480045957197,
+          "dy": 0.910168123627166
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.949257493019104,
+          "uniqueness": 0.29654526710510254,
+          "dx": -0.019124099859009265,
+          "dy": 0.6855685790771764
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false,
+          "ncc": 0.9873118996620178,
+          "uniqueness": 0.008309423923492432,
+          "dx": 1.55482668545097,
+          "dy": 0.9496328514128071
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9597153067588806,
+          "uniqueness": 0.10895317792892456,
+          "dx": 0.1538463016573051,
+          "dy": 0.666748771109261
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "insufficient_patch_agreement"
+    },
+    "candidate": {
+      "status": "unchanged",
+      "dx_band_px": 0.08076059557308213,
+      "dy_band_px": 0.5612625201880093,
+      "phase_score": 1.002287722175504,
+      "correlation": 0.9455308531618472,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9744624495506287,
+          "uniqueness": 0.04485863447189331,
+          "dx": 0.5255480045957197,
+          "dy": 0.910168123627166
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.938025176525116,
+          "uniqueness": 0.307096004486084,
+          "dx": 0.0427823458331601,
+          "dy": 0.6914604073052649
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.949257493019104,
+          "uniqueness": 0.29654526710510254,
+          "dx": -0.019124099859009265,
+          "dy": 0.6855685790771764
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false,
+          "ncc": 0.9873118996620178,
+          "uniqueness": 0.008309423923492432,
+          "dx": 1.55482668545097,
+          "dy": 0.9496328514128071
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9568741917610168,
+          "uniqueness": 0.059823811054229736,
+          "dx": 0.3690347750428022,
+          "dy": 0.6530747994014342
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9597153067588806,
+          "uniqueness": 0.10895317792892456,
+          "dx": 0.1538463016573051,
+          "dy": 0.666748771109261
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 3,
+      "patch_median": [
+        0.3690347750428022,
+        0.666748771109261
+      ],
+      "patch_spread": 0.24341935251790503,
+      "registered_band_correlation": 0.983579122081309
+    }
+  },
+  {
+    "path": "data\\calibration\\alt-cam-20260928b\\yaw-01\\frames\\0000145-guard.png",
+    "sha256": "25dceacc50221d4ad5d0850a8611a8ad5489981ed59732935a483e242aad869d",
+    "baseline": {
+      "status": "unchanged",
+      "dx_band_px": 0.08396253547823562,
+      "dy_band_px": 0.5799829503676364,
+      "phase_score": 1.0035930968861522,
+      "correlation": 0.9450069088468289,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.97442227602005,
+          "uniqueness": 0.04499232769012451,
+          "dx": 0.5259886027376929,
+          "dy": 0.9094915449997696
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9511950612068176,
+          "uniqueness": 0.2980350852012634,
+          "dx": -0.017509174970940483,
+          "dy": 0.697872526310183
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false,
+          "ncc": 0.9873415231704712,
+          "uniqueness": 0.00849461555480957,
+          "dx": 1.5545563162919276,
+          "dy": 0.9504397238773707
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9598711133003235,
+          "uniqueness": 0.10912859439849854,
+          "dx": 0.154393727025968,
+          "dy": 0.669284627322213
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 3,
+      "patch_median": [
+        0.154393727025968,
+        0.697872526310183
+      ],
+      "patch_spread": 0.3715948757117249
+    },
+    "candidate": {
+      "status": "unchanged",
+      "dx_band_px": 0.08396253547823562,
+      "dy_band_px": 0.5799829503676364,
+      "phase_score": 1.0035930968861522,
+      "correlation": 0.9450069088468289,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.97442227602005,
+          "uniqueness": 0.04499232769012451,
+          "dx": 0.5259886027376929,
+          "dy": 0.9094915449997696
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9395913481712341,
+          "uniqueness": 0.3083847761154175,
+          "dx": 0.043542855683457025,
+          "dy": 0.6997028371686753
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9511950612068176,
+          "uniqueness": 0.2980350852012634,
+          "dx": -0.017509174970940483,
+          "dy": 0.697872526310183
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false,
+          "ncc": 0.9873415231704712,
+          "uniqueness": 0.00849461555480957,
+          "dx": 1.5545563162919276,
+          "dy": 0.9504397238773707
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9569251537322998,
+          "uniqueness": 0.059741079807281494,
+          "dx": 0.37063268821835216,
+          "dy": 0.6558518920596308
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9598711133003235,
+          "uniqueness": 0.10912859439849854,
+          "dx": 0.154393727025968,
+          "dy": 0.669284627322213
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.26251320762216007,
+        0.683578576816198
+      ],
+      "patch_spread": 0.2800223825931005,
+      "registered_band_correlation": 0.9858524177952579
+    }
+  },
+  {
+    "path": "data\\calibration\\alt-cam-20260928b\\yaw-01\\frames\\0000146-guard.png",
+    "sha256": "1d5e46029ec00ed1bd270b24e47da3b687fae8b842b2419deb5bc49454bcc4d2",
+    "baseline": {
+      "status": "unprovable",
+      "dx_band_px": 0.08965219365347821,
+      "dy_band_px": 0.5658369288265277,
+      "phase_score": 1.0016201302328227,
+      "correlation": 0.9451849612589931,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9743539094924927,
+          "uniqueness": 0.04505741596221924,
+          "dx": 0.5284776659876962,
+          "dy": 0.9091553927290198
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9490721821784973,
+          "uniqueness": 0.2965097427368164,
+          "dx": -0.01747332571452381,
+          "dy": 0.6867918908101582
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false,
+          "ncc": 0.9873245358467102,
+          "uniqueness": 0.008552491664886475,
+          "dx": 1.5563783512728715,
+          "dy": 0.9507733395944002
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9596831798553467,
+          "uniqueness": 0.10915243625640869,
+          "dx": 0.15417090968482366,
+          "dy": 0.6679625595841758
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "insufficient_patch_agreement"
+    },
+    "candidate": {
+      "status": "unchanged",
+      "dx_band_px": 0.08965219365347821,
+      "dy_band_px": 0.5658369288265277,
+      "phase_score": 1.0016201302328227,
+      "correlation": 0.9451849612589931,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9743539094924927,
+          "uniqueness": 0.04505741596221924,
+          "dx": 0.5284776659876962,
+          "dy": 0.9091553927290198
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9378818869590759,
+          "uniqueness": 0.30694252252578735,
+          "dx": 0.043172893156870826,
+          "dy": 0.692856451452964
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9490721821784973,
+          "uniqueness": 0.2965097427368164,
+          "dx": -0.01747332571452381,
+          "dy": 0.6867918908101582
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false,
+          "ncc": 0.9873245358467102,
+          "uniqueness": 0.008552491664886475,
+          "dx": 1.5563783512728715,
+          "dy": 0.9507733395944002
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9567790031433105,
+          "uniqueness": 0.059869468212127686,
+          "dx": 0.36949261055072774,
+          "dy": 0.6547165063590281
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9596831798553467,
+          "uniqueness": 0.10915243625640869,
+          "dx": 0.15417090968482366,
+          "dy": 0.6679625595841758
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 3,
+      "patch_median": [
+        0.36949261055072774,
+        0.6679625595841758
+      ],
+      "patch_spread": 0.24119283314484397,
+      "registered_band_correlation": 0.9836177819170739
+    }
+  },
+  {
+    "path": "data\\calibration\\alt-cam-20260928b\\yaw-01\\frames\\0000147-guard.png",
+    "sha256": "6c7aeebcbd40b1e7e4264538dc7984c93bc919c54ab9fa64308a8d729af58ee5",
+    "baseline": {
+      "status": "unchanged",
+      "dx_band_px": 0.088698440543169,
+      "dy_band_px": 0.5745720694947352,
+      "phase_score": 1.0016006475377965,
+      "correlation": 0.9449596750924926,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9745596647262573,
+          "uniqueness": 0.045259177684783936,
+          "dx": 0.53037544834326,
+          "dy": 0.9097305317504207
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9505168795585632,
+          "uniqueness": 0.29721957445144653,
+          "dx": -0.014857288223494755,
+          "dy": 0.6978815832264865
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false,
+          "ncc": 0.9871625900268555,
+          "uniqueness": 0.008270502090454102,
+          "dx": 1.556563481801747,
+          "dy": 0.9495300101586117
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.959520161151886,
+          "uniqueness": 0.10874927043914795,
+          "dx": 0.1558972270808708,
+          "dy": 0.667153458311514
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 3,
+      "patch_median": [
+        0.1558972270808708,
+        0.6978815832264865
+      ],
+      "patch_spread": 0.37447822126238917
+    },
+    "candidate": {
+      "status": "unchanged",
+      "dx_band_px": 0.088698440543169,
+      "dy_band_px": 0.5745720694947352,
+      "phase_score": 1.0016006475377965,
+      "correlation": 0.9449596750924926,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9745596647262573,
+          "uniqueness": 0.045259177684783936,
+          "dx": 0.53037544834326,
+          "dy": 0.9097305317504207
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9390323162078857,
+          "uniqueness": 0.3071182370185852,
+          "dx": 0.0461463593195305,
+          "dy": 0.7010346644743443
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9505168795585632,
+          "uniqueness": 0.29721957445144653,
+          "dx": -0.014857288223494755,
+          "dy": 0.6978815832264865
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false,
+          "ncc": 0.9871625900268555,
+          "uniqueness": 0.008270502090454102,
+          "dx": 1.556563481801747,
+          "dy": 0.9495300101586117
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9565455317497253,
+          "uniqueness": 0.0595363974571228,
+          "dx": 0.3739114836437168,
+          "dy": 0.6534545603606068
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.959520161151886,
+          "uniqueness": 0.10874927043914795,
+          "dx": 0.1558972270808708,
+          "dy": 0.667153458311514
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.2649043553622938,
+        0.6825175207690002
+      ],
+      "patch_spread": 0.27976164358578853,
+      "registered_band_correlation": 0.9857824338839922
+    }
+  },
+  {
+    "path": "data\\calibration\\alt-cam-20260928b\\yaw-01\\frames\\0000148-guard.png",
+    "sha256": "7682bba66039b43f18f774ddba050e0a368cad46417eafda2038a7c521ae62b4",
+    "baseline": {
+      "status": "unprovable",
+      "dx_band_px": -0.08531319952328431,
+      "dy_band_px": 1.2933943396597556,
+      "phase_score": 0.9971859982337481,
+      "correlation": 0.8551595764900529,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9886815547943115,
+          "uniqueness": 0.10757100582122803,
+          "dx": -0.3208146530010855,
+          "dy": 1.2018736527417198
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9642128944396973,
+          "uniqueness": 0.31316226720809937,
+          "dx": -0.05825075586142509,
+          "dy": 1.2274408881434575
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9951719045639038,
+          "uniqueness": 0.025729119777679443,
+          "dx": -0.9929523904831002,
+          "dy": 1.0502431474677514
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9836829900741577,
+          "uniqueness": 0.13704043626785278,
+          "dx": -0.05716986456120895,
+          "dy": 1.1768300452255356
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "inconsistent_or_unconfident_motion",
+      "agreeing_patches": 4,
+      "patch_median": [
+        -0.1895327044312553,
+        1.1893518489836277
+      ],
+      "patch_spread": 0.803419686051845
+    },
+    "candidate": {
+      "status": "unprovable",
+      "dx_band_px": -0.08531319952328431,
+      "dy_band_px": 1.2933943396597556,
+      "phase_score": 0.9971859982337481,
+      "correlation": 0.8551595764900529,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9886815547943115,
+          "uniqueness": 0.10757100582122803,
+          "dx": -0.3208146530010855,
+          "dy": 1.2018736527417198
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9573585391044617,
+          "uniqueness": 0.30837196111679077,
+          "dx": -0.08194733464948825,
+          "dy": 1.2373882462958494
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9642128944396973,
+          "uniqueness": 0.31316226720809937,
+          "dx": -0.05825075586142509,
+          "dy": 1.2274408881434575
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9951719045639038,
+          "uniqueness": 0.025729119777679443,
+          "dx": -0.9929523904831002,
+          "dy": 1.0502431474677514
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9838817119598389,
+          "uniqueness": 0.08221441507339478,
+          "dx": -0.18354244067334508,
+          "dy": 1.1612515933586407
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9836829900741577,
+          "uniqueness": 0.13704043626785278,
+          "dx": -0.05716986456120895,
+          "dy": 1.1768300452255356
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "inconsistent_or_unconfident_motion",
+      "agreeing_patches": 6,
+      "patch_median": [
+        -0.13274488766141668,
+        1.1893518489836277
+      ],
+      "patch_spread": 0.8602075028216836
+    }
+  },
+  {
+    "path": "data\\calibration\\alt-cam-20260928b\\yaw-01\\frames\\0000149-guard.png",
+    "sha256": "5402d6bbbe721f650fe5a1ba643f72fb41435db334c7fef3e73672e8926a911f",
+    "baseline": {
+      "status": "unchanged",
+      "dx_band_px": 0.27794220608129194,
+      "dy_band_px": 0.6254715358612373,
+      "phase_score": 1.017940188937717,
+      "correlation": 0.938745720688927,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9798415899276733,
+          "uniqueness": 0.05727440118789673,
+          "dx": 0.6374846815176236,
+          "dy": 0.9050539403390944
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9560677409172058,
+          "uniqueness": 0.29100602865219116,
+          "dx": 0.12257086941797159,
+          "dy": 0.7656584908501842
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false,
+          "ncc": 0.9894309639930725,
+          "uniqueness": 0.011619269847869873,
+          "dx": 1.4597310698238415,
+          "dy": 0.8341475499167539
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9534015655517578,
+          "uniqueness": 0.09511357545852661,
+          "dx": 0.35616038737678896,
+          "dy": 0.6840319116576652
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 3,
+      "patch_median": [
+        0.35616038737678896,
+        0.7656584908501842
+      ],
+      "patch_spread": 0.28132429414083465
+    },
+    "candidate": {
+      "status": "unchanged",
+      "dx_band_px": 0.27794220608129194,
+      "dy_band_px": 0.6254715358612373,
+      "phase_score": 1.017940188937717,
+      "correlation": 0.938745720688927,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9798415899276733,
+          "uniqueness": 0.05727440118789673,
+          "dx": 0.6374846815176236,
+          "dy": 0.9050539403390944
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9441649913787842,
+          "uniqueness": 0.2933797240257263,
+          "dx": 0.1560238628709673,
+          "dy": 0.7364375581907047
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9560677409172058,
+          "uniqueness": 0.29100602865219116,
+          "dx": 0.12257086941797159,
+          "dy": 0.7656584908501842
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false,
+          "ncc": 0.9894309639930725,
+          "uniqueness": 0.011619269847869873,
+          "dx": 1.4597310698238415,
+          "dy": 0.8341475499167539
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.960941731929779,
+          "uniqueness": 0.06557655334472656,
+          "dx": 0.5606675482194154,
+          "dy": 0.8040554586696951
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9534015655517578,
+          "uniqueness": 0.09511357545852661,
+          "dx": 0.35616038737678896,
+          "dy": 0.6840319116576652
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 4,
+      "patch_median": [
+        0.4584139677981022,
+        0.7848569747599397
+      ],
+      "patch_spread": 0.3358430983801306,
+      "registered_band_correlation": 0.9845458924533359
+    }
+  },
+  {
+    "path": "data\\calibration\\alt-cam-20260928b\\yaw-01\\frames\\0000150-guard.png",
+    "sha256": "93f60a7304d1db0dd357ca9ee3c4d4798758d06e9c88a85dd52789e61803d8b3",
+    "baseline": {
+      "status": "unprovable",
+      "dx_band_px": 0.08898245622637546,
+      "dy_band_px": 0.5640018313279427,
+      "phase_score": 1.0021504477041738,
+      "correlation": 0.9449897330613181,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9745332598686218,
+          "uniqueness": 0.04497027397155762,
+          "dx": 0.5251268263404125,
+          "dy": 0.9111971218256203
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9498469233512878,
+          "uniqueness": 0.297057569026947,
+          "dx": -0.017926494698423945,
+          "dy": 0.6912671817789158
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false,
+          "ncc": 0.9872416853904724,
+          "uniqueness": 0.008368611335754395,
+          "dx": 1.549456257005863,
+          "dy": 0.9502033337697264
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9601321220397949,
+          "uniqueness": 0.10918951034545898,
+          "dx": 0.154017254733313,
+          "dy": 0.6713470872781188
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "insufficient_patch_agreement"
+    },
+    "candidate": {
+      "status": "unchanged",
+      "dx_band_px": 0.08898245622637546,
+      "dy_band_px": 0.5640018313279427,
+      "phase_score": 1.0021504477041738,
+      "correlation": 0.9449897330613181,
+      "patches": [
+        {
+          "row": 0,
+          "col": 0,
+          "accepted": true,
+          "ncc": 0.9745332598686218,
+          "uniqueness": 0.04497027397155762,
+          "dx": 0.5251268263404125,
+          "dy": 0.9111971218256203
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "accepted": false,
+          "ncc": 0.9387587308883667,
+          "uniqueness": 0.3070330023765564,
+          "dx": 0.0433081277854361,
+          "dy": 0.6969232435967234
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "accepted": false,
+          "ncc": 0.9498469233512878,
+          "uniqueness": 0.297057569026947,
+          "dx": -0.017926494698423945,
+          "dy": 0.6912671817789158
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "accepted": false,
+          "ncc": 0.9872416853904724,
+          "uniqueness": 0.008368611335754395,
+          "dx": 1.549456257005863,
+          "dy": 0.9502033337697264
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "accepted": true,
+          "ncc": 0.9572455883026123,
+          "uniqueness": 0.05998438596725464,
+          "dx": 0.36910753764792054,
+          "dy": 0.6581344528464226
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "accepted": true,
+          "ncc": 0.9601321220397949,
+          "uniqueness": 0.10918951034545898,
+          "dx": 0.154017254733313,
+          "dy": 0.6713470872781188
+        }
+      ],
+      "shift_limit_band_px": 1.5,
+      "reason": "scenery_agrees",
+      "agreeing_patches": 3,
+      "patch_median": [
+        0.36910753764792054,
+        0.6713470872781188
+      ],
+      "patch_spread": 0.23985003454750153,
+      "registered_band_correlation": 0.9836762305587892
+    }
+  }
+]

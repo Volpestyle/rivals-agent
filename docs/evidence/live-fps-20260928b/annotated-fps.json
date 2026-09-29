@@ -1,0 +1,38 @@
+{
+  "metric": "visible game FPS samples; not frame times or 1% lows",
+  "phases": {
+    "A1": {
+      "count": 30,
+      "p10": 239.0,
+      "p50": 240.0,
+      "p95": 240.0,
+      "p99": 240.0,
+      "sample_hz": 1.0000455820793344,
+      "cap_saturation_fraction": 1.0
+    },
+    "B": {
+      "count": 30,
+      "p10": 239.0,
+      "p50": 240.0,
+      "p95": 240.0,
+      "p99": 240.71,
+      "sample_hz": 1.0000024366717555,
+      "cap_saturation_fraction": 0.9333333333333333
+    },
+    "A2": {
+      "count": 30,
+      "p10": 239.0,
+      "p50": 240.0,
+      "p95": 240.0,
+      "p99": 240.0,
+      "sample_hz": 0.9999623447517259,
+      "cap_saturation_fraction": 0.9666666666666667
+    }
+  },
+  "annotations_sha256": "d9d864332faef3f10fc01965ac4c321bad4082cd196628ad8a6e16c7948a1564",
+  "cap": 240.0,
+  "limitation": "cap saturation conceals unused rendering headroom",
+  "paired_loss_percent": 0.0,
+  "a1_a2_drift_fps": 0.0,
+  "a1_a2_drift_percent": 0.0
+}

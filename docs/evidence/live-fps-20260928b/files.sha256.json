@@ -1,0 +1,18 @@
+{
+  ".gitattributes": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da",
+  "annotated-fps.json": "8cfc84b882d85caf7896a6c04a3133c377b445b4ce5fd54a7df77828dc798fc9",
+  "fill_manual.py": "bbf1af0c104355fd07a1e4d6867de170cec8ec3d2c6b40fed086ac41ae23af71",
+  "fps-annotations-original.csv": "07d0db462ab48cc231051481bea9960df041dc5107cda93227eb0909a37e4f7e",
+  "fps-manual.csv": "d9d864332faef3f10fc01965ac4c321bad4082cd196628ad8a6e16c7948a1564",
+  "frames.jsonl": "fb5acf29318c683fab3ba0c6b831f4bac6ceb8d1cbb1604eeec707e54d7e1b46",
+  "make_overlay_sheets.py": "010f2740cdba010dd0519d677e9592a8f575bd1a867ed39be131f36ce24e9514",
+  "manual-transcription.json": "25b3ef4d60f8f994cbf0b6de96599803f260550355787822df15c2f972c7ba15",
+  "overlay-A1.png": "a45ea4e66b86d7b34de4cf12a0d042aa37456f9cfdeb62f68ffd09957342c4e6",
+  "overlay-A2.png": "e3d4a5b476bdf8ea99b3a9be41ec4b77637c30f208b433478498c633c4e9be66",
+  "overlay-B.png": "2d4794f68f05e63f7327b5ab46868ceb752f67eb4baf367f1e5c2945e7a030cd",
+  "overlay-sources.json": "2272557903f3a97867fe5e9dcea81a4304eeb4292c9bb8a195d667a3f1e4a6b1",
+  "RESULT.md": "e5adb8854388cd675405325b79ab1605c1ea4a663ff2d30a3726efbb5248e480",
+  "run-manifest.json": "1e47a28df9f2448078a1058ce1011fb3a6522db0db4ff60741d2b6a82d8482d5",
+  "run-result.json": "66559de374827c0994614686d3c11bf32112ddbd0ae7f475ddca9ab62817b421",
+  "supplementary-statistics.json": "d1909565b49ed54d7daf77156ada6f195f3875fa7781e6b0770c79f3ca05c6c3"
+}

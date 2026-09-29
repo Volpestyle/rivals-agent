@@ -1,0 +1,1 @@
+{"accepted_by_role":{"before-attach":133,"guard":18},"accepted_not_written":0,"drain_complete":true,"dropped_by_role":{"before-attach":467,"guard":1},"dropped_frames":468,"queue_capacity":2,"throttled_guard_frames":441,"writer_error":null,"written_by_role":{"before-attach":133,"guard":18}}
