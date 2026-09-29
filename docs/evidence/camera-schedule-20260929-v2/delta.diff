@@ -1,0 +1,348 @@
+--- v1/agent/camera_calibration.py
++++ v2/agent/camera_calibration.py
+@@ -215,6 +215,8 @@
+         while clock() < end:
+             tick()
+             now = clock()
++            if now >= end:
++                break
+             active = next((r for r in rows if start + r.start <= now < start + r.end), None)
+             next_boundary = start + active.end if active else min(start + r.start for r in rows if start + r.start > now)
+             pad.send(active.rx if active else 0., active.role if active else "neutral", next_boundary,
+--- v1/scripts/calibrate_camera_schedule.py
++++ v2/scripts/calibrate_camera_schedule.py
+@@ -24,7 +24,7 @@
+                                       human_input, native_pad, schedule, scope_reason)
+ 
+ FILES = ("scripts/calibrate_camera_schedule.py", "agent/camera_calibration.py",
+-         "agent/controller.py", "agent/loop.py",
++         "agent/controller.py",
+          "agent/startup.py", "agent/live_range_bc.py", "scripts/capture.py", "scripts/record.py",
+          "scripts/l4_measure.py", "agent/pad_bindings.py")
+ 
+@@ -43,11 +43,32 @@
+ 
+ def desktop_checks(pid):
+     import ctypes
+-    from agent.loop import foreground_pid_guard
++    from ctypes import wintypes
++    if type(pid) is not int or not 0 < pid <= 0xffffffff:
++        raise ValueError("game PID must be a positive DWORD integer")
+     user32 = ctypes.WinDLL("user32", use_last_error=True)
++    # Same read-only check as agent.loop, without importing gameplay modules in
++    # the pad process. These exact bytes are part of the live review boundary.
++    user32.GetForegroundWindow.restype = wintypes.HWND
++    user32.GetWindowThreadProcessId.argtypes = [wintypes.HWND, ctypes.POINTER(wintypes.DWORD)]
++    user32.GetWindowThreadProcessId.restype = wintypes.DWORD
+     user32.GetAsyncKeyState.argtypes = [ctypes.c_int]
+     user32.GetAsyncKeyState.restype = ctypes.c_short
+-    return foreground_pid_guard(pid), lambda:human_input(user32.GetAsyncKeyState)
++    def focused():
++        window = user32.GetForegroundWindow()
++        current = wintypes.DWORD()
++        return bool(window and user32.GetWindowThreadProcessId(window, ctypes.byref(current)) and current.value == pid)
++    return focused, lambda:human_input(user32.GetAsyncKeyState)
++
++
++def shared_state(ctx):
++    """Single-writer raw cells on this Windows x64 host; no cross-process locks.
++
++    A hard-killed peer cannot leave a SemLock held in the actuator's stop path.
++    Neither Value's implicit lock nor Event's Condition belongs on that path.
++    """
++    return (*[ctx.RawValue("d", v) for v in (-1., time.perf_counter(), 0., 0.)],
++            ctx.RawValue("b", 0))
+ 
+ 
+ def actuator(rows, pid, end, seen, heartbeat, worker_tick, origin, cancel, result_path, source):
+@@ -59,8 +80,11 @@
+             raise ValueError("source changed before native attachment")
+         focused, takeover = desktop_checks(pid)
+         def safety():
+-            return scope_reason(time.perf_counter(), seen.value, heartbeat.value, end,
+-                                cancel.is_set(), focused(), takeover())
++            # Sample the published cells before local now: a concurrent fresh
++            # heartbeat must not look like a future timestamp from an older now.
++            last_range, last_heartbeat = seen.value, heartbeat.value
++            return scope_reason(time.perf_counter(), last_range, last_heartbeat, end,
++                                bool(cancel.value), focused(), takeover())
+         reason = safety()
+         if reason:
+             raise RuntimeError(reason)
+@@ -129,7 +153,7 @@
+ 
+ def terminate_owned(process, cancel):
+     """Bound cleanup of only our child, including a native call holding its lock."""
+-    cancel.set()
++    cancel.value = 1
+     process.join(.2)
+     terminated = process.is_alive()
+     if terminated:
+@@ -153,8 +177,7 @@
+     if not Path(args.recording_ref).is_file():
+         raise ValueError("current native OBS file must exist")
+     ctx = mp.get_context("spawn")
+-    seen, heartbeat, worker_tick, origin = [ctx.Value("d", v) for v in (-1., time.perf_counter(), 0., 0.)]
+-    cancel = ctx.Event()
++    seen, heartbeat, worker_tick, origin, cancel = shared_state(ctx)
+     result_path = journal.output / "actuator.json"
+     frames, capture_stop = queue.Queue(2), threading.Event()
+     stats = {"capture_queue_drops": 0, "capture_error": None, "retention_error": None}
+--- v1/tests/test_camera_calibration_schedule.py
++++ v2/tests/test_camera_calibration_schedule.py
+@@ -1,6 +1,7 @@
+ """Offline calibration boundary tests: fake devices, no capture or native pad."""
+ import gc
+ import json
++import multiprocessing as mp
+ import queue
+ import threading
+ import time
+@@ -170,15 +171,101 @@
+     assert now[0] <= 16.001  # missed time is not appended
+ 
+ 
++def test_end_crossed_between_loop_check_and_sample_completes_cleanly():
++    rows=c.schedule([.45],seconds=.5)
++    end=10.+rows[-1].end
++    samples=iter([end-.001,end+.001])
++    closed=[]
++    pad=SimpleNamespace(send=lambda *a,**kw:pytest.fail('late input'),close=lambda:closed.append(True))
++    c.execute(pad,rows,10.,clock=lambda:next(samples))
++    assert closed == [True]
++
++
++def _supervisor_with_abandoned_lock(state, old_lock, ready, hold_requested, held):
++    """Spawned test helper: keep production heartbeat fresh, then die in a lock."""
++    seen,heartbeat,*_=state
++    while not hold_requested.value:
++        seen.value=heartbeat.value=time.perf_counter()
++        ready.value=1
++        time.sleep(.001)
++    old_lock.acquire()
++    # If a synchronized cell is accidentally reintroduced, hold its real lock
++    # too. The regression remains bounded in the pytest process if reads hang.
++    for cell in state:
++        if hasattr(cell,'get_lock'):
++            cell.get_lock().acquire()
++    seen.value=heartbeat.value=time.perf_counter()
++    held.value=1
++    while True:
++        time.sleep(.01)
++
++
++@pytest.mark.parametrize('role',['opener','yaw-0'])
++def test_hard_killed_supervisor_with_abandoned_lock_cannot_block_release(role):
++    from scripts.calibrate_camera_schedule import shared_state
++    ctx=mp.get_context('spawn')
++    state=shared_state(ctx)  # actual production allocation, not test-only raw cells
++    seen,heartbeat,_,_,cancel=state
++    old_lock=ctx.Lock()
++    ready,hold_requested,held=[ctx.RawValue('b',0) for _ in range(3)]
++    sup=ctx.Process(target=_supervisor_with_abandoned_lock,
++                   args=(state,old_lock,ready,hold_requested,held))
++    pad=None
++    sup.start()
++    try:
++        until=time.perf_counter()+8
++        while not ready.value and time.perf_counter()<until:
++            time.sleep(.005)
++        assert ready.value, 'spawned fake supervisor did not start'
++        target,count=device()
++        end=time.perf_counter()+10
++        def safety():
++            return c.scope_reason(time.perf_counter(),seen.value,heartbeat.value,end,bool(cancel.value),True,False)
++        pad=c.CameraPad(target,safety,end)
++        pad.send(0.,'opener',time.perf_counter()+.2,ly=.25,rt=1.)
++        if role != 'opener':
++            pad.send(.45,role,time.perf_counter()+2)
++        hold_requested.value=1
++        until=time.perf_counter()+1
++        while not held.value and time.perf_counter()<until:
++            time.sleep(.001)
++        assert held.value, 'supervisor did not enter the old-lock critical section'
++        sup.terminate()  # hard-kill only our spawned helper, never a native pad owner
++        sup.join(2)
++        assert not sup.is_alive()
++        # This is the same non-abandonment-aware SemLock as the v1 failure.
++        assert not old_lock.acquire(timeout=.02)
++        assert pad.closed.wait(c.HEARTBEAT_S+.15), 'dead supervisor blocked the release path'
++        assert pad.reason == 'supervisor_heartbeat'
++        assert count['remove'] == 1 and not count['attached']
++        assert target.rows[-1] == (0.,0,0.,0.)
++        assert pad.reports[-1]['returned_t']-heartbeat.value <= c.HEARTBEAT_S+.15
++        assert any(r['role']=='lease_release' for r in pad.reports)
++        assert not any(hasattr(v,'get_lock') or hasattr(v,'is_set') for v in state)
++        # Reads and writes in the surviving supervisor direction must not hang either.
++        for cell in state:
++            cell.value=cell.value
++    finally:
++        if sup.is_alive():
++            sup.terminate()
++            sup.join(2)
++        sup.close()
++        if pad is not None and pad.closed.is_set():
++            pad.close()
++
++
+ def test_owned_process_escalation_only_after_cancellation():
+     from scripts.calibrate_camera_schedule import terminate_owned
+     actions=[]
+     alive=[True]
+-    child=SimpleNamespace(join=lambda dt:actions.append(('join',dt)),is_alive=lambda:alive[0],
++    cancel=SimpleNamespace(value=0)
++    def join(dt):
++        assert cancel.value == 1
++        actions.append(('join',dt))
++    child=SimpleNamespace(join=join,is_alive=lambda:alive[0],
+         terminate=lambda:(actions.append(('terminate',)),alive.__setitem__(0,False)))
+-    cancel=SimpleNamespace(set=lambda:actions.append(('cancel',)))
+     assert terminate_owned(child,cancel)
+-    assert actions == [('cancel',),('join',.2),('terminate',),('join',1.)]
++    assert actions == [('join',.2),('terminate',),('join',1.)]
+ 
+ 
+ def test_prepare_constructs_no_device_or_capture(tmp_path,monkeypatch):
+@@ -218,7 +305,35 @@
+ def test_offline_quality_files_do_not_invalidate_live_receipt():
+     from scripts.calibrate_camera_schedule import FILES
+     assert 'scripts/analyze_camera_schedule.py' not in FILES
++    assert 'agent/loop.py' not in FILES
+     assert not any('camera_ready_pose' in p or 'camera_prime_response' in p or 'camera_turn_analysis' in p for p in FILES)
++
++
++def test_desktop_checks_use_pinned_read_only_logic_without_gameplay_imports(monkeypatch):
++    import builtins
++    import ctypes
++    from scripts.calibrate_camera_schedule import desktop_checks
++    real_import=builtins.__import__
++    def checked_import(name,*args,**kw):
++        assert name != 'agent.loop'
++        return real_import(name,*args,**kw)
++    monkeypatch.setattr(builtins,'__import__',checked_import)
++    current=SimpleNamespace(window=1,pid=42,key=0)
++    def get_pid(window,pointer):
++        pointer._obj.value=current.pid
++        return 123
++    api=SimpleNamespace(GetForegroundWindow=lambda:current.window,
++                        GetWindowThreadProcessId=get_pid,GetAsyncKeyState=lambda vk:current.key)
++    monkeypatch.setattr(ctypes,'WinDLL',lambda *a,**kw:api,raising=False)
++    focused,takeover=desktop_checks(42)
++    assert focused() and not takeover()
++    current.pid=43
++    assert not focused()
++    current.pid=42
++    current.window=0
++    assert not focused()
++    current.key=0x8000
++    assert takeover()
+ 
+ 
+ def test_failed_detach_is_never_a_completed_schedule(tmp_path,monkeypatch):
+@@ -231,7 +346,7 @@
+     now=time.perf_counter()
+     values=[SimpleNamespace(value=v) for v in (now,now,0.,0.)]
+     result_path=tmp_path/'actuator.json'
+-    driver.actuator(c.schedule([.45],.5,10.),1,now+10.,*values,threading.Event(),result_path,driver.pins())
++    driver.actuator(c.schedule([.45],.5,10.),1,now+10.,*values,SimpleNamespace(value=0),result_path,driver.pins())
+     result=json.loads(result_path.read_text())
+     assert result['stop_reason'] == 'error' and result['cleanup_error']
+     assert result['pad_constructed'] and not result['device_removal_confirmed']
+@@ -258,8 +373,7 @@
+             return self.thread.is_alive()
+         def terminate(self):
+             pytest.fail('healthy fake actuator terminated')
+-    ctx=SimpleNamespace(Value=lambda kind,v:SimpleNamespace(value=v),Event=threading.Event,
+-                        Queue=queue.Queue,Process=Process)
++    ctx=SimpleNamespace(RawValue=lambda kind,v:SimpleNamespace(value=v),Process=Process)
+     monkeypatch.setattr(driver.mp,'get_context',lambda kind:ctx)
+     monkeypatch.setattr(driver,'native_pad',lambda:target)
+     monkeypatch.setattr(driver,'desktop_checks',lambda pid:(lambda:True,lambda:False))
+@@ -320,3 +434,87 @@
+                  [dict(role='yaw-0',rx=.45,returned_t=0.),dict(role='cleanup',rx=0.,returned_t=end)])
+     values=[c['candidate_signed_deg_s'] for c in report[0]['candidates'] if c['candidate_signed_deg_s'] is not None]
+     assert values and values[0] == pytest.approx(360/2.23,rel=.01)
++
++
++# Supervisor stop cases adapted from independent live-review v1 scratch tests.
++def _run_supervised_stop(tmp_path, monkeypatch, *, gap=None, range_until=None, takeover_at=None):
++    np = pytest.importorskip("numpy")
++    from scripts import calibrate_camera_schedule as driver
++    from scripts import record
++    from agent.live_range_bc import Journal
++    target, count = device()
++    class Process:
++        pid = None
++        def __init__(self, *, target, args, daemon):
++            self.thread = threading.Thread(target=target, args=args, daemon=daemon)
++        def start(self):
++            self.pid = 123; self.thread.start()
++        def join(self, timeout): self.thread.join(timeout)
++        def is_alive(self): return self.thread.is_alive()
++        def terminate(self): pytest.fail("fake actuator needed forced termination")
++    ctx = SimpleNamespace(RawValue=lambda kind, v: SimpleNamespace(value=v), Process=Process)
++    monkeypatch.setattr(driver.mp, "get_context", lambda kind: ctx)
++    monkeypatch.setattr(driver, "native_pad", lambda: target)
++    t0 = [None]
++    def takeover():
++        return bool(takeover_at is not None and t0[0] and time.perf_counter() - t0[0] > takeover_at)
++    monkeypatch.setattr(driver, "desktop_checks", lambda pid: (lambda: True, takeover))
++    monkeypatch.setattr(driver.uuid, "uuid4", lambda: SimpleNamespace(hex="tok"))
++    def in_range(frame):
++        return not (range_until is not None and t0[0] and time.perf_counter() - t0[0] > range_until)
++    monkeypatch.setattr(record, "in_range", in_range)
++    monkeypatch.setattr(record, "idle_warning", lambda f: False)
++    frame = np.zeros((720, 1280, 3), np.uint8)
++    def capture(frames, stop, stats):
++        while not stop.is_set():
++            now = time.perf_counter()
++            if not (gap and t0[0] and gap[0] <= now - t0[0] <= gap[1]):
++                try: frames.put_nowait((now, frame))
++                except queue.Full: pass
++            stop.wait(.015)
++    monkeypatch.setattr(driver, "capture_frames", capture)
++    receipt = {"files": driver.pins()}
++    monkeypatch.setattr(driver, "verify_receipt", lambda p: receipt)
++    video = tmp_path / "v.mkv"; video.touch()
++    args = SimpleNamespace(game_pid=1, recording_ref=str(video), scope_seconds=30., review_receipt="x")
++    journal = Journal(tmp_path / "run", {})
++    (journal.output / "continue-attach.json").write_text(json.dumps({"token": "tok"}))
++    # t0 = the actuator's schedule origin, read from the real start via a wrapped execute
++    real_execute = driver.execute
++    def execute(pad, rows, start, **kw):
++        t0[0] = start
++        return real_execute(pad, rows, start, **kw)
++    monkeypatch.setattr(driver, "execute", execute)
++    try:
++        with pytest.raises(RuntimeError) as err:
++            driver.run_live(args, c.schedule([.45], seconds=10., scope=30.), journal, receipt)
++        result = json.loads((journal.output / "execution.json").read_text())
++    finally:
++        journal.close()
++    return err.value, result, target, count, t0[0]
++
++
++def _last_nonneutral(result):
++    return max((r["returned_t"] for r in result["actuator"]["reports"] if r["rx"] or r["ly"] or r["rt"]), default=None)
++
++
++def test_blackout_over_one_second_stops_mid_yaw(tmp_path, monkeypatch):
++    err, result, target, count, t0 = _run_supervised_stop(tmp_path, monkeypatch, gap=(6., 9.))
++    print(err, result["supervisor_stop"], result["actuator"]["monitor_stop"])
++    assert count["remove"] == 1 and target.rows[-1][0] == 0 and result["actuator"]["device_removal_confirmed"]
++    # the last positive frame is at <= 6 s; input must end by ~7 s (+ loop slack), never at 9 s
++    assert _last_nonneutral(result) - t0 < 6. + 1. + .1
++
++
++def test_range_loss_mid_yaw_stops_promptly(tmp_path, monkeypatch):
++    err, result, target, count, t0 = _run_supervised_stop(tmp_path, monkeypatch, range_until=7.)
++    print(err, result["supervisor_stop"], result["actuator"]["monitor_stop"])
++    assert result["supervisor_stop"] == "range_or_idle" and count["remove"] == 1
++    assert _last_nonneutral(result) - t0 < 7. + .15
++
++
++def test_takeover_mid_yaw_stops_promptly(tmp_path, monkeypatch):
++    err, result, target, count, t0 = _run_supervised_stop(tmp_path, monkeypatch, takeover_at=7.)
++    print(err, result["supervisor_stop"], result["actuator"]["monitor_stop"])
++    assert count["remove"] == 1 and target.rows[-1][0] == 0
++    assert _last_nonneutral(result) - t0 < 7. + .1

@@ -1,0 +1,5 @@
+Command: uv run --no-project --python C:/Users/volpe/.venvs/rivals-live-cu128/Scripts/python.exe python -m pytest tests/test_camera_calibration_schedule.py -q
+Exit code: 0
+
+................................................                         [100%]
+48 passed in 30.93s

@@ -1,0 +1,6 @@
+{
+  "tested_source_sha256": "9825a2ee2b3aed3035166ebeddd903730a192339d9501478fb58031a08a7fd56",
+  "frozen_source_sha256": "f1360e0dcfe2795177b6c780b123a4d85053dcd52a93eb8a234826a3d39451df",
+  "difference": "Only LF-to-CRLF normalization before source freeze; normalized byte identity verified. No code change.",
+  "runtime_scope": "offline OBS reader; not part of live receipt"
+}

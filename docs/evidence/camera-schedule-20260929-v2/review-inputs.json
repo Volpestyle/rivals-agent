@@ -1,0 +1,35 @@
+{
+  "format": "camera-schedule-freeze-v1",
+  "status": "v2_owner_checks_only_delta_review_pending",
+  "previous_manifest": "docs/evidence/camera-schedule-20260929/review-inputs.json",
+  "previous_manifest_sha256": "9ddd05407007afd7601ae53f2763d0c39063e2dcc947b19632f37c6ad97ad4e3",
+  "files": {
+    "scripts/calibrate_camera_schedule.py": "67148899804df9808c6a57e2d800dce38e11a8f0fe17f8ca3cfbaa8bf36bc4e3",
+    "agent/camera_calibration.py": "364f82cc0a2e27c1dceb6548795f4cca2238591f68291460cd29a085b95ddf07",
+    "agent/controller.py": "25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+    "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "scripts/l4_measure.py": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+    "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1"
+  },
+  "changed_runtime_files": [
+    "agent/camera_calibration.py",
+    "scripts/calibrate_camera_schedule.py"
+  ],
+  "removed_unused_runtime_pin": "agent/loop.py",
+  "support_files": {
+    "docs/evidence/camera-schedule-20260929-v2/delta.diff": "cb5cef5e00f9d40520116186098d4c79a7de0e1a6d19965b9ffd7f1f3b5d71f0",
+    "docs/evidence/camera-schedule-20260929-v2/owner-ruff.txt": "2077b07623094d810899b0db7598206dfd4258c812b53e64b51702cd16d6c9a6",
+    "docs/evidence/camera-schedule-20260929-v2/owner-tests.txt": "6555aeb381a3686e26a1dbf182952f758b8be717ea7432ca3c24ff8c8858d61f",
+    "docs/evidence/camera-schedule-20260929-v2/README.md": "19553512df88fe554e8e13ce7c2a5f5df6f1da71ff686447850e2c8665b92d75",
+    "docs/evidence/camera-schedule-20260929-v2/before/agent/camera_calibration.py": "5cdacf67716ef5af6514aae6de8c32346407bbfed66e77506dcf602c91c70c50",
+    "docs/evidence/camera-schedule-20260929-v2/before/scripts/calibrate_camera_schedule.py": "abe46b7b7f81292ab8b600d0af58daeb15063d473844672936d8ec3f7ce2a07f",
+    "docs/evidence/camera-schedule-20260929-v2/before/tests/test_camera_calibration_schedule.py": "4d518f1c6f520b76fd03334426580477498f6f0e64c36ceab372c9651ecc24cf",
+    "tests/test_camera_calibration_schedule.py": "1e99ded0772336dec583bb80ec98c83df278a18c92db0888d922ffb540c13f26",
+    "scripts/analyze_camera_schedule.py": "f1360e0dcfe2795177b6c780b123a4d85053dcd52a93eb8a234826a3d39451df",
+    "docs/evidence/camera-schedule-20260929/review-v1.md": "b034920c888df20bc2e198758cbf66e25a1304c79f6769e1bf9c860343d4185d",
+    "docs/evidence/camera-schedule-20260929/review-v1-receipt.json": "5bcd9e281e59b0c48796d3b453ac9f75a14a8bc4d5a3c1cc1bd02c2c057464f6"
+  }
+}

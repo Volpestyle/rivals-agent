@@ -1,0 +1,29 @@
+{
+  "format": "camera-schedule-freeze-v1",
+  "status": "owner_checks_only_independent_live_review_pending",
+  "git_head": "30de8873a475d2b83463aa192483f48b7087f8f6",
+  "files": {
+    "scripts/calibrate_camera_schedule.py": "abe46b7b7f81292ab8b600d0af58daeb15063d473844672936d8ec3f7ce2a07f",
+    "agent/camera_calibration.py": "5cdacf67716ef5af6514aae6de8c32346407bbfed66e77506dcf602c91c70c50",
+    "agent/controller.py": "25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+    "agent/loop.py": "040c77c2c4ed0fff5a893e6e00991c8df7bad1e87267bf6d416964911b1e596f",
+    "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "scripts/l4_measure.py": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+    "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1"
+  },
+  "support_files": {
+    "scripts/analyze_camera_schedule.py": "f1360e0dcfe2795177b6c780b123a4d85053dcd52a93eb8a234826a3d39451df",
+    "tests/test_camera_calibration_schedule.py": "4d518f1c6f520b76fd03334426580477498f6f0e64c36ceab372c9651ecc24cf",
+    "docs/evidence/camera-schedule-20260929/README.md": "8a6c403ff2ab270400412045dd068bfc609f2699b72b28e6f1c38393d95918a0",
+    "docs/evidence/camera-schedule-20260929/owner-tests.txt": "02b0d862b64619312e81c7099ba3a2dc49c99a3793d92555b195a5a5278e620d",
+    "docs/evidence/camera-schedule-20260929/owner-ruff.txt": "af352a86840ad0af3d37ea0d9197f868363a6dac6b1c2ef5d2722f6b41d2d9af",
+    "data/calibration/alt-cam-20260928e/open-loop-offline-check/verify_obs.py": "6669330dd368f919b654d48e750de33be749f2aa3f999a01e2b5aed35a42724c",
+    "data/calibration/alt-cam-20260928e/open-loop-offline-check/result.json": "a3f63a465c512204f827abb9fe99228a85092983de83cf574d2b036e347a0427",
+    "data/calibration/alt-cam-20260928e/open-loop-offline-check/matched-frames.csv": "470b98dfc715a75e53535a33d89c18d634649ae141ed9e392c688d2bb03430ea",
+    "data/calibration/alt-cam-20260928e/open-loop-offline-check/obs-command.json": "03b1832d34804ce8c7872122e57121746a41fa0327a53f7e09fe92f1b9a3c1a6",
+    "data/calibration/alt-cam-20260928e/open-loop-offline-check/obs-decode.log": "b614134f56e215cadb849e2c7ce3d81dae8e56f5a7cece5b779c09f9e1a7d700"
+  }
+}

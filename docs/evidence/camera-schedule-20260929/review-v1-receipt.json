@@ -1,0 +1,31 @@
+{
+  "format": "camera-schedule-review-v1",
+  "verdict": "FIX",
+  "reviewer": "live-review (Claude Opus 5.5, independent of the evaluator lane)",
+  "reviewed_at": "2026-09-29T00:25-05:00",
+  "review_inputs_sha256": "9ddd05407007afd7601ae53f2763d0c39063e2dcc947b19632f37c6ad97ad4e3",
+  "git_head": "30de8873a475d2b83463aa192483f48b7087f8f6",
+  "review_sha256": "b034920c888df20bc2e198758cbf66e25a1304c79f6769e1bf9c860343d4185d",
+  "files": {
+    "scripts/calibrate_camera_schedule.py": "abe46b7b7f81292ab8b600d0af58daeb15063d473844672936d8ec3f7ce2a07f",
+    "agent/camera_calibration.py": "5cdacf67716ef5af6514aae6de8c32346407bbfed66e77506dcf602c91c70c50",
+    "agent/controller.py": "25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+    "agent/loop.py": "040c77c2c4ed0fff5a893e6e00991c8df7bad1e87267bf6d416964911b1e596f",
+    "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "scripts/l4_measure.py": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+    "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1"
+  },
+  "blocking_findings": [
+    "F1: shared multiprocessing.Value/Event locks (scripts/calibrate_camera_schedule.py:156-157) can be left held by a dead supervisor; CameraPad monitor and send block in safety() (agent/camera_calibration.py:140,190) with input held, no lease/deadline/takeover/detach. Reproduced 3/3 with the real CameraPad."
+  ],
+  "non_blocking_findings": [
+    "F2 CLI broader than approved contract; pin args in the live grant",
+    "F3 unpinned agent.loop transitive imports in the pad process",
+    "F4 execute end-boundary min() race records a completed schedule as error",
+    "F5 missing supervisor-level stop-path and parent-death tests; owner-tests.txt lacks invocation"
+  ],
+  "rereview_scope": "delta only: the F1 fix plus its regression test; other verified items reuse this review"
+}
