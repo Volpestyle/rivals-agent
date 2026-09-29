@@ -1,0 +1,259 @@
+{
+  "retained_root": "D:\\rivals-agent-evidence\\idm-hud-alignment-20260929",
+  "decode_manifest_sha256": "a9d5bdfaac585141e13c7f2456e37d0f1d11263e0a65c1fd597117c3d55c32da",
+  "feed_manifest_sha256": "d6de7fc8b79e1eded63bdd3cc64e56b4b440f935686431e36123c0a10bf42dfc",
+  "collection_manifest_sha256": "439a44d255873451e0ab08b8636f6c093284eac5d213994ab2036edf5e8b41e8",
+  "retained_file_count": 19210,
+  "retained_bytes": 1294826145,
+  "denylist_sha256": "09e8b9d350c89eb41c1581e1bce47548bfb855bca5805cf2e65955b9b23597b5",
+  "sources": {
+    "live": {
+      "session_id": "20260926T010620-721Z-63684-5",
+      "session_group": "20260926T010620-721Z-63684-5",
+      "split": "idm_train",
+      "video_path": "C:/Users/volpe/Videos/2026-09-25 20-06-20.mkv",
+      "recorded_video_path": "C:/Users/volpe/Videos/2026-09-25 20-06-20.mkv",
+      "expected_media_sha256": "b286939f3a503a52bffa0c0a29873e8c71aac7d89dfb1b726f4818176e2efc87",
+      "split_basis": "James's decision 2026-09-26 (via the lead and steering): \"we should use those, I thought that's what I recorded them for\"; logged live matches train the IDM. Released from evaluation-only to idm_train: never range (range_bc refuses the split; the tally's range headline counts only train and val), never sealed; no released file is taken back",
+      "role": "Heart of Heaven (K'un-Lun), 20:12, 5:00, Victory (handoff/matches-0925.md)",
+      "account": "alt",
+      "prior_exposure": "reader_development (registered 2026-09-26): used by scoreboard-fix to develop the match-timer and kill-feed readers; the reader results measured on this file stand as historical and are not re-scored as fresh evidence",
+      "sitting": "2026-09-25-evening",
+      "obs_process": 63684,
+      "registered_at": "2026-09-26",
+      "released_at": "2026-09-26",
+      "codec": "hevc",
+      "note": "logged live match: IDM-train once the IDM's reviewed match target path exists (registration is not admission)"
+    },
+    "replay": {
+      "session_id": "20260926T161008-331Z-116800-2",
+      "session_group": "20260926T010620-721Z-63684-5",
+      "split": "idm_train",
+      "video_path": "C:/Users/volpe/Videos/2026-09-26 11-10-08.mkv",
+      "recorded_video_path": "C:/Users/volpe/Videos/2026-09-26 11-10-08.mkv",
+      "expected_media_sha256": "4c74f388be47e44c53002005edb548cd41aa7308ecf50ac39a34625862817e7e",
+      "split_basis": "lead decision 2026-09-26 (confirming admission-owner's proposal, after James's \"we should use those, I thought that's what I recorded them for\"): released to idm_train as the replay-of-self paired with 20-06-20, in that live match's session group, for the IDM's true-input replay-transfer training. Never range, never sealed; no released file is taken back",
+      "role": "the in-game replay of the Heart of Heaven match (20-06-20, session 20260926T010620-721Z-63684-5); its tail runs long because James stepped away (lead 2026-09-26)",
+      "pair": "20260926T010620-721Z-63684-5",
+      "account": "alt",
+      "prior_exposure": "reader_development (registered 2026-09-26): used by scoreboard-fix for reader development; the reader results measured on this file stand as historical and are not re-scored as fresh evidence",
+      "sitting": "2026-09-26-morning",
+      "obs_process": 116800,
+      "registered_at": "2026-09-26",
+      "released_at": "2026-09-26",
+      "codec": "hevc",
+      "note": "replay of self: its logged inputs are the viewer's and are never a supervised target; its input labels come only from the live half (20260926T010620-721Z-63684-5). IDM-train once the IDM's reviewed match target path exists (registration is not admission)"
+    }
+  },
+  "metadata_only_source_identity": "Registry media digests retained; originals not fully rehashed during this bounded decode.",
+  "bands": [
+    {
+      "source": "live",
+      "bounds": [
+        120,
+        160
+      ],
+      "crop": [
+        1140,
+        0,
+        280,
+        150
+      ],
+      "files": 4799,
+      "first_pts": 120.004,
+      "last_pts": 159.988
+    },
+    {
+      "source": "replay",
+      "bounds": [
+        89.39,
+        129.39
+      ],
+      "crop": [
+        1140,
+        0,
+        280,
+        150
+      ],
+      "files": 4799,
+      "first_pts": 89.396,
+      "last_pts": 129.379
+    },
+    {
+      "source": "live",
+      "bounds": [
+        120,
+        160
+      ],
+      "crop": "540:180:1990:20",
+      "files": 4799,
+      "first_pts": 120.004,
+      "last_pts": 159.988
+    },
+    {
+      "source": "replay",
+      "bounds": [
+        89.39,
+        129.39
+      ],
+      "crop": "540:180:1990:280",
+      "files": 4799,
+      "first_pts": 89.396,
+      "last_pts": 129.379
+    },
+    {
+      "source": "live",
+      "bounds": [
+        154.8,
+        154.809
+      ],
+      "crop": null,
+      "files": 1,
+      "first_pts": 154.804,
+      "last_pts": 154.804
+    },
+    {
+      "source": "live",
+      "bounds": [
+        155.2,
+        155.20899999999997
+      ],
+      "crop": null,
+      "files": 1,
+      "first_pts": 155.20399999999998,
+      "last_pts": 155.20399999999998
+    },
+    {
+      "source": "live",
+      "bounds": [
+        155.6,
+        155.60899999999998
+      ],
+      "crop": null,
+      "files": 1,
+      "first_pts": 155.60399999999998,
+      "last_pts": 155.60399999999998
+    },
+    {
+      "source": "live",
+      "bounds": [
+        156.0,
+        156.009
+      ],
+      "crop": null,
+      "files": 1,
+      "first_pts": 156.004,
+      "last_pts": 156.004
+    },
+    {
+      "source": "live",
+      "bounds": [
+        156.4,
+        156.409
+      ],
+      "crop": null,
+      "files": 1,
+      "first_pts": 156.404,
+      "last_pts": 156.404
+    },
+    {
+      "source": "live",
+      "bounds": [
+        156.8,
+        156.809
+      ],
+      "crop": null,
+      "files": 1,
+      "first_pts": 156.804,
+      "last_pts": 156.804
+    },
+    {
+      "source": "live",
+      "bounds": [
+        157.2,
+        157.20899999999997
+      ],
+      "crop": null,
+      "files": 1,
+      "first_pts": 157.20399999999998,
+      "last_pts": 157.20399999999998
+    },
+    {
+      "source": "replay",
+      "bounds": [
+        124.2,
+        124.209
+      ],
+      "crop": null,
+      "files": 1,
+      "first_pts": 124.20400000000001,
+      "last_pts": 124.20400000000001
+    },
+    {
+      "source": "replay",
+      "bounds": [
+        124.6,
+        124.609
+      ],
+      "crop": null,
+      "files": 1,
+      "first_pts": 124.604,
+      "last_pts": 124.604
+    },
+    {
+      "source": "replay",
+      "bounds": [
+        125.0,
+        125.009
+      ],
+      "crop": null,
+      "files": 1,
+      "first_pts": 125.004,
+      "last_pts": 125.004
+    },
+    {
+      "source": "replay",
+      "bounds": [
+        125.4,
+        125.409
+      ],
+      "crop": null,
+      "files": 1,
+      "first_pts": 125.40400000000001,
+      "last_pts": 125.40400000000001
+    },
+    {
+      "source": "replay",
+      "bounds": [
+        125.8,
+        125.809
+      ],
+      "crop": null,
+      "files": 1,
+      "first_pts": 125.804,
+      "last_pts": 125.804
+    },
+    {
+      "source": "replay",
+      "bounds": [
+        126.2,
+        126.209
+      ],
+      "crop": null,
+      "files": 1,
+      "first_pts": 126.20400000000001,
+      "last_pts": 126.20400000000001
+    },
+    {
+      "source": "replay",
+      "bounds": [
+        126.6,
+        126.609
+      ],
+      "crop": null,
+      "files": 1,
+      "first_pts": 126.604,
+      "last_pts": 126.604
+    }
+  ]
+}

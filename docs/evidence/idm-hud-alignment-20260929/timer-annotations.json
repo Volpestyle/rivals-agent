@@ -1,0 +1,3293 @@
+{
+  "scope": "Owner visual inspection from native video timer crops, no camera or trained model output. Human verification pending.",
+  "inspection_utc": "2026-09-29T22:53:29.926038+00:00",
+  "matching": "Pair unique old/new displayed values in this one countdown; never pair timestamp indices or subtract the placement prior.",
+  "sources": {
+    "live": [
+      {
+        "slot": 0,
+        "source": "live",
+        "old": "04:36",
+        "new": "04:35",
+        "reference_indices": [
+          0,
+          72
+        ],
+        "reference_pts": [
+          120.004,
+          120.604
+        ],
+        "discriminating_pixels": 33,
+        "flip_candidates": [
+          16
+        ],
+        "status": "owner_visually_verified",
+        "index": 16,
+        "last_old": 120.129,
+        "first_new": 120.138,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-00016.png",
+            "pts": 120.129,
+            "sha256": "da57b85663608fb94412c898ceb6472d0f5e3417a65a7f9c8a25baeea093f4ec"
+          },
+          {
+            "path": "crops/live-00017.png",
+            "pts": 120.138,
+            "sha256": "e6b78a9d7e6144f41afaab837204bc54f56cab2f721f6c772434b81586b8c6c2"
+          },
+          {
+            "path": "crops/live-00018.png",
+            "pts": 120.146,
+            "sha256": "09a8674746978229a64baaea2f8eab43707ff80614534c4fbd21120483d53819"
+          }
+        ]
+      },
+      {
+        "slot": 1,
+        "source": "live",
+        "old": "04:35",
+        "new": "04:34",
+        "reference_indices": [
+          95,
+          192
+        ],
+        "reference_pts": [
+          120.796,
+          121.604
+        ],
+        "discriminating_pixels": 208,
+        "flip_candidates": [
+          148
+        ],
+        "status": "owner_visually_verified",
+        "index": 148,
+        "last_old": 121.229,
+        "first_new": 121.238,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-00148.png",
+            "pts": 121.229,
+            "sha256": "f9336c79a0c76e639b5ffe86f3177efe62f6c6e1ead99d05b25a1b7477391f22"
+          },
+          {
+            "path": "crops/live-00149.png",
+            "pts": 121.238,
+            "sha256": "60e8e6cd814929538605ba177b35b03fbb7b13186104e81fc4bc52f85a5b7521"
+          },
+          {
+            "path": "crops/live-00150.png",
+            "pts": 121.246,
+            "sha256": "cccb32c3d673a03270fd76e08125806e5358e73d912f67570cf60e8e405d6137"
+          }
+        ]
+      },
+      {
+        "slot": 2,
+        "source": "live",
+        "old": "04:34",
+        "new": "04:33",
+        "reference_indices": [
+          215,
+          312
+        ],
+        "reference_pts": [
+          121.796,
+          122.604
+        ],
+        "discriminating_pixels": 221,
+        "flip_candidates": [
+          255
+        ],
+        "status": "owner_visually_verified",
+        "index": 255,
+        "last_old": 122.121,
+        "first_new": 122.129,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-00255.png",
+            "pts": 122.121,
+            "sha256": "5f4a6bdd175394954a4efbe840f4a43fdc719a0d7823355a0b5232c646636ba3"
+          },
+          {
+            "path": "crops/live-00256.png",
+            "pts": 122.129,
+            "sha256": "099ab1100fe74c580bad7a8fc51586a0a7829b3c64061f9c08c3020027ee2c2b"
+          },
+          {
+            "path": "crops/live-00257.png",
+            "pts": 122.138,
+            "sha256": "11df09370fdfe0376aeb014740a754d76413c08e3fcd5b8edbbc90ba75644b3d"
+          }
+        ]
+      },
+      {
+        "slot": 3,
+        "source": "live",
+        "old": "04:33",
+        "new": "04:32",
+        "reference_indices": [
+          335,
+          432
+        ],
+        "reference_pts": [
+          122.796,
+          123.604
+        ],
+        "discriminating_pixels": 119,
+        "flip_candidates": [
+          376
+        ],
+        "status": "owner_visually_verified",
+        "index": 376,
+        "last_old": 123.129,
+        "first_new": 123.138,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-00376.png",
+            "pts": 123.129,
+            "sha256": "a3509ed55939f630f1d115606d4de097b27c0dace7c41ae9ff2a201bf41f9c20"
+          },
+          {
+            "path": "crops/live-00377.png",
+            "pts": 123.138,
+            "sha256": "1d8d829e68d09db1e6e7f1b32f454b3623dd233125d1f4b314581a73157e0ce1"
+          },
+          {
+            "path": "crops/live-00378.png",
+            "pts": 123.146,
+            "sha256": "0d18ec5e39d0455e2408763bb5716d9673ad566080a7747ae07dafbfdd0b9140"
+          }
+        ]
+      },
+      {
+        "slot": 4,
+        "source": "live",
+        "old": "04:32",
+        "new": "04:31",
+        "reference_indices": [
+          455,
+          552
+        ],
+        "reference_pts": [
+          123.796,
+          124.604
+        ],
+        "discriminating_pixels": 195,
+        "flip_candidates": [
+          495
+        ],
+        "status": "owner_visually_verified",
+        "index": 495,
+        "last_old": 124.121,
+        "first_new": 124.129,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-00495.png",
+            "pts": 124.121,
+            "sha256": "4a5d6e7972829b59544f7611b0893879c5e67d8a536b48020d74efdf1de14884"
+          },
+          {
+            "path": "crops/live-00496.png",
+            "pts": 124.129,
+            "sha256": "982e677c2984a24fbda46a9cd75acf28e1513c295508e657bb6a4b8ea0d1eecc"
+          },
+          {
+            "path": "crops/live-00497.png",
+            "pts": 124.138,
+            "sha256": "5b14fd32912cd27b62fed16688e331dd4ea60723c3e35ebea94ff8b7900c4cc4"
+          }
+        ]
+      },
+      {
+        "slot": 5,
+        "source": "live",
+        "old": "04:31",
+        "new": "04:30",
+        "reference_indices": [
+          575,
+          672
+        ],
+        "reference_pts": [
+          124.796,
+          125.604
+        ],
+        "discriminating_pixels": 270,
+        "flip_candidates": [
+          616
+        ],
+        "status": "owner_visually_verified",
+        "index": 616,
+        "last_old": 125.129,
+        "first_new": 125.138,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-00616.png",
+            "pts": 125.129,
+            "sha256": "2b0ca9c77cc9b81437e5bda5dfb872bbdd847fb7ba8041a2bfd7191ce3ea6430"
+          },
+          {
+            "path": "crops/live-00617.png",
+            "pts": 125.138,
+            "sha256": "e6b14a7dd7f8a4b5124ebdbd0af272a1fd0b861ba7edc79bae0c7e35218ab8ac"
+          },
+          {
+            "path": "crops/live-00618.png",
+            "pts": 125.146,
+            "sha256": "c19e80d769ebb44295b66202e119330ea71158765b84ec0269c73ca2888a1372"
+          }
+        ]
+      },
+      {
+        "slot": 6,
+        "source": "live",
+        "old": "04:30",
+        "new": "04:29",
+        "reference_indices": [
+          695,
+          792
+        ],
+        "reference_pts": [
+          125.796,
+          126.604
+        ],
+        "discriminating_pixels": 153,
+        "flip_candidates": [
+          736
+        ],
+        "status": "owner_visually_verified",
+        "index": 736,
+        "last_old": 126.129,
+        "first_new": 126.138,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-00736.png",
+            "pts": 126.129,
+            "sha256": "ed53950226179a30d5f4ea8e0818c9a6128064add1ad6e0a26c095454ab650da"
+          },
+          {
+            "path": "crops/live-00737.png",
+            "pts": 126.138,
+            "sha256": "00c416aa2832d7996180a97d4585ccabae9a2da09420c1d26faca3d2c6ec4934"
+          },
+          {
+            "path": "crops/live-00738.png",
+            "pts": 126.146,
+            "sha256": "d7bca5cad5b9ba48bc75e68f22788b3c0be7018ee97ca06084d41c4a6c9d5b36"
+          }
+        ]
+      },
+      {
+        "slot": 7,
+        "source": "live",
+        "old": "04:29",
+        "new": "04:28",
+        "reference_indices": [
+          815,
+          912
+        ],
+        "reference_pts": [
+          126.796,
+          127.604
+        ],
+        "discriminating_pixels": 32,
+        "flip_candidates": [
+          857
+        ],
+        "status": "owner_visually_verified",
+        "index": 857,
+        "last_old": 127.138,
+        "first_new": 127.146,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-00857.png",
+            "pts": 127.138,
+            "sha256": "12d785e6b72bfd7ccc856493235f55074e8245c10689b90a520b7013dafc9bc5"
+          },
+          {
+            "path": "crops/live-00858.png",
+            "pts": 127.146,
+            "sha256": "39dbbaf23fa976a032db4d28f34c7de77e303e74e8905417c772c7e3a7c7ca62"
+          },
+          {
+            "path": "crops/live-00859.png",
+            "pts": 127.154,
+            "sha256": "2ea470c1d95413065f6b5249c61b722d3bdf4a6569c5cf69b67a41d3d8b26618"
+          }
+        ]
+      },
+      {
+        "slot": 8,
+        "source": "live",
+        "old": "04:28",
+        "new": "04:27",
+        "reference_indices": [
+          935,
+          1031
+        ],
+        "reference_pts": [
+          127.796,
+          128.596
+        ],
+        "discriminating_pixels": 240,
+        "flip_candidates": [
+          976
+        ],
+        "status": "owner_visually_verified",
+        "index": 976,
+        "last_old": 128.129,
+        "first_new": 128.138,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-00976.png",
+            "pts": 128.129,
+            "sha256": "a4e866d00a69cd9157baf6439f8138913bc676b0da30d3315d1be65b3c08acba"
+          },
+          {
+            "path": "crops/live-00977.png",
+            "pts": 128.138,
+            "sha256": "e1af3373e2ce17503af9d89f7d04d6f4b44ec63cde214dcf1c8aab6466622ebe"
+          },
+          {
+            "path": "crops/live-00978.png",
+            "pts": 128.14600000000002,
+            "sha256": "51a81131f732c035049a40413f24983765ecf3d27cd0a8a678509743ceb0b4ae"
+          }
+        ]
+      },
+      {
+        "slot": 9,
+        "source": "live",
+        "old": "04:27",
+        "new": "04:26",
+        "reference_indices": [
+          1055,
+          1151
+        ],
+        "reference_pts": [
+          128.796,
+          129.596
+        ],
+        "discriminating_pixels": 223,
+        "flip_candidates": [
+          1107
+        ],
+        "status": "owner_visually_verified",
+        "index": 1107,
+        "last_old": 129.221,
+        "first_new": 129.22899999999998,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-01107.png",
+            "pts": 129.221,
+            "sha256": "ab93390e5350559665c5698767375c6680262d7a1d3c328e624345986d500cbd"
+          },
+          {
+            "path": "crops/live-01108.png",
+            "pts": 129.22899999999998,
+            "sha256": "b45698049fe15d375ea08af53a3ef13d10c4a5bff512ec4477ff141b9ce94993"
+          },
+          {
+            "path": "crops/live-01109.png",
+            "pts": 129.238,
+            "sha256": "d7ba24d8b0de79295e8e05a3de7992c20f2c94886a7ae84d38eaf20cd6aeaabb"
+          }
+        ]
+      },
+      {
+        "slot": 10,
+        "source": "live",
+        "old": "04:26",
+        "new": "04:25",
+        "reference_indices": [
+          1175,
+          1271
+        ],
+        "reference_pts": [
+          129.796,
+          130.596
+        ],
+        "discriminating_pixels": 30,
+        "flip_candidates": [
+          1216
+        ],
+        "status": "owner_visually_verified",
+        "index": 1216,
+        "last_old": 130.129,
+        "first_new": 130.138,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-01216.png",
+            "pts": 130.129,
+            "sha256": "a9e4f9802903eea8d275f9a5ef861479f9c5b73c9717148bcaf8131764aa2be6"
+          },
+          {
+            "path": "crops/live-01217.png",
+            "pts": 130.138,
+            "sha256": "9812c270fdd4a2a7fad60c6a652a3b706d62d960add5e0aa7e2a2730d709ca6e"
+          },
+          {
+            "path": "crops/live-01218.png",
+            "pts": 130.14600000000002,
+            "sha256": "9c5b0cbf722c4289289af40e879410d880a43ace2fdeaed6deeedea9b0841f80"
+          }
+        ]
+      },
+      {
+        "slot": 11,
+        "source": "live",
+        "old": "04:25",
+        "new": "04:24",
+        "reference_indices": [
+          1295,
+          1391
+        ],
+        "reference_pts": [
+          130.796,
+          131.596
+        ],
+        "discriminating_pixels": 200,
+        "flip_candidates": [
+          1337
+        ],
+        "status": "owner_visually_verified",
+        "index": 1337,
+        "last_old": 131.138,
+        "first_new": 131.14600000000002,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-01337.png",
+            "pts": 131.138,
+            "sha256": "c2421ce094363444530aa29c4f13e9f1cb902ef55d0a5bcc3b638f32b0da57cb"
+          },
+          {
+            "path": "crops/live-01338.png",
+            "pts": 131.14600000000002,
+            "sha256": "238ba8a39e5c46daea26352651dcf1afc5e6439b54bb8d562af8c973f521c7c6"
+          },
+          {
+            "path": "crops/live-01339.png",
+            "pts": 131.154,
+            "sha256": "441960c6db02c8293c29f297b20bd4c192d3963bc4f3c179592659b8c7e1bb93"
+          }
+        ]
+      },
+      {
+        "slot": 12,
+        "source": "live",
+        "old": "04:24",
+        "new": "04:23",
+        "reference_indices": [
+          1415,
+          1511
+        ],
+        "reference_pts": [
+          131.796,
+          132.596
+        ],
+        "discriminating_pixels": 197,
+        "flip_candidates": [
+          1467
+        ],
+        "status": "owner_visually_verified",
+        "index": 1467,
+        "last_old": 132.221,
+        "first_new": 132.22899999999998,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-01467.png",
+            "pts": 132.221,
+            "sha256": "7c0937719c6206d821e93196614469c95c7a9e6f84ab82a1695981c6fee92a79"
+          },
+          {
+            "path": "crops/live-01468.png",
+            "pts": 132.22899999999998,
+            "sha256": "9a36a7d1206c2de8715d1dc44c6291a434cd16e67ba53239cbd6bec53bf05d58"
+          },
+          {
+            "path": "crops/live-01469.png",
+            "pts": 132.238,
+            "sha256": "0e83007098acca065f4be541cf06795bd19506a224c4597c7291739e813b3d86"
+          }
+        ]
+      },
+      {
+        "slot": 13,
+        "source": "live",
+        "old": "04:23",
+        "new": "04:22",
+        "reference_indices": [
+          1535,
+          1631
+        ],
+        "reference_pts": [
+          132.796,
+          133.596
+        ],
+        "discriminating_pixels": 117,
+        "flip_candidates": [
+          1590
+        ],
+        "status": "owner_visually_verified",
+        "index": 1590,
+        "last_old": 133.246,
+        "first_new": 133.254,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-01590.png",
+            "pts": 133.246,
+            "sha256": "393e1b7c17eb1486949db52c3662ee5aeb32b5cdec108793731200d5e6930dfc"
+          },
+          {
+            "path": "crops/live-01591.png",
+            "pts": 133.254,
+            "sha256": "a88b1327233bf002b1ca96b614317f31b5f589908091d85ebd6a5da82ac0e93d"
+          },
+          {
+            "path": "crops/live-01592.png",
+            "pts": 133.263,
+            "sha256": "0fd795b69da2b6c580f02154da5a17917e7b202f7aaeac4839d9e5154735e77f"
+          }
+        ]
+      },
+      {
+        "slot": 14,
+        "source": "live",
+        "old": "04:22",
+        "new": "04:21",
+        "reference_indices": [
+          1655,
+          1751
+        ],
+        "reference_pts": [
+          133.796,
+          134.596
+        ],
+        "discriminating_pixels": 179,
+        "flip_candidates": [
+          1706
+        ],
+        "status": "owner_visually_verified",
+        "index": 1706,
+        "last_old": 134.213,
+        "first_new": 134.221,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-01706.png",
+            "pts": 134.213,
+            "sha256": "59fd3d6dd94544103bd5dfca425c5685fdf8e3885da3db9f7c928a8f130abcce"
+          },
+          {
+            "path": "crops/live-01707.png",
+            "pts": 134.221,
+            "sha256": "4786a22514173f4de63ba7d0bff51787e586714d5c247d3d25c26c286b6e8173"
+          },
+          {
+            "path": "crops/live-01708.png",
+            "pts": 134.22899999999998,
+            "sha256": "e6441cfeede840160124583ed587cf5b3c21c81b9b302965de5792ccfb6d8dc1"
+          }
+        ]
+      },
+      {
+        "slot": 15,
+        "source": "live",
+        "old": "04:21",
+        "new": "04:20",
+        "reference_indices": [
+          1775,
+          1871
+        ],
+        "reference_pts": [
+          134.796,
+          135.596
+        ],
+        "discriminating_pixels": 248,
+        "flip_candidates": [
+          1815
+        ],
+        "status": "owner_visually_verified",
+        "index": 1815,
+        "last_old": 135.121,
+        "first_new": 135.129,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-01815.png",
+            "pts": 135.121,
+            "sha256": "5f467db91d42e58717b20ee24052c54a9034590aa1711e200e7a425cd3847b5b"
+          },
+          {
+            "path": "crops/live-01816.png",
+            "pts": 135.129,
+            "sha256": "79fa87f53049819c9fecc0d21dcb5d3b27d295d862b63f21d0ecd2e91befdbd7"
+          },
+          {
+            "path": "crops/live-01817.png",
+            "pts": 135.138,
+            "sha256": "46d9966dc949df0b7acddad87e35c3c70a815e42cd98d6670360e59aefd96206"
+          }
+        ]
+      },
+      {
+        "slot": 16,
+        "source": "live",
+        "old": "04:20",
+        "new": "04:19",
+        "reference_indices": [
+          1895,
+          1991
+        ],
+        "reference_pts": [
+          135.796,
+          136.596
+        ],
+        "discriminating_pixels": 224,
+        "flip_candidates": [
+          1939
+        ],
+        "status": "owner_visually_verified",
+        "index": 1939,
+        "last_old": 136.154,
+        "first_new": 136.163,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-01939.png",
+            "pts": 136.154,
+            "sha256": "6bdab798b32e18f6ea6726dcd077a7e8d6fa6b7efca737a8e884b9f3d19d0d60"
+          },
+          {
+            "path": "crops/live-01940.png",
+            "pts": 136.163,
+            "sha256": "94de9ab510cc1577e8e2ef4899d87ecd1fd7214abe7a5636b1e568743e91437a"
+          },
+          {
+            "path": "crops/live-01941.png",
+            "pts": 136.171,
+            "sha256": "6ada5b438775ab49c61c1e8411f4402220ddce9383e2f5dccdba9d165896a920"
+          }
+        ]
+      },
+      {
+        "slot": 17,
+        "source": "live",
+        "old": "04:19",
+        "new": "04:18",
+        "reference_indices": [
+          2015,
+          2111
+        ],
+        "reference_pts": [
+          136.796,
+          137.596
+        ],
+        "discriminating_pixels": 29,
+        "flip_candidates": [
+          2067
+        ],
+        "status": "owner_visually_verified",
+        "index": 2067,
+        "last_old": 137.221,
+        "first_new": 137.22899999999998,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-02067.png",
+            "pts": 137.221,
+            "sha256": "f3970dcc421e80f030d9b450cb92eb8535267b3c0036c5e16e2255add4e37642"
+          },
+          {
+            "path": "crops/live-02068.png",
+            "pts": 137.22899999999998,
+            "sha256": "d5c398d96b1c1ea181f4e29e0d318f651a9563625d9e36d1dcd8ca27e87e1d16"
+          },
+          {
+            "path": "crops/live-02069.png",
+            "pts": 137.238,
+            "sha256": "8babc1ae7faaa23965f06a2cc30e65f8f4d32c07c300a22a50c3ba61e7c31e5f"
+          }
+        ]
+      },
+      {
+        "slot": 18,
+        "source": "live",
+        "old": "04:18",
+        "new": "04:17",
+        "reference_indices": [
+          2135,
+          2231
+        ],
+        "reference_pts": [
+          137.796,
+          138.596
+        ],
+        "discriminating_pixels": 225,
+        "flip_candidates": [
+          2174
+        ],
+        "status": "owner_visually_verified",
+        "index": 2174,
+        "last_old": 138.113,
+        "first_new": 138.121,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-02174.png",
+            "pts": 138.113,
+            "sha256": "82ea21658e68072c8e99d8d76c60e7832f4f06337e2cfc689a6c68e0fca789ac"
+          },
+          {
+            "path": "crops/live-02175.png",
+            "pts": 138.121,
+            "sha256": "c0665406e016a5f7d4a9e18b470f02197e0bc9ce2579923c7dc8352b1d5e2c78"
+          },
+          {
+            "path": "crops/live-02176.png",
+            "pts": 138.129,
+            "sha256": "6aa7a94a960fc35659b07aeb7f6e47ca6c305c62e4555891e9f474a85cdb1406"
+          }
+        ]
+      },
+      {
+        "slot": 19,
+        "source": "live",
+        "old": "04:17",
+        "new": "04:16",
+        "reference_indices": [
+          2255,
+          2351
+        ],
+        "reference_pts": [
+          138.796,
+          139.596
+        ],
+        "discriminating_pixels": 223,
+        "flip_candidates": [
+          2296
+        ],
+        "status": "owner_visually_verified",
+        "index": 2296,
+        "last_old": 139.129,
+        "first_new": 139.138,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-02296.png",
+            "pts": 139.129,
+            "sha256": "5023ae0ee6092d96704a212c290bae486e183cd9d863bd3b949c4431e80cc5d3"
+          },
+          {
+            "path": "crops/live-02297.png",
+            "pts": 139.138,
+            "sha256": "73150cde0cfb9f192df84eb195b1c22b36e0910394c93c9df246958b3833ed8d"
+          },
+          {
+            "path": "crops/live-02298.png",
+            "pts": 139.14600000000002,
+            "sha256": "7053430dcea71ca34f32e65f85a7eb17273623e92bd7a391ab3dbe75a5be01ff"
+          }
+        ]
+      },
+      {
+        "slot": 20,
+        "source": "live",
+        "old": "04:16",
+        "new": "04:15",
+        "reference_indices": [
+          2375,
+          2471
+        ],
+        "reference_pts": [
+          139.796,
+          140.596
+        ],
+        "discriminating_pixels": 31,
+        "flip_candidates": [
+          2423
+        ],
+        "status": "owner_visually_verified",
+        "index": 2423,
+        "last_old": 140.188,
+        "first_new": 140.196,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-02423.png",
+            "pts": 140.188,
+            "sha256": "6b863c357fb5bbac0591b0de65bd0a357ee3aa59d780b2025c39723d1708f403"
+          },
+          {
+            "path": "crops/live-02424.png",
+            "pts": 140.196,
+            "sha256": "077ca5e5ed89f4a5d1cfd61a157dc7b1822898f957b1736ffbf9024ad4bc19c0"
+          },
+          {
+            "path": "crops/live-02425.png",
+            "pts": 140.204,
+            "sha256": "53ff6170c5815923e16623d4aa79a6455e1eda0995261404e65d08dddc73c634"
+          }
+        ]
+      },
+      {
+        "slot": 21,
+        "source": "live",
+        "old": "04:15",
+        "new": "04:14",
+        "reference_indices": [
+          2495,
+          2591
+        ],
+        "reference_pts": [
+          140.796,
+          141.596
+        ],
+        "discriminating_pixels": 196,
+        "flip_candidates": [
+          2547
+        ],
+        "status": "owner_visually_verified",
+        "index": 2547,
+        "last_old": 141.221,
+        "first_new": 141.22899999999998,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-02547.png",
+            "pts": 141.221,
+            "sha256": "65ec8e1a5dbe509931b6ae19d6f36fe844019ae94c0fffdb313a3d373bf22615"
+          },
+          {
+            "path": "crops/live-02548.png",
+            "pts": 141.22899999999998,
+            "sha256": "30eb51ca7babb0fcc7d28395512fe7988a226b43efb98a3301b941e6f485d40b"
+          },
+          {
+            "path": "crops/live-02549.png",
+            "pts": 141.238,
+            "sha256": "d1c159bf89b6656447ea69abec3f5d1e5d00eb9c708be1b3938222fe8afc24d3"
+          }
+        ]
+      },
+      {
+        "slot": 22,
+        "source": "live",
+        "old": "04:14",
+        "new": "04:13",
+        "reference_indices": [
+          2615,
+          2711
+        ],
+        "reference_pts": [
+          141.796,
+          142.596
+        ],
+        "discriminating_pixels": 202,
+        "flip_candidates": [
+          2656
+        ],
+        "status": "owner_visually_verified",
+        "index": 2656,
+        "last_old": 142.129,
+        "first_new": 142.138,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-02656.png",
+            "pts": 142.129,
+            "sha256": "c945465b49f975d5e237f522cfbb9ec77ec05c999a5a5c69ef3719920bbbbf12"
+          },
+          {
+            "path": "crops/live-02657.png",
+            "pts": 142.138,
+            "sha256": "3e520176861e892ee08b78209bfb90ae50d6fcf00c45140a810d1d193e139ab0"
+          },
+          {
+            "path": "crops/live-02658.png",
+            "pts": 142.14600000000002,
+            "sha256": "c06b8ce67a0ba7e110705a6b3f1b075835b60d97aaac9f0a4c00cebffa6b5644"
+          }
+        ]
+      },
+      {
+        "slot": 23,
+        "source": "live",
+        "old": "04:13",
+        "new": "04:12",
+        "reference_indices": [
+          2735,
+          2831
+        ],
+        "reference_pts": [
+          142.796,
+          143.596
+        ],
+        "discriminating_pixels": 118,
+        "flip_candidates": [
+          2776
+        ],
+        "status": "owner_visually_verified",
+        "index": 2776,
+        "last_old": 143.129,
+        "first_new": 143.138,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-02776.png",
+            "pts": 143.129,
+            "sha256": "988d37fd4087bfa89701e2128ffdcc02e1c7be507714b8e4943f9a73bd047c7d"
+          },
+          {
+            "path": "crops/live-02777.png",
+            "pts": 143.138,
+            "sha256": "c404c6421d2ce51147a936e82ecaa9fd8c37c593d4218a52608436eb3a26fdc3"
+          },
+          {
+            "path": "crops/live-02778.png",
+            "pts": 143.14600000000002,
+            "sha256": "d3fbc41c2ba3fbd13e3de268654728a81045ac8dc522c5315522992b7c76b27c"
+          }
+        ]
+      },
+      {
+        "slot": 24,
+        "source": "live",
+        "old": "04:12",
+        "new": "04:11",
+        "reference_indices": [
+          2855,
+          2951
+        ],
+        "reference_pts": [
+          143.796,
+          144.596
+        ],
+        "discriminating_pixels": 174,
+        "flip_candidates": [
+          2906
+        ],
+        "status": "owner_visually_verified",
+        "index": 2906,
+        "last_old": 144.213,
+        "first_new": 144.221,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-02906.png",
+            "pts": 144.213,
+            "sha256": "f59cdf05fb791b2e93372494f9eddc510eb5357142c1eb3b68040759eb9fb372"
+          },
+          {
+            "path": "crops/live-02907.png",
+            "pts": 144.221,
+            "sha256": "2e74df1c496309934d67c6ba5f1a0a553d3c03cdb53c6094df38202a54f4ffc6"
+          },
+          {
+            "path": "crops/live-02908.png",
+            "pts": 144.22899999999998,
+            "sha256": "1c998ef66bfde006f253c7809ec3a1a1c3d7d1cd73896549b6c49fbaf0ebe7d9"
+          }
+        ]
+      },
+      {
+        "slot": 25,
+        "source": "live",
+        "old": "04:11",
+        "new": "04:10",
+        "reference_indices": [
+          2975,
+          3071
+        ],
+        "reference_pts": [
+          144.796,
+          145.596
+        ],
+        "discriminating_pixels": 251,
+        "flip_candidates": [
+          3027
+        ],
+        "status": "owner_visually_verified",
+        "index": 3027,
+        "last_old": 145.221,
+        "first_new": 145.22899999999998,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-03027.png",
+            "pts": 145.221,
+            "sha256": "a55c398f8d5d814dd07be83040082d3586729372fc8aaf6ebd33b67216fba55c"
+          },
+          {
+            "path": "crops/live-03028.png",
+            "pts": 145.22899999999998,
+            "sha256": "c115cf48f6f9ba7c260477c2ce055a912d9d5d0737764d4596a1967cbe8c06da"
+          },
+          {
+            "path": "crops/live-03029.png",
+            "pts": 145.238,
+            "sha256": "8dd10e921c27b82d7c55677b2e64bcdcdbb6c0bf2baf339511b3fc8f8acfed5a"
+          }
+        ]
+      },
+      {
+        "slot": 26,
+        "source": "live",
+        "old": "04:10",
+        "new": "04:09",
+        "reference_indices": [
+          3095,
+          3191
+        ],
+        "reference_pts": [
+          145.796,
+          146.596
+        ],
+        "discriminating_pixels": 301,
+        "flip_candidates": [
+          3135
+        ],
+        "status": "owner_visually_verified",
+        "index": 3135,
+        "last_old": 146.121,
+        "first_new": 146.129,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-03135.png",
+            "pts": 146.121,
+            "sha256": "b8b83e97221079c4f0136d85b275bed2e5897be7b3c15629b123c430c1e18f1b"
+          },
+          {
+            "path": "crops/live-03136.png",
+            "pts": 146.129,
+            "sha256": "5cb8798cb47966c57e7fe2e496bff1e64ae6bb60a0945e0384ad05e280081ec6"
+          },
+          {
+            "path": "crops/live-03137.png",
+            "pts": 146.138,
+            "sha256": "49f5c412c00d4b5ddd1b44fccee8df1baf238553736d427456327d37d629f738"
+          }
+        ]
+      },
+      {
+        "slot": 27,
+        "source": "live",
+        "old": "04:09",
+        "new": "04:08",
+        "reference_indices": [
+          3215,
+          3311
+        ],
+        "reference_pts": [
+          146.796,
+          147.596
+        ],
+        "discriminating_pixels": 37,
+        "flip_candidates": [
+          3257
+        ],
+        "status": "owner_visually_verified",
+        "index": 3257,
+        "last_old": 147.138,
+        "first_new": 147.14600000000002,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-03257.png",
+            "pts": 147.138,
+            "sha256": "925c59a87f72b3cc009f521c50b536ba6c702d7a7aefc8921a2df13d1ea8c68a"
+          },
+          {
+            "path": "crops/live-03258.png",
+            "pts": 147.14600000000002,
+            "sha256": "5b9090caac8b1bbb1d2c1e52b22f1ec69cd80b245d847f505194dbd626e005d6"
+          },
+          {
+            "path": "crops/live-03259.png",
+            "pts": 147.154,
+            "sha256": "2ec70f330e836dfdff69e54031ebf9a502b02c187eb4b6b6c482c3011cf1cfce"
+          }
+        ]
+      },
+      {
+        "slot": 28,
+        "source": "live",
+        "old": "04:08",
+        "new": "04:07",
+        "reference_indices": [
+          3335,
+          3431
+        ],
+        "reference_pts": [
+          147.796,
+          148.596
+        ],
+        "discriminating_pixels": 220,
+        "flip_candidates": [
+          3387
+        ],
+        "status": "owner_visually_verified",
+        "index": 3387,
+        "last_old": 148.221,
+        "first_new": 148.22899999999998,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-03387.png",
+            "pts": 148.221,
+            "sha256": "d1b49de89bd5515df8ef72a83a81c75e33bdc97b0c595d1217a484fb578115c7"
+          },
+          {
+            "path": "crops/live-03388.png",
+            "pts": 148.22899999999998,
+            "sha256": "698d849457de4fcfabeac28f585d909f743e7a98410b4d68ca4e2ca003fabf16"
+          },
+          {
+            "path": "crops/live-03389.png",
+            "pts": 148.238,
+            "sha256": "0647488c9058b1192aeba3e64a64edae12966c6c39f87fc4d2aed1b667238235"
+          }
+        ]
+      },
+      {
+        "slot": 29,
+        "source": "live",
+        "old": "04:07",
+        "new": "04:06",
+        "reference_indices": [
+          3455,
+          3551
+        ],
+        "reference_pts": [
+          148.796,
+          149.596
+        ],
+        "discriminating_pixels": 231,
+        "flip_candidates": [
+          3497
+        ],
+        "status": "owner_visually_verified",
+        "index": 3497,
+        "last_old": 149.138,
+        "first_new": 149.14600000000002,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-03497.png",
+            "pts": 149.138,
+            "sha256": "777e9ab8ad74f5eda50ed89221f86a81b54cdb78d9067f9ac8eedf79573676b7"
+          },
+          {
+            "path": "crops/live-03498.png",
+            "pts": 149.14600000000002,
+            "sha256": "f298473e99f45c5456ce5996a8dc28c6530d59bd8575c3297b7a44e93059ea98"
+          },
+          {
+            "path": "crops/live-03499.png",
+            "pts": 149.154,
+            "sha256": "3b1780ef64b44050be3a914fa3b34a8ed0beda137d5466eb28111999d673a6d7"
+          }
+        ]
+      },
+      {
+        "slot": 30,
+        "source": "live",
+        "old": "04:06",
+        "new": "04:05",
+        "reference_indices": [
+          3575,
+          3671
+        ],
+        "reference_pts": [
+          149.796,
+          150.596
+        ],
+        "discriminating_pixels": 33,
+        "flip_candidates": [
+          3616
+        ],
+        "status": "owner_visually_verified",
+        "index": 3616,
+        "last_old": 150.129,
+        "first_new": 150.138,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-03616.png",
+            "pts": 150.129,
+            "sha256": "77d7363545ca09ec555ad1f6f7297417d953a17fe20c987c5d924add316daa0e"
+          },
+          {
+            "path": "crops/live-03617.png",
+            "pts": 150.138,
+            "sha256": "292820d7ea4d1d77f242b211a9e58f9c4171ae4d6a2553c8d4c3e7c95dc165d0"
+          },
+          {
+            "path": "crops/live-03618.png",
+            "pts": 150.14600000000002,
+            "sha256": "08e7d6906963955c448a2beaab3498faed6d6a6b2c919894534dbdbd01635fe7"
+          }
+        ]
+      },
+      {
+        "slot": 31,
+        "source": "live",
+        "old": "04:05",
+        "new": "04:04",
+        "reference_indices": [
+          3695,
+          3791
+        ],
+        "reference_pts": [
+          150.796,
+          151.596
+        ],
+        "discriminating_pixels": 220,
+        "flip_candidates": [
+          3737
+        ],
+        "status": "owner_visually_verified",
+        "index": 3737,
+        "last_old": 151.138,
+        "first_new": 151.14600000000002,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-03737.png",
+            "pts": 151.138,
+            "sha256": "66aa1eb7c5a1f20260fa14145e139cd42089a6c860fc2e87b6f52de2ad5059e3"
+          },
+          {
+            "path": "crops/live-03738.png",
+            "pts": 151.14600000000002,
+            "sha256": "34f10ddb662f85a2ea5d4fdcc57cfca3c6da75edb7cd5648b95a84bb6bf7de88"
+          },
+          {
+            "path": "crops/live-03739.png",
+            "pts": 151.154,
+            "sha256": "386d8c01aecaa328edc3c82769b87ba1563768d03cec70620e0aa455f5ef522b"
+          }
+        ]
+      },
+      {
+        "slot": 32,
+        "source": "live",
+        "old": "04:04",
+        "new": "04:03",
+        "reference_indices": [
+          3815,
+          3911
+        ],
+        "reference_pts": [
+          151.796,
+          152.596
+        ],
+        "discriminating_pixels": 220,
+        "flip_candidates": [
+          3855
+        ],
+        "status": "owner_visually_verified",
+        "index": 3855,
+        "last_old": 152.121,
+        "first_new": 152.129,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-03855.png",
+            "pts": 152.121,
+            "sha256": "beb73afa8b95e34f6957b79118969ac7d17add14155e3f7ac7f205197b9c7b17"
+          },
+          {
+            "path": "crops/live-03856.png",
+            "pts": 152.129,
+            "sha256": "a17fb146ef7f54c260bafe3f7af7f128cd7e1f5fd763fab2b78b226bd62ae400"
+          },
+          {
+            "path": "crops/live-03857.png",
+            "pts": 152.138,
+            "sha256": "a68a114b591c656539398626e15f5d5229463b757f4e269a55b911f4d4fe6a80"
+          }
+        ]
+      },
+      {
+        "slot": 33,
+        "source": "live",
+        "old": "04:03",
+        "new": "04:02",
+        "reference_indices": [
+          3935,
+          4031
+        ],
+        "reference_pts": [
+          152.796,
+          153.596
+        ],
+        "discriminating_pixels": 122,
+        "flip_candidates": [
+          3975
+        ],
+        "status": "owner_visually_verified",
+        "index": 3975,
+        "last_old": 153.121,
+        "first_new": 153.129,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-03975.png",
+            "pts": 153.121,
+            "sha256": "678f376724ed6881d4dbe03777df4ad7a6b0e943c2f1cdfb2c36d3fa2e64d696"
+          },
+          {
+            "path": "crops/live-03976.png",
+            "pts": 153.129,
+            "sha256": "dee6b510e00395b4bd90ff20841bb046654be7979de4e052db93ba6596cf115c"
+          },
+          {
+            "path": "crops/live-03977.png",
+            "pts": 153.138,
+            "sha256": "9f281a6e5ee6f5598e9831286352c5ec8aaed42a406baf9845d43beda9fc5759"
+          }
+        ]
+      },
+      {
+        "slot": 34,
+        "source": "live",
+        "old": "04:02",
+        "new": "04:01",
+        "reference_indices": [
+          4055,
+          4151
+        ],
+        "reference_pts": [
+          153.796,
+          154.596
+        ],
+        "discriminating_pixels": 203,
+        "flip_candidates": [
+          4095
+        ],
+        "status": "owner_visually_verified",
+        "index": 4095,
+        "last_old": 154.121,
+        "first_new": 154.129,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/live-04095.png",
+            "pts": 154.121,
+            "sha256": "82318d8c09fd2504a42e085234be6bfe343fd165b071aaccc33b5f3f3c6c491a"
+          },
+          {
+            "path": "crops/live-04096.png",
+            "pts": 154.129,
+            "sha256": "5f8137882d662a9e4c0e7d2851ac6f9789c419bd77e5e9d0024a2e76dc6beed7"
+          },
+          {
+            "path": "crops/live-04097.png",
+            "pts": 154.138,
+            "sha256": "09765030fe158c8f4be991184ebee97eb2c30f4097832197964c51c9402cfd51"
+          }
+        ]
+      },
+      {
+        "slot": 35,
+        "source": "live",
+        "old": "04:01",
+        "new": null,
+        "reference_indices": [
+          4175,
+          4271
+        ],
+        "reference_pts": [
+          154.796,
+          155.596
+        ],
+        "discriminating_pixels": 462,
+        "flip_candidates": [
+          4227
+        ],
+        "status": "unknown_fade",
+        "index": null,
+        "last_old": null,
+        "first_new": null,
+        "human_verified": false,
+        "use_for_fit": false,
+        "crops": [
+          {
+            "path": "crops/live-04176.png",
+            "pts": 154.796,
+            "sha256": "4d469be0fddec96b9b1dcc7c8795c59f197e3f23a5bcb8ec65e01cb6f7756510"
+          },
+          {
+            "path": "crops/live-04272.png",
+            "pts": 155.596,
+            "sha256": "d87e5c23aabacfd867bd097cff5feee21c142c12f63898aee940ea65075aa5f3"
+          }
+        ]
+      },
+      {
+        "slot": 36,
+        "source": "live",
+        "old": null,
+        "new": null,
+        "reference_indices": [
+          4295,
+          4391
+        ],
+        "reference_pts": [
+          155.796,
+          156.596
+        ],
+        "discriminating_pixels": 463,
+        "flip_candidates": [
+          4347
+        ],
+        "status": "unknown_fade",
+        "index": null,
+        "last_old": null,
+        "first_new": null,
+        "human_verified": false,
+        "use_for_fit": false,
+        "crops": [
+          {
+            "path": "crops/live-04296.png",
+            "pts": 155.796,
+            "sha256": "535990e7a6d0549b20b53277aff6d30f93896233ca739c53615b2553ac51b6df"
+          },
+          {
+            "path": "crops/live-04392.png",
+            "pts": 156.596,
+            "sha256": "2617a180ed3430e9e334f2f1ca746705e45ac52a5aed5736bfa215e21528b073"
+          }
+        ]
+      },
+      {
+        "slot": 37,
+        "source": "live",
+        "old": "03:59",
+        "new": "03:58",
+        "reference_indices": [
+          4415,
+          4511
+        ],
+        "reference_pts": [
+          156.796,
+          157.596
+        ],
+        "discriminating_pixels": 38,
+        "flip_candidates": [
+          4456
+        ],
+        "status": "owner_visually_verified",
+        "index": 4456,
+        "last_old": 157.129,
+        "first_new": 157.138,
+        "human_verified": false,
+        "use_for_fit": false,
+        "crops": [
+          {
+            "path": "crops/live-04456.png",
+            "pts": 157.129,
+            "sha256": "5ed844f1c453bfebfcb681d0756b243a1f3ea62f73ef0e2ce5505da5254e04cf"
+          },
+          {
+            "path": "crops/live-04457.png",
+            "pts": 157.138,
+            "sha256": "a058bf5e90103e43ea232f9d3ed9ebdfae7e6af5d76b276bb4ed56882a5d98e2"
+          },
+          {
+            "path": "crops/live-04458.png",
+            "pts": 157.14600000000002,
+            "sha256": "fdd187dc9129e058e41c5266eb39d3222b4f3c0ceb2abf08ebc9319f1673516d"
+          }
+        ]
+      },
+      {
+        "slot": 38,
+        "source": "live",
+        "old": "03:58",
+        "new": "03:57",
+        "reference_indices": [
+          4535,
+          4631
+        ],
+        "reference_pts": [
+          157.796,
+          158.596
+        ],
+        "discriminating_pixels": 262,
+        "flip_candidates": [
+          4576
+        ],
+        "status": "owner_visually_verified",
+        "index": 4576,
+        "last_old": 158.129,
+        "first_new": 158.138,
+        "human_verified": false,
+        "use_for_fit": false,
+        "crops": [
+          {
+            "path": "crops/live-04576.png",
+            "pts": 158.129,
+            "sha256": "0fe102c50c9e41f3023230a72e23afc4066129f61da38fa34f896461b1c057e2"
+          },
+          {
+            "path": "crops/live-04577.png",
+            "pts": 158.138,
+            "sha256": "61c5bf4fc4f96cde3a7ef1c8cd03e6eb9527ee0fc70b9c5a7c86be88f595f4d7"
+          },
+          {
+            "path": "crops/live-04578.png",
+            "pts": 158.14600000000002,
+            "sha256": "6a2ff13a23f2d8f07f4dbded8f1a91057f502afc39fe9fced016623b0574cfc3"
+          }
+        ]
+      },
+      {
+        "slot": 39,
+        "source": "live",
+        "old": "03:57",
+        "new": "03:56",
+        "reference_indices": [
+          4655,
+          4751
+        ],
+        "reference_pts": [
+          158.796,
+          159.596
+        ],
+        "discriminating_pixels": 259,
+        "flip_candidates": [
+          4707
+        ],
+        "status": "owner_visually_verified",
+        "index": 4707,
+        "last_old": 159.221,
+        "first_new": 159.22899999999998,
+        "human_verified": false,
+        "use_for_fit": false,
+        "crops": [
+          {
+            "path": "crops/live-04707.png",
+            "pts": 159.221,
+            "sha256": "627f34d901d00c4f5b00a014f1dc9b544f60255ccd4c66704a0e7b30bcaf9eb9"
+          },
+          {
+            "path": "crops/live-04708.png",
+            "pts": 159.22899999999998,
+            "sha256": "847bf3f5070992fdeccb3e5a8ec605ff28a08778e886e3b9f8dee77ffe1a1acf"
+          },
+          {
+            "path": "crops/live-04709.png",
+            "pts": 159.238,
+            "sha256": "0a9b266faf70b976299e7532556053d83ac0e7691494ad5cc66d42b2bffee628"
+          }
+        ]
+      }
+    ],
+    "replay": [
+      {
+        "slot": 0,
+        "source": "replay",
+        "old": "04:36",
+        "new": "04:35",
+        "reference_indices": [
+          0,
+          71
+        ],
+        "reference_pts": [
+          89.396,
+          89.988
+        ],
+        "discriminating_pixels": 36,
+        "flip_candidates": [
+          18
+        ],
+        "status": "owner_visually_verified",
+        "index": 18,
+        "last_old": 89.538,
+        "first_new": 89.546,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-00018.png",
+            "pts": 89.538,
+            "sha256": "c126d0477056d67af12c7fded79dc616749b795ff0648d032b207f18bec638ac"
+          },
+          {
+            "path": "crops/replay-00019.png",
+            "pts": 89.546,
+            "sha256": "aa382e578153bd406c87e8015bcbfdedb74523d8a744c99961cc0708c06c3e13"
+          },
+          {
+            "path": "crops/replay-00020.png",
+            "pts": 89.554,
+            "sha256": "bddaf982c5a64eab4f334db6acbb2274927f659df9bd85d98ac3db1423dab5d8"
+          }
+        ]
+      },
+      {
+        "slot": 1,
+        "source": "replay",
+        "old": "04:35",
+        "new": "04:34",
+        "reference_indices": [
+          95,
+          191
+        ],
+        "reference_pts": [
+          90.188,
+          90.988
+        ],
+        "discriminating_pixels": 206,
+        "flip_candidates": [
+          150
+        ],
+        "status": "owner_visually_verified",
+        "index": 150,
+        "last_old": 90.638,
+        "first_new": 90.646,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-00150.png",
+            "pts": 90.638,
+            "sha256": "ea2d73751e6f6aaed81d4417d657b91b6cbb7237d14a78f3bdeabd4da0948425"
+          },
+          {
+            "path": "crops/replay-00151.png",
+            "pts": 90.646,
+            "sha256": "b58403a701ba0ea7c05c3d48b69d040febae819322099ff8ff83d95762728e02"
+          },
+          {
+            "path": "crops/replay-00152.png",
+            "pts": 90.654,
+            "sha256": "db5c687036efd07d24ebd7691cc82c37eeed56bfcd66402b96cbe7c7de55cdb3"
+          }
+        ]
+      },
+      {
+        "slot": 2,
+        "source": "replay",
+        "old": "04:34",
+        "new": "04:33",
+        "reference_indices": [
+          215,
+          311
+        ],
+        "reference_pts": [
+          91.188,
+          91.988
+        ],
+        "discriminating_pixels": 215,
+        "flip_candidates": [
+          257
+        ],
+        "status": "owner_visually_verified",
+        "index": 257,
+        "last_old": 91.529,
+        "first_new": 91.538,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-00257.png",
+            "pts": 91.529,
+            "sha256": "c82a7056a7645ca220b3487bbb67f8a6128288be02a8a941461ec63aeb9e982e"
+          },
+          {
+            "path": "crops/replay-00258.png",
+            "pts": 91.538,
+            "sha256": "547773c93c623c69a6434b7a224dbf68ffa7e00a7a84de8f9ae5b1d675063ca1"
+          },
+          {
+            "path": "crops/replay-00259.png",
+            "pts": 91.546,
+            "sha256": "71c6e06f6a3c3b3d7092f196390924d0be0f52efefd7ae854a248b269f11ffb2"
+          }
+        ]
+      },
+      {
+        "slot": 3,
+        "source": "replay",
+        "old": "04:33",
+        "new": "04:32",
+        "reference_indices": [
+          335,
+          431
+        ],
+        "reference_pts": [
+          92.188,
+          92.988
+        ],
+        "discriminating_pixels": 128,
+        "flip_candidates": [
+          377
+        ],
+        "status": "owner_visually_verified",
+        "index": 377,
+        "last_old": 92.529,
+        "first_new": 92.538,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-00377.png",
+            "pts": 92.529,
+            "sha256": "00cfdb2cb7f188fecc7d0e3ebe71d8f5388e0949fdd4eb6d33f2bc0b3efcf52b"
+          },
+          {
+            "path": "crops/replay-00378.png",
+            "pts": 92.538,
+            "sha256": "3c3839ebe5fbd2e07d32e8cdb950adf8f103bae7b12a857ccc334c42b59dda2b"
+          },
+          {
+            "path": "crops/replay-00379.png",
+            "pts": 92.546,
+            "sha256": "88f080f5bf26e58aad16735ff8ef9c125ec802e16f394344dea79887483e2264"
+          }
+        ]
+      },
+      {
+        "slot": 4,
+        "source": "replay",
+        "old": "04:32",
+        "new": "04:31",
+        "reference_indices": [
+          455,
+          551
+        ],
+        "reference_pts": [
+          93.188,
+          93.988
+        ],
+        "discriminating_pixels": 196,
+        "flip_candidates": [
+          496
+        ],
+        "status": "owner_visually_verified",
+        "index": 496,
+        "last_old": 93.521,
+        "first_new": 93.529,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-00496.png",
+            "pts": 93.521,
+            "sha256": "92a6accb5836e3b0e56dfb4edcc78503beaf89e418dbf6b4ba6b145956bab41f"
+          },
+          {
+            "path": "crops/replay-00497.png",
+            "pts": 93.529,
+            "sha256": "eff4c7f3cdf315e68f31879b545b5e9ae6c7441372088758d8647bc02ddc8ca6"
+          },
+          {
+            "path": "crops/replay-00498.png",
+            "pts": 93.538,
+            "sha256": "3bc60c9e3888b3ac6ed55c91b19369f3e485146147cccf68482df3646c03c3ac"
+          }
+        ]
+      },
+      {
+        "slot": 5,
+        "source": "replay",
+        "old": "04:31",
+        "new": "04:30",
+        "reference_indices": [
+          575,
+          671
+        ],
+        "reference_pts": [
+          94.188,
+          94.988
+        ],
+        "discriminating_pixels": 272,
+        "flip_candidates": [
+          617
+        ],
+        "status": "owner_visually_verified",
+        "index": 617,
+        "last_old": 94.529,
+        "first_new": 94.538,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-00617.png",
+            "pts": 94.529,
+            "sha256": "304ee666eb2c198c19b5049b8a6283ed532b05bb29cdb556ad0aedf199d35ba8"
+          },
+          {
+            "path": "crops/replay-00618.png",
+            "pts": 94.538,
+            "sha256": "31806c6ef73ff145eb6c38244b8f4408fbe379a27d24a67af668e16b79282057"
+          },
+          {
+            "path": "crops/replay-00619.png",
+            "pts": 94.546,
+            "sha256": "068c77356874c684f42756621eda05d644c806a9954f1d1473bec7c1870c4651"
+          }
+        ]
+      },
+      {
+        "slot": 6,
+        "source": "replay",
+        "old": "04:30",
+        "new": "04:29",
+        "reference_indices": [
+          695,
+          791
+        ],
+        "reference_pts": [
+          95.188,
+          95.988
+        ],
+        "discriminating_pixels": 144,
+        "flip_candidates": [
+          737
+        ],
+        "status": "owner_visually_verified",
+        "index": 737,
+        "last_old": 95.529,
+        "first_new": 95.538,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-00737.png",
+            "pts": 95.529,
+            "sha256": "4f9b1eae949c853dfdd84a4806779bd74d938041758c3a0e8e9636cba9744c0d"
+          },
+          {
+            "path": "crops/replay-00738.png",
+            "pts": 95.538,
+            "sha256": "2e4637ca5204c4cc9243b132ddc6d4c039caf51c13c271de7e5a7dfcfdf57ccb"
+          },
+          {
+            "path": "crops/replay-00739.png",
+            "pts": 95.546,
+            "sha256": "7b29fc3529ecc26f16547782529881ba16a57af7d66f5422c14b007fa88c0440"
+          }
+        ]
+      },
+      {
+        "slot": 7,
+        "source": "replay",
+        "old": "04:29",
+        "new": "04:28",
+        "reference_indices": [
+          815,
+          911
+        ],
+        "reference_pts": [
+          96.188,
+          96.988
+        ],
+        "discriminating_pixels": 31,
+        "flip_candidates": [
+          859
+        ],
+        "status": "owner_visually_verified",
+        "index": 859,
+        "last_old": 96.546,
+        "first_new": 96.554,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-00859.png",
+            "pts": 96.546,
+            "sha256": "a042b6428de3640a73c6c85aa72d59a8763fddfa49f2d12db39aa764c08b3b21"
+          },
+          {
+            "path": "crops/replay-00860.png",
+            "pts": 96.554,
+            "sha256": "b37af1156903701e3412101f6ee91d3c5eb7ae04e3f434377057f458cc059570"
+          },
+          {
+            "path": "crops/replay-00861.png",
+            "pts": 96.563,
+            "sha256": "a2601ad235a5a1ea68e84f918b879e8c0b9cc5faa0a7b77438f37e317c94cc0f"
+          }
+        ]
+      },
+      {
+        "slot": 8,
+        "source": "replay",
+        "old": "04:28",
+        "new": "04:27",
+        "reference_indices": [
+          935,
+          1031
+        ],
+        "reference_pts": [
+          97.188,
+          97.988
+        ],
+        "discriminating_pixels": 231,
+        "flip_candidates": [
+          977
+        ],
+        "status": "owner_visually_verified",
+        "index": 977,
+        "last_old": 97.529,
+        "first_new": 97.538,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-00977.png",
+            "pts": 97.529,
+            "sha256": "bf80c968f14b526941cf087721009475c13998cab886d6dca1368b0e857e9c29"
+          },
+          {
+            "path": "crops/replay-00978.png",
+            "pts": 97.538,
+            "sha256": "086408fffd15e36de50ea34f144b824d9c274c35e7298620b274b0c48f550f86"
+          },
+          {
+            "path": "crops/replay-00979.png",
+            "pts": 97.546,
+            "sha256": "26483ee7a4d11eaa7dc054bc5417403415f7fc49ac628f43a497817ac1597526"
+          }
+        ]
+      },
+      {
+        "slot": 9,
+        "source": "replay",
+        "old": "04:27",
+        "new": "04:26",
+        "reference_indices": [
+          1055,
+          1151
+        ],
+        "reference_pts": [
+          98.188,
+          98.988
+        ],
+        "discriminating_pixels": 229,
+        "flip_candidates": [
+          1108
+        ],
+        "status": "owner_visually_verified",
+        "index": 1108,
+        "last_old": 98.621,
+        "first_new": 98.629,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-01108.png",
+            "pts": 98.621,
+            "sha256": "db6b58c4e5db575385883503d82e815aaae4341acf3831c2955ecfa62183f73b"
+          },
+          {
+            "path": "crops/replay-01109.png",
+            "pts": 98.629,
+            "sha256": "0f87932f6554925d6cdcc0b7079041f52c9ff09a61f1bec92375916ecba2980e"
+          },
+          {
+            "path": "crops/replay-01110.png",
+            "pts": 98.638,
+            "sha256": "aaba2e08a9dcfa113bf0a8de0358560404ede73f8bdb45789527649540a7e042"
+          }
+        ]
+      },
+      {
+        "slot": 10,
+        "source": "replay",
+        "old": "04:26",
+        "new": "04:25",
+        "reference_indices": [
+          1175,
+          1271
+        ],
+        "reference_pts": [
+          99.188,
+          99.988
+        ],
+        "discriminating_pixels": 31,
+        "flip_candidates": [
+          1217
+        ],
+        "status": "owner_visually_verified",
+        "index": 1217,
+        "last_old": 99.529,
+        "first_new": 99.538,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-01217.png",
+            "pts": 99.529,
+            "sha256": "62e13bb70f909386c1fc7c88bbad3280bcb30c993f8bfe32fc672932b5f6d417"
+          },
+          {
+            "path": "crops/replay-01218.png",
+            "pts": 99.538,
+            "sha256": "862897028ad35e9476d7282b86c914d4053495b535e6346a0a45f9f27e96815d"
+          },
+          {
+            "path": "crops/replay-01219.png",
+            "pts": 99.546,
+            "sha256": "bd4997cb442d6e1aef22de62149576b9501551ad826dd02f91aa5e2a4d34f51c"
+          }
+        ]
+      },
+      {
+        "slot": 11,
+        "source": "replay",
+        "old": "04:25",
+        "new": "04:24",
+        "reference_indices": [
+          1295,
+          1391
+        ],
+        "reference_pts": [
+          100.188,
+          100.988
+        ],
+        "discriminating_pixels": 207,
+        "flip_candidates": [
+          1337
+        ],
+        "status": "owner_visually_verified",
+        "index": 1337,
+        "last_old": 100.529,
+        "first_new": 100.538,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-01337.png",
+            "pts": 100.529,
+            "sha256": "60c67eeb3c648cb018e913548329a60a38e93b2c4a5c0b431f6551f4827f5f80"
+          },
+          {
+            "path": "crops/replay-01338.png",
+            "pts": 100.538,
+            "sha256": "132c8de98d899c90c51ceaf544676e79e74f5f70fb5857f1eee62ebe7558353f"
+          },
+          {
+            "path": "crops/replay-01339.png",
+            "pts": 100.546,
+            "sha256": "ce348b1d897d73f287f167cbd30973e8cf73b698de58fff86b0226439b2bf27b"
+          }
+        ]
+      },
+      {
+        "slot": 12,
+        "source": "replay",
+        "old": "04:24",
+        "new": "04:23",
+        "reference_indices": [
+          1415,
+          1511
+        ],
+        "reference_pts": [
+          101.188,
+          101.988
+        ],
+        "discriminating_pixels": 203,
+        "flip_candidates": [
+          1468
+        ],
+        "status": "owner_visually_verified",
+        "index": 1468,
+        "last_old": 101.621,
+        "first_new": 101.629,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-01468.png",
+            "pts": 101.621,
+            "sha256": "94e6a425aa6997bc61d2f430236171e188cca2f6c8f0832a0c5a0443ffb272be"
+          },
+          {
+            "path": "crops/replay-01469.png",
+            "pts": 101.629,
+            "sha256": "98e159bba34c8e9567396ea078793bc9e869d92512c1c94514d63005a665fdea"
+          },
+          {
+            "path": "crops/replay-01470.png",
+            "pts": 101.638,
+            "sha256": "054b584b2739e9bfcb3ce39d78e3cd1113dfc70836c990fa13c517d28a468e00"
+          }
+        ]
+      },
+      {
+        "slot": 13,
+        "source": "replay",
+        "old": "04:23",
+        "new": "04:22",
+        "reference_indices": [
+          1535,
+          1631
+        ],
+        "reference_pts": [
+          102.188,
+          102.988
+        ],
+        "discriminating_pixels": 118,
+        "flip_candidates": [
+          1591
+        ],
+        "status": "owner_visually_verified",
+        "index": 1591,
+        "last_old": 102.646,
+        "first_new": 102.654,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-01591.png",
+            "pts": 102.646,
+            "sha256": "428fdf73d520495e6b3c93eb4c06aa363af8cba91519219476f1d7951ddae881"
+          },
+          {
+            "path": "crops/replay-01592.png",
+            "pts": 102.654,
+            "sha256": "c0976555b6422e90cbc35bab1a9607745fc7de1c130fa65350de5b0ecfb13784"
+          },
+          {
+            "path": "crops/replay-01593.png",
+            "pts": 102.663,
+            "sha256": "46c6044c3b329a31f06e25bb3a1f332d9f90e1777c7082e9bd0662dea72d630d"
+          }
+        ]
+      },
+      {
+        "slot": 14,
+        "source": "replay",
+        "old": "04:22",
+        "new": "04:21",
+        "reference_indices": [
+          1655,
+          1751
+        ],
+        "reference_pts": [
+          103.188,
+          103.988
+        ],
+        "discriminating_pixels": 176,
+        "flip_candidates": [
+          1707
+        ],
+        "status": "owner_visually_verified",
+        "index": 1707,
+        "last_old": 103.613,
+        "first_new": 103.621,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-01707.png",
+            "pts": 103.613,
+            "sha256": "d0888a406553a16cb341d81e60b04f745a6a72b98f2b9c8c421494dba3d2fafa"
+          },
+          {
+            "path": "crops/replay-01708.png",
+            "pts": 103.621,
+            "sha256": "2ad2db7cb82fbee0f9be32906f14550f0fbfa3bec5d24d57cd6a062bf8f1a60e"
+          },
+          {
+            "path": "crops/replay-01709.png",
+            "pts": 103.629,
+            "sha256": "2c0b340c8cb63cbcfad134fb68bbe42c0c26539dcabdc31a70bc390119a1269a"
+          }
+        ]
+      },
+      {
+        "slot": 15,
+        "source": "replay",
+        "old": "04:21",
+        "new": "04:20",
+        "reference_indices": [
+          1775,
+          1871
+        ],
+        "reference_pts": [
+          104.188,
+          104.988
+        ],
+        "discriminating_pixels": 248,
+        "flip_candidates": [
+          1816
+        ],
+        "status": "owner_visually_verified",
+        "index": 1816,
+        "last_old": 104.521,
+        "first_new": 104.529,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-01816.png",
+            "pts": 104.521,
+            "sha256": "9995575eb6433b1757798803240172c8a4d9e74c900f56be3cd7a9a06714a5e7"
+          },
+          {
+            "path": "crops/replay-01817.png",
+            "pts": 104.529,
+            "sha256": "7808aee26b79d646bb1dcbc4741f392ced7ee5a83d9bc8b11c67d51cffb7d824"
+          },
+          {
+            "path": "crops/replay-01818.png",
+            "pts": 104.538,
+            "sha256": "6c0918bdc038171e91ae5dbe28ebb93031c667b2cd50255fe9c2d705b83ac194"
+          }
+        ]
+      },
+      {
+        "slot": 16,
+        "source": "replay",
+        "old": "04:20",
+        "new": "04:19",
+        "reference_indices": [
+          1895,
+          1991
+        ],
+        "reference_pts": [
+          105.188,
+          105.988
+        ],
+        "discriminating_pixels": 210,
+        "flip_candidates": [
+          1939
+        ],
+        "status": "owner_visually_verified",
+        "index": 1939,
+        "last_old": 105.54599999999999,
+        "first_new": 105.554,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-01939.png",
+            "pts": 105.54599999999999,
+            "sha256": "7b3e141de77ad1228a833b78c794a96dacfefe48d09ba74f2ccbebb95dae87c1"
+          },
+          {
+            "path": "crops/replay-01940.png",
+            "pts": 105.554,
+            "sha256": "7e6df8899a9cf3e6a0dba1452de6a8fe08548690f503c1d06710c0ae2ccb7980"
+          },
+          {
+            "path": "crops/replay-01941.png",
+            "pts": 105.563,
+            "sha256": "b046afce2c9880acb19359036d68ff477a2a32756f509026d971bb2b0cf7608c"
+          }
+        ]
+      },
+      {
+        "slot": 17,
+        "source": "replay",
+        "old": "04:19",
+        "new": "04:18",
+        "reference_indices": [
+          2015,
+          2111
+        ],
+        "reference_pts": [
+          106.188,
+          106.988
+        ],
+        "discriminating_pixels": 37,
+        "flip_candidates": [
+          2068
+        ],
+        "status": "owner_visually_verified",
+        "index": 2068,
+        "last_old": 106.62100000000001,
+        "first_new": 106.629,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-02068.png",
+            "pts": 106.62100000000001,
+            "sha256": "e48901d3ad090f59ebd0327164a25069817269062e9c871ef5d7ed0bf9983bde"
+          },
+          {
+            "path": "crops/replay-02069.png",
+            "pts": 106.629,
+            "sha256": "6b880c7dcf05150ec5dd5244d819e4e3518ce9d49cb35d52198a1bd55eed3c62"
+          },
+          {
+            "path": "crops/replay-02070.png",
+            "pts": 106.638,
+            "sha256": "14146751af95fb18e31950dd358bf14505ef84354db961bc095d1859f4b91583"
+          }
+        ]
+      },
+      {
+        "slot": 18,
+        "source": "replay",
+        "old": "04:18",
+        "new": "04:17",
+        "reference_indices": [
+          2135,
+          2231
+        ],
+        "reference_pts": [
+          107.188,
+          107.988
+        ],
+        "discriminating_pixels": 229,
+        "flip_candidates": [
+          2176
+        ],
+        "status": "owner_visually_verified",
+        "index": 2176,
+        "last_old": 107.521,
+        "first_new": 107.529,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-02176.png",
+            "pts": 107.521,
+            "sha256": "ecb49a12f5d68b9a23d07d37f295201ecc284d4baaadc4f112a25a72c1919559"
+          },
+          {
+            "path": "crops/replay-02177.png",
+            "pts": 107.529,
+            "sha256": "bb694652e1b8ffab1313969644b165d95d76d85f1db46c05b4296bfff52b6332"
+          },
+          {
+            "path": "crops/replay-02178.png",
+            "pts": 107.538,
+            "sha256": "18383295655c608c4df00fb6c81af1bd689720c3fb3bf37c7b2acb614ec49fa9"
+          }
+        ]
+      },
+      {
+        "slot": 19,
+        "source": "replay",
+        "old": "04:17",
+        "new": "04:16",
+        "reference_indices": [
+          2255,
+          2351
+        ],
+        "reference_pts": [
+          108.188,
+          108.988
+        ],
+        "discriminating_pixels": 218,
+        "flip_candidates": [
+          2297
+        ],
+        "status": "owner_visually_verified",
+        "index": 2297,
+        "last_old": 108.529,
+        "first_new": 108.538,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-02297.png",
+            "pts": 108.529,
+            "sha256": "d73e29f51a458020cb88fb9b06d81cdc486833a58ac5843ba7973556b547d9ea"
+          },
+          {
+            "path": "crops/replay-02298.png",
+            "pts": 108.538,
+            "sha256": "37189d6062aebbed0d9658cf083dff9a23f0590aa31b8835cc5446d3b4fee048"
+          },
+          {
+            "path": "crops/replay-02299.png",
+            "pts": 108.54599999999999,
+            "sha256": "55747200ed617fa809c98125540ca00da03d220a42a53971011cd2edd1bfec7b"
+          }
+        ]
+      },
+      {
+        "slot": 20,
+        "source": "replay",
+        "old": "04:16",
+        "new": "04:15",
+        "reference_indices": [
+          2375,
+          2471
+        ],
+        "reference_pts": [
+          109.188,
+          109.988
+        ],
+        "discriminating_pixels": 28,
+        "flip_candidates": [
+          2424
+        ],
+        "status": "owner_visually_verified",
+        "index": 2424,
+        "last_old": 109.588,
+        "first_new": 109.596,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-02424.png",
+            "pts": 109.588,
+            "sha256": "b1e2967264b7ba04fd2b55b04d593c16ce2a670d2cff8c594d24f898387a8f0f"
+          },
+          {
+            "path": "crops/replay-02425.png",
+            "pts": 109.596,
+            "sha256": "c9554d7ac61ddc98634d24695e187f7e342db57836903c1a5fdb6804231dbcf4"
+          },
+          {
+            "path": "crops/replay-02426.png",
+            "pts": 109.604,
+            "sha256": "ca02194ec302979a854b6db54c723709d9c30338017c3683edcdeefae50d97e2"
+          }
+        ]
+      },
+      {
+        "slot": 21,
+        "source": "replay",
+        "old": "04:15",
+        "new": "04:14",
+        "reference_indices": [
+          2495,
+          2591
+        ],
+        "reference_pts": [
+          110.188,
+          110.988
+        ],
+        "discriminating_pixels": 197,
+        "flip_candidates": [
+          2548
+        ],
+        "status": "owner_visually_verified",
+        "index": 2548,
+        "last_old": 110.62100000000001,
+        "first_new": 110.629,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-02548.png",
+            "pts": 110.62100000000001,
+            "sha256": "e3a1d10fd50f64c5f071d64cb6fdfa8e595f0f00ed426fa89c65f9525d1fb6b2"
+          },
+          {
+            "path": "crops/replay-02549.png",
+            "pts": 110.629,
+            "sha256": "3836a292fdcd774152ef2aece4dc488020965e6717b9aba8f7320dcb2e49f328"
+          },
+          {
+            "path": "crops/replay-02550.png",
+            "pts": 110.638,
+            "sha256": "2ec04c5dbe77688c061c818a14c8a6db4f466a87fd9601cc283ccdd66448d6da"
+          }
+        ]
+      },
+      {
+        "slot": 22,
+        "source": "replay",
+        "old": "04:14",
+        "new": "04:13",
+        "reference_indices": [
+          2615,
+          2711
+        ],
+        "reference_pts": [
+          111.188,
+          111.988
+        ],
+        "discriminating_pixels": 200,
+        "flip_candidates": [
+          2657
+        ],
+        "status": "owner_visually_verified",
+        "index": 2657,
+        "last_old": 111.529,
+        "first_new": 111.538,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-02657.png",
+            "pts": 111.529,
+            "sha256": "b416f83857eeb9355febc131535872cee7d911753d9d12e1b9878a02c71733b8"
+          },
+          {
+            "path": "crops/replay-02658.png",
+            "pts": 111.538,
+            "sha256": "5da16ff8c8b7d072b32b6965b46d5253d9ec9689ee8b7d86b954b96d3ec897b0"
+          },
+          {
+            "path": "crops/replay-02659.png",
+            "pts": 111.54599999999999,
+            "sha256": "8b28ab36cff48b3f15965750ae52f0177bb8c1615e6b66f93ada0e89429e098e"
+          }
+        ]
+      },
+      {
+        "slot": 23,
+        "source": "replay",
+        "old": "04:13",
+        "new": "04:12",
+        "reference_indices": [
+          2735,
+          2831
+        ],
+        "reference_pts": [
+          112.188,
+          112.988
+        ],
+        "discriminating_pixels": 121,
+        "flip_candidates": [
+          2778
+        ],
+        "status": "owner_visually_verified",
+        "index": 2778,
+        "last_old": 112.538,
+        "first_new": 112.54599999999999,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-02778.png",
+            "pts": 112.538,
+            "sha256": "5a8e2dde7ef03db822b3db860e01717d59cb3193c44fe84ad3cac1616ef16abe"
+          },
+          {
+            "path": "crops/replay-02779.png",
+            "pts": 112.54599999999999,
+            "sha256": "a7514583fa3231c45b6709b3e1abdfeff265c47949c645fbddefc0b8aab4d465"
+          },
+          {
+            "path": "crops/replay-02780.png",
+            "pts": 112.554,
+            "sha256": "1b55dedc9beb8f8d2d7cf430fb8b43b2aed43657ca68b02833e757dd027e0545"
+          }
+        ]
+      },
+      {
+        "slot": 24,
+        "source": "replay",
+        "old": "04:12",
+        "new": "04:11",
+        "reference_indices": [
+          2855,
+          2951
+        ],
+        "reference_pts": [
+          113.188,
+          113.988
+        ],
+        "discriminating_pixels": 174,
+        "flip_candidates": [
+          2908
+        ],
+        "status": "owner_visually_verified",
+        "index": 2908,
+        "last_old": 113.62100000000001,
+        "first_new": 113.629,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-02908.png",
+            "pts": 113.62100000000001,
+            "sha256": "3ce70bc0f10154f2986d297e02530d4af1c4c966eb987625567a875ef09f2cdf"
+          },
+          {
+            "path": "crops/replay-02909.png",
+            "pts": 113.629,
+            "sha256": "0ed1d01c3584aab95afc2ad52b4e97fb64ec3bd7b4ca6fd11f87b8c519accdee"
+          },
+          {
+            "path": "crops/replay-02910.png",
+            "pts": 113.638,
+            "sha256": "9ce7a8d84f9fe02b7b6bf7a7a24879894a8525ae3299587b85fd8fbb4937564d"
+          }
+        ]
+      },
+      {
+        "slot": 25,
+        "source": "replay",
+        "old": "04:11",
+        "new": "04:10",
+        "reference_indices": [
+          2975,
+          3071
+        ],
+        "reference_pts": [
+          114.188,
+          114.988
+        ],
+        "discriminating_pixels": 243,
+        "flip_candidates": [
+          3028
+        ],
+        "status": "owner_visually_verified",
+        "index": 3028,
+        "last_old": 114.62100000000001,
+        "first_new": 114.629,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-03028.png",
+            "pts": 114.62100000000001,
+            "sha256": "8139372fd1af6aa6baeacf75b2ecff97b6244668349de70d91c2a4b92ba55b0f"
+          },
+          {
+            "path": "crops/replay-03029.png",
+            "pts": 114.629,
+            "sha256": "06e84613c76d61f56039bb9d4ebf13594276c01b2ec02effb3b37e1f16ddb677"
+          },
+          {
+            "path": "crops/replay-03030.png",
+            "pts": 114.638,
+            "sha256": "4cdb90b35807ce7af9317677e4f0c3e12ecab85a0ce795099046a752d92ddcaf"
+          }
+        ]
+      },
+      {
+        "slot": 26,
+        "source": "replay",
+        "old": "04:10",
+        "new": "04:09",
+        "reference_indices": [
+          3095,
+          3191
+        ],
+        "reference_pts": [
+          115.188,
+          115.988
+        ],
+        "discriminating_pixels": 354,
+        "flip_candidates": [
+          3136
+        ],
+        "status": "owner_visually_verified",
+        "index": 3136,
+        "last_old": 115.521,
+        "first_new": 115.529,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-03136.png",
+            "pts": 115.521,
+            "sha256": "277b0a92f2705512d4fa991ae75e5131942c8d7649ffb4f4b013e0cf9c36eaf5"
+          },
+          {
+            "path": "crops/replay-03137.png",
+            "pts": 115.529,
+            "sha256": "5e16b101f3abf75ec29ff18f364118b320935087d4aee5a97d99012e12ad3ffc"
+          },
+          {
+            "path": "crops/replay-03138.png",
+            "pts": 115.538,
+            "sha256": "a6d63d91010bf2cb9c29cef7ea46f85bcab9b50d1ecb17078a26fedbbcb0a2d2"
+          }
+        ]
+      },
+      {
+        "slot": 27,
+        "source": "replay",
+        "old": "04:09",
+        "new": "04:08",
+        "reference_indices": [
+          3215,
+          3311
+        ],
+        "reference_pts": [
+          116.188,
+          116.988
+        ],
+        "discriminating_pixels": 38,
+        "flip_candidates": [
+          3257
+        ],
+        "status": "owner_visually_verified",
+        "index": 3257,
+        "last_old": 116.529,
+        "first_new": 116.538,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-03257.png",
+            "pts": 116.529,
+            "sha256": "d66d2fb116d0e1806fa25cbd7dc9f9cef7292fe51cb4ddba744ddecc92cf6278"
+          },
+          {
+            "path": "crops/replay-03258.png",
+            "pts": 116.538,
+            "sha256": "db6490d62bc616caa574516de605b6da40835b4aa77a04fc7da5bd98b6fb0fc7"
+          },
+          {
+            "path": "crops/replay-03259.png",
+            "pts": 116.54599999999999,
+            "sha256": "dabb6a8414cef69b23cc025c71865c0045d09b9c2a852d268c8e180214a4c2fc"
+          }
+        ]
+      },
+      {
+        "slot": 28,
+        "source": "replay",
+        "old": "04:08",
+        "new": "04:07",
+        "reference_indices": [
+          3335,
+          3431
+        ],
+        "reference_pts": [
+          117.188,
+          117.988
+        ],
+        "discriminating_pixels": 220,
+        "flip_candidates": [
+          3388
+        ],
+        "status": "owner_visually_verified",
+        "index": 3388,
+        "last_old": 117.62100000000001,
+        "first_new": 117.629,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-03388.png",
+            "pts": 117.62100000000001,
+            "sha256": "943deb6e56efe0943e905d36aabee4c196ffc41fb605a6576d27788569edf047"
+          },
+          {
+            "path": "crops/replay-03389.png",
+            "pts": 117.629,
+            "sha256": "fa30a81d78ae5c55c0679d0d3e71a6fa11d15012309cebbfa442d7d65b4f318b"
+          },
+          {
+            "path": "crops/replay-03390.png",
+            "pts": 117.638,
+            "sha256": "c234f9178f1ba8187426e725833503cf4f641670bc9b62f284a86b7ab6d2a475"
+          }
+        ]
+      },
+      {
+        "slot": 29,
+        "source": "replay",
+        "old": "04:07",
+        "new": "04:06",
+        "reference_indices": [
+          3455,
+          3551
+        ],
+        "reference_pts": [
+          118.188,
+          118.988
+        ],
+        "discriminating_pixels": 226,
+        "flip_candidates": [
+          3499
+        ],
+        "status": "owner_visually_verified",
+        "index": 3499,
+        "last_old": 118.54599999999999,
+        "first_new": 118.554,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-03499.png",
+            "pts": 118.54599999999999,
+            "sha256": "a2ef5e12d901823a3d5f02b394a1229db8a0b9801d2b45b3493bfbe1e0814b59"
+          },
+          {
+            "path": "crops/replay-03500.png",
+            "pts": 118.554,
+            "sha256": "2ca3bc988bdbe0a3d18166c920b49eeac3a76ee4ed8b5a84e774a442c48cef30"
+          },
+          {
+            "path": "crops/replay-03501.png",
+            "pts": 118.563,
+            "sha256": "44bfe17db31dff08c3ff3615aee078db894042cbad49cbc9f8fc98b884cee645"
+          }
+        ]
+      },
+      {
+        "slot": 30,
+        "source": "replay",
+        "old": "04:06",
+        "new": "04:05",
+        "reference_indices": [
+          3575,
+          3671
+        ],
+        "reference_pts": [
+          119.188,
+          119.988
+        ],
+        "discriminating_pixels": 37,
+        "flip_candidates": [
+          3617
+        ],
+        "status": "owner_visually_verified",
+        "index": 3617,
+        "last_old": 119.529,
+        "first_new": 119.538,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-03617.png",
+            "pts": 119.529,
+            "sha256": "addd5b03e9a4a9a7b1c1cdbe02ecbed23469d27412515ed31dc37e657c03cef1"
+          },
+          {
+            "path": "crops/replay-03618.png",
+            "pts": 119.538,
+            "sha256": "7f4890f23bd3e128f156b11be4af103e551486502f27be23fff41908d1bfb7c9"
+          },
+          {
+            "path": "crops/replay-03619.png",
+            "pts": 119.54599999999999,
+            "sha256": "11e9355218b64f748862d730a962fdead89823c848d6b0298a4ab3834ceddaf6"
+          }
+        ]
+      },
+      {
+        "slot": 31,
+        "source": "replay",
+        "old": "04:05",
+        "new": "04:04",
+        "reference_indices": [
+          3695,
+          3791
+        ],
+        "reference_pts": [
+          120.188,
+          120.988
+        ],
+        "discriminating_pixels": 211,
+        "flip_candidates": [
+          3738
+        ],
+        "status": "owner_visually_verified",
+        "index": 3738,
+        "last_old": 120.538,
+        "first_new": 120.54599999999999,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-03738.png",
+            "pts": 120.538,
+            "sha256": "5b27b898a2cbb22445d747219f4fd80dc9aeee6530a6d12a2459e4f9feb7d8b1"
+          },
+          {
+            "path": "crops/replay-03739.png",
+            "pts": 120.54599999999999,
+            "sha256": "c825b7f18f62d9a79c9dd6936ac3369b03e86e7cd729e8f3095a42dfdc0ca362"
+          },
+          {
+            "path": "crops/replay-03740.png",
+            "pts": 120.554,
+            "sha256": "6d6287ca004baae1b64b70c54dfbe39118572b8a424807557d9dbbcef8648c5c"
+          }
+        ]
+      },
+      {
+        "slot": 32,
+        "source": "replay",
+        "old": "04:04",
+        "new": "04:03",
+        "reference_indices": [
+          3815,
+          3911
+        ],
+        "reference_pts": [
+          121.188,
+          121.988
+        ],
+        "discriminating_pixels": 220,
+        "flip_candidates": [
+          3856
+        ],
+        "status": "owner_visually_verified",
+        "index": 3856,
+        "last_old": 121.521,
+        "first_new": 121.529,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-03856.png",
+            "pts": 121.521,
+            "sha256": "1da4d2fd82e763f791fe2cef4eb3d5da6d2bf198fb67d4056880158c56eb2365"
+          },
+          {
+            "path": "crops/replay-03857.png",
+            "pts": 121.529,
+            "sha256": "b3aed5afda89a81f45265ffe06990990eaa302e2acbff6bf9ddc41fb575883ca"
+          },
+          {
+            "path": "crops/replay-03858.png",
+            "pts": 121.53800000000001,
+            "sha256": "38576f4a5fdff161d82447af84ed1d3330bcc1fe27ac2524f04e6e88768abcc4"
+          }
+        ]
+      },
+      {
+        "slot": 33,
+        "source": "replay",
+        "old": "04:03",
+        "new": "04:02",
+        "reference_indices": [
+          3935,
+          4031
+        ],
+        "reference_pts": [
+          122.188,
+          122.988
+        ],
+        "discriminating_pixels": 120,
+        "flip_candidates": [
+          3976
+        ],
+        "status": "owner_visually_verified",
+        "index": 3976,
+        "last_old": 122.521,
+        "first_new": 122.529,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-03976.png",
+            "pts": 122.521,
+            "sha256": "5bb5fafb5f8e0d1b3903e64955d65fe6528c5d91bfaa40c1f904043d839e7d6c"
+          },
+          {
+            "path": "crops/replay-03977.png",
+            "pts": 122.529,
+            "sha256": "1a207d6def9a23640e2f65e892929c4257f16834696e98ebe397cabc60c854b2"
+          },
+          {
+            "path": "crops/replay-03978.png",
+            "pts": 122.53800000000001,
+            "sha256": "16fbd47d1540bc89038ff754047e02c36a2bd70d5990e7e62d76ab318851ca76"
+          }
+        ]
+      },
+      {
+        "slot": 34,
+        "source": "replay",
+        "old": "04:02",
+        "new": "04:01",
+        "reference_indices": [
+          4055,
+          4151
+        ],
+        "reference_pts": [
+          123.188,
+          123.988
+        ],
+        "discriminating_pixels": 203,
+        "flip_candidates": [
+          4097
+        ],
+        "status": "owner_visually_verified",
+        "index": 4097,
+        "last_old": 123.529,
+        "first_new": 123.53800000000001,
+        "human_verified": false,
+        "use_for_fit": true,
+        "crops": [
+          {
+            "path": "crops/replay-04097.png",
+            "pts": 123.529,
+            "sha256": "820b85ae0d82728e403b8b86ec4094888195a8fc6e75e1d16b4fffc7ef2944f7"
+          },
+          {
+            "path": "crops/replay-04098.png",
+            "pts": 123.53800000000001,
+            "sha256": "94b6610115f918b61d7124a521f7dcf0bc2c72a4783528440c9021f7fa824acb"
+          },
+          {
+            "path": "crops/replay-04099.png",
+            "pts": 123.54599999999999,
+            "sha256": "9c5ca408cad84bd6a971f7e3610bcb10b77a48a9744d901b6181fa2c29a03de6"
+          }
+        ]
+      },
+      {
+        "slot": 35,
+        "source": "replay",
+        "old": "04:01",
+        "new": "04:00",
+        "reference_indices": [
+          4175,
+          4271
+        ],
+        "reference_pts": [
+          124.188,
+          124.988
+        ],
+        "discriminating_pixels": 279,
+        "flip_candidates": [
+          4229
+        ],
+        "status": "owner_visually_verified",
+        "index": 4229,
+        "last_old": 124.62899999999999,
+        "first_new": 124.638,
+        "human_verified": false,
+        "use_for_fit": false,
+        "crops": [
+          {
+            "path": "crops/replay-04229.png",
+            "pts": 124.62899999999999,
+            "sha256": "960f25905d6ededb10c03c61e36cac65828879a3c045e710c6902cb358abe2ad"
+          },
+          {
+            "path": "crops/replay-04230.png",
+            "pts": 124.638,
+            "sha256": "569c728af1f34c0c6ece79a5698473bde767382b014a72d7fca622dbe6d12724"
+          },
+          {
+            "path": "crops/replay-04231.png",
+            "pts": 124.646,
+            "sha256": "d5d05265156735ffaf684ac86898263b19aab4e7b5c9750d1f1bac2e82f6047f"
+          }
+        ]
+      },
+      {
+        "slot": 36,
+        "source": "replay",
+        "old": "04:00",
+        "new": "03:59",
+        "reference_indices": [
+          4295,
+          4391
+        ],
+        "reference_pts": [
+          125.188,
+          125.988
+        ],
+        "discriminating_pixels": 135,
+        "flip_candidates": [
+          4336
+        ],
+        "status": "owner_visually_verified",
+        "index": 4336,
+        "last_old": 125.521,
+        "first_new": 125.529,
+        "human_verified": false,
+        "use_for_fit": false,
+        "crops": [
+          {
+            "path": "crops/replay-04336.png",
+            "pts": 125.521,
+            "sha256": "a979119a178ff6f0dc03a64106613c0cfabbbf34d26d7db05ae8f50b7c65f040"
+          },
+          {
+            "path": "crops/replay-04337.png",
+            "pts": 125.529,
+            "sha256": "3f40a73c8c14376d2c1b55ac41792a1eca1255f3bfefd19a8a99cd05a526eec8"
+          },
+          {
+            "path": "crops/replay-04338.png",
+            "pts": 125.53800000000001,
+            "sha256": "7e113708c3bb1668181920c6c283aaae28bff58a2874292a40de9f7bceb1525d"
+          }
+        ]
+      },
+      {
+        "slot": 37,
+        "source": "replay",
+        "old": "03:59",
+        "new": "03:58",
+        "reference_indices": [
+          4415,
+          4511
+        ],
+        "reference_pts": [
+          126.188,
+          126.988
+        ],
+        "discriminating_pixels": 32,
+        "flip_candidates": [
+          4457
+        ],
+        "status": "owner_visually_verified",
+        "index": 4457,
+        "last_old": 126.529,
+        "first_new": 126.53800000000001,
+        "human_verified": false,
+        "use_for_fit": false,
+        "crops": [
+          {
+            "path": "crops/replay-04457.png",
+            "pts": 126.529,
+            "sha256": "642ac15cd7ed397219691609e288bbbcc9a43a5b208a7e243319a17994a6ace3"
+          },
+          {
+            "path": "crops/replay-04458.png",
+            "pts": 126.53800000000001,
+            "sha256": "16cf41454216f27a393638f9bf8e97857ddd493c2e6245609bab1b542fac24b7"
+          },
+          {
+            "path": "crops/replay-04459.png",
+            "pts": 126.54599999999999,
+            "sha256": "35157dc646cf6e7f0f02aded4a7413214b95b098704bda12a4bdeb558e4f189e"
+          }
+        ]
+      },
+      {
+        "slot": 38,
+        "source": "replay",
+        "old": "03:58",
+        "new": "03:57",
+        "reference_indices": [
+          4535,
+          4631
+        ],
+        "reference_pts": [
+          127.188,
+          127.988
+        ],
+        "discriminating_pixels": 258,
+        "flip_candidates": [
+          4577
+        ],
+        "status": "owner_visually_verified",
+        "index": 4577,
+        "last_old": 127.529,
+        "first_new": 127.53800000000001,
+        "human_verified": false,
+        "use_for_fit": false,
+        "crops": [
+          {
+            "path": "crops/replay-04577.png",
+            "pts": 127.529,
+            "sha256": "b8a6462b83ef29b6e4955cbe76a9f953edb64e13d5ab9353a35251d19dc03a07"
+          },
+          {
+            "path": "crops/replay-04578.png",
+            "pts": 127.53800000000001,
+            "sha256": "ea59ca49c1d29228da8391e14a0c3abc93cca3ed4ddda1e6123cf3f4aa1444c1"
+          },
+          {
+            "path": "crops/replay-04579.png",
+            "pts": 127.54599999999999,
+            "sha256": "3d6004d02e6f86a28fbeaa33c9649a0d947eecc3d89780450114052c12efff78"
+          }
+        ]
+      },
+      {
+        "slot": 39,
+        "source": "replay",
+        "old": "03:57",
+        "new": "03:56",
+        "reference_indices": [
+          4655,
+          4751
+        ],
+        "reference_pts": [
+          128.188,
+          128.988
+        ],
+        "discriminating_pixels": 259,
+        "flip_candidates": [
+          4708
+        ],
+        "status": "owner_visually_verified",
+        "index": 4708,
+        "last_old": 128.621,
+        "first_new": 128.629,
+        "human_verified": false,
+        "use_for_fit": false,
+        "crops": [
+          {
+            "path": "crops/replay-04708.png",
+            "pts": 128.621,
+            "sha256": "1f56ddc773a6f6718e0db3dfcc8d90386a6f5f7d8158d341b127ea3d0cbff052"
+          },
+          {
+            "path": "crops/replay-04709.png",
+            "pts": 128.629,
+            "sha256": "3c7c8751df0d4fa8aee64841b0a074d2ecb1713f95fa948314a91a532e518ffe"
+          },
+          {
+            "path": "crops/replay-04710.png",
+            "pts": 128.638,
+            "sha256": "164f2edd28a340d734714ba9bf50c678ca71ec84600b681261caddfc4b724c75"
+          }
+        ]
+      }
+    ]
+  },
+  "unknowns": [
+    {
+      "source": "live",
+      "slot": 35,
+      "reason": "Timer glyph blurred/dark during fade; no boundary interpolation"
+    },
+    {
+      "source": "live",
+      "slot": 36,
+      "reason": "Timer glyph blurred/dark during fade; no boundary interpolation"
+    }
+  ]
+}

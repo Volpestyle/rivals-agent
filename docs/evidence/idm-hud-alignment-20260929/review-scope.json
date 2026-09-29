@@ -1,0 +1,25 @@
+{
+  "reviewer": "co-w reviewer w2:p3M, independent agent, at James request",
+  "scope": "independent agent review of 30 of 78 readable boundary triples, no disagreement after corrections",
+  "viewed_glyph_sheets": [
+    "D:/rivals-agent-evidence/idm-hud-alignment-20260929/live-glyph-boundaries-1.png",
+    "D:/rivals-agent-evidence/idm-hud-alignment-20260929/live-glyph-boundaries-2.png",
+    "D:/rivals-agent-evidence/idm-hud-alignment-20260929/replay-glyph-boundaries-3.png"
+  ],
+  "not_viewed": [
+    "live glyph sheets 0 and 3",
+    "replay glyph sheets 0,1,2",
+    "contacts copies"
+  ],
+  "earlier_review": "Original max-diff sheets 0-3: six false background-motion picks found (live 130,133,134,140,143,144). Corrected before annotation acceptance or fitting.",
+  "fade_observation": "Replay counterparts 04:01->04:00 at 124.638 and 04:00->03:59 at 125.529 have no fade; scenery agrees either side.",
+  "human_verification": false,
+  "evidence": "Messages from w2:p3M in this work session, 2026-09-29",
+  "subsequent_feed_context_review": {
+    "scope": "All ten feed onset boundaries tracked independently against native frames; full context inspected; timer arithmetic recomputed",
+    "finding": "Event 1 replay onset one frame late; correct bracket (109.071,109.079]",
+    "owner_resolution": "Confirmed from native crop, corrected before commit; nine other boundaries agree",
+    "corrected_max_feed_residual_ms": 9.0,
+    "human_verification": false
+  }
+}

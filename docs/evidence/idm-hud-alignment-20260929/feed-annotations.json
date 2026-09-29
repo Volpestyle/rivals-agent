@@ -1,0 +1,319 @@
+{
+  "scope": "Development owner video-only annotations. Independent human verification pending.",
+  "matched_shifted_arrivals": 5,
+  "empty_feed_arrivals_excluded": 1,
+  "empty_feed_arrival": "Stylestw -> Paainter, first feed entry near live 136-137 s; no preceding row to shift",
+  "killfeed_median_offset_seconds": -30.607999999999976,
+  "timer_offset_seconds": -30.599999999999994,
+  "max_abs_residual_seconds": 0.009000000000042974,
+  "criterion": "Residual about the kill-feed own per-span median, <=2 recorded 120-fps frames (16.6667 ms), unchanged. Timer fit is never shifted to agree.",
+  "pass": true,
+  "events": [
+    {
+      "incoming": "S.t4rfir3 -> ShadowFox594",
+      "preceding": "Stylestw -> Paainter",
+      "live": [
+        139.688,
+        139.696
+      ],
+      "replay": [
+        109.071,
+        109.079
+      ],
+      "identity_at": {
+        "live": 140.004,
+        "replay": 109.396
+      },
+      "status": "owner_visually_verified",
+      "human_verified": false,
+      "boundary_definition": "First recorded frame where the existing identity-matched preceding row moves downward; incoming identity verified later. Not first fade-in of incoming row.",
+      "crops": {
+        "live": [
+          {
+            "path": "crops/live-feed-139.688.png",
+            "pts": 139.688,
+            "sha256": "1e22fa7715d24ce875c6dc1dffc16a715b4dda21cfba00e082064dc4095d54f8"
+          },
+          {
+            "path": "crops/live-feed-139.696.png",
+            "pts": 139.696,
+            "sha256": "f688751773b64d4ca94794bc69ea8bc2d7db1e75302f2044b3b731f63fa4c09a"
+          },
+          {
+            "path": "crops/live-feed-140.004.png",
+            "pts": 140.004,
+            "sha256": "5b67bdbd21363ce8227418c87912ac19634f7b0ba90108878e21885beef85d8e"
+          }
+        ],
+        "replay": [
+          {
+            "path": "crops/replay-feed-109.071.png",
+            "pts": 109.071,
+            "sha256": "0bbb08d0d5c439cd399b50883e3bcb8e69c0d624b2ef8d7e4849f6e3b521b6d1"
+          },
+          {
+            "path": "crops/replay-feed-109.079.png",
+            "pts": 109.07900000000001,
+            "sha256": "a9805e9dbdf17e7fc2e771a6a5314315bedbad30b49ec4d95952b16fdbca9e83"
+          },
+          {
+            "path": "crops/replay-feed-109.396.png",
+            "pts": 109.396,
+            "sha256": "226dbf4c832d7eecad251b94d24076602cd05a368bf1e33d22ef86d80adf54a1"
+          }
+        ]
+      },
+      "offset_midpoint": -30.61700000000002,
+      "offset_interval": [
+        -30.625,
+        -30.608999999999995
+      ],
+      "residual_about_own_median_seconds": -0.009000000000042974
+    },
+    {
+      "incoming": "cowboyboopbop -> Yoitscolin",
+      "preceding": "S.t4rfir3 -> ShadowFox594",
+      "live": [
+        140.954,
+        140.963
+      ],
+      "replay": [
+        110.338,
+        110.346
+      ],
+      "identity_at": {
+        "live": 142.004,
+        "replay": 111.396
+      },
+      "status": "owner_visually_verified",
+      "human_verified": false,
+      "boundary_definition": "First recorded frame where the existing identity-matched preceding row moves downward; incoming identity verified later. Not first fade-in of incoming row.",
+      "crops": {
+        "live": [
+          {
+            "path": "crops/live-feed-140.954.png",
+            "pts": 140.954,
+            "sha256": "93c66df56d330d62bf143da4eefea3547026d7ee726759ff73d46d24ca78f557"
+          },
+          {
+            "path": "crops/live-feed-140.963.png",
+            "pts": 140.963,
+            "sha256": "c8e8d6391e2d04f41e523e0cdbcf665d73f53e3b052455976e6b3fbfa84342d7"
+          },
+          {
+            "path": "crops/live-feed-142.004.png",
+            "pts": 142.004,
+            "sha256": "565e624fded4f785d55810b79105e6264fc53a4b692355175491d6f08b080595"
+          }
+        ],
+        "replay": [
+          {
+            "path": "crops/replay-feed-110.338.png",
+            "pts": 110.338,
+            "sha256": "39befb81fcec23341e0470ad1e3affcb5b42301d35e0231b65da5ddb470b5a03"
+          },
+          {
+            "path": "crops/replay-feed-110.346.png",
+            "pts": 110.346,
+            "sha256": "862ff1433472d36144e0ee466b7fdbd5f34d378eac01a317ec40d0a420b06b3b"
+          },
+          {
+            "path": "crops/replay-feed-111.396.png",
+            "pts": 111.396,
+            "sha256": "6d08b54c7bcba87d271f2360acbac9656f4aa9dafd8cf4805e3e4e35d4a51d92"
+          }
+        ]
+      },
+      "offset_midpoint": -30.616500000000016,
+      "offset_interval": [
+        -30.625,
+        -30.608000000000004
+      ],
+      "residual_about_own_median_seconds": -0.008500000000040586
+    },
+    {
+      "incoming": "cowboyboopbop -> Carsonred",
+      "preceding": "cowboyboopbop -> Yoitscolin",
+      "live": [
+        145.188,
+        145.196
+      ],
+      "replay": [
+        114.588,
+        114.596
+      ],
+      "identity_at": {
+        "live": 145.404,
+        "replay": 115.396
+      },
+      "status": "owner_visually_verified",
+      "human_verified": false,
+      "boundary_definition": "First recorded frame where the existing identity-matched preceding row moves downward; incoming identity verified later. Not first fade-in of incoming row.",
+      "crops": {
+        "live": [
+          {
+            "path": "crops/live-feed-145.188.png",
+            "pts": 145.188,
+            "sha256": "baf2fe12cca0245587835747ffedbd82ab3b3e0bb0a002f22493535685de3161"
+          },
+          {
+            "path": "crops/live-feed-145.196.png",
+            "pts": 145.196,
+            "sha256": "04050180b6618fe32f38d0b197cd90146e7c6ba6a8baf5f36a7cdb224adbf8ee"
+          },
+          {
+            "path": "crops/live-feed-145.404.png",
+            "pts": 145.404,
+            "sha256": "09afe94b8cf59b571599e3436321b95e879cf2fc28f1e1b58372e1ffd8611ee0"
+          }
+        ],
+        "replay": [
+          {
+            "path": "crops/replay-feed-114.588.png",
+            "pts": 114.588,
+            "sha256": "d48b7f74517042c18ddedeaf11d51054424e0b3f9ff6b9d6b5306d2bc9418f99"
+          },
+          {
+            "path": "crops/replay-feed-114.596.png",
+            "pts": 114.596,
+            "sha256": "5714daf61d9a40d765b431c929f5f1bf2915ed239d9e9a6ec58d787c79dd9fa5"
+          },
+          {
+            "path": "crops/replay-feed-115.396.png",
+            "pts": 115.396,
+            "sha256": "e67d6f2bdeaa7e655b385111c8dea0798722995902d8ac5893120798308da602"
+          }
+        ]
+      },
+      "offset_midpoint": -30.60000000000001,
+      "offset_interval": [
+        -30.608000000000004,
+        -30.591999999999985
+      ],
+      "residual_about_own_median_seconds": 0.007999999999967145
+    },
+    {
+      "incoming": "cowboyboopbop -> taytpwk",
+      "preceding": "cowboyboopbop -> Carsonred",
+      "live": [
+        146.896,
+        146.904
+      ],
+      "replay": [
+        116.288,
+        116.296
+      ],
+      "identity_at": {
+        "live": 147.004,
+        "replay": 116.396
+      },
+      "status": "owner_visually_verified",
+      "human_verified": false,
+      "boundary_definition": "First recorded frame where the existing identity-matched preceding row moves downward; incoming identity verified later. Not first fade-in of incoming row.",
+      "crops": {
+        "live": [
+          {
+            "path": "crops/live-feed-146.896.png",
+            "pts": 146.89600000000002,
+            "sha256": "255e54cc219d937ac151badfb3d3dea9feac1716ef2e62c6ee7d98f597a73e20"
+          },
+          {
+            "path": "crops/live-feed-146.904.png",
+            "pts": 146.904,
+            "sha256": "72a0cfa0d230fc39d8f1aba64a2f7fa5f6e7c05140811b770afc38b4dd99c8a9"
+          },
+          {
+            "path": "crops/live-feed-147.004.png",
+            "pts": 147.004,
+            "sha256": "8b59ff67cd7d71022be5343d1652be329a2b2359ef05f485af70e006e4d7df9d"
+          }
+        ],
+        "replay": [
+          {
+            "path": "crops/replay-feed-116.288.png",
+            "pts": 116.288,
+            "sha256": "d873ec14753cca2896b70ae6a770c825c2b05cf80169ab38cc13d86a9faaff8e"
+          },
+          {
+            "path": "crops/replay-feed-116.296.png",
+            "pts": 116.29599999999999,
+            "sha256": "5f3d71d768da7aad948929e384e17ab37ba43ad7d9f61f4dc449908cee1b9e7f"
+          },
+          {
+            "path": "crops/replay-feed-116.396.png",
+            "pts": 116.396,
+            "sha256": "afbad4e2f0a65a68fb182aeee05664a06d49dfaafd76d2a32a77c848624077db"
+          }
+        ]
+      },
+      "offset_midpoint": -30.607999999999976,
+      "offset_interval": [
+        -30.616,
+        -30.59999999999998
+      ],
+      "residual_about_own_median_seconds": 0.0
+    },
+    {
+      "incoming": "SmellyArea6 -> Weird dude",
+      "preceding": "cowboyboopbop -> taytpwk",
+      "live": [
+        150.404,
+        150.413
+      ],
+      "replay": [
+        119.804,
+        119.813
+      ],
+      "identity_at": {
+        "live": 151.004,
+        "replay": 120.396
+      },
+      "status": "owner_visually_verified",
+      "human_verified": false,
+      "boundary_definition": "First recorded frame where the existing identity-matched preceding row moves downward; incoming identity verified later. Not first fade-in of incoming row.",
+      "crops": {
+        "live": [
+          {
+            "path": "crops/live-feed-150.404.png",
+            "pts": 150.404,
+            "sha256": "d1f1ddc854d0ab74d029405748e3d97342c9ae1f247470af6beaf1d6ec1150ad"
+          },
+          {
+            "path": "crops/live-feed-150.413.png",
+            "pts": 150.413,
+            "sha256": "8c90478949c07836a0783b0aeef88d5d25c9ee647d0fadf62992b7679d1552e3"
+          },
+          {
+            "path": "crops/live-feed-151.004.png",
+            "pts": 151.004,
+            "sha256": "5f6c11c9f27d288e8929bfd64ec3a8c0279c461b8ebd1d6362c411e98be49246"
+          }
+        ],
+        "replay": [
+          {
+            "path": "crops/replay-feed-119.804.png",
+            "pts": 119.804,
+            "sha256": "1d8bc232e7143eac1b6bc7be676cde208d1c3564c6e7e81980dc588287a2c081"
+          },
+          {
+            "path": "crops/replay-feed-119.813.png",
+            "pts": 119.813,
+            "sha256": "d7dbfb70acaa9f7329e04a54050ce0a5bd40f10e3b3468bdfd7d1434f8cb77b6"
+          },
+          {
+            "path": "crops/replay-feed-120.396.png",
+            "pts": 120.396,
+            "sha256": "7e5f4cdc41d0b6eaf288a3d9ee344871305343402e6796c4373010beec705607"
+          }
+        ]
+      },
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.60900000000001,
+        -30.590999999999994
+      ],
+      "residual_about_own_median_seconds": 0.007999999999981355
+    }
+  ],
+  "killfeed_minus_timer_effect_seconds": -0.007999999999981355
+}

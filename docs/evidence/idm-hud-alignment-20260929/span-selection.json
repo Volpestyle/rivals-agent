@@ -1,0 +1,33 @@
+{
+  "selected_before_residuals_utc": "2026-09-29T22:53:31.674088+00:00",
+  "frozen_intervals_unchanged": true,
+  "candidate_span_A": {
+    "live": [
+      120,
+      155
+    ],
+    "replay": [
+      89.39,
+      124.39
+    ],
+    "timer_values": [
+      "04:36",
+      "04:01"
+    ],
+    "paired_support": 35,
+    "status": "awaiting native contextual check of continuous target POV, 1x replay"
+  },
+  "excluded": {
+    "live": [
+      155,
+      160
+    ],
+    "replay": [
+      124.39,
+      129.39
+    ],
+    "reason": "Live fade spans two unreadable ticks; death/follow/discontinuity cause unknown from timer-only crops. Post-fade span is provisionally excluded, not bridged. Its three readable paired ticks cannot meet 30-anchor floor."
+  },
+  "killfeed": "not decoded in this packet; bounded decode paused by lead",
+  "timer_segments": "One observed MM:SS countdown; no visible extension/reset in pre-fade timer crops. Contextual validation remains pending."
+}

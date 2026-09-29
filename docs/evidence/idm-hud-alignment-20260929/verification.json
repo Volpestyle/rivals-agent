@@ -1,0 +1,11 @@
+{
+  "result": "PASS packet integrity and selected-value join checks",
+  "native_retained_files_hashed": 19210,
+  "timer_crop_references_verified": 238,
+  "feed_events": 5,
+  "timer_pairs": 35,
+  "all_crop_hashes_and_dimensions_match": true,
+  "all_retained_pts_in_freeze_and_monotonic": true,
+  "human_verification": "pending",
+  "limitations": "Integrity and arithmetic checks do not establish truth of annotations, full-span continuity or human verification."
+}

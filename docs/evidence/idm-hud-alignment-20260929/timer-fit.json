@@ -1,0 +1,735 @@
+{
+  "scope": "Development conditional timer fit; continuity/context and human verification remain pending. No Gate 2 acceptance.",
+  "selected_span": "A: live [120,155), replay [89.39,124.39)",
+  "join": "Unique displayed old/new value pair in the same observed MM:SS countdown, not timestamp index",
+  "timestamp_convention": "Midpoint of (last-old PTS,first-new PTS] bracket. Millisecond encoded PTS preserved; no resampling.",
+  "timer_anchors": 35,
+  "slope1_median_offset_seconds": -30.599999999999994,
+  "free_slope": 0.9999556252110986,
+  "free_slope_intercept_seconds": -30.592513484222465,
+  "free_slope_abs_deviation": 4.437478890140234e-05,
+  "max_abs_timer_residual_seconds": 0.008500000000012164,
+  "recorded_fps": 120,
+  "one_frame_seconds": 0.008333333333333333,
+  "two_frames_seconds": 0.016666666666666666,
+  "criteria": {
+    "timer_support": {
+      "pass": true,
+      "criterion": ">=30 per span"
+    },
+    "free_slope": {
+      "pass": true,
+      "criterion": "abs(slope-1)<=0.001"
+    },
+    "segment_offset_agreement": {
+      "pass": null,
+      "reason": "Only one MM:SS timer segment before conservative fade exclusion; no between-segment comparison exists. Do not count a vacuous check as observed agreement."
+    },
+    "killfeed_residual": {
+      "pass": null,
+      "reason": "New feed crops await lead decode release"
+    }
+  },
+  "paired_timer_anchors": [
+    {
+      "old": "04:36",
+      "new": "04:35",
+      "live_bracket": [
+        120.129,
+        120.138
+      ],
+      "replay_bracket": [
+        89.538,
+        89.546
+      ],
+      "live_midpoint": 120.1335,
+      "replay_midpoint": 89.542,
+      "offset_midpoint": -30.591499999999996,
+      "offset_interval": [
+        -30.60000000000001,
+        -30.583
+      ],
+      "slope1_residual_seconds": 0.008499999999997954
+    },
+    {
+      "old": "04:35",
+      "new": "04:34",
+      "live_bracket": [
+        121.229,
+        121.238
+      ],
+      "replay_bracket": [
+        90.638,
+        90.646
+      ],
+      "live_midpoint": 121.23349999999999,
+      "replay_midpoint": 90.642,
+      "offset_midpoint": -30.591499999999996,
+      "offset_interval": [
+        -30.599999999999994,
+        -30.583
+      ],
+      "slope1_residual_seconds": 0.008499999999997954
+    },
+    {
+      "old": "04:34",
+      "new": "04:33",
+      "live_bracket": [
+        122.121,
+        122.129
+      ],
+      "replay_bracket": [
+        91.529,
+        91.538
+      ],
+      "live_midpoint": 122.125,
+      "replay_midpoint": 91.5335,
+      "offset_midpoint": -30.591499999999996,
+      "offset_interval": [
+        -30.60000000000001,
+        -30.583
+      ],
+      "slope1_residual_seconds": 0.008499999999997954
+    },
+    {
+      "old": "04:33",
+      "new": "04:32",
+      "live_bracket": [
+        123.129,
+        123.138
+      ],
+      "replay_bracket": [
+        92.529,
+        92.538
+      ],
+      "live_midpoint": 123.1335,
+      "replay_midpoint": 92.5335,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.60900000000001,
+        -30.591000000000008
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:32",
+      "new": "04:31",
+      "live_bracket": [
+        124.121,
+        124.129
+      ],
+      "replay_bracket": [
+        93.521,
+        93.529
+      ],
+      "live_midpoint": 124.125,
+      "replay_midpoint": 93.525,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.608000000000004,
+        -30.592
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:31",
+      "new": "04:30",
+      "live_bracket": [
+        125.129,
+        125.138
+      ],
+      "replay_bracket": [
+        94.529,
+        94.538
+      ],
+      "live_midpoint": 125.1335,
+      "replay_midpoint": 94.5335,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.60900000000001,
+        -30.591000000000008
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:30",
+      "new": "04:29",
+      "live_bracket": [
+        126.129,
+        126.138
+      ],
+      "replay_bracket": [
+        95.529,
+        95.538
+      ],
+      "live_midpoint": 126.1335,
+      "replay_midpoint": 95.5335,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.60900000000001,
+        -30.591000000000008
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:29",
+      "new": "04:28",
+      "live_bracket": [
+        127.138,
+        127.146
+      ],
+      "replay_bracket": [
+        96.546,
+        96.554
+      ],
+      "live_midpoint": 127.142,
+      "replay_midpoint": 96.55000000000001,
+      "offset_midpoint": -30.591999999999985,
+      "offset_interval": [
+        -30.599999999999994,
+        -30.584000000000003
+      ],
+      "slope1_residual_seconds": 0.008000000000009777
+    },
+    {
+      "old": "04:28",
+      "new": "04:27",
+      "live_bracket": [
+        128.129,
+        128.138
+      ],
+      "replay_bracket": [
+        97.529,
+        97.538
+      ],
+      "live_midpoint": 128.1335,
+      "replay_midpoint": 97.5335,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.60900000000001,
+        -30.590999999999994
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:27",
+      "new": "04:26",
+      "live_bracket": [
+        129.221,
+        129.22899999999998
+      ],
+      "replay_bracket": [
+        98.621,
+        98.629
+      ],
+      "live_midpoint": 129.225,
+      "replay_midpoint": 98.625,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.60799999999999,
+        -30.592
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:26",
+      "new": "04:25",
+      "live_bracket": [
+        130.129,
+        130.138
+      ],
+      "replay_bracket": [
+        99.529,
+        99.538
+      ],
+      "live_midpoint": 130.1335,
+      "replay_midpoint": 99.5335,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.60900000000001,
+        -30.590999999999994
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:25",
+      "new": "04:24",
+      "live_bracket": [
+        131.138,
+        131.14600000000002
+      ],
+      "replay_bracket": [
+        100.529,
+        100.538
+      ],
+      "live_midpoint": 131.142,
+      "replay_midpoint": 100.5335,
+      "offset_midpoint": -30.608499999999992,
+      "offset_interval": [
+        -30.61700000000002,
+        -30.60000000000001
+      ],
+      "slope1_residual_seconds": -0.008499999999997954
+    },
+    {
+      "old": "04:24",
+      "new": "04:23",
+      "live_bracket": [
+        132.221,
+        132.22899999999998
+      ],
+      "replay_bracket": [
+        101.621,
+        101.629
+      ],
+      "live_midpoint": 132.225,
+      "replay_midpoint": 101.625,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.60799999999999,
+        -30.592
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:23",
+      "new": "04:22",
+      "live_bracket": [
+        133.246,
+        133.254
+      ],
+      "replay_bracket": [
+        102.646,
+        102.654
+      ],
+      "live_midpoint": 133.25,
+      "replay_midpoint": 102.65,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.60799999999999,
+        -30.592000000000013
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:22",
+      "new": "04:21",
+      "live_bracket": [
+        134.213,
+        134.221
+      ],
+      "replay_bracket": [
+        103.613,
+        103.621
+      ],
+      "live_midpoint": 134.21699999999998,
+      "replay_midpoint": 103.61699999999999,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.608000000000004,
+        -30.592
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:21",
+      "new": "04:20",
+      "live_bracket": [
+        135.121,
+        135.129
+      ],
+      "replay_bracket": [
+        104.521,
+        104.529
+      ],
+      "live_midpoint": 135.125,
+      "replay_midpoint": 104.525,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.60799999999999,
+        -30.592000000000013
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:20",
+      "new": "04:19",
+      "live_bracket": [
+        136.154,
+        136.163
+      ],
+      "replay_bracket": [
+        105.54599999999999,
+        105.554
+      ],
+      "live_midpoint": 136.1585,
+      "replay_midpoint": 105.55,
+      "offset_midpoint": -30.608500000000006,
+      "offset_interval": [
+        -30.61700000000002,
+        -30.599999999999994
+      ],
+      "slope1_residual_seconds": -0.008500000000012164
+    },
+    {
+      "old": "04:19",
+      "new": "04:18",
+      "live_bracket": [
+        137.221,
+        137.22899999999998
+      ],
+      "replay_bracket": [
+        106.62100000000001,
+        106.629
+      ],
+      "live_midpoint": 137.225,
+      "replay_midpoint": 106.625,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.607999999999976,
+        -30.592
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:18",
+      "new": "04:17",
+      "live_bracket": [
+        138.113,
+        138.121
+      ],
+      "replay_bracket": [
+        107.521,
+        107.529
+      ],
+      "live_midpoint": 138.11700000000002,
+      "replay_midpoint": 107.525,
+      "offset_midpoint": -30.592000000000013,
+      "offset_interval": [
+        -30.60000000000001,
+        -30.584000000000003
+      ],
+      "slope1_residual_seconds": 0.007999999999981355
+    },
+    {
+      "old": "04:17",
+      "new": "04:16",
+      "live_bracket": [
+        139.129,
+        139.138
+      ],
+      "replay_bracket": [
+        108.529,
+        108.538
+      ],
+      "live_midpoint": 139.1335,
+      "replay_midpoint": 108.5335,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.60900000000001,
+        -30.590999999999994
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:16",
+      "new": "04:15",
+      "live_bracket": [
+        140.188,
+        140.196
+      ],
+      "replay_bracket": [
+        109.588,
+        109.596
+      ],
+      "live_midpoint": 140.192,
+      "replay_midpoint": 109.592,
+      "offset_midpoint": -30.60000000000001,
+      "offset_interval": [
+        -30.608000000000004,
+        -30.591999999999985
+      ],
+      "slope1_residual_seconds": -1.4210854715202004e-14
+    },
+    {
+      "old": "04:15",
+      "new": "04:14",
+      "live_bracket": [
+        141.221,
+        141.22899999999998
+      ],
+      "replay_bracket": [
+        110.62100000000001,
+        110.629
+      ],
+      "live_midpoint": 141.225,
+      "replay_midpoint": 110.625,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.607999999999976,
+        -30.592
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:14",
+      "new": "04:13",
+      "live_bracket": [
+        142.129,
+        142.138
+      ],
+      "replay_bracket": [
+        111.529,
+        111.538
+      ],
+      "live_midpoint": 142.1335,
+      "replay_midpoint": 111.5335,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.60900000000001,
+        -30.590999999999994
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:13",
+      "new": "04:12",
+      "live_bracket": [
+        143.129,
+        143.138
+      ],
+      "replay_bracket": [
+        112.538,
+        112.54599999999999
+      ],
+      "live_midpoint": 143.1335,
+      "replay_midpoint": 112.542,
+      "offset_midpoint": -30.591499999999996,
+      "offset_interval": [
+        -30.60000000000001,
+        -30.583
+      ],
+      "slope1_residual_seconds": 0.008499999999997954
+    },
+    {
+      "old": "04:12",
+      "new": "04:11",
+      "live_bracket": [
+        144.213,
+        144.221
+      ],
+      "replay_bracket": [
+        113.62100000000001,
+        113.629
+      ],
+      "live_midpoint": 144.21699999999998,
+      "replay_midpoint": 113.625,
+      "offset_midpoint": -30.591999999999985,
+      "offset_interval": [
+        -30.599999999999994,
+        -30.58399999999999
+      ],
+      "slope1_residual_seconds": 0.008000000000009777
+    },
+    {
+      "old": "04:11",
+      "new": "04:10",
+      "live_bracket": [
+        145.221,
+        145.22899999999998
+      ],
+      "replay_bracket": [
+        114.62100000000001,
+        114.629
+      ],
+      "live_midpoint": 145.225,
+      "replay_midpoint": 114.625,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.607999999999976,
+        -30.592
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:10",
+      "new": "04:09",
+      "live_bracket": [
+        146.121,
+        146.129
+      ],
+      "replay_bracket": [
+        115.521,
+        115.529
+      ],
+      "live_midpoint": 146.125,
+      "replay_midpoint": 115.525,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.60799999999999,
+        -30.592000000000013
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:09",
+      "new": "04:08",
+      "live_bracket": [
+        147.138,
+        147.14600000000002
+      ],
+      "replay_bracket": [
+        116.529,
+        116.538
+      ],
+      "live_midpoint": 147.142,
+      "replay_midpoint": 116.5335,
+      "offset_midpoint": -30.608499999999992,
+      "offset_interval": [
+        -30.61700000000002,
+        -30.60000000000001
+      ],
+      "slope1_residual_seconds": -0.008499999999997954
+    },
+    {
+      "old": "04:08",
+      "new": "04:07",
+      "live_bracket": [
+        148.221,
+        148.22899999999998
+      ],
+      "replay_bracket": [
+        117.62100000000001,
+        117.629
+      ],
+      "live_midpoint": 148.225,
+      "replay_midpoint": 117.625,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.607999999999976,
+        -30.592
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:07",
+      "new": "04:06",
+      "live_bracket": [
+        149.138,
+        149.14600000000002
+      ],
+      "replay_bracket": [
+        118.54599999999999,
+        118.554
+      ],
+      "live_midpoint": 149.142,
+      "replay_midpoint": 118.55,
+      "offset_midpoint": -30.592,
+      "offset_interval": [
+        -30.600000000000023,
+        -30.584000000000003
+      ],
+      "slope1_residual_seconds": 0.007999999999995566
+    },
+    {
+      "old": "04:06",
+      "new": "04:05",
+      "live_bracket": [
+        150.129,
+        150.138
+      ],
+      "replay_bracket": [
+        119.529,
+        119.538
+      ],
+      "live_midpoint": 150.1335,
+      "replay_midpoint": 119.5335,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.60900000000001,
+        -30.590999999999994
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:05",
+      "new": "04:04",
+      "live_bracket": [
+        151.138,
+        151.14600000000002
+      ],
+      "replay_bracket": [
+        120.538,
+        120.54599999999999
+      ],
+      "live_midpoint": 151.142,
+      "replay_midpoint": 120.542,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.60800000000002,
+        -30.592000000000013
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:04",
+      "new": "04:03",
+      "live_bracket": [
+        152.121,
+        152.129
+      ],
+      "replay_bracket": [
+        121.521,
+        121.529
+      ],
+      "live_midpoint": 152.125,
+      "replay_midpoint": 121.525,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.60799999999999,
+        -30.592000000000013
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:03",
+      "new": "04:02",
+      "live_bracket": [
+        153.121,
+        153.129
+      ],
+      "replay_bracket": [
+        122.521,
+        122.529
+      ],
+      "live_midpoint": 153.125,
+      "replay_midpoint": 122.525,
+      "offset_midpoint": -30.599999999999994,
+      "offset_interval": [
+        -30.60799999999999,
+        -30.592000000000013
+      ],
+      "slope1_residual_seconds": 0.0
+    },
+    {
+      "old": "04:02",
+      "new": "04:01",
+      "live_bracket": [
+        154.121,
+        154.129
+      ],
+      "replay_bracket": [
+        123.529,
+        123.53800000000001
+      ],
+      "live_midpoint": 154.125,
+      "replay_midpoint": 123.5335,
+      "offset_midpoint": -30.591499999999996,
+      "offset_interval": [
+        -30.599999999999994,
+        -30.583
+      ],
+      "slope1_residual_seconds": 0.008499999999997954
+    }
+  ]
+}

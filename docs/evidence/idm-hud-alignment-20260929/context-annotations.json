@@ -1,0 +1,94 @@
+{
+  "observation": "Live 155.604 and 156.004 show a scoreboard overlay; not a death. Replay 125.004 and 125.404 retain cowboyboopbop Spider-Man POV and have no scoreboard. Both sides show the same roof/wall and 250 HP around it. Live scoreboard gone by 156.404. Sparse context samples do not certify every frame or exact overlay edges.",
+  "decision": "Keep pre-result conservative selection: exclude live [155,160) / replay [124.39,129.39); no post-fade anchors are fitted.",
+  "samples": [
+    {
+      "source": "live",
+      "pts": 154.804,
+      "path": "D:\\rivals-agent-evidence\\idm-hud-alignment-20260929\\live-context-154.8\\00001.png",
+      "sha256": "76f160bdc4fc4516e4f21a1eda86f426214eb224da38d6e62bd756017e9c7026"
+    },
+    {
+      "source": "live",
+      "pts": 155.20399999999998,
+      "path": "D:\\rivals-agent-evidence\\idm-hud-alignment-20260929\\live-context-155.2\\00001.png",
+      "sha256": "0376e766f6db1a8b04a751c1f939fd51eb37174a3bb137d6962c328c13553a24"
+    },
+    {
+      "source": "live",
+      "pts": 155.60399999999998,
+      "path": "D:\\rivals-agent-evidence\\idm-hud-alignment-20260929\\live-context-155.6\\00001.png",
+      "sha256": "96f5d7b7928b1ec96b9c3ca1cbbbf16d86c6082e7a3cfdf948228fdc2f194d4c",
+      "packet_path": "crops/live-context-155.6.png"
+    },
+    {
+      "source": "live",
+      "pts": 156.004,
+      "path": "D:\\rivals-agent-evidence\\idm-hud-alignment-20260929\\live-context-156.0\\00001.png",
+      "sha256": "e947fdea42d409c3da4c237bb385eca9953ab9ed9e5f095f839739c34d2c79ab"
+    },
+    {
+      "source": "live",
+      "pts": 156.404,
+      "path": "D:\\rivals-agent-evidence\\idm-hud-alignment-20260929\\live-context-156.4\\00001.png",
+      "sha256": "fc777c3402e8495dc4f29aa468fa87b55e73a27f70ea6d748d51f0c82e4bfd6a",
+      "packet_path": "crops/live-context-156.4.png"
+    },
+    {
+      "source": "live",
+      "pts": 156.804,
+      "path": "D:\\rivals-agent-evidence\\idm-hud-alignment-20260929\\live-context-156.8\\00001.png",
+      "sha256": "6b958612120ec73115d7d0fcae45c5a6d2cb70a46be53d72c2b6e06b5c90f15b"
+    },
+    {
+      "source": "live",
+      "pts": 157.20399999999998,
+      "path": "D:\\rivals-agent-evidence\\idm-hud-alignment-20260929\\live-context-157.2\\00001.png",
+      "sha256": "49b1b98c9ace68c12d39f16a5c8b151ed55c3480b00b54029eaba58fcee037c2"
+    },
+    {
+      "source": "replay",
+      "pts": 124.20400000000001,
+      "path": "D:\\rivals-agent-evidence\\idm-hud-alignment-20260929\\replay-context-124.2\\00001.png",
+      "sha256": "a61b45d1abcb1a52c2887c8ead7d3a32588efb7fcc25b8dd1c3874c09115d15a"
+    },
+    {
+      "source": "replay",
+      "pts": 124.604,
+      "path": "D:\\rivals-agent-evidence\\idm-hud-alignment-20260929\\replay-context-124.6\\00001.png",
+      "sha256": "25ba846ed72f914c3466b4d07ae90ae161d512c090ef1ea23181f91758f755f9"
+    },
+    {
+      "source": "replay",
+      "pts": 125.004,
+      "path": "D:\\rivals-agent-evidence\\idm-hud-alignment-20260929\\replay-context-125.0\\00001.png",
+      "sha256": "90143492b1f56eb0dc3f490c063cbe5713975874baf95af238b3f3c0a0e13dd3",
+      "packet_path": "crops/replay-context-125.0.png"
+    },
+    {
+      "source": "replay",
+      "pts": 125.40400000000001,
+      "path": "D:\\rivals-agent-evidence\\idm-hud-alignment-20260929\\replay-context-125.4\\00001.png",
+      "sha256": "f226e4c9e8fa4243eecbe76404caaa3c0434abb0d4a0af0ec17931a8850e9b3d"
+    },
+    {
+      "source": "replay",
+      "pts": 125.804,
+      "path": "D:\\rivals-agent-evidence\\idm-hud-alignment-20260929\\replay-context-125.8\\00001.png",
+      "sha256": "59402da692ba58ade40adf682d7b6ef7d9e16a4fb6fc2449a323e2f48d1b96ac",
+      "packet_path": "crops/replay-context-125.8.png"
+    },
+    {
+      "source": "replay",
+      "pts": 126.20400000000001,
+      "path": "D:\\rivals-agent-evidence\\idm-hud-alignment-20260929\\replay-context-126.2\\00001.png",
+      "sha256": "83ca508f4bc050934df800261d9c52f38ea9568d961f0ffa7d87429be64a35ba"
+    },
+    {
+      "source": "replay",
+      "pts": 126.604,
+      "path": "D:\\rivals-agent-evidence\\idm-hud-alignment-20260929\\replay-context-126.6\\00001.png",
+      "sha256": "c73dbf9540ccf1be0ad988e95834f0d69356aca076c104ca3b2eab4b8238d395"
+    }
+  ]
+}
