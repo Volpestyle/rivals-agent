@@ -848,7 +848,13 @@ def test_pre_attach_refusal_retains_actual_checked_frame_without_pad(tmp_path, c
         if checked:
             import cv2
             assert np.array_equal(cv2.imread(str(journal.output / "guard-refusal.png")), frame)
-            assert detail["frame_captured"] == 1. and detail["frame_role"] == "checked"
+            assert detail["frame_role"] == "checked"
+            if clause == "freshness":
+                assert 2.8 < detail["frame_captured"] < 3.
+                assert detail["discarded_stale_frames"] == len(grabs) == 20
+                assert 3. <= now[0] < 3.1
+            else:
+                assert detail["frame_captured"] == 1.
         if clause in ("focus_lost", "keypress", "block_deadline"):
             assert not grabs
     finally:
@@ -891,3 +897,61 @@ def test_pre_attach_retention_disk_failure_stays_explicit(tmp_path, monkeypatch)
         assert "disk full" in result["error"]
     finally:
         journal.close()
+
+
+@pytest.mark.parametrize("slow_stage", ["capture", "guard"])
+def test_pre_attach_discards_sitting_e_delay_but_only_returns_new_fresh_frame(slow_stage):
+    frames = [np.full((4,4,3), value, np.uint8) for value in (37, 82)]
+    now, state, grabs, checked, retained, events = [1.], {}, [], [], [], []
+    def advance(dt):
+        now[0] += dt
+    def grab():
+        index = len(grabs)
+        grabs.append(now[0])
+        advance(.6002695 if index == 0 and slow_stage == "capture" else .01)
+        return frames[index]
+    def guard(frame):
+        checked.append(frame)
+        if len(checked) == 1 and slow_stage == "guard":
+            advance(.5902695)
+        state["audit"] = {"passed":True, "failed_clause":None}
+        return True
+    journal = SimpleNamespace(guard_period=1.,
+        frame=lambda f,t,role:retained.append((f,t,role)), event=lambda **row:events.append(row))
+    frame, stamp = m.pre_attach_proof(SimpleNamespace(grab=grab), journal, guard, state,
+        lambda:True, lambda:False, 10., clock=lambda:now[0], sleep=advance)
+    assert frame is frames[1] and stamp == grabs[1]
+    assert now[0] - stamp <= m.FRESH_S == .1
+    assert len(checked) == 2 and len(retained) == len(events) == 1
+    assert retained[0][0] is frames[1]
+    assert events[0]["kind"] == "pre_attach_stale_discarded"
+    assert events[0]["frame_age_s"] == pytest.approx(.6002695)
+    assert events[0]["capture_s"] + events[0]["guard_s"] == pytest.approx(.6002695)
+
+
+@pytest.mark.parametrize("clause", ["focus_lost", "keypress", "range_hud_missing", "idle_warning", "block_deadline"])
+def test_pre_attach_wait_never_recovers_a_semantic_stop_after_stale_frame(clause):
+    frame = np.zeros((4,4,3), np.uint8)
+    now, state, grabs = [1.], {}, []
+    scope = 1.5 if clause == "block_deadline" else 10.
+    focused = lambda: not (clause == "focus_lost" and grabs)
+    key_pressed = lambda: bool(clause == "keypress" and grabs)
+    def grab():
+        grabs.append(True)
+        now[0] += .6 if len(grabs) == 1 else .01
+        return frame
+    def guard(current):
+        audit = m.check_frame_guard(current, focused, key_pressed, scope,
+            lambda f: not (clause == "range_hud_missing" and len(grabs) == 2),
+            lambda f: clause == "idle_warning" and len(grabs) == 2,
+            clock=lambda:now[0])
+        state["audit"] = audit
+        return audit["passed"]
+    journal = SimpleNamespace(event=lambda **row:None,
+        frame=lambda *args:pytest.fail("a stale or semantically invalid frame must not be returned"))
+    with pytest.raises(m.GuardRefused) as caught:
+        m.pre_attach_proof(SimpleNamespace(grab=grab), journal, guard, state,
+            focused, key_pressed, scope, clock=lambda:now[0],
+            sleep=lambda dt:now.__setitem__(0, now[0] + dt))
+    assert caught.value.audit["failed_clause"] == clause
+    assert len(grabs) == (2 if clause in ("range_hud_missing", "idle_warning") else 1)

@@ -1,0 +1,78 @@
+{
+  "format": "camera-turns-review-v1",
+  "files": {
+    "scripts/measure_camera_turns.py": "2aac7ab9b6af257f3cab679c81b9caa0e507fe8c4ca91bf8249cbe49688a95fb",
+    "tests/test_measure_camera_turns.py": "43905d11527bef64cb6d57387b7b4486a712c3e77177942cbef24f8bed8f50b6",
+    "perception/camera_ready_pose.py": "cf8f16ae9855730b4e1f58810a56ac0180f10375d89a7f4ead8ede4c8b4ae16f",
+    "agent/controller.py": "4e5bb70fca797ab17a25a8699d1ad111f0b7cd561f59d2b308a52c10b44da060",
+    "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+    "scripts/l4_measure.py": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1",
+    "agent/loop.py": "040c77c2c4ed0fff5a893e6e00991c8df7bad1e87267bf6d416964911b1e596f",
+    "scripts/run_range_bc_live.py": "446ef0bb2dc74c615f8c445dfac043ec0be4bfbd3c36195e9dfc727c8a9f7823",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547"
+  },
+  "verdict": "LAND",
+  "reviewer": "live-review (Claude Opus 5.5)",
+  "reviewed_at": "2026-09-28",
+  "scope": "delta review v6, 1af578c -> worktree: pre_attach_proof discards stale (guard-passing, >100 ms) and no-frame captures within min(scope, 2 s) before any pad exists; live-input safety only; no rate, focal or map acceptance; sitting e stall source unestablished",
+  "base_commit": "1af578caad9535b3511ed56ca42b3a987c363f95",
+  "head_at_issue": "1af578caad9535b3511ed56ca42b3a987c363f95",
+  "landed_commit": null,
+  "bytes_verified": "all 12 files hashed by the reviewer from the sitting-checkout working tree as they would land (CRLF); only the driver and its test differ from the v5 receipt; base 1af578c blobs equal the v5 bytes modulo CRLF",
+  "prior_review": {
+    "path": "docs/evidence/camera-pre-attach-20260928/review-v5.json",
+    "sha256": "df1d6f22657b0f7d63ece1b9368a5f2ea889d91496e41fc95cacde41dde79a37"
+  },
+  "inputs": {
+    "docs/evidence/camera-pre-attach-wait-20260928/README.md": "35b735517ccdc6fea046438a69c3a27cf0312721cfab6ebd76b648343840d3da",
+    "docs/evidence/camera-pre-attach-wait-20260928/review-inputs.json": "5274d7a3470cc468ce746cf57584ca9c0d80e8362027cc141487f29ee76defb6",
+    "docs/evidence/camera-pre-attach-wait-20260928/delta.diff": "a676b438f98f10f4f273c9beb21391048526afed70e82cbfac181418895aba86",
+    "data/calibration/alt-cam-20260928e/yaw-01/guard-refusal.json": "58c2e07460277e32b13424232e6597a3a978fab573572b65ee3d367285416b94",
+    "data/calibration/alt-cam-20260928e/yaw-01/guard-refusal.png": "5608ba53a0c33eff7061ae5991e6f2c58b6707e296e87b7202ed84926f1a57ef",
+    "data/calibration/alt-cam-20260928e/yaw-01/failure.json": "e6d570bfe0c6e92c6a99d865335c58df63e9f12a57bdecfe4eb6ac55e7452170",
+    "data/calibration/alt-cam-20260928e/capture-timing.json": "0316ccef0105576cb157dc6bf220b76bc62babfc4c93d4c2c34548418806c7d7",
+    "data/calibration/alt-cam-20260928e/capture-timing-probe.py": "b429c8ccb266ba8597ee42b8106c7a34ef1f19ac2d109bef2922eb1480536ca0",
+    "data/calibration/alt-cam-20260928e/SITTING.md": "0eb56d115d99a697ae02de916dd5bb2b0f92247c27c9136e1191ae667eac81bb"
+  },
+  "tests": "test_measure_camera_turns + test_camera_ready_pose + test_camera_prime_response: 143 passed, 12 skipped; driver+analyzer with --corpus: 131 passed (reviewer's private uv env, perception group, CUDA hidden), on these bytes",
+  "ast": "vs 1af578c: only pre_attach_proof changed; all other defs and module-level statements identical; input/capture/guard call multiset identical",
+  "property_check": "20,000 seeded fake-clock trials of pre_attach_proof: 0 returned stale or guard-failed frames, 0 skipped semantic failures, 0 freshness refusals without the exact frame, 0 overruns beyond min(2 s, scope) plus one blocking call",
+  "safety_statement": "Readiness change preserves safety: it runs only before Live exists; every returned frame passed all guards and the unchanged 100 ms age bound; semantic failures remain immediate; post-attach code is AST-identical.",
+  "blocking_liveness_flaw": null,
+  "findings": [
+    {
+      "id": 1,
+      "severity": "low",
+      "blocking": false,
+      "file": "scripts/measure_camera_turns.py",
+      "line": 292,
+      "summary": "Inside ready_proof (token wait and post-token re-proof) the 1 s ready_proof budget caps the 2 s stale wait.",
+      "failure_scenario": "A >1 s stall there refuses as 'ready pose recovery deadline during capture' (reproduced with a fake clock: 1.2 s stall then fresh unchanged frame -> refused). Safe; 600 ms stalls fit; discards are journaled."
+    },
+    {
+      "id": 2,
+      "severity": "info",
+      "blocking": false,
+      "file": "scripts/measure_camera_turns.py",
+      "line": 207,
+      "summary": "The re-raised stale GuardRefused carries the last discard's decision_t, and a window ending with only no-frame captures after a stale frame still reads 'freshness'.",
+      "failure_scenario": "Timing/label nuance in guard-refusal.json; no input effect."
+    },
+    {
+      "id": 3,
+      "severity": "info",
+      "blocking": false,
+      "file": "scripts/measure_camera_turns.py",
+      "line": 191,
+      "summary": "Each stale discard copies the frame via GuardRefused (~2.3 ms at 2560x1440), at most ~20 per window.",
+      "failure_scenario": "No pad exists; no safety effect."
+    }
+  ],
+  "carried_findings": "v5 info findings and v4-1, v4-3, v4-4 unchanged",
+  "limits": "Input safety only. Sitting e's 600 ms stall source is unestablished. No yaw-rate, focal, map or learned-policy acceptance.",
+  "review": "docs/evidence/camera-pre-attach-wait-20260928/review-v6.md",
+  "review_sha256": "e9cb7ca711722fd673c400d3c255142bcef2a1847c5f15398d6925d24b627661"
+}

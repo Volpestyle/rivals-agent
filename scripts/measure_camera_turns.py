@@ -159,8 +159,14 @@ def check_frame_guard(frame, focused, key_pressed, end, in_range, idle_warning, 
 
 def pre_attach_proof(capture, journal, guard, guard_state, focused, key_pressed, scope_end,
                      *, clock=time.perf_counter, sleep=time.sleep):
-    """Check every capture; retain named refusals and only a 1 Hz routine trace."""
-    end = min(scope_end, clock() + FRESH_S)
+    """No pad exists: discard stale captures within a bounded readiness wait.
+
+    Every returned frame still passes the unchanged 100 ms age bound and all
+    guards. Semantic failures stop immediately; only stale/no-frame captures
+    can wait for another frame, for at most two seconds of acquisition starts.
+    """
+    end = min(scope_end, clock() + 2.)
+    stale, stale_count = None, 0
     while clock() < end:
         for clause, passed in (("focus_lost", focused), ("keypress", lambda: not key_pressed())):
             if not passed():
@@ -171,14 +177,25 @@ def pre_attach_proof(capture, journal, guard, guard_state, focused, key_pressed,
         except Exception as exc:
             raise GuardRefused("capture_error", None, None, checked=False,
                                audit={"error": repr(exc)}, clock=clock) from exc
+        received = clock()
         if frame is not None:
             passed = guard(frame)
             age = clock() - captured
-            if not passed or age > FRESH_S:
+            if not passed:
                 audit = guard_state["audit"]
-                raise GuardRefused(audit["failed_clause"] if not passed else "freshness",
+                raise GuardRefused(audit["failed_clause"],
                     frame, captured, checked=True,
                     audit={"guard_checks": audit, "frame_age_s": age, "fresh_limit_s": FRESH_S}, clock=clock)
+            if age > FRESH_S:
+                stale_count += 1
+                stale = GuardRefused("freshness", frame, captured, checked=True,
+                    audit={"guard_checks": guard_state["audit"], "frame_age_s": age,
+                           "fresh_limit_s": FRESH_S, "frame_received_t": received,
+                           "capture_s": received - captured, "guard_s": age - (received - captured),
+                           "discarded_stale_frames": stale_count}, clock=clock)
+                journal.event(kind="pre_attach_stale_discarded", **stale.audit)
+                sleep(.001)
+                continue
             # This only limits diagnostic PNG work, never captures, guard checks,
             # ready-token images or the separate, lossless refusal path.
             if captured - guard_state.get("pre_attach_trace_t", -math.inf) >= journal.guard_period:
@@ -186,6 +203,8 @@ def pre_attach_proof(capture, journal, guard, guard_state, focused, key_pressed,
                 guard_state["pre_attach_trace_t"] = captured
             return frame, captured
         sleep(.001)
+    if stale is not None and clock() < scope_end:
+        raise stale
     clause = "block_deadline" if clock() >= scope_end else "capture_unavailable"
     raise GuardRefused(clause, None, None, checked=False, clock=clock)
 

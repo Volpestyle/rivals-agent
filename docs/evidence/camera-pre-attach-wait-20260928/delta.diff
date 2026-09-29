@@ -1,0 +1,139 @@
+diff --git a/scripts/measure_camera_turns.py b/scripts/measure_camera_turns.py
+index a5a4f7b..d64ec3d 100644
+--- a/scripts/measure_camera_turns.py
++++ b/scripts/measure_camera_turns.py
+@@ -159,8 +159,14 @@ def check_frame_guard(frame, focused, key_pressed, end, in_range, idle_warning,
+ 
+ def pre_attach_proof(capture, journal, guard, guard_state, focused, key_pressed, scope_end,
+                      *, clock=time.perf_counter, sleep=time.sleep):
+-    """Check every capture; retain named refusals and only a 1 Hz routine trace."""
+-    end = min(scope_end, clock() + FRESH_S)
++    """No pad exists: discard stale captures within a bounded readiness wait.
++
++    Every returned frame still passes the unchanged 100 ms age bound and all
++    guards. Semantic failures stop immediately; only stale/no-frame captures
++    can wait for another frame, for at most two seconds of acquisition starts.
++    """
++    end = min(scope_end, clock() + 2.)
++    stale, stale_count = None, 0
+     while clock() < end:
+         for clause, passed in (("focus_lost", focused), ("keypress", lambda: not key_pressed())):
+             if not passed():
+@@ -171,14 +177,25 @@ def pre_attach_proof(capture, journal, guard, guard_state, focused, key_pressed,
+         except Exception as exc:
+             raise GuardRefused("capture_error", None, None, checked=False,
+                                audit={"error": repr(exc)}, clock=clock) from exc
++        received = clock()
+         if frame is not None:
+             passed = guard(frame)
+             age = clock() - captured
+-            if not passed or age > FRESH_S:
++            if not passed:
+                 audit = guard_state["audit"]
+-                raise GuardRefused(audit["failed_clause"] if not passed else "freshness",
++                raise GuardRefused(audit["failed_clause"],
+                     frame, captured, checked=True,
+                     audit={"guard_checks": audit, "frame_age_s": age, "fresh_limit_s": FRESH_S}, clock=clock)
++            if age > FRESH_S:
++                stale_count += 1
++                stale = GuardRefused("freshness", frame, captured, checked=True,
++                    audit={"guard_checks": guard_state["audit"], "frame_age_s": age,
++                           "fresh_limit_s": FRESH_S, "frame_received_t": received,
++                           "capture_s": received - captured, "guard_s": age - (received - captured),
++                           "discarded_stale_frames": stale_count}, clock=clock)
++                journal.event(kind="pre_attach_stale_discarded", **stale.audit)
++                sleep(.001)
++                continue
+             # This only limits diagnostic PNG work, never captures, guard checks,
+             # ready-token images or the separate, lossless refusal path.
+             if captured - guard_state.get("pre_attach_trace_t", -math.inf) >= journal.guard_period:
+@@ -186,6 +203,8 @@ def pre_attach_proof(capture, journal, guard, guard_state, focused, key_pressed,
+                 guard_state["pre_attach_trace_t"] = captured
+             return frame, captured
+         sleep(.001)
++    if stale is not None and clock() < scope_end:
++        raise stale
+     clause = "block_deadline" if clock() >= scope_end else "capture_unavailable"
+     raise GuardRefused(clause, None, None, checked=False, clock=clock)
+ 
+diff --git a/tests/test_measure_camera_turns.py b/tests/test_measure_camera_turns.py
+index 5876d49..d72ecb5 100644
+--- a/tests/test_measure_camera_turns.py
++++ b/tests/test_measure_camera_turns.py
+@@ -848,7 +848,13 @@ def test_pre_attach_refusal_retains_actual_checked_frame_without_pad(tmp_path, c
+         if checked:
+             import cv2
+             assert np.array_equal(cv2.imread(str(journal.output / "guard-refusal.png")), frame)
+-            assert detail["frame_captured"] == 1. and detail["frame_role"] == "checked"
++            assert detail["frame_role"] == "checked"
++            if clause == "freshness":
++                assert 2.8 < detail["frame_captured"] < 3.
++                assert detail["discarded_stale_frames"] == len(grabs) == 20
++                assert 3. <= now[0] < 3.1
++            else:
++                assert detail["frame_captured"] == 1.
+         if clause in ("focus_lost", "keypress", "block_deadline"):
+             assert not grabs
+     finally:
+@@ -891,3 +897,61 @@ def test_pre_attach_retention_disk_failure_stays_explicit(tmp_path, monkeypatch)
+         assert "disk full" in result["error"]
+     finally:
+         journal.close()
++
++
++@pytest.mark.parametrize("slow_stage", ["capture", "guard"])
++def test_pre_attach_discards_sitting_e_delay_but_only_returns_new_fresh_frame(slow_stage):
++    frames = [np.full((4,4,3), value, np.uint8) for value in (37, 82)]
++    now, state, grabs, checked, retained, events = [1.], {}, [], [], [], []
++    def advance(dt):
++        now[0] += dt
++    def grab():
++        index = len(grabs)
++        grabs.append(now[0])
++        advance(.6002695 if index == 0 and slow_stage == "capture" else .01)
++        return frames[index]
++    def guard(frame):
++        checked.append(frame)
++        if len(checked) == 1 and slow_stage == "guard":
++            advance(.5902695)
++        state["audit"] = {"passed":True, "failed_clause":None}
++        return True
++    journal = SimpleNamespace(guard_period=1.,
++        frame=lambda f,t,role:retained.append((f,t,role)), event=lambda **row:events.append(row))
++    frame, stamp = m.pre_attach_proof(SimpleNamespace(grab=grab), journal, guard, state,
++        lambda:True, lambda:False, 10., clock=lambda:now[0], sleep=advance)
++    assert frame is frames[1] and stamp == grabs[1]
++    assert now[0] - stamp <= m.FRESH_S == .1
++    assert len(checked) == 2 and len(retained) == len(events) == 1
++    assert retained[0][0] is frames[1]
++    assert events[0]["kind"] == "pre_attach_stale_discarded"
++    assert events[0]["frame_age_s"] == pytest.approx(.6002695)
++    assert events[0]["capture_s"] + events[0]["guard_s"] == pytest.approx(.6002695)
++
++
++@pytest.mark.parametrize("clause", ["focus_lost", "keypress", "range_hud_missing", "idle_warning", "block_deadline"])
++def test_pre_attach_wait_never_recovers_a_semantic_stop_after_stale_frame(clause):
++    frame = np.zeros((4,4,3), np.uint8)
++    now, state, grabs = [1.], {}, []
++    scope = 1.5 if clause == "block_deadline" else 10.
++    focused = lambda: not (clause == "focus_lost" and grabs)
++    key_pressed = lambda: bool(clause == "keypress" and grabs)
++    def grab():
++        grabs.append(True)
++        now[0] += .6 if len(grabs) == 1 else .01
++        return frame
++    def guard(current):
++        audit = m.check_frame_guard(current, focused, key_pressed, scope,
++            lambda f: not (clause == "range_hud_missing" and len(grabs) == 2),
++            lambda f: clause == "idle_warning" and len(grabs) == 2,
++            clock=lambda:now[0])
++        state["audit"] = audit
++        return audit["passed"]
++    journal = SimpleNamespace(event=lambda **row:None,
++        frame=lambda *args:pytest.fail("a stale or semantically invalid frame must not be returned"))
++    with pytest.raises(m.GuardRefused) as caught:
++        m.pre_attach_proof(SimpleNamespace(grab=grab), journal, guard, state,
++            focused, key_pressed, scope, clock=lambda:now[0],
++            sleep=lambda dt:now.__setitem__(0, now[0] + dt))
++    assert caught.value.audit["failed_clause"] == clause
++    assert len(grabs) == (2 if clause in ("range_hud_missing", "idle_warning") else 1)

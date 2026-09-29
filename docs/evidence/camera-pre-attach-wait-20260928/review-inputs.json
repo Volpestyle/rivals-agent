@@ -1,0 +1,33 @@
+{
+  "format": "camera-pre-attach-wait-review-inputs-v1",
+  "base_commit": "1af578caad9535b3511ed56ca42b3a987c363f95",
+  "files": {
+    "scripts/measure_camera_turns.py": "2aac7ab9b6af257f3cab679c81b9caa0e507fe8c4ca91bf8249cbe49688a95fb",
+    "tests/test_measure_camera_turns.py": "43905d11527bef64cb6d57387b7b4486a712c3e77177942cbef24f8bed8f50b6",
+    "perception/camera_ready_pose.py": "cf8f16ae9855730b4e1f58810a56ac0180f10375d89a7f4ead8ede4c8b4ae16f",
+    "agent/controller.py": "4e5bb70fca797ab17a25a8699d1ad111f0b7cd561f59d2b308a52c10b44da060",
+    "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+    "scripts/l4_measure.py": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1",
+    "agent/loop.py": "040c77c2c4ed0fff5a893e6e00991c8df7bad1e87267bf6d416964911b1e596f",
+    "scripts/run_range_bc_live.py": "446ef0bb2dc74c615f8c445dfac043ec0be4bfbd3c36195e9dfc727c8a9f7823",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547"
+  },
+  "prior_receipt": {
+    "path": "docs\\evidence\\camera-pre-attach-20260928\\review-v5.json",
+    "sha256": "df1d6f22657b0f7d63ece1b9368a5f2ea889d91496e41fc95cacde41dde79a37"
+  },
+  "delta_sha256": "a676b438f98f10f4f273c9beb21391048526afed70e82cbfac181418895aba86",
+  "ast_outside_pre_attach_proof_unchanged": true,
+  "evidence": {
+    "data\\calibration\\alt-cam-20260928e\\yaw-01\\guard-refusal.json": "58c2e07460277e32b13424232e6597a3a978fab573572b65ee3d367285416b94",
+    "data\\calibration\\alt-cam-20260928e\\yaw-01\\guard-refusal.png": "5608ba53a0c33eff7061ae5991e6f2c58b6707e296e87b7202ed84926f1a57ef",
+    "data\\calibration\\alt-cam-20260928e\\yaw-01\\failure.json": "e6d570bfe0c6e92c6a99d865335c58df63e9f12a57bdecfe4eb6ac55e7452170",
+    "data\\calibration\\alt-cam-20260928e\\capture-timing.json": "0316ccef0105576cb157dc6bf220b76bc62babfc4c93d4c2c34548418806c7d7",
+    "data\\calibration\\alt-cam-20260928e\\capture-timing-probe.py": "b429c8ccb266ba8597ee42b8106c7a34ef1f19ac2d109bef2922eb1480536ca0"
+  },
+  "tests": "143 passed, 12 skipped in 16.20s; existing live-cu128 environment; no game input",
+  "scope": "pre-attachment readiness only; no live execution of changed bytes"
+}
