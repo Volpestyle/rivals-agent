@@ -1,0 +1,80 @@
+{
+  "commit": "6f1ccd5a3a6f59ddfea05b64246b8511f0166e50",
+  "verification": "Committed map fields and all measurement values equal the analyzed working candidate; both refuse controller construction. All 12 committed artifacts match working text after CRLF normalization.",
+  "line_endings": "Git stores LF while these Windows records were written with CRLF. Raw blob and working hashes intentionally differ; acceptance must pin the actual runtime bytes. No acceptance registered.",
+  "pins": [
+    {
+      "path": "agent/camera_maps/alt-247-124.json",
+      "committed_blob_sha256": "5c6196e124f2353ba420b70d436b91913b4dfd7e0aa167ee75160c1b51554dd5",
+      "working_bytes_sha256": "0e062286bd942aad776d719cd5841321b83773ae5b9e4b74ae8443b8795709d9",
+      "same_after_crlf_normalization": true
+    },
+    {
+      "path": "docs/evidence/camera-map-20260929b/README.md",
+      "committed_blob_sha256": "f104752ad44fe618169b58f010e7621016a4ccc3514246eaa0f26daecf18dce4",
+      "working_bytes_sha256": "730b29fce1b3e72cce3b86c76ae6f9d6a0f7ff9fa7d1e7af4a0259e8990c6000",
+      "same_after_crlf_normalization": true
+    },
+    {
+      "path": "docs/evidence/camera-map-20260929b/artifact-index.json",
+      "committed_blob_sha256": "c70fc05c0d940035bbbc9531c978c53e371483bde30de4e71fff49f3c4daf3ab",
+      "working_bytes_sha256": "c7a24ec00721836d361fa9b95322fa548012d9f508115bb60e1bfce8b864d43f",
+      "same_after_crlf_normalization": true
+    },
+    {
+      "path": "docs/evidence/camera-map-20260929b/focal-counts-attempts.json",
+      "committed_blob_sha256": "e3988aed4d4694c3bafb19613faa1d345dad74e952744558ede6cc86a3c9cb9a",
+      "working_bytes_sha256": "830e82d0070645428102bee91f5c975c9e13901f72d75cb71e41430e0241a9ac",
+      "same_after_crlf_normalization": true
+    },
+    {
+      "path": "docs/evidence/camera-map-20260929b/gain-provenance.json",
+      "committed_blob_sha256": "8aaa73b431b04d2f0749e88ed49de98f37fb773b81b8671ffa522e90f7658475",
+      "working_bytes_sha256": "7c160f339567731926b9c85b268c8e2ee59ca2a6aac4619edc8811824d79b693",
+      "same_after_crlf_normalization": true
+    },
+    {
+      "path": "docs/evidence/camera-map-20260929b/orbit-dense-results.json",
+      "committed_blob_sha256": "2a96845414c2a5870f1970aded39b8453ac450af93ea70ac76afb28b9366d2fc",
+      "working_bytes_sha256": "bc2cc574a035fef3501d698b8a50925c20c09971ff619ceb2eda94a76240cb27",
+      "same_after_crlf_normalization": true
+    },
+    {
+      "path": "docs/evidence/camera-map-20260929b/pitch-results.json",
+      "committed_blob_sha256": "e622ecc24d3e0c0ad422d6fb93987d97d97bcb2c164304905b09dc441fe3ac28",
+      "working_bytes_sha256": "7a8ab49e82ea82ad3a0034e12e0808522d953f8c83b9862c9a815c1a486b5c5a",
+      "same_after_crlf_normalization": true
+    },
+    {
+      "path": "docs/evidence/camera-map-20260929b/sources.json",
+      "committed_blob_sha256": "e3c418b97f2e53256fea479e133c9eccd360136e5f00074644c7db2d40148795",
+      "working_bytes_sha256": "093200fe3f1175164ae6af80b91bc977c6b77845a80e14211819f915e64344e5",
+      "same_after_crlf_normalization": true
+    },
+    {
+      "path": "docs/evidence/camera-map-20260929b/timeline.json",
+      "committed_blob_sha256": "0db609f2e57da8e3f13b4249abb7d61e2732034b122deeeb76f3d2c829c1631e",
+      "working_bytes_sha256": "5d7000917c6fea14038f68dcfc90c009a6ebf64ab547c6f98eb98e2260ecd94d",
+      "same_after_crlf_normalization": true
+    },
+    {
+      "path": "docs/evidence/camera-map-20260929b/validation.json",
+      "committed_blob_sha256": "a189225e9b2aed112f2bf3240d04377fc8dece396d96ee7582464e2c63320905",
+      "working_bytes_sha256": "8c215175467462b02dbb5a0b2615ec310ef0496ad80c21b6fce3d19d8ad38ab7",
+      "same_after_crlf_normalization": true
+    },
+    {
+      "path": "docs/evidence/camera-map-20260929b/verify_candidate.py",
+      "committed_blob_sha256": "91b820d742f57a9daf5f3988005ba220f1c66621a4071621bf041d8af2fb8bf5",
+      "working_bytes_sha256": "0e4a548fabb01bc73324bf5701f2a29c933422ed38c2d2a71b30e855a2d5a576",
+      "same_after_crlf_normalization": true
+    },
+    {
+      "path": "docs/evidence/camera-map-20260929b/yaw-results-final.json",
+      "committed_blob_sha256": "c76ffb4a8fe211897e2c7bd5a724ad4473883069ce022059c0c143f5fc756dac",
+      "working_bytes_sha256": "0df2fa14f503ad2aa54798d03d1961c2b32b8bf1e646d560f43286f137c8dabd",
+      "same_after_crlf_normalization": true
+    }
+  ],
+  "preserved_test_sha256": "8e0d8437b3f711532413e7d98e1a5a7d9de7730962b2ae4503bf6301ec47955b"
+}
