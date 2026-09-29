@@ -1,0 +1,1650 @@
+{
+  "phase": "causal_frozen_before_any_outcome_or_yaw_view",
+  "annotator": "explore-policy owner visual interpretation",
+  "native_size": [
+    2560,
+    1440
+  ],
+  "frames_per_example": 8,
+  "center_band": [
+    0.49,
+    0.51
+  ],
+  "nearest_rule": "Euclidean distance of manually estimated visible body box center to reticle (1280,720); no tuning. Corpses excluded unless just-engaged defeated body explicitly identified in causal note.",
+  "box_limitations": "Approximate manual pixel boxes; partially occluded and distant candidates have lower positional confidence. Boxes refer to anchor visible body.",
+  "examples": [
+    {
+      "id": "E01",
+      "candidates": [],
+      "nearest": null,
+      "focus": "unknown",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "low",
+      "note": "A KO banner and fading hit effects identify a just-ended engagement, but no distinct surviving bot body can be assigned at the anchor; distant GALACTA BOT label alone is insufficient.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E02",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1318,
+            664,
+            1376,
+            728
+          ],
+          "x": 0.526171875,
+          "side": "right"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1495,
+            658,
+            1544,
+            721
+          ],
+          "x": 0.5935546875,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "multiple",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "medium",
+      "note": "Two outlined bots remain ahead/right while Spider-Man jumps; no differentiated attack/contact cue selects either.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E03",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            335,
+            575,
+            395,
+            640
+          ],
+          "x": 0.142578125,
+          "side": "left"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1570,
+            560,
+            1628,
+            621
+          ],
+          "x": 0.624609375,
+          "side": "right"
+        },
+        {
+          "id": "B3",
+          "box": [
+            1743,
+            570,
+            1802,
+            630
+          ],
+          "x": 0.6923828125,
+          "side": "right"
+        }
+      ],
+      "nearest": "B2",
+      "focus": "multiple",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "medium",
+      "note": "Jumping beside teleport edge, three clear bots in separated lanes; no target-specific interaction. Small rooftop silhouette not confidently inventoried.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E04",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            2285,
+            135,
+            2338,
+            211
+          ],
+          "x": 0.9029296875,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "unknown",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "low",
+      "note": "Web shots and a recent double-KO banner, but targeted body is absent/occluded near panels. Only a distant rooftop bot is clearly visible; cannot link shots to it.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E05",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1245,
+            385,
+            1285,
+            449
+          ],
+          "x": 0.494140625,
+          "side": "abstain"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1282,
+            415,
+            1345,
+            490
+          ],
+          "x": 0.5130859375,
+          "side": "right"
+        }
+      ],
+      "nearest": "B2",
+      "focus": "multiple",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "medium",
+      "note": "Two marked bots ahead during airborne traversal; both full health, no differentiated contact selects one.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E06",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            900,
+            87,
+            1550,
+            720
+          ],
+          "x": 0.478515625,
+          "side": "left"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "one",
+      "focus_id": "B1",
+      "prediction": "abstain",
+      "confidence": "medium",
+      "note": "Repeated point-blank reach/contact with the single nearby bot while climbing the panel; sustained physical engagement supports B1, but climbing complicates the action and gives no confident turn-start cue.",
+      "focus_x": 0.478515625,
+      "focus_side": "left"
+    },
+    {
+      "id": "E07",
+      "candidates": [],
+      "nearest": null,
+      "focus": "none",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "high",
+      "note": "Traversal/jump toward pots and building; no visible bot or target-specific engagement.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E08",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            940,
+            591,
+            993,
+            715
+          ],
+          "x": 0.3775390625,
+          "side": "left"
+        },
+        {
+          "id": "B2",
+          "box": [
+            2080,
+            635,
+            2415,
+            959
+          ],
+          "x": 0.8779296875,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "multiple",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "medium",
+      "note": "Two visible bots as hero finishes backward roll; no target-specific shot/contact. Left bot is nearer reticle than the large right bot.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E09",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            100,
+            899,
+            236,
+            1030
+          ],
+          "x": 0.065625,
+          "side": "left"
+        },
+        {
+          "id": "B2",
+          "box": [
+            2490,
+            45,
+            2540,
+            122
+          ],
+          "x": 0.982421875,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "unknown",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "low",
+      "note": "Airborne following a KO; one fallen bot body at left, surviving bot farther left and distant rooftop bot. Small outlined silhouettes across arena not confidently identifiable; no current supported focus.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E10",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1320,
+            386,
+            1378,
+            443
+          ],
+          "x": 0.526953125,
+          "side": "right"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1488,
+            386,
+            1548,
+            443
+          ],
+          "x": 0.59296875,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "unknown",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "medium",
+      "note": "Two distant bots; a web shot travels toward empty foreground after a triple KO. No visible contact differentiates either bot.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E11",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            940,
+            570,
+            978,
+            612
+          ],
+          "x": 0.374609375,
+          "side": "left"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1084,
+            615,
+            1124,
+            652
+          ],
+          "x": 0.43125,
+          "side": "left"
+        },
+        {
+          "id": "B3",
+          "box": [
+            1455,
+            719,
+            1510,
+            790
+          ],
+          "x": 0.5791015625,
+          "side": "right"
+        }
+      ],
+      "nearest": "B2",
+      "focus": "multiple",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "low",
+      "note": "High airborne traversal, three small outlined bots below. Hand web effect does not visibly connect with a particular bot.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E12",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            820,
+            585,
+            850,
+            622
+          ],
+          "x": 0.326171875,
+          "side": "left"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1108,
+            528,
+            1140,
+            573
+          ],
+          "x": 0.4390625,
+          "side": "left"
+        },
+        {
+          "id": "B3",
+          "box": [
+            1920,
+            697,
+            1985,
+            770
+          ],
+          "x": 0.7626953125,
+          "side": "right"
+        },
+        {
+          "id": "B4",
+          "box": [
+            711,
+            240,
+            740,
+            279
+          ],
+          "x": 0.2833984375,
+          "side": "left"
+        }
+      ],
+      "nearest": "B2",
+      "focus": "none",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "medium",
+      "note": "Hero climbs a pillar, with several distant bots visible across arena; no differentiated attack or contact.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E13",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            737,
+            357,
+            1000,
+            599
+          ],
+          "x": 0.3392578125,
+          "side": "left"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1680,
+            0,
+            1920,
+            221
+          ],
+          "x": 0.703125,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "one",
+      "focus_id": "B1",
+      "prediction": "none",
+      "confidence": "high",
+      "note": "Repeated white impact flashes and decreasing health identify B1 at left as engaged. Anchor shows KO marker/health disappearance; no reason to predict a new turn toward this finished target.",
+      "focus_x": 0.3392578125,
+      "focus_side": "left"
+    },
+    {
+      "id": "E14",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1080,
+            638,
+            1360,
+            1000
+          ],
+          "x": 0.4765625,
+          "side": "left"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1850,
+            195,
+            2075,
+            493
+          ],
+          "x": 0.7666015625,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "one",
+      "focus_id": "B1",
+      "prediction": "left",
+      "confidence": "high",
+      "note": "Close low-health, web-marked B1 stays in hero's melee contact/strike path while B2 respawns farther right; continued engagement supports B1.",
+      "focus_x": 0.4765625,
+      "focus_side": "left"
+    },
+    {
+      "id": "E15",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1410,
+            744,
+            1555,
+            950
+          ],
+          "x": 0.5791015625,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "one",
+      "focus_id": "B1",
+      "prediction": "none",
+      "confidence": "high",
+      "note": "B1 receives visible hits then KO during causal history; its falling body remains identifiable at anchor. Engagement is finished, so no new turn cue.",
+      "focus_x": 0.5791015625,
+      "focus_side": "right"
+    },
+    {
+      "id": "E16",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            125,
+            510,
+            340,
+            690
+          ],
+          "x": 0.0908203125,
+          "side": "left"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1374,
+            486,
+            1427,
+            548
+          ],
+          "x": 0.5470703125,
+          "side": "right"
+        },
+        {
+          "id": "B3",
+          "box": [
+            1551,
+            481,
+            1601,
+            541
+          ],
+          "x": 0.615625,
+          "side": "right"
+        }
+      ],
+      "nearest": "B2",
+      "focus": "one",
+      "focus_id": "B2",
+      "prediction": "right",
+      "confidence": "high",
+      "note": "Continuous white web from hero hand visibly terminates on marked B2; B3 is respawning and B1 appears at far left. B2 lies right of reticle.",
+      "focus_x": 0.5470703125,
+      "focus_side": "right"
+    },
+    {
+      "id": "E17",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1190,
+            540,
+            1405,
+            696
+          ],
+          "x": 0.5068359375,
+          "side": "abstain"
+        },
+        {
+          "id": "B2",
+          "box": [
+            231,
+            826,
+            405,
+            983
+          ],
+          "x": 0.12421875,
+          "side": "left"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "one",
+      "focus_id": "B1",
+      "prediction": "none",
+      "confidence": "medium",
+      "note": "Near-center B1 has web mark and almost exhausted health during fading area-attack effect; B2 remains farther left. Continuation of B1 engagement plausible, but no horizontal correction needed.",
+      "focus_x": 0.5068359375,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E18",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            751,
+            349,
+            832,
+            455
+          ],
+          "x": 0.3091796875,
+          "side": "left"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "unknown",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "medium",
+      "note": "Hero jumps after a KO; B1 survives beside a prone bot. No visible action selects B1 rather than the already-ended engagement.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E19",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1352,
+            565,
+            1440,
+            638
+          ],
+          "x": 0.5453125,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "one",
+      "focus_id": "B1",
+      "prediction": "right",
+      "confidence": "medium",
+      "note": "Only bot in view is airborne, web-marked and damaged directly ahead of jumping hero. Marker plus damaged suspended state support continued engagement, without a fresh impact in these eight frames.",
+      "focus_x": 0.5453125,
+      "focus_side": "right"
+    },
+    {
+      "id": "E20",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1650,
+            545,
+            1720,
+            628
+          ],
+          "x": 0.658203125,
+          "side": "right"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1245,
+            236,
+            1288,
+            285
+          ],
+          "x": 0.4947265625,
+          "side": "abstain"
+        },
+        {
+          "id": "B3",
+          "box": [
+            1649,
+            99,
+            1704,
+            160
+          ],
+          "x": 0.6548828125,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "none",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "medium",
+      "note": "Acrobatic traversal over circular platform after a KO; bots below/right and on distant platform show no target-specific engagement.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E21",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1320,
+            503,
+            1448,
+            653
+          ],
+          "x": 0.540625,
+          "side": "right"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1690,
+            835,
+            1880,
+            1135
+          ],
+          "x": 0.697265625,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "unknown",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "medium",
+      "note": "Hero finishes uppercut near falling B2 with KO indicator while marked B1 survives farther ahead. Cannot distinguish continued focus on defeated B2 from a switch to B1.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E22",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1240,
+            469,
+            1320,
+            561
+          ],
+          "x": 0.5,
+          "side": "abstain"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "unknown",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "high",
+      "note": "Running toward one visible bot without tracer/contact/attack cue; visibility and approach alone do not establish selected target.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E23",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            395,
+            310,
+            530,
+            480
+          ],
+          "x": 0.1806640625,
+          "side": "left"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1165,
+            885,
+            1280,
+            1010
+          ],
+          "x": 0.4775390625,
+          "side": "left"
+        },
+        {
+          "id": "B3",
+          "box": [
+            1940,
+            608,
+            1988,
+            678
+          ],
+          "x": 0.7671875,
+          "side": "right"
+        }
+      ],
+      "nearest": "B2",
+      "focus": "unknown",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "medium",
+      "note": "Uppercut recovery and triple-KO banner with several surviving bots on different levels; killed target is no longer assignable to visible candidates.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E24",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1300,
+            708,
+            1386,
+            801
+          ],
+          "x": 0.524609375,
+          "side": "right"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1780,
+            724,
+            1866,
+            818
+          ],
+          "x": 0.712109375,
+          "side": "right"
+        },
+        {
+          "id": "B3",
+          "box": [
+            2230,
+            724,
+            2315,
+            826
+          ],
+          "x": 0.8876953125,
+          "side": "right"
+        },
+        {
+          "id": "B4",
+          "box": [
+            2084,
+            901,
+            2310,
+            1140
+          ],
+          "x": 0.858203125,
+          "side": "right"
+        },
+        {
+          "id": "B5",
+          "box": [
+            1296,
+            553,
+            1346,
+            619
+          ],
+          "x": 0.516015625,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "multiple",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "medium",
+      "note": "Several bots across lanes and upper stairway; hero jumps past a defeated body, no discriminating target cue.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E25",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1320,
+            123,
+            1390,
+            180
+          ],
+          "x": 0.529296875,
+          "side": "right"
+        },
+        {
+          "id": "B2",
+          "box": [
+            2310,
+            1105,
+            2490,
+            1335
+          ],
+          "x": 0.9375,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "unknown",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "medium",
+      "note": "Backflip/attack recovery after quad-KO; full-health survivors far ahead and at lower right. Motion effect does not identify either as current focus.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E26",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1201,
+            971,
+            1351,
+            1158
+          ],
+          "x": 0.4984375,
+          "side": "abstain"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1405,
+            143,
+            1457,
+            192
+          ],
+          "x": 0.558984375,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "one",
+      "focus_id": "B1",
+      "prediction": "none",
+      "confidence": "medium",
+      "note": "Near bot B1 carries differentiated web mark and slight health loss while hero descends directly above it; far B2 unmarked. Centered B1 supports continued engagement, not a horizontal start.",
+      "focus_x": 0.4984375,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E27",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1075,
+            438,
+            1230,
+            592
+          ],
+          "x": 0.4501953125,
+          "side": "left"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "unknown",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "medium",
+      "note": "Single partially damaged bot beneath airborne hero; no tracer, fresh contact or shot in causal span. Prior PENTA banner may concern another defeated bot; selected focus remains uncertain.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E28",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1735,
+            643,
+            1845,
+            770
+          ],
+          "x": 0.69921875,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "unknown",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "medium",
+      "note": "Backflip beside garden after KO; surviving B1 beside fallen body, no active target-specific interaction.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E29",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            713,
+            713,
+            816,
+            809
+          ],
+          "x": 0.2986328125,
+          "side": "left"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "none",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "high",
+      "note": "Clearly swinging between architecture; web attaches to building at right, not the outlined bot on left platform.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E30",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1052,
+            691,
+            1393,
+            999
+          ],
+          "x": 0.4775390625,
+          "side": "left"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "one",
+      "focus_id": "B1",
+      "prediction": "left",
+      "confidence": "high",
+      "note": "Fresh white impact on B1 in early causal frames and continued point-blank engagement; subsequent overhead swing line does not erase the observed attack. B1 remains slightly left.",
+      "focus_x": 0.4775390625,
+      "focus_side": "left"
+    },
+    {
+      "id": "E31",
+      "candidates": [],
+      "nearest": null,
+      "focus": "none",
+      "focus_id": null,
+      "prediction": "none",
+      "confidence": "high",
+      "note": "Stationary near stairway with glowing hand; far-left humanoid is a practice display, no Galacta bot or combat target visible.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E32",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1145,
+            695,
+            1225,
+            865
+          ],
+          "x": 0.462890625,
+          "side": "left"
+        },
+        {
+          "id": "B2",
+          "box": [
+            2015,
+            395,
+            2070,
+            448
+          ],
+          "x": 0.7978515625,
+          "side": "right"
+        },
+        {
+          "id": "B3",
+          "box": [
+            2142,
+            380,
+            2193,
+            430
+          ],
+          "x": 0.8466796875,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "unknown",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "low",
+      "note": "High airborne above upper platform, partly occluded bot beside hero plus distant pair. No contact/shot cue; purple shape in lower doorway could be defeated body, excluded.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E33",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            965,
+            249,
+            1001,
+            292
+          ],
+          "x": 0.383984375,
+          "side": "left"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1660,
+            559,
+            1694,
+            584
+          ],
+          "x": 0.655078125,
+          "side": "right"
+        },
+        {
+          "id": "B3",
+          "box": [
+            1695,
+            520,
+            1755,
+            585
+          ],
+          "x": 0.673828125,
+          "side": "right"
+        }
+      ],
+      "nearest": "B2",
+      "focus": "multiple",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "medium",
+      "note": "Two web-marked damaged bots just beyond circular platform receive paired web lines; nearer is mostly hidden by rim. No defensible single choice between the pair.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E34",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1160,
+            739,
+            1325,
+            903
+          ],
+          "x": 0.4853515625,
+          "side": "left"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1770,
+            199,
+            1823,
+            270
+          ],
+          "x": 0.7017578125,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "one",
+      "focus_id": "B1",
+      "prediction": "left",
+      "confidence": "medium",
+      "note": "Close damaged web-marked B1 remains beside hero with contact/hit-reticle effects in early history; distant B2 is unmarked. Continued engagement supports B1.",
+      "focus_x": 0.4853515625,
+      "focus_side": "left"
+    },
+    {
+      "id": "E35",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1750,
+            700,
+            2010,
+            1060
+          ],
+          "x": 0.734375,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "one",
+      "focus_id": "B1",
+      "prediction": "right",
+      "confidence": "high",
+      "note": "Marked large bot at right beside panel, repeated hand aim and web impact toward it; distant labels largely behind tree, bodies not assignable. B1 supported by directed attack.",
+      "focus_x": 0.734375,
+      "focus_side": "right"
+    },
+    {
+      "id": "E36",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            800,
+            1020,
+            950,
+            1220
+          ],
+          "x": 0.341796875,
+          "side": "left"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1236,
+            650,
+            1325,
+            755
+          ],
+          "x": 0.5001953125,
+          "side": "abstain"
+        }
+      ],
+      "nearest": "B2",
+      "focus": "one",
+      "focus_id": "B2",
+      "prediction": "none",
+      "confidence": "medium",
+      "note": "Bot emerging around corner B2 has white/yellow impact sparks in last causal frames beside extended hand; B1 remains below. B2 is centered, so no horizontal start predicted.",
+      "focus_x": 0.5001953125,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E37",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1885,
+            376,
+            2044,
+            500
+          ],
+          "x": 0.7673828125,
+          "side": "right"
+        },
+        {
+          "id": "B2",
+          "box": [
+            2360,
+            383,
+            2559,
+            534
+          ],
+          "x": 0.9607421875,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "multiple",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "high",
+      "note": "Hero climbs/jumps from rocks toward platform with two unmarked bots at right; no attack, contact or differentiated choice.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E38",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            995,
+            535,
+            1049,
+            632
+          ],
+          "x": 0.39921875,
+          "side": "left"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "none",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "high",
+      "note": "Wall-run/flip around panel, unmarked bot across lane; no attack or contact identifies a focus.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E39",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            793,
+            491,
+            825,
+            541
+          ],
+          "x": 0.316015625,
+          "side": "left"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1375,
+            809,
+            1398,
+            843
+          ],
+          "x": 0.5416015625,
+          "side": "right"
+        },
+        {
+          "id": "B3",
+          "box": [
+            1410,
+            792,
+            1447,
+            837
+          ],
+          "x": 0.5580078125,
+          "side": "right"
+        }
+      ],
+      "nearest": "B2",
+      "focus": "unknown",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "low",
+      "note": "Retreating jump near stairs/water. A marked damaged target's label is visible left but its body is occluded by stairs; other tiny distant bodies have no differentiated engagement. Cannot assign hidden target position.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E40",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1170,
+            873,
+            1320,
+            1030
+          ],
+          "x": 0.486328125,
+          "side": "left"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1572,
+            1210,
+            1620,
+            1296
+          ],
+          "x": 0.6234375,
+          "side": "right"
+        },
+        {
+          "id": "B3",
+          "box": [
+            1593,
+            910,
+            1632,
+            976
+          ],
+          "x": 0.6298828125,
+          "side": "right"
+        },
+        {
+          "id": "B4",
+          "box": [
+            1270,
+            510,
+            1290,
+            548
+          ],
+          "x": 0.5,
+          "side": "abstain"
+        },
+        {
+          "id": "B5",
+          "box": [
+            1315,
+            477,
+            1337,
+            513
+          ],
+          "x": 0.51796875,
+          "side": "right"
+        }
+      ],
+      "nearest": "B4",
+      "focus": "one",
+      "focus_id": "B1",
+      "prediction": "abstain",
+      "confidence": "high",
+      "note": "Early visible hit flash on large Ultra beneath hero followed by tracer mark supports B1 engagement. Hero flips away; next yaw uncertain.",
+      "focus_x": 0.486328125,
+      "focus_side": "left"
+    },
+    {
+      "id": "E41",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1152,
+            396,
+            1220,
+            478
+          ],
+          "x": 0.46328125,
+          "side": "left"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "unknown",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "high",
+      "note": "Hopping toward full-health bot with corpse to left; no contact, attack or tracer establishes next focus.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E42",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            532,
+            63,
+            680,
+            268
+          ],
+          "x": 0.23671875,
+          "side": "left"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "none",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "high",
+      "note": "Climbing panel after KO with a large bot on upper platform; no current engagement with visible bot.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E43",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1270,
+            639,
+            1312,
+            689
+          ],
+          "x": 0.504296875,
+          "side": "abstain"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "one",
+      "focus_id": "B1",
+      "prediction": "none",
+      "confidence": "high",
+      "note": "Visible web projectile travels directly to sole bot through multiple causal frames; focus established independently of centering.",
+      "focus_x": 0.504296875,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E44",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1345,
+            650,
+            1385,
+            810
+          ],
+          "x": 0.533203125,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "unknown",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "low",
+      "note": "Large bot barely emerges from behind panel as hero jumps. No engagement cue and full body occluded; box only visible portion.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E45",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1340,
+            607,
+            1500,
+            797
+          ],
+          "x": 0.5546875,
+          "side": "right"
+        },
+        {
+          "id": "B2",
+          "box": [
+            987,
+            542,
+            1011,
+            582
+          ],
+          "x": 0.390234375,
+          "side": "left"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "one",
+      "focus_id": "B1",
+      "prediction": "right",
+      "confidence": "high",
+      "note": "Continuous web tether connects hero to marked large bot B1; independent engagement cue. Distant unmarked B2 is separate.",
+      "focus_x": 0.5546875,
+      "focus_side": "right"
+    },
+    {
+      "id": "E46",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            2270,
+            515,
+            2335,
+            560
+          ],
+          "x": 0.8994140625,
+          "side": "right"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "none",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "high",
+      "note": "Jumping inside arch after KO, bot far right through glass. No visible current target engagement.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E47",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1250,
+            505,
+            1317,
+            555
+          ],
+          "x": 0.5013671875,
+          "side": "abstain"
+        },
+        {
+          "id": "B2",
+          "box": [
+            1365,
+            535,
+            1405,
+            590
+          ],
+          "x": 0.541015625,
+          "side": "right"
+        },
+        {
+          "id": "B3",
+          "box": [
+            617,
+            190,
+            684,
+            239
+          ],
+          "x": 0.2541015625,
+          "side": "left"
+        },
+        {
+          "id": "B4",
+          "box": [
+            112,
+            490,
+            144,
+            530
+          ],
+          "x": 0.05,
+          "side": "left"
+        },
+        {
+          "id": "B5",
+          "box": [
+            555,
+            353,
+            577,
+            391
+          ],
+          "x": 0.22109375,
+          "side": "left"
+        },
+        {
+          "id": "B6",
+          "box": [
+            626,
+            338,
+            648,
+            374
+          ],
+          "x": 0.248828125,
+          "side": "left"
+        }
+      ],
+      "nearest": "B2",
+      "focus": "one",
+      "focus_id": "B1",
+      "prediction": "none",
+      "confidence": "medium",
+      "note": "Thin tether in early causal frames visibly ends at left bot B1, while right bot B2 has tracer mark. B1 is causal attack recipient by line endpoint; B2 nearest at anchor. Two targets remain plausible next choices; optional no-turn prediction low certainty.",
+      "focus_x": 0.5013671875,
+      "focus_side": "abstain"
+    },
+    {
+      "id": "E48",
+      "candidates": [
+        {
+          "id": "B1",
+          "box": [
+            1212,
+            353,
+            1255,
+            383
+          ],
+          "x": 0.4818359375,
+          "side": "left"
+        }
+      ],
+      "nearest": "B1",
+      "focus": "none",
+      "focus_id": null,
+      "prediction": "abstain",
+      "confidence": "high",
+      "note": "Jumping up staircase, friendly-looking unmarked bot partly visible above stair; no attack/contact. Traversal only.",
+      "focus_x": null,
+      "focus_side": "abstain"
+    }
+  ]
+}
