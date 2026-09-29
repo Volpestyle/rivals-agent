@@ -1,0 +1,48 @@
+{
+  "format": "camera-guard-refusal-review-inputs-v1",
+  "status": "unreviewed_uncommitted_no_live_use",
+  "base_commit": "6e3b7b0622478ab39c4af4263044821245b7c086",
+  "head_at_packet": "a2a0a3ad0678b7c22f4553743eee17fefefe022b",
+  "files": {
+    "scripts/measure_camera_turns.py": "4f3d770a8a3a20622c20e16f9ad4d8410fdcb82822d20a69c531489e4eb8b0e0",
+    "tests/test_measure_camera_turns.py": "ce695ed7409e664adf67eb346660099a74cb22377b3c55987919e7f524317cea",
+    "perception/camera_ready_pose.py": "cf8f16ae9855730b4e1f58810a56ac0180f10375d89a7f4ead8ede4c8b4ae16f",
+    "agent/controller.py": "4e5bb70fca797ab17a25a8699d1ad111f0b7cd561f59d2b308a52c10b44da060",
+    "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+    "scripts/l4_measure.py": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1",
+    "agent/loop.py": "040c77c2c4ed0fff5a893e6e00991c8df7bad1e87267bf6d416964911b1e596f",
+    "scripts/run_range_bc_live.py": "446ef0bb2dc74c615f8c445dfac043ec0be4bfbd3c36195e9dfc727c8a9f7823",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547"
+  },
+  "prior_receipt": {
+    "path": "docs\\evidence\\camera-ready-fractional-20260928\\review-v3.json",
+    "sha256": "3e9bea22084523b8b11f5908b32094e9e716d3f202ba12591bd335e77cca8ec6"
+  },
+  "delta_sha256": "2be672108aa65b55c8229cc449824cd6628405d5a36551b36c8fa454df7527c6",
+  "ast_unchanged_functions": [
+    "collect_segment",
+    "initialize_pad",
+    "measure_pulse",
+    "attach_after_token",
+    "ready_proof",
+    "validate",
+    "verify_receipt"
+  ],
+  "actuator_call_ast_unchanged": true,
+  "prime_analyzer_sha256": "465fc4792697802802db778320e2450ea1054eba501ef5eec7c0a341b4308d31",
+  "external_evidence": {
+    "D:\\rivals-diagnostics\\live-loop-guard-20260928\\diagnose_native.py": "30353a0e11b73f148afda613db9a5596ab22a38dac192f7c5b43c930cdf55eb7",
+    "D:\\rivals-diagnostics\\live-loop-guard-20260928\\diagnose_native_attempt2.py": "a323de295a7927a461346bf89766317c4f6630e8e7b75bd48442eb7a47435c40",
+    "D:\\rivals-diagnostics\\live-loop-guard-20260928\\qualify.py": "68393b8418bcc00b088a303cd68d464ed18cd464c150bcf706c061a992812b88",
+    "D:\\rivals-diagnostics\\live-loop-guard-20260928\\native-279-289\\ABORT.json": "b6a1f67694c2adf464a3516e4129baf858d740e2ec7e8216887d3b2a72fc3da2",
+    "D:\\rivals-diagnostics\\live-loop-guard-20260928\\native-279-289-attempt2\\result.json": "318f8ca16a4388d7cd00ba3e0e1fabe7598addc2d9eb63f59e9f9834a6cc145b",
+    "D:\\rivals-diagnostics\\live-loop-guard-20260928\\native-279-289-attempt2\\frames.json": "931ee6afd2cb1ee373caa63d02ca04c41da6b48dea739cd819de4ba9f3b0d6e3",
+    "D:\\rivals-diagnostics\\live-loop-guard-20260928\\qualification-02\\result.json": "f994217d5142b706cb1233394d1f9a6da89ba3d4f64e147e16668e70273ecd3b",
+    "D:\\rivals-diagnostics\\live-loop-guard-20260928\\qualification-02\\pytest.txt": "80e12308aa3e30509ef8e9e584486179bafd6b56541fcdb84a893285f7e54253"
+  },
+  "checks": "125 passed, 12 corpus skipped; Ruff pass; 2 native-image retention controls",
+  "original_failure_clause": "unknown; failing DXCAM frame not retained"
+}

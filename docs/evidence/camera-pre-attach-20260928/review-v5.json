@@ -1,0 +1,61 @@
+{
+  "format": "camera-turns-review-v1",
+  "files": {
+    "scripts/measure_camera_turns.py": "3d27fb097f8e32039c7b1cafdf4ec683457a52fd107022705188c41fa19f7dff",
+    "tests/test_measure_camera_turns.py": "92f137923f727abfd3c16e5bf104adb0d3a6d75028def919d88e8b74ab374b68",
+    "perception/camera_ready_pose.py": "cf8f16ae9855730b4e1f58810a56ac0180f10375d89a7f4ead8ede4c8b4ae16f",
+    "agent/controller.py": "4e5bb70fca797ab17a25a8699d1ad111f0b7cd561f59d2b308a52c10b44da060",
+    "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+    "scripts/l4_measure.py": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1",
+    "agent/loop.py": "040c77c2c4ed0fff5a893e6e00991c8df7bad1e87267bf6d416964911b1e596f",
+    "scripts/run_range_bc_live.py": "446ef0bb2dc74c615f8c445dfac043ec0be4bfbd3c36195e9dfc727c8a9f7823",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547"
+  },
+  "verdict": "LAND",
+  "reviewer": "live-review (Claude Opus 5.5)",
+  "reviewed_at": "2026-09-28",
+  "scope": "incremental delta review v5 from v4-accepted bytes (driver 4f3d770a, test ce695ed7, reconstructed from 6e3b7b0 + v4 delta.diff): pre_attach_proof named refusals with exact frame and no pad, and 1 Hz routine before-attach trace; live-input safety only; no rate, focal or map acceptance",
+  "base_commit": "6e3b7b0622478ab39c4af4263044821245b7c086",
+  "head_at_issue": "a2a0a3ad0678b7c22f4553743eee17fefefe022b",
+  "landed_commit": null,
+  "bytes_verified": "all 12 files hashed by the reviewer from the sitting-checkout working tree as they would land; only the driver and its test differ from the v4 receipt",
+  "prior_review": {
+    "path": "docs/evidence/camera-guard-refusal-20260928/review-v4.json",
+    "sha256": "d4291a50ddf2065a44639a571c500fd8a16513d3ea1dfdf4acb7c3b92fe66011"
+  },
+  "inputs": {
+    "docs/evidence/camera-pre-attach-20260928/README.md": "0defb15cd906131254eb20309ee4b98dbe02b9ffb3679cf85c7d1b618b3f20a0",
+    "docs/evidence/camera-pre-attach-20260928/review-inputs.json": "acee7e984fb09ac5cb6f202550d4a66f7b9baf2208ac75e07e84771646e09603",
+    "docs/evidence/camera-pre-attach-20260928/delta-from-v3.diff": "d2bb4c0ffdb461605d78f3b9ad7b7c55a72e9922f3bacbcd97cf14e2c4c6e80a",
+    "docs/evidence/camera-pre-attach-20260928/owner-tests.txt": "f4f1449db2d141372c30060ef90aa37a4165e31c18044e452b91ef13c8ea5370"
+  },
+  "tests": "test_measure_camera_turns + test_camera_ready_pose + test_camera_prime_response: 136 passed, 12 skipped; driver+analyzer with --corpus: 124 passed (reviewer's private uv env, perception group, CUDA hidden), on these bytes",
+  "ast": "vs v4: only main's nested capture_proof body changed (now delegates to new pre_attach_proof); main otherwise, all other defs and module-level statements identical; input/capture call multiset identical apart from cap.grab() -> capture.grab() on the same object",
+  "findings": [
+    {
+      "id": 1,
+      "severity": "info",
+      "blocking": false,
+      "file": "scripts/measure_camera_turns.py",
+      "line": 165,
+      "summary": "Exceptions raised by focused()/key_pressed() before attach still propagate raw rather than as a named GuardRefused.",
+      "failure_scenario": "Still a stop; clause not recorded for that case."
+    },
+    {
+      "id": 2,
+      "severity": "info",
+      "blocking": false,
+      "file": "scripts/measure_camera_turns.py",
+      "line": 184,
+      "summary": "Routine before-attach trace is now 1 Hz; offline pose replays will have fewer neighbouring frames.",
+      "failure_scenario": "None for input; refusal and ready-attach images unaffected."
+    }
+  ],
+  "carried_findings": "v4-2 resolved; v4-1 (post-attach GuardRefused copy ~2.3 ms before release), v4-3 and v4-4 unchanged",
+  "limits": "Input safety only. Sitting d's original clause remains unknown. No yaw-rate, focal, map or learned-policy acceptance.",
+  "review": "docs/evidence/camera-pre-attach-20260928/review-v5.md",
+  "review_sha256": "adb65fcf5e4a8491147deb496d641eadf996d4396dcd4142cd3cd5e1a5ba278e"
+}

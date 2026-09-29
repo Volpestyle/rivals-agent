@@ -131,10 +131,123 @@ class ReadyPoseRefused(ValueError):
         self.times = {}
 
 
-def retain_pose_refusal(live, journal, exc):
+class GuardRefused(RangeLost):
+    """A named guard stop, with pixels kept in RAM until the pad is closed."""
+    def __init__(self, clause, frame, captured, *, checked, audit=None, clock=time.perf_counter):
+        super().__init__("camera guard stop: " + clause)
+        self.audit = {"failed_clause": clause, "checked_frame": checked,
+                      "frame_captured": captured, "decision_t": clock(), **(audit or {})}
+        self.frame = frame.copy() if frame is not None else None
+
+
+def check_frame_guard(frame, focused, key_pressed, end, in_range, idle_warning, clock=time.perf_counter):
+    """Same ordered, short-circuit checks as the former boolean guard."""
+    checks = {}
+    for clause, check in (("focus_lost", focused), ("keypress", lambda: not key_pressed()),
+                          ("block_deadline", lambda: clock() < end),
+                          ("range_hud_missing", lambda: in_range(frame)),
+                          ("idle_warning", lambda: not idle_warning(frame))):
+        try:
+            checks[clause] = bool(check())
+        except Exception as exc:
+            return {"passed": False, "failed_clause": clause + "_error", "checks": checks,
+                    "error": repr(exc), "checked_t": clock()}
+        if not checks[clause]:
+            return {"passed": False, "failed_clause": clause, "checks": checks, "checked_t": clock()}
+    return {"passed": True, "failed_clause": None, "checks": checks, "checked_t": clock()}
+
+
+def pre_attach_proof(capture, journal, guard, guard_state, focused, key_pressed, scope_end,
+                     *, clock=time.perf_counter, sleep=time.sleep):
+    """Check every capture; retain named refusals and only a 1 Hz routine trace."""
+    end = min(scope_end, clock() + FRESH_S)
+    while clock() < end:
+        for clause, passed in (("focus_lost", focused), ("keypress", lambda: not key_pressed())):
+            if not passed():
+                raise GuardRefused(clause, None, None, checked=False, clock=clock)
+        captured = clock()
+        try:
+            frame = capture.grab()
+        except Exception as exc:
+            raise GuardRefused("capture_error", None, None, checked=False,
+                               audit={"error": repr(exc)}, clock=clock) from exc
+        if frame is not None:
+            passed = guard(frame)
+            age = clock() - captured
+            if not passed or age > FRESH_S:
+                audit = guard_state["audit"]
+                raise GuardRefused(audit["failed_clause"] if not passed else "freshness",
+                    frame, captured, checked=True,
+                    audit={"guard_checks": audit, "frame_age_s": age, "fresh_limit_s": FRESH_S}, clock=clock)
+            # This only limits diagnostic PNG work, never captures, guard checks,
+            # ready-token images or the separate, lossless refusal path.
+            if captured - guard_state.get("pre_attach_trace_t", -math.inf) >= journal.guard_period:
+                journal.frame(frame, captured, "before-attach")
+                guard_state["pre_attach_trace_t"] = captured
+            return frame, captured
+        sleep(.001)
+    clause = "block_deadline" if clock() >= scope_end else "capture_unavailable"
+    raise GuardRefused(clause, None, None, checked=False, clock=clock)
+
+
+def post_attach_proof(live, journal, guard, guard_state, timing, focused, key_pressed,
+                      *, clock=time.perf_counter):
+    def stop(clause, frame=None, *, checked=False, audit=None):
+        captured = live.frame_t if frame is not None else None
+        audit = {**(audit or {}), "frame_age_s": clock() - captured if captured is not None else None,
+                 "fresh_limit_s": FRESH_S, "frame_received_t": getattr(live, "frame_received_t", None)}
+        raise GuardRefused(clause, frame, captured, checked=checked, audit=audit, clock=clock)
+    if not focused():
+        stop("focus_lost", live.frame)
+    if key_pressed():
+        stop("keypress", live.frame)
+    if timing["failed"] is not None:
+        stop("report_timing_failed", live.frame, audit={"error": str(timing["failed"])})
+    try:
+        frame = live.fresh()
+    except RangeLost as exc:
+        stop("capture_unavailable", live.frame, audit={"error": str(exc)})
+    if not guard(frame):
+        audit = guard_state["audit"]
+        stop(audit["failed_clause"], frame, checked=True, audit=audit)
+    age = clock() - live.frame_t
+    if age > FRESH_S:
+        stop("freshness", frame, checked=True, audit={"frame_age_s": age, "fresh_limit_s": FRESH_S})
+    journal.frame(frame, live.frame_t, "guard")
+    return frame
+
+
+def retain_pose_refusal(live, journal, exc, guard_state=None):
     """Called only on exit: neutralize/close before any synchronous encoding."""
     if live is not None:
         live.close()
+    if live is not None and isinstance(exc, RangeLost) and not isinstance(exc, GuardRefused):
+        # Controller commit failures also stop outside post_attach_proof. The
+        # callback records the exact checks; do not diagnose later by re-reading.
+        state = guard_state or {}
+        audit = state.get("audit", {})
+        frame = state.get("frame", live.frame)
+        captured = state.get("captured", live.frame_t)
+        known = {"range proof stale at the actuator; input released": "actuator_freshness",
+                 "hard scope deadline expired at the actuator; input released": "actuator_scope_deadline",
+                 "guarded input deadline expired at the actuator; input released": "actuator_request_deadline",
+                 "Live is closed; input refused": "controller_closed",
+                 "capture delivered no frame": "capture_unavailable"}
+        clause = known.get(str(exc), "controller_or_capture_stop")
+        if str(exc) == "range proof missing or stale at commit; input released":
+            clause = audit.get("failed_clause") or ("commit_freshness" if audit.get("passed") else "commit_unproven")
+        exc = GuardRefused(clause, frame, captured, checked=bool(audit),
+                           audit={"guard_checks": audit, "original_error": str(exc)})
+    if isinstance(exc, GuardRefused):
+        try:
+            if exc.frame is not None:
+                save_native(journal, "guard-refusal", exc.frame, exc.audit["frame_captured"])
+            journal.write("guard-refusal.json", {**exc.audit, "frame_available": exc.frame is not None,
+                "frame_role": "checked" if exc.audit["checked_frame"] else "last_available",
+                "written_after": "pad_closed" if live is not None else "no_pad_attached"})
+            return {"retained": True, "metadata": "guard-refusal.json", "failed_clause": exc.audit["failed_clause"]}
+        except Exception as error:
+            return {"retained": False, "failed_clause": exc.audit["failed_clause"], "error": repr(error)}
     if isinstance(exc, ReadyPoseRefused):
         try:
             for role, frame, captured in exc.frames:
@@ -377,9 +490,14 @@ def run_block(live, deflections, duration, journal, *, proof, acknowledge, focus
                 return
 
     def guarded_proof():
-        require(not reasons and clock() < end, "block ended")
+        def check_scope():
+            if reasons or clock() >= end:
+                raise GuardRefused(reasons[0] if reasons else "block_deadline",
+                    getattr(live, "frame", None), getattr(live, "frame_t", None), checked=False,
+                    audit={"source": "independent_monitor_or_block_scope"}, clock=clock)
+        check_scope()
         frame = proof()
-        require(not reasons and clock() < end, "block ended during capture")
+        check_scope()
         return frame
 
     thread = threading.Thread(target=monitor, daemon=True)
@@ -523,7 +641,7 @@ def main(argv=None):
                 "wall_time_unix": time.time(), "monotonic_t": time.perf_counter(),
                 "acceptance": "raw_unreviewed", "warning": "native video is required to disambiguate full turns"}
     journal = Journal(a.output, manifest)
-    live, timing = None, None
+    live, timing, guard_state = None, None, {}
     try:
         if not a.live:
             journal.write("result.json", {"pad_opened": False, "stop_reason": "prepared_only"})
@@ -541,33 +659,17 @@ def main(argv=None):
         cap = Capture("dxcam")
         preflight(cam=cap)
         attach_end = time.perf_counter() + a.scope_seconds
-        guard = lambda f: (focused() and not any_key_pressed() and time.perf_counter() < attach_end
-                           and in_range(f) and not idle_warning(f))
+        def guard(frame):
+            audit = check_frame_guard(frame, focused, any_key_pressed, attach_end, in_range, idle_warning)
+            guard_state.update(frame=frame, captured=live.frame_t if live is not None else None, audit=audit)
+            return audit["passed"]
         require(verify_receipt(a.review_receipt) == receipt, "review changed during preparation")
 
         def capture_proof():
-            end = min(attach_end, time.perf_counter() + FRESH_S)
-            while time.perf_counter() < end:
-                require(focused() and not any_key_pressed(), "focus/keyboard stop before attach")
-                captured = time.perf_counter()
-                frame = cap.grab()
-                if frame is not None:
-                    require(guard(frame) and time.perf_counter() - captured <= FRESH_S,
-                            "range/idle/freshness stop before attach")
-                    journal.frame(frame, captured, "before-attach")
-                    return frame, captured
-                time.sleep(.001)
-            raise RangeLost("no fresh pre-attach frame or block deadline")
+            return pre_attach_proof(cap, journal, guard, guard_state, focused, any_key_pressed, attach_end)
 
         def proof():
-            if not focused() or any_key_pressed():
-                raise RangeLost("focus/keyboard stop")
-            require(timing["failed"] is None, "outgoing report capture failed")
-            frame = live.fresh()
-            if not guard(frame) or time.perf_counter() - live.frame_t > FRESH_S:
-                raise RangeLost("range/idle/freshness stop")
-            journal.frame(frame, live.frame_t, "guard")
-            return frame
+            return post_attach_proof(live, journal, guard, guard_state, timing, focused, any_key_pressed)
 
         def acknowledge(index, d, fresh, end):
             token = uuid.uuid4().hex
@@ -599,7 +701,7 @@ def main(argv=None):
                                      "initialization_excluded": "initialization.json",
                                      "report_timing": timing, "acceptance": "raw_unreviewed"})
     except BaseException as exc:
-        refusal_evidence = retain_pose_refusal(live, journal, exc)
+        refusal_evidence = retain_pose_refusal(live, journal, exc, guard_state)
         journal.write("failure.json", {"error": repr(exc), "report_timing": timing, "acceptance": "failed",
             "refusal_evidence": refusal_evidence,
             "initialization_excluded": {"interval_events": "events.jsonl", "detail_if_present": "initialization.json"}})

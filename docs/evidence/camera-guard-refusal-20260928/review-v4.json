@@ -1,0 +1,78 @@
+{
+  "format": "camera-turns-review-v1",
+  "files": {
+    "scripts/measure_camera_turns.py": "4f3d770a8a3a20622c20e16f9ad4d8410fdcb82822d20a69c531489e4eb8b0e0",
+    "tests/test_measure_camera_turns.py": "ce695ed7409e664adf67eb346660099a74cb22377b3c55987919e7f524317cea",
+    "perception/camera_ready_pose.py": "cf8f16ae9855730b4e1f58810a56ac0180f10375d89a7f4ead8ede4c8b4ae16f",
+    "agent/controller.py": "4e5bb70fca797ab17a25a8699d1ad111f0b7cd561f59d2b308a52c10b44da060",
+    "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+    "scripts/l4_measure.py": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1",
+    "agent/loop.py": "040c77c2c4ed0fff5a893e6e00991c8df7bad1e87267bf6d416964911b1e596f",
+    "scripts/run_range_bc_live.py": "446ef0bb2dc74c615f8c445dfac043ec0be4bfbd3c36195e9dfc727c8a9f7823",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547"
+  },
+  "verdict": "LAND",
+  "reviewer": "live-review (Claude Opus 5.5)",
+  "reviewed_at": "2026-09-28",
+  "scope": "delta review v4, 6e3b7b0 -> worktree: named guard clauses (check_frame_guard, post_attach_proof, guarded_proof scope stop) and refusal-frame retention after Live.close(); live-input safety only; no rate, focal or map acceptance; sitting-d failure clause remains unknown",
+  "base_commit": "6e3b7b0622478ab39c4af4263044821245b7c086",
+  "head_at_issue": "a2a0a3ad0678b7c22f4553743eee17fefefe022b",
+  "landed_commit": null,
+  "bytes_verified": "all 12 files hashed by the reviewer from the sitting-checkout working tree as they would land; only the driver and its test differ from the v3 receipt",
+  "prior_review": {
+    "path": "docs/evidence/camera-ready-fractional-20260928/review-v3.json",
+    "sha256": "3e9bea22084523b8b11f5908b32094e9e716d3f202ba12591bd335e77cca8ec6"
+  },
+  "inputs": {
+    "docs/evidence/camera-guard-refusal-20260928/README.md": "a1f2135fc35000a2597998e0f33c6affcb41818d78ffabd0cf496cfad8f8fde5",
+    "docs/evidence/camera-guard-refusal-20260928/review-inputs.json": "e0d0f454e0d7c8487d2c4e07afb9778b25a2f42314720ff45ba28712e18e119e",
+    "docs/evidence/camera-guard-refusal-20260928/delta.diff": "2be672108aa65b55c8229cc449824cd6628405d5a36551b36c8fa454df7527c6",
+    "data/calibration/alt-cam-20260928d/SITTING.md": "b3d0a4b880736415afcec13f8ee12e0f4f656d24b93618c724cfb79da887e04c"
+  },
+  "tests": "tests/test_measure_camera_turns.py tests/test_camera_ready_pose.py: 101 passed, 12 skipped; with --corpus 113 passed (reviewer's private uv env, perception group, CUDA hidden), on these bytes",
+  "ast": "collect_segment, initialize_pad, measure_pulse, attach_after_token, ready_proof, unchanged_pose, save_native, validate, verify_receipt and module-level statements identical to 6e3b7b0; run_block differs only in guarded_proof; input/capture call multiset identical",
+  "findings": [
+    {
+      "id": 1,
+      "severity": "low",
+      "blocking": false,
+      "file": "scripts/measure_camera_turns.py",
+      "line": 140,
+      "summary": "GuardRefused.__init__ copies the full frame before the exception reaches collect_segment's finally: live.release().",
+      "failure_scenario": "Mid-segment guard stop releases ~2.3 ms later (2560x1440x3 copy, p50 2.29 ms, max 2.68 ms on this PC); bounded by <=40 ms renewals, <=100 ms leases and the actuator's own scope deadline; never blocks the stop."
+    },
+    {
+      "id": 2,
+      "severity": "info",
+      "blocking": false,
+      "file": "scripts/measure_camera_turns.py",
+      "line": 643,
+      "summary": "Pre-attach capture_proof guard failures still raise the combined ValueError and are not retained.",
+      "failure_scenario": "A refusal before attach would still leave its clause and image unwritten."
+    },
+    {
+      "id": 3,
+      "severity": "info",
+      "blocking": false,
+      "file": "scripts/measure_camera_turns.py",
+      "line": 191,
+      "summary": "Commit-time 'capture delivered no frame' retains the previous guard frame labelled checked.",
+      "failure_scenario": "Retained image is the last checked frame, not a capture tied to the failure; original_error identifies it."
+    },
+    {
+      "id": 4,
+      "severity": "info",
+      "blocking": false,
+      "file": "scripts/measure_camera_turns.py",
+      "line": 206,
+      "summary": "GuardRefused construction in the controller branch sits outside the try.",
+      "failure_scenario": "A MemoryError there skips failure.json; occurs after live.close(), no input effect."
+    }
+  ],
+  "limits": "Input safety only. Does not diagnose sitting d's original clause. No yaw-rate, focal, map or learned-policy acceptance.",
+  "review": "docs/evidence/camera-guard-refusal-20260928/review-v4.md",
+  "review_sha256": "7342d65dc1f803c74cea1f79c7a2604a9614177f895d11cb680c0d8490de1164"
+}

@@ -92,12 +92,14 @@ def test_monitor_closes_even_while_capture_is_blocked(tmp_path, reason):
         return np.zeros((360, 640, 3), np.uint8)
 
     try:
-        with pytest.raises(ValueError, match="block ended"):
+        with pytest.raises(m.GuardRefused) as caught:
             m.run_block(live, [.45], 1., journal, proof=blocked_proof,
                         acknowledge=lambda *a: pytest.fail("ack after closure"),
                         focused=lambda: reason != "focus", stop_requested=lambda: reason == "keypress",
                         clock=lambda: now[0])
         assert closed.is_set()
+        assert caught.value.audit["failed_clause"] == {
+            "focus": "focus_lost", "keypress": "keypress", "deadline": "block_deadline"}[reason]
     finally:
         journal.close()
 
@@ -644,5 +646,248 @@ def test_real_failing_frame_then_late_passing_pose_still_refuses(tmp_path, monke
         frames = {role: frame for role, frame, _ in caught.value.frames}
         assert np.array_equal(frames['current'], failing)
         assert np.array_equal(frames['terminal-unanalyzed'], reference)
+    finally:
+        journal.close()
+
+
+@pytest.mark.parametrize("clause", ["focus_lost", "keypress", "block_deadline", "range_hud_missing",
+                                    "idle_warning", "freshness", "capture_unavailable", "report_timing_failed"])
+def test_post_attach_guard_names_clause_and_retains_after_close(tmp_path, monkeypatch, clause):
+    frame = np.full((360,640,3), 73, np.uint8)
+    calls, closed, encoded = [], [], []
+    live = SimpleNamespace(frame=frame, frame_t=.99, close=lambda:closed.append(True))
+    now = 1.
+    focused = lambda: clause != "focus_lost"
+    key_pressed = lambda: clause == "keypress"
+    state = {}
+    def guard(current):
+        audit = m.check_frame_guard(current, focused, key_pressed,
+            .9 if clause == "block_deadline" else 10., lambda f:clause != "range_hud_missing",
+            lambda f:clause == "idle_warning", clock=lambda:now)
+        state.update(frame=current, captured=live.frame_t, audit=audit)
+        return audit["passed"]
+    def fresh():
+        calls.append("capture")
+        if clause == "capture_unavailable":
+            raise m.RangeLost("capture delivered no frame")
+        live.frame_t = .8 if clause == "freshness" else .99
+        return frame
+    live.fresh = fresh
+    journal = m.Journal(tmp_path / clause, {})
+    journal.frame = lambda *a:pytest.fail("failed frame must bypass droppable journal queue")
+    original_save = m.save_native
+    def save(*args):
+        assert closed == [True]
+        encoded.append(args[1])
+        original_save(*args)
+    monkeypatch.setattr(m, "save_native", save)
+    try:
+        with pytest.raises(m.GuardRefused) as caught:
+            m.post_attach_proof(live, journal, guard, state,
+                {"failed": "lost report" if clause == "report_timing_failed" else None},
+                focused, key_pressed, clock=lambda:now)
+        assert encoded == [] and closed == []
+        assert caught.value.audit["failed_clause"] == clause
+        frame[:] = 0  # exception must own its retained pixels
+        receipt = m.retain_pose_refusal(live, journal, caught.value, state)
+        assert receipt["failed_clause"] == clause and receipt["retained"]
+        import cv2
+        assert np.all(cv2.imread(str(journal.output / "guard-refusal.png")) == 73)
+        detail = json.loads((journal.output / "guard-refusal.json").read_text())
+        assert detail["written_after"] == "pad_closed"
+        assert detail["decision_t"] == now
+        if clause in ("focus_lost", "keypress", "report_timing_failed"):
+            assert calls == [] and detail["frame_role"] == "last_available"
+        if clause == "freshness":
+            assert detail["frame_age_s"] == pytest.approx(.2)
+            assert detail["fresh_limit_s"] == .1
+    finally:
+        journal.close()
+
+
+def test_guard_check_preserves_order_short_circuit_and_exception_clause():
+    calls = []
+    def unexpected(f):
+        calls.append("range")
+        raise RuntimeError("reader failed")
+    audit = m.check_frame_guard(None, lambda:False, lambda:pytest.fail("key check after focus loss"),
+                               10., unexpected, lambda f:pytest.fail("idle check after failure"), clock=lambda:1.)
+    assert audit["failed_clause"] == "focus_lost" and calls == []
+    audit = m.check_frame_guard(None, lambda:True, lambda:False, 10., unexpected,
+                               lambda f:pytest.fail("idle check after reader failure"), clock=lambda:1.)
+    assert audit["failed_clause"] == "range_hud_missing_error"
+    assert "reader failed" in audit["error"] and calls == ["range"]
+
+
+@pytest.mark.parametrize("passed", [False, True])
+def test_controller_commit_refusal_keeps_callback_evidence(tmp_path, passed):
+    frame = np.full((360,640,3), 93, np.uint8)
+    closed = []
+    live = SimpleNamespace(frame=frame, frame_t=2., close=lambda:closed.append(True))
+    state = {"frame": frame, "captured": 2., "audit": {
+        "passed": passed, "failed_clause": None if passed else "idle_warning", "checked_t": 2.05}}
+    journal = m.Journal(tmp_path / "commit", {})
+    try:
+        exc = m.RangeLost("range proof missing or stale at commit; input released")
+        result = m.retain_pose_refusal(live, journal, exc, state)
+        assert closed == [True]
+        assert result["failed_clause"] == ("commit_freshness" if passed else "idle_warning")
+        detail = json.loads((journal.output / "guard-refusal.json").read_text())
+        assert detail["guard_checks"]["checked_t"] == 2.05
+        assert detail["frame_captured"] == 2.
+    finally:
+        journal.close()
+
+
+def test_dropped_passing_frame_does_not_drop_following_refusal(tmp_path):
+    frame = np.full((360,640,3), 93, np.uint8)
+    live = SimpleNamespace(frame=frame, frame_t=.99, close=lambda:None, fresh=lambda:frame)
+    journal = m.Journal(tmp_path / "drop-then-stop", {})
+    dropped = []
+    journal.frame = lambda *args: dropped.append(args)  # emulate a full journal queue
+    state, permitted = {}, [True]
+    def guard(current):
+        audit = m.check_frame_guard(current, lambda:True, lambda:False, 10.,
+            lambda f:permitted[0], lambda f:False, clock=lambda:1.)
+        state.update(frame=current, captured=live.frame_t, audit=audit)
+        return audit['passed']
+    try:
+        assert m.post_attach_proof(live, journal, guard, state, {'failed':None},
+            lambda:True, lambda:False, clock=lambda:1.) is frame
+        assert len(dropped) == 1
+        permitted[0] = False
+        with pytest.raises(m.GuardRefused) as caught:
+            m.post_attach_proof(live, journal, guard, state, {'failed':None},
+                lambda:True, lambda:False, clock=lambda:1.)
+        assert len(dropped) == 1
+        assert m.retain_pose_refusal(live, journal, caught.value, state)['retained']
+        assert (journal.output / 'guard-refusal.png').exists()
+    finally:
+        journal.close()
+
+
+def test_guard_refusal_no_frame_and_encoding_failure_are_explicit(tmp_path, monkeypatch):
+    journal = m.Journal(tmp_path / 'no-pixels', {})
+    closed = []
+    live = SimpleNamespace(close=lambda:closed.append(True))
+    try:
+        exc = m.GuardRefused('capture_unavailable', None, None, checked=False, clock=lambda:1.)
+        assert m.retain_pose_refusal(live, journal, exc)['retained']
+        detail = json.loads((journal.output / 'guard-refusal.json').read_text())
+        assert not detail['frame_available'] and detail['frame_captured'] is None
+        def fail(*args):
+            assert len(closed) == 2
+            raise OSError('disk full')
+        monkeypatch.setattr(m, 'save_native', fail)
+        exc = m.GuardRefused('idle_warning', np.zeros((360,640,3),np.uint8), 1., checked=True)
+        result = m.retain_pose_refusal(live, journal, exc)
+        assert not result['retained'] and result['failed_clause'] == 'idle_warning'
+        assert 'disk full' in result['error']
+    finally:
+        journal.close()
+
+
+@pytest.mark.parametrize('error,clause', [
+    ('range proof stale at the actuator; input released', 'actuator_freshness'),
+    ('hard scope deadline expired at the actuator; input released', 'actuator_scope_deadline'),
+    ('guarded input deadline expired at the actuator; input released', 'actuator_request_deadline'),
+    ('Live is closed; input refused', 'controller_closed'),
+    ('capture delivered no frame', 'capture_unavailable'),
+])
+def test_other_controller_stops_name_actual_boundary(tmp_path, error, clause):
+    frame = np.zeros((360,640,3), np.uint8)
+    live = SimpleNamespace(frame=frame, frame_t=1., close=lambda:None)
+    journal = m.Journal(tmp_path / clause, {})
+    try:
+        # A prior callback result cannot override an explicit actuator failure.
+        state = {'frame':frame, 'captured':1., 'audit':{'passed':False, 'failed_clause':'idle_warning'}}
+        result = m.retain_pose_refusal(live, journal, m.RangeLost(error), state)
+        assert result['failed_clause'] == clause
+    finally:
+        journal.close()
+
+
+@pytest.mark.parametrize("clause", ["range_hud_missing", "idle_warning", "freshness",
+                                    "focus_lost", "keypress", "block_deadline", "capture_unavailable",
+                                    "capture_error", "range_hud_missing_error"])
+def test_pre_attach_refusal_retains_actual_checked_frame_without_pad(tmp_path, clause):
+    frame = np.full((360,640,3), 37, np.uint8)
+    now, state, grabs = [1.], {}, []
+    focused = lambda: clause != "focus_lost"
+    key_pressed = lambda: clause == "keypress"
+    scope_end = .9 if clause == "block_deadline" else 10.
+    def grab():
+        grabs.append(True)
+        if clause == "capture_error":
+            raise RuntimeError("capture backend failed")
+        if clause == "freshness":
+            now[0] += .101
+        return None if clause == "capture_unavailable" else frame
+    def in_range(current):
+        if clause == "range_hud_missing_error":
+            raise RuntimeError("range reader failed")
+        return clause != "range_hud_missing"
+    def guard(current):
+        audit = m.check_frame_guard(current, focused, key_pressed, scope_end,
+            in_range, lambda f:clause == "idle_warning", clock=lambda:now[0])
+        state["audit"] = audit
+        return audit["passed"]
+    journal = m.Journal(tmp_path / clause, {})
+    journal.frame = lambda *args:pytest.fail("failed capture cannot enter lossy routine trace")
+    try:
+        with pytest.raises(m.GuardRefused) as caught:
+            m.pre_attach_proof(SimpleNamespace(grab=grab), journal, guard, state,
+                focused, key_pressed, scope_end, clock=lambda:now[0],
+                sleep=lambda dt:now.__setitem__(0, now[0] + dt))
+        assert caught.value.audit["failed_clause"] == clause
+        assert m.retain_pose_refusal(None, journal, caught.value, state)["retained"]
+        detail = json.loads((journal.output / "guard-refusal.json").read_text())
+        assert detail["written_after"] == "no_pad_attached"
+        checked = clause in ("range_hud_missing", "range_hud_missing_error", "idle_warning", "freshness")
+        assert detail["frame_available"] is checked
+        if checked:
+            import cv2
+            assert np.array_equal(cv2.imread(str(journal.output / "guard-refusal.png")), frame)
+            assert detail["frame_captured"] == 1. and detail["frame_role"] == "checked"
+        if clause in ("focus_lost", "keypress", "block_deadline"):
+            assert not grabs
+    finally:
+        journal.close()
+
+
+def test_pre_attach_trace_throttle_never_skips_a_capture_or_guard():
+    frame = np.zeros((360,640,3), np.uint8)
+    now, state, grabs, checks, retained = [1.], {}, [], [], []
+    capture = SimpleNamespace(grab=lambda:grabs.append(now[0]) or frame)
+    journal = SimpleNamespace(guard_period=1., frame=lambda f,t,role:retained.append((t, role)))
+    def guard(current):
+        checks.append(now[0])
+        passed = len(checks) < 105
+        state["audit"] = {"passed": passed, "failed_clause": None if passed else "range_hud_missing"}
+        return passed
+    for i in range(104):
+        now[0] = 1. + i * .01
+        captured, stamp = m.pre_attach_proof(capture, journal, guard, state,
+            lambda:True, lambda:False, 10., clock=lambda:now[0])
+        assert captured is frame and stamp == now[0]
+    assert len(grabs) == len(checks) == 104
+    assert retained == [(1., "before-attach"), (2., "before-attach")]
+    # A failed guard between trace snapshots still stops immediately.
+    now[0] += .01
+    with pytest.raises(m.GuardRefused, match="range_hud_missing"):
+        m.pre_attach_proof(capture, journal, guard, state, lambda:True, lambda:False, 10., clock=lambda:now[0])
+    assert len(grabs) == len(checks) == 105 and len(retained) == 2
+
+
+def test_pre_attach_retention_disk_failure_stays_explicit(tmp_path, monkeypatch):
+    journal = m.Journal(tmp_path / "pre-attach-disk-full", {})
+    def fail(*args):
+        raise OSError("disk full")
+    monkeypatch.setattr(m, "save_native", fail)
+    try:
+        exc = m.GuardRefused("range_hud_missing", np.zeros((360,640,3), np.uint8), 1., checked=True)
+        result = m.retain_pose_refusal(None, journal, exc)
+        assert result["retained"] is False and result["failed_clause"] == "range_hud_missing"
+        assert "disk full" in result["error"]
     finally:
         journal.close()
