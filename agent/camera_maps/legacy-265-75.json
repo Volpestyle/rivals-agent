@@ -1,0 +1,286 @@
+{
+  "schema": "rivals-camera-map-v1",
+  "profile": "legacy-265-75",
+  "settings": {
+    "horizontal": 265,
+    "vertical": 75,
+    "curve": "Linear",
+    "aim_assist": 0
+  },
+  "focal": {
+    "value": 465.0,
+    "status": "accepted",
+    "sitting": "historical L4 measurement series; individual sitting id not retained",
+    "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+    "uncertainty": {
+      "plus_minus": null,
+      "note": "Historical deployed estimate; numeric uncertainty not reported."
+    }
+  },
+  "latency": {
+    "value": 0.045,
+    "status": "accepted",
+    "sitting": "historical L4 measurement series; individual sitting id not retained",
+    "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+    "uncertainty": {
+      "plus_minus": null,
+      "note": "Historical controller model: pad-to-screen 17-20ms plus capture/perception/loop; not a direct 45ms measurement."
+    }
+  },
+  "interpolation": {
+    "value": "piecewise_linear",
+    "status": "accepted",
+    "sitting": "historical L4 measurement series; individual sitting id not retained",
+    "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+    "uncertainty": {
+      "plus_minus": null,
+      "note": "Historical executor assumption, including linear-to-origin and symmetric pitch; deadzones unmeasured. Accepted here means retained legacy behavior, not a new calibration acceptance."
+    }
+  },
+  "yaw": {
+    "positive": [
+      {
+        "stick": 0.1,
+        "measurement": {
+          "value": 18.5,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Legacy yaw symmetry reported in L4; no numeric uncertainty."
+          }
+        }
+      },
+      {
+        "stick": 0.2,
+        "measurement": {
+          "value": 61.5,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Legacy yaw symmetry reported in L4; no numeric uncertainty."
+          }
+        }
+      },
+      {
+        "stick": 0.3,
+        "measurement": {
+          "value": 110.0,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Legacy yaw symmetry reported in L4; no numeric uncertainty."
+          }
+        }
+      },
+      {
+        "stick": 0.45,
+        "measurement": {
+          "value": 172.0,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Legacy yaw symmetry reported in L4; no numeric uncertainty."
+          }
+        }
+      },
+      {
+        "stick": 0.6,
+        "measurement": {
+          "value": 241.0,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Legacy yaw symmetry reported in L4; no numeric uncertainty."
+          }
+        }
+      },
+      {
+        "stick": 0.8,
+        "measurement": {
+          "value": 320.0,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Legacy yaw symmetry reported in L4; no numeric uncertainty."
+          }
+        }
+      },
+      {
+        "stick": 1.0,
+        "measurement": {
+          "value": 415.0,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Legacy yaw symmetry reported in L4; no numeric uncertainty."
+          }
+        }
+      }
+    ],
+    "negative": [
+      {
+        "stick": 0.1,
+        "measurement": {
+          "value": 18.5,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Legacy yaw symmetry reported in L4; no numeric uncertainty."
+          }
+        }
+      },
+      {
+        "stick": 0.2,
+        "measurement": {
+          "value": 61.5,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Legacy yaw symmetry reported in L4; no numeric uncertainty."
+          }
+        }
+      },
+      {
+        "stick": 0.3,
+        "measurement": {
+          "value": 110.0,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Legacy yaw symmetry reported in L4; no numeric uncertainty."
+          }
+        }
+      },
+      {
+        "stick": 0.45,
+        "measurement": {
+          "value": 172.0,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Legacy yaw symmetry reported in L4; no numeric uncertainty."
+          }
+        }
+      },
+      {
+        "stick": 0.6,
+        "measurement": {
+          "value": 241.0,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Legacy yaw symmetry reported in L4; no numeric uncertainty."
+          }
+        }
+      },
+      {
+        "stick": 0.8,
+        "measurement": {
+          "value": 320.0,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Legacy yaw symmetry reported in L4; no numeric uncertainty."
+          }
+        }
+      },
+      {
+        "stick": 1.0,
+        "measurement": {
+          "value": 415.0,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Legacy yaw symmetry reported in L4; no numeric uncertainty."
+          }
+        }
+      }
+    ]
+  },
+  "pitch": {
+    "positive": [
+      {
+        "stick": 0.5,
+        "measurement": {
+          "value": 43.0,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Historical symmetric pitch model; separate directional uncertainty not measured."
+          }
+        }
+      },
+      {
+        "stick": 1.0,
+        "measurement": {
+          "value": 99.0,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Historical symmetric pitch model; separate directional uncertainty not measured."
+          }
+        }
+      }
+    ],
+    "negative": [
+      {
+        "stick": 0.5,
+        "measurement": {
+          "value": 43.0,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Historical symmetric pitch model; separate directional uncertainty not measured."
+          }
+        }
+      },
+      {
+        "stick": 1.0,
+        "measurement": {
+          "value": 99.0,
+          "status": "accepted",
+          "sitting": "historical L4 measurement series; individual sitting id not retained",
+          "receipt": "docs/lanes/l4-controller.md#measurements-linear-curve-h--v-sensitivity-265--75-aim-assist-0; controller sha256 25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Historical symmetric pitch model; separate directional uncertainty not measured."
+          }
+        }
+      }
+    ]
+  }
+}

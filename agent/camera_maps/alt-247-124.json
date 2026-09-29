@@ -1,0 +1,290 @@
+{
+  "schema": "rivals-camera-map-v1",
+  "profile": "alt-247-124",
+  "settings": {
+    "horizontal": 247,
+    "vertical": 124,
+    "curve": null,
+    "aim_assist": null
+  },
+  "focal": {
+    "value": null,
+    "status": "missing",
+    "sitting": null,
+    "receipt": null,
+    "uncertainty": {
+      "plus_minus": null,
+      "note": "Not measured or accepted for this profile."
+    }
+  },
+  "latency": {
+    "value": null,
+    "status": "missing",
+    "sitting": null,
+    "receipt": null,
+    "uncertainty": {
+      "plus_minus": null,
+      "note": "Not measured or accepted for this profile."
+    }
+  },
+  "interpolation": {
+    "value": null,
+    "status": "missing",
+    "sitting": null,
+    "receipt": null,
+    "uncertainty": {
+      "plus_minus": null,
+      "note": "Not measured or accepted for this profile."
+    }
+  },
+  "yaw": {
+    "positive": [
+      {
+        "stick": 0.1,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": null,
+          "receipt": null,
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Not measured or accepted for this profile."
+          }
+        }
+      },
+      {
+        "stick": 0.2,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": null,
+          "receipt": null,
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Not measured or accepted for this profile."
+          }
+        }
+      },
+      {
+        "stick": 0.3,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": null,
+          "receipt": null,
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Not measured or accepted for this profile."
+          }
+        }
+      },
+      {
+        "stick": 0.45,
+        "measurement": {
+          "value": 154.0,
+          "status": "candidate",
+          "sitting": "alt-cam-20260929/yaw-01",
+          "receipt": "docs/evidence/camera-native-turn-20260929/README.md; data/calibration/alt-cam-20260929/SITTING.md#native-turn-count-evaluator-2026-09-29",
+          "uncertainty": {
+            "plus_minus": null,
+            "interval": [
+              151.397,
+              156.473
+            ],
+            "note": "154 is rounded from native mean 153.893 deg/s; conservative timing bounds [151.397,156.473], not a statistical confidence interval. Native seven-turn count rules out the earlier 77 deg/s half-turn alias. Candidate pending acceptance; instantaneous response, other deflections, opposite direction and focal remain unknown."
+          }
+        }
+      },
+      {
+        "stick": 0.6,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": null,
+          "receipt": null,
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Not measured or accepted for this profile."
+          }
+        }
+      },
+      {
+        "stick": 0.8,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": null,
+          "receipt": null,
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Not measured or accepted for this profile."
+          }
+        }
+      },
+      {
+        "stick": 1.0,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": null,
+          "receipt": null,
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Not measured or accepted for this profile."
+          }
+        }
+      }
+    ],
+    "negative": [
+      {
+        "stick": 0.1,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": null,
+          "receipt": null,
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Not measured or accepted for this profile."
+          }
+        }
+      },
+      {
+        "stick": 0.2,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": null,
+          "receipt": null,
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Not measured or accepted for this profile."
+          }
+        }
+      },
+      {
+        "stick": 0.3,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": null,
+          "receipt": null,
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Not measured or accepted for this profile."
+          }
+        }
+      },
+      {
+        "stick": 0.45,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": null,
+          "receipt": null,
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Not measured or accepted for this profile."
+          }
+        }
+      },
+      {
+        "stick": 0.6,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": null,
+          "receipt": null,
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Not measured or accepted for this profile."
+          }
+        }
+      },
+      {
+        "stick": 0.8,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": null,
+          "receipt": null,
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Not measured or accepted for this profile."
+          }
+        }
+      },
+      {
+        "stick": 1.0,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": null,
+          "receipt": null,
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Not measured or accepted for this profile."
+          }
+        }
+      }
+    ]
+  },
+  "pitch": {
+    "positive": [
+      {
+        "stick": 0.5,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": null,
+          "receipt": null,
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Not measured or accepted for this profile."
+          }
+        }
+      },
+      {
+        "stick": 1.0,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": null,
+          "receipt": null,
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Not measured or accepted for this profile."
+          }
+        }
+      }
+    ],
+    "negative": [
+      {
+        "stick": 0.5,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": null,
+          "receipt": null,
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Not measured or accepted for this profile."
+          }
+        }
+      },
+      {
+        "stick": 1.0,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": null,
+          "receipt": null,
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "Not measured or accepted for this profile."
+          }
+        }
+      }
+    ]
+  }
+}

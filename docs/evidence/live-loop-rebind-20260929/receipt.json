@@ -1,0 +1,29 @@
+{
+  "status": "owner-offline-checks-only-not-live-approved",
+  "base_commit": "8331c456a0029fd7ec75139380b4624067d96512",
+  "tests": 296,
+  "exact_legacy_trace_steps": 1500,
+  "calibration_runtime_matches_v2_at_receipt": {
+    "scripts/calibrate_camera_schedule.py": false,
+    "agent/camera_calibration.py": false,
+    "agent/controller.py": true,
+    "agent/startup.py": true,
+    "agent/live_range_bc.py": true,
+    "scripts/capture.py": true,
+    "scripts/record.py": true,
+    "scripts/l4_measure.py": true,
+    "agent/pad_bindings.py": true
+  },
+  "sha256": {
+    "agent/camera_map.py": "5bcd03a0d1ec755cfac8d11f8cdc664dafd9c6182eab501135837aa6af6c60a4",
+    "agent/camera_maps/legacy-265-75.json": "ce78170d1a33dba124cc3629ced91cfdb946e49cc488e1636f382456e4486e36",
+    "agent/camera_maps/alt-247-124.json": "975294c46d2f098e32dfdcc74884098a8435027ef7898c0a83cb62e80842a79d",
+    "tests/test_camera_map.py": "8e0d8437b3f711532413e7d98e1a5a7d9de7730962b2ae4503bf6301ec47955b",
+    "docs/evidence/live-loop-rebind-20260929/integration.patch": "70450e8a50f4657a394680083b21671b8dc4197eef32eb0de7e8cd71f28d7c43",
+    "docs/evidence/live-loop-rebind-20260929/base-sha256.json": "844dd510241b5e07fc93694d0b09d82ce39c10ef4702848514d6ab3543ea34cd",
+    "docs/evidence/live-loop-rebind-20260929/verify_patch.py": "c6852bc4f1b55a8078d7b16e2e185dbf0f6a007a03aa9d1f329098b3ef0e451b",
+    "docs/evidence/live-loop-rebind-20260929/owner-tests.txt": "daf5e164aac5c66d23ab04e8f3be639f4a2727e8de763b4dbf93f376c8af98b2",
+    "docs/evidence/live-loop-rebind-20260929/README.md": "7c6a53c0000f3af32357550fcb2d423877118236b8f48790e671ad4e789526f5",
+    "docs/evidence/live-loop-rebind-20260929/concurrent-freeze-note.txt": "6b2ed66adb23a58954a1e6ede128c2a81e7f90bb7a56eb908f603a055e1a26bc"
+  }
+}
