@@ -18,17 +18,16 @@ L40S with 8 CPUs 124 s/epoch (~36 min and ~$1.54 per 13-epoch fit); Modal A10 18
 4 vCPU 292 s. A fit needs ~21 GB of VRAM, so a 48 GB card holds two. The post-training CPU evaluation is CPU-bound,
 so give cloud boxes 8 CPUs or more.
 
-Measured 2026-09-28 on IDM runs. full03 was one Modal L40S: a 5.95 h fit (3 epochs of about 2 h each), then 7 h 34 min
-end to end with evaluation, for about $22 (`docs/evidence/idm-expanded-full03-result-20260928/`). The smaller Mac MPS
-refit took 2.2 h to fit and 2 h 53 min end to end, for $0 (`docs/evidence/idm-match-refit-mac-result-20260928/`).
+Measured 2026-09-28 on two IDM fits, both 3 epochs:
 
-The following local estimates for a full03-sized fit are unmeasured:
-- **Mac:** about 11–12 h, using round 2's Mac/L40S ratio of 1.9×.
-- **PC 4080 Super:** very roughly 9–12 h, only with the game and recording stopped. First check that the fit fits in
-  its 16 GB, because round 2's fit needed 21 GB.
+| Fit | Where | Updates | Trainer time | End to end | Cost | Evidence |
+|---|---|---|---|---|---|---|
+| full03 | One Modal L40S | 122,598 | 5.95 h | 7 h 34 min with evaluation | about $22 | `docs/evidence/idm-expanded-full03-result-20260928/` |
+| Mac refit | Mac MPS | 135,390 | 2.16 h | 2 h 53 min | $0 | `docs/evidence/idm-match-refit-mac-result-20260928/` |
 
-Epoch checkpoints make a long local run resumable, so a run of this size can reasonably stay local when a day's wait is
-acceptable.
+The Mac refit did more updates in less time. The two runs used different pipelines, so this doesn't support a claim
+that one machine is faster. Use the Mac refit as the planning anchor for local IDM fits. There is no measured PC
+number; before planning a PC fit, check that it fits in the card's 16 GB (round 2's policy fit needed 21 GB).
 
 ## Rules for PC jobs (while James may be playing)
 
