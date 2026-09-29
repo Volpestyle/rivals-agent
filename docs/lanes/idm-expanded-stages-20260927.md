@@ -1,8 +1,10 @@
 # Expanded IDM staged runner and target transfer
 
+**Status (2026-09-29): HISTORY.** The expanded refit it staged ran as full01 to full03 ([full03 result](../evidence/idm-expanded-full03-result-20260928/)); the IDM is parked ([decision](../research/policy-next-bet-scripted-baseline-20260928.md)).
+
 Owner: idm-owner, VUH-1353. 2026-09-27. EXPLORATORY preparation; no paid app, reservation or fit on human data.
 
-The lead approved [016557e's launch plan](idm-expanded-launch-plan-20260927.md): $7 hard including setup, one probe and one full attempt, exactly eight TRAIN ranges plus current -4a1/-5a1/-6. Mac order is three range stores, explore-policy dual-grid caches, then IDM match stores. That approval does not skip completed-input verification or authorize another attempt.
+The lead approved 016557e's launch plan (`idm-expanded-launch-plan-20260927.md`, removed 2026-09-29; in git history at `016557e`): $7 hard including setup, one probe and one full attempt, exactly eight TRAIN ranges plus current -4a1/-5a1/-6. Mac order is three range stores, explore-policy dual-grid caches, then IDM match stores. That approval does not skip completed-input verification or authorize another attempt.
 
 `policy/idm/refit_stages.py` supplies importable callbacks for the accepted shared guard. Fit, camera diagnostic, TRAIN calibration, real-visual inference, zero-visual inference and final report have separate artifact closures. Each predecessor is loaded through `cloud.modal_guard.stages.load` with the current immutable attempt identity. A completed fit is reused; a partial fit is refused. Completed checkpoint bytes, three-epoch history, target provenance and finite tensors are checked before downstream inference. Calibration is derived only from TRAIN rows. Zero visuals reuse the real pass's exact row identities without opening pixel payloads; the final report rejects changed ordering or scores and rechecks the calibration against saved TRAIN probabilities.
 

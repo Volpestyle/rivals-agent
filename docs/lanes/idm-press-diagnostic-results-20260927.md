@@ -1,5 +1,11 @@
 # Fixed-checkpoint press diagnostic: TRAIN thresholds and visual control
 
+**Status (2026-09-29): HISTORY.** Exploratory result, followed by the expanded refits ([full03 result](../evidence/idm-expanded-full03-result-20260928/)); the IDM is parked ([decision](../research/policy-next-bet-scripted-baseline-20260928.md)). Report and receipts: [evidence](../evidence/idm-press-diagnostic-result-20260927/).
+
+---
+
+## History (superseded)
+
 Owner: idm-owner, VUH-1353. **EXPLORATORY**, completed 2026-09-27 20:41 UTC. No Gate 2 pass, action-label export, weight promotion or live use.
 
 TRAIN-only rate calibration substantially improves precision over fixed 0.5, and the real images outperform rate-matched chance. Precision remains only 36–43%, so most predicted events are still false positives. This diagnoses a threshold problem and a visual signal; it does not validate button labels or establish transfer to matches/replays.

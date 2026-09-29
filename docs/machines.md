@@ -172,11 +172,11 @@ without starting the HTTP server.
 Both credentials live on the Mac; the PC's AWS login is expired and unused. Renew them with the device-code flow in
 the `mac-remote` skill; the lead never uses James's stored password.
 
-- **Modal** (round-3 fan-out): workspace `volpestyle`, token profile `rivals` in `~/.modal.toml`. James added a card on
-  2026-09-26; the round-3 cap is $50.
+- **Modal:** workspace `volpestyle`, token profile `rivals` in `~/.modal.toml`. Caps and the spend process are in
+  `docs/compute.md` only.
 - **AWS:** account 842434829012 (Clankie SSO, `sso_session clankie`, AdministratorAccess as james). Its default session
-  lasts 8 h and expires mid-job. G/VT on-demand quota is 4 vCPU in us-east-2; the 32 vCPU request is case 179046419000727,
-  escalated. It was used for the 2026-09-26 L40S benchmark only.
+  lasts 8 h and expires mid-job. A fallback only; its quota and when to use it are in `docs/compute.md`. It was used
+  for the 2026-09-26 L40S benchmark only.
 
 ## Reach either machine
 

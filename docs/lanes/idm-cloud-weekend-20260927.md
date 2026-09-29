@@ -1,5 +1,7 @@
 # IDM weekend cloud work — EXPLORATORY
 
+**Status (2026-09-29): SUPERSEDED.** The weekend allocation and the v1 guard's holds and dollar gate are retired: guard v2 has no holds, ledger or dollar gate ([cloud/modal_guard/README.md](../../cloud/modal_guard/README.md)); caps and the spend process are in [compute.md](../compute.md). The IDM is parked ([decision](../research/policy-next-bet-scripted-baseline-20260928.md)).
+
 Owner idm-owner, VUH-1353. Lead authorization 2026-09-27: combined **$25 hard**, alert at **$20**, inside James's $150 weekend total. Results remain provisional until independent review. Existing reviewed budget enforcement is reused; changing a cap value is configuration, not a change to enforcement.
 
 | Track | Allocation | First bounded deliverable |

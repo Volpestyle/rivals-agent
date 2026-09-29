@@ -1,5 +1,11 @@
 # IDM SSL sampled pilot — EXPLORATORY
 
+**Status (2026-09-29): HISTORY.** Weekend SSL smoke under the retired v1 guard and weekend allocation (current rules: [compute.md](../compute.md)); the IDM is parked ([decision](../research/policy-next-bet-scripted-baseline-20260928.md)).
+
+---
+
+## History (superseded)
+
 Owner idm-owner. Whole-file admission f641ef3 is independently LAND. Its frozen
 JSON hash is `864e54350343a26ce0111d03d6e76d39bddef2f1e3e1c5cdb898b93e1f42dd02`.
 

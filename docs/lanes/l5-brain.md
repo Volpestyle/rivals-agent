@@ -1,5 +1,7 @@
 # L5 brain: decision layer (2026-09-20)
 
+**Status (2026-09-29): HISTORY.** The scripted brain is the baseline (rebind VUH-1319) and Jev is frozen; "not yet running against the live game" below is from 2026-09-20.
+
 Linear: project Rivals Agent, issue VUH-1303 (non-blocking Jev).
 
 **Built and tested offline; not yet running against the live game.** The scripted
@@ -221,7 +223,7 @@ unset; a URL that is not `http(s)` with a host raises `ValueError`. The benchmar
 the endpoint it measured (URL, model, whether a key was sent, never the key). What the
 client sends is exactly the body shown above; a server must return `answers[q].choice`
 and an `answers[q].probabilities` entry for every option (a missing option counts as
-0), and may omit `confidence` and `usage`. `docs/lanes/local-jev.md` (R1-R7) is the
+0), and may omit `confidence` and `usage`. `docs/archive/local-jev.md` (R1-R7) is the
 server side of this contract. Its suggestion to make the `target` and `anchor` criteria
 text static, so the question head is cacheable, is not done: the saving is unmeasured and
 it would change what the real Jev is asked.

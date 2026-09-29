@@ -1,5 +1,7 @@
 # Inverse dynamics — inferring inputs from frames (VUH-1353)
 
+**Status (2026-09-29): PARKED.** New IDM refits and reader work are parked ([decision](../research/policy-next-bet-scripted-baseline-20260928.md)); full03 stays frozen; results in [idm-expanded-full03-result-20260928](../evidence/idm-expanded-full03-result-20260928/) and [idm-match-refit-mac-result-20260928](../evidence/idm-match-refit-mac-result-20260928/).
+
 Lane owner and single writer: `scoreboard-fix` (2026-09-23). This file holds design and measured facts. Status and
 acceptance go on VUH-1353. Nothing here sends input to the game.
 
@@ -83,7 +85,7 @@ about targets or enemies. The IDM is target-agnostic on purpose, so it does not 
   - The geometric estimator is *checked against* the take, never used to fit the gain. Its degrees rest on a focal
     pinned by a pad 360° turn, so fitting the gain to it would pass any focal error into the labels and then cancel it
     in Gate 1.
-- **The pad's reachable envelope** (`agent.controller.Cal`, measured at Linear curve, aim assist 0, H/V sensitivity
+- *Old profile, history.* **The pad's reachable envelope** (`agent.controller.Cal`, measured at Linear curve, aim assist 0, H/V sensitivity
   265/75):
   - yaw up to **415°/s** at full stick, 6.9° per 60 Hz interval;
   - pitch up to **99°/s**, 1.65° per interval.
@@ -146,7 +148,7 @@ It is not a first-person view, and it is not the pixels he saw. What differs, an
    - Whether the replay renders at the viewer's FOV or the target's decides whether degrees on the expert are known.
    - It is settled by the **viewer-FOV re-record** (Gate 2, F5), not by self-calibration, which is ill-conditioned
      (the controller lane got 590–860 from shifts alone).
-   - The coded focal fit (`camera_motion.replay_focal`) runs only after it recovers the known 465 px on James's live
+   - The coded focal fit (`camera_motion.replay_focal`) runs only after it recovers the known 465 px (old profile 265/75, history) on James's live
      windows, and is second evidence at most.
 7. **Networking.**
    - The replay reflects server-side state; the live view reflects client prediction.
@@ -1754,6 +1756,8 @@ held-out session), after A1.
   - about 2.3 h of Mac time after A4.
 
 ## Measurements owed
+
+*Status 2026-09-29: the asks of James in this section and in "Asks for James" below were fulfilled or dropped; do not re-ask James from this list (see [the recording log](../recording-log.md)).*
 
 - **The 7 large live zeros (a) still keeps:** parallax during combined movement and turning.
 - **Window 347's** still-input pairs withheld as contradicted.

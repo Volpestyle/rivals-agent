@@ -1,5 +1,7 @@
 # Frozen full03: yaw source qualification proposal
 
+**Status (2026-09-29): PARKED.** Parked with the IDM; not authorized ([decision](../research/policy-next-bet-scripted-baseline-20260928.md)).
+
 Owner: idm-owner / VUH-1353. 2026-09-28. Plan only; no payload access or compute. Implements the lead-accepted `docs/research/idm-to-policy-priority-20260928.md` decision.
 
 Keep full03 (`f681da9f3a4b8db6f7d19566172b02db776e4bcfac3381be744786179aa55dde`) frozen. Preserve the new Mac checkpoint without promotion. Pause refits and head/loss work unless a named qualification failure or downstream comparison implicates label error. Pitch and buttons remain unknown in the proposed shard, never neutral targets.

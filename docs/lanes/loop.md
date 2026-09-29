@@ -1,5 +1,7 @@
 # The live loop (VUH-1300, offline half)
 
+**Status (2026-09-29): HISTORY.** "Never run live" and "--brain jev (untested)" below are from 2026-09-20: the loop has since run live through range-skill in Galacta pilots 1-2 ([galacta-pilot](galacta-pilot.md)), and Jev is frozen. Live-loop status is on VUH-1384.
+
 **Built and tested offline; never run live.** `agent/loop.py` joins capture, the green finder, the HUD readers, the brain,
 L4's controller and the pad into one loop, with the frame source and the pad injected so the same code runs on recorded
 frames with a fake pad and, on the PC, on dxcam and L4's `Live`. Stdlib only at import (opencv is imported inside

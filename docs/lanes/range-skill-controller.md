@@ -1,5 +1,7 @@
 # VUH-1346: independent movement and one requested Web-Cluster pulse
 
+**Status (2026-09-29): HISTORY.** Landed as `33303c0` and used in Galacta pilot 2 ([galacta-pilot](galacta-pilot.md)); the scripted controller is now the baseline (rebind VUH-1319). "Frozen ... before live reliance" below is from 2026-09-22.
+
 2026-09-22. RSC1/RSC2/RSC3 repair frozen for the same independent range-review and root
 integration before live reliance. Synthetic/offline evidence only. Owns
 `agent/intents.py`, pure-controller and explicitly authorized guarded Live changes in `agent/controller.py`,

@@ -51,11 +51,13 @@ only once an outcome can be measured reliably.
 - **Keep raw video and history.** `State` is a compact view built for the scripted brain and
   omits most of what game sense needs. Datasets keep frames, events and inputs as temporal
   windows with preceding context and outcome; learning is not tied to `State`'s fields.
-- **Policy interface (decided; design in [learning-plan.md](learning-plan.md)).** The
-  learned temporal policy first outputs options (intent, target, direction or anchor)
-  at 5-10 Hz and the reflex controller executes them, because enemies are ~20 px wide at
-  720p and aim is camera-limited; learned low-level execution follows from synchronized inputs.
-- **Two policies until perception names the same entities in both domains.** The *range
+- **Policy interface.** *Superseded 2026-09-23 by the whole-session item above:* the policy outputs
+  semantic actions plus camera degrees and the calibrated pad executes them. The earlier design (a learned
+  policy choosing options at 5-10 Hz for the scripted reflex controller) survives only as the baseline.
+- **NitroGen and the IDM are parked (2026-09-28).** The full NitroGen actor missed its runtime cutoff
+  ([report](evidence/nitrogen-vl-cache-20260928/REPORT.md)); the inverse-dynamics data engine is parked on
+  VUH-1353. Neither is on the critical path.
+- **Two policies until perception names the same entities in both domains** (history, from the options design). The *range
   execution policy* runs on live `State`: green-outline detections with track ids, measured
   ranges, option status. The *VOD tactical policy* is learned from expert footage, where
   there is no enemy channel at all (a colour finder gives ~0 true positives on VODs and no
@@ -66,7 +68,9 @@ only once an outcome can be measured reliably.
 - **Where it can be tested.** Execution in the practice range; tactics in custom games
   against AI with no human in the lobby. Neither establishes performance against humans,
   and scope item 3 keeps the agent out of every mode where that could be tested.
-- **First visible learned milestone (2026-09-22, revised).** Learn individual
+- **First visible learned milestone (2026-09-22, revised; history).** Pilot 2 proved the pipe on 2026-09-23 and
+  the web-start head is not the product. VUH-1319 is now only the scripted baseline's rebind to the current profile
+  plus a brief live compatibility check (2026-09-28); the ten-trial campaign below is withdrawn. Learn individual
   Web-Cluster start timing during natural moving gameplay, then defeat the designated bot in at
   least eight of ten scheduled 20-second practice-range trials, with all failures
   retained, matched scripted trials and original video. Target selection, aim,
@@ -128,17 +132,16 @@ only once an outcome can be measured reliably.
   and charges, each with a known bit), while fine-tuning, evaluation, sealed tests and every
   reported number stay on the current patch, and a current-only run on the same folds is the
   control that shows whether the older footage helped or hurt.
-- **Compute budget.** James approved an initial $100 for rented cloud compute (2026-09-20).
-  Training is local first; renting is chosen from a measured local-versus-rental comparison,
-  spend is tracked, and the figure is revisited before it is exceeded. It is an experiment
-  allowance, not an estimate of what the project costs. Nothing has been rented.
+- **Compute budget.** Training is local first; renting is chosen from a measured local-versus-rental
+  comparison. Caps, the Modal workspace limit and the tell-James threshold live only in
+  [docs/compute.md](compute.md); actual spend is in `docs/steering/spend-ledger-20260927.md`.
 - **Third-party footage** stays under `data/` (gitignored). Frames from it are never
   committed or published to Linear.
 
-The Codex lead owns dispatch, shared integration, this plan and `docs/learning-plan.md`.
-Existing specialist lanes own their named artifacts; review is independent of the
-producer. Accepted results belong on the existing Linear issues when the direct
-workspace connector is available. The retired Claude lead receives no new work.
+The lead (`AGENTS.md`, "Agent delivery protocol") owns dispatch, shared integration, this plan and
+`docs/learning-plan.md`. Existing specialist lanes own their named artifacts; review is independent of the
+producer. Accepted results belong on the existing Linear issues. This plan holds scope and design, not status:
+current status is on Linear (project Rivals Agent), and `docs/README.md` maps where every other kind of fact lives.
 
 ## Gate status (L0, 2026-09-20)
 
@@ -158,7 +161,8 @@ the game sees openly as a controller, and gets the game's own controller aim ass
 Input facts the other lanes build on:
 
 - `scripts/pad.py "<tokens>"` sends a scripted pad sequence (`C:\rivals-agent\pad.py`
-  on the PC, run with `uv run --no-project --with vgamepad`).
+  on the PC, run with `uv run --no-project --with vgamepad`). The deployed copy is older than the repo's;
+  the `rivals-live-game` skill says which tokens it accepts.
 - The game only reads the pad while its window has focus; other windows steal it.
 - Each `VX360Gamepad()` takes ~2 s to enumerate and raises a connect/disconnect
   toast. The real agent holds one pad open for the whole session.
@@ -176,7 +180,7 @@ Input facts the other lanes build on:
 ```mermaid
 flowchart LR
   G[Rivals window] -->|Desktop Duplication, 60 fps| C[capture]
-  C --> D[detector: YOLO fine-tune<br/>enemies, targets, anchors]
+  C --> D[enemy finder: green outline<br/>enemies, anchors]
   C --> H[HUD reader: fixed regions<br/>health, cooldowns, web charges]
   D --> S[State struct]
   H --> S
@@ -188,14 +192,17 @@ flowchart LR
   S --> E[eval: damage / TTK / uptime from screen]
 ```
 
-Two rates on purpose: nothing model-shaped aims. The decision layer picks a typed
-intent (`engage(target)`, `swing_to(anchor)`, `pull(target)` for an untagged enemy,
-`web_strike(target)` for a tagged one, `combo(name)`, `disengage`, plus `idle` and
-`search`; `agent/intents.py` is the vocabulary); the reflex controller executes it frame by frame.
+**The scripted baseline** (the controller VUH-1319 rebinds) runs at two rates. Its decision layer picks a typed
+intent (`engage(target)`, `swing_to(anchor)`, `pull(target)` for an untagged enemy, `web_strike(target)` for a
+tagged one, `combo(name)`, `disengage`, `idle`, `search`, and `range_skill`, a learned web-cluster start/no-start
+proposal with scripted aim; `agent/intents.py` is the vocabulary), and the reflex controller executes it frame by frame.
+This is the baseline's architecture, not a rule for the product. The end-to-end policy (the current direction since
+2026-09-23; see above) aims itself: it outputs semantic actions plus camera degrees, which the calibrated pad executes
+(camera map: VUH-1384).
 
-The decision layer starts as a scripted state machine. Jev (or any small fast
-model via OpenRouter) replaces the body of that one function once a key exists
-and the state struct is stable. No interface until there are two implementations.
+*Superseded 2026-09-23:* the plan to swap Jev or another small OpenRouter model into the decision function once the
+state struct was stable. The learned path is now the end-to-end range policy, not a language model behind the intent
+interface.
 
 ## Lanes
 
@@ -213,8 +220,8 @@ then L4 takes the game while L2 and L3 run offline on the L1 footage, then L5.
 
 ## Lane status
 
-`docs/plan.md` is edited by the lead only. Each lane keeps its own present-state file:
-`docs/lanes/l1-capture.md`, `l2-hud.md`, `l3-detector.md`, `l4-controller.md`, `l5-brain.md`.
+`docs/plan.md` is edited by the lead only. Each lane keeps its technical findings in `docs/lanes/<lane>.md`;
+status is on Linear. `docs/README.md` lists the notes that are still current.
 
 ## Perception decisions
 
@@ -222,7 +229,7 @@ then L4 takes the game while L2 and L3 run offline on the L1 footage, then L5.
 |----------|----------|-----|
 | Frame size | Perception runs on a 1280x720 downscale of the 2560x1440 capture, the size L1 records and L3 trains on. `State.frame` is required and set from the frame actually processed; every `Detection.bbox` is in those pixels | A default frame size made boxes silently 2x off when capture and `State` disagreed |
 | Detector classes | `enemy` only. `target` is added only if the full recording shows static dummies the enemy class misses | Nothing in the first frames justifies more classes |
-| Enemy finder | YOLO fine-tune and a classical finder over the game's enemy outline and overhead health bar are being compared; the better one (or outline-labelled YOLO) feeds `State.detections` | Bots are ~21x33 px at 1280x720 and open-vocabulary auto-labels gave mAP50 0.08 on 201 frames |
+| Enemy finder | The green-outline finder (`perception/outline.py`) feeds `State.detections` live; the YOLO path is kept for VOD footage | Bots are ~21x33 px at 1280x720 and open-vocabulary auto-labels gave mAP50 0.08 on 201 frames |
 | Player exclusion | Training labels drop boxes mostly inside the hero, and the outline finder drops small marks inside the hero's measured screen region (frame terms, VUH-1355); nothing in `agent/` filters by screen region, so the finder's zone is the only hero-region protection | The labeller boxed Spider-Man's own arm as an enemy |
 | Swing anchors | Geometry, not a detector class; owned by the controller lane, emitted as `Detection(cls="anchor")` | An open-vocabulary labeller cannot label "swingable surface"; the brain only swings on an anchor detection |
 | Spider-Tracer `tagged` | An L2 reader, `read_tagged(frame, bbox)`, over the region just above each enemy box; `None` when it cannot tell | A small fixed glyph suits a template or colour read, not a box regressor at ~30 px |

@@ -1,5 +1,7 @@
 # Admission park state — 2026-09-27
 
+**Status (2026-09-29): SUPERSEDED.** The lead unparked admission ([resumed](human-admission-resumed-20260927.md)) and the night set completed ([night set](human-admission-night-complete-20260927.md)).
+
 PARKED on the lead's instruction. The in-flight -10 evidence and -8
 assembly/accepted receipt are complete. No new night-match intake until
 the lead restarts it. Both continuation supervisors exited; nothing queued.

@@ -10,7 +10,7 @@ in `docs/steering/charter-20260926.md` and `docs/learning-plan.md`. Written 2026
 |---|---|---|
 | **PC** (`supedupsilly`, RTX 4080 Super) | The game, OBS recording, the live agent loop, capture and pad code. Light CPU work (hashing, JSON scans, one-file ffprobe) | Training or GPU jobs. James keeps the PC free to play or record, or for supervised live agent runs. While the game runs its GPU is the game's, except for live-agent inference (below) |
 | **Mac** (M5 Max, 128 GB, MPS) | Explore sweeps, inference-only audits, cache builds, small fits, the job board. One queue | Two heavy jobs at once. Anything that should be on the PC's live path |
-| **Modal** (workspace `volpestyle`, profile `rivals`) | Confirm-track fits that fan out: many GPUs in parallel, billed per second | Launching without a reviewed harness, a lead-approved receipt and a spend cap |
+| **Modal** (workspace `volpestyle`, profile `rivals`) | Confirm-track fits that fan out: many GPUs in parallel, billed per second | Launching without a reviewed harness, a lead-approved receipt and a native `timeout=` on every function |
 | **AWS** (account 842434829012) | A fallback only. G/VT quota is 8 vCPU on-demand in us-east-2 | Anything, unless Modal is unavailable. The 2026-09-26 benchmark showed a 4-vCPU L40S is CPU-starved |
 
 Measured 2026-09-26 on round 2's A recipe (one epoch; `docs/evidence` and VUH-1346): Mac ~240 s/epoch; Modal
@@ -75,40 +75,24 @@ number; before planning a PC fit, check that it fits in the card's 16 GB (round 
   data never leave James's machines.
 - Every paid run: a projected cost worked out before launch, a native `timeout=` on every function, one GPU class for
   the whole experiment, and teardown proven afterwards (zero containers). **No running-spend stop and no other custom
-  budget code** (superseded 2026-09-28; see "No custom budget code" below). Lane caps are James's allocations, which
-  the lead tracks by hand.
-  **Weekend cloud total is $150 (2026-09-26/27/28)**, covering round 3, explore and IDM together. James said: "I'd set
-  it to 150, whatever it takes to get this agent going this weekend." Round 3 keeps its $60. Explore and IDM share the
-  rest, each run under its own hard cap. Priority order for that money:
-  1. the pretrained-encoder explore (stock SigLIP init first, then NitroGen vs SigLIP);
-  2. the IDM SSL pilot and press-head runs;
-  3. seeds for any arm where vision measurably matters.
-  Run in parallel on Modal rather than queueing on the Mac. The lead tells James before anything would pass $150.
-  **Modal workspace usage limit raised to $200** (James, 2026-09-27 22:08 CDT). That limit, enforced by Modal, is the
+  budget code** (see "No custom budget code" below). Lane caps are James's allocations, which the lead tracks by hand.
+  **Modal workspace usage limit is $200** (James, 2026-09-27 22:08 CDT). That limit, enforced by Modal, is the
   hard cap.
   **No custom budget code** (James, 2026-09-28 ~02:30 CDT), after our own guard killed healthy runs twice: at 22:00 a
   false workspace stop, then at 02:08 a billing query that timed out. Spend is bounded by Modal alone: every function
   sets `timeout=` (measured p95 plus a margin), which bounds each invocation, under the $200 workspace limit.
   A timeout doesn't bound the whole app's bill, so the lead's estimate also counts CPU and RAM, startup, storage and
-  any repeated invocations. The $150
-  "tell James first" rule is a lead process, not code. Before a paid launch the lead reads `modal billing report` and
-  adds the run's estimate; after it ends, the lead records the bill in the spend ledger. `cloud/modal_guard` keeps only
-  what protects the work: detached apps, the timeout, teardown proof, paced AppCreate, checkpoint re-entry and
-  local-disk staging.
-  **Round-3 cap raised to $60 / 69,120 s** (James, chat, 2026-09-27 ~09:20 CDT). The budget gate stopped at a padded
-  $50.92 forecast; about $6 of that is full holds on apps Modal never created. The expected actual spend is ~$45.
-  **Explore budget, 2026-09-27** (James, relayed by the steering lead, ~02:15 CDT): a separate **$15** Modal cap covers the
-  EXPLORATORY full-cohort chunk arms H=1, H=4 and H=8. They run in parallel on one GPU class so the three arms match on
-  device. They use their own app and volume, never round 3's, with a hard guard and proven teardown.
-  **Revised the same night** (James, ~02:30 CDT: "we can aim for an approximate price, but I'm shooting for best
-  quality"). The explore cap is approximate: about $21 plus setup and evaluation. James is told before spending passes
-  ~$30. Standing explore guidance: when quality and a small saving conflict, choose quality (matched devices, clean
-  comparisons). An arm that clearly beats H=1 goes next to a multi-seed confirm run, not to more single-seed variants.
-  **~04:30 CDT, still the same night:** the explore cap rose to **$35**. The steering lead approved it as James's proxy,
-  so the relaunched H=4 fits alongside H=1 and H=8.
-  The warning threshold is now **about $33**. This authorization covers the existing fresh H=4 launched at 03:51 CDT.
-  Its running drivers retained their stricter $30 guards; the lane note distinguishes the authorized ceiling from
-  effective enforcement. Changing a document or on-disk constant does not change an already-running guard.
+  any repeated invocations. Before a paid launch the lead reads the bill by hand (`modal billing summary` or
+  `modal billing report`, on the Mac) and adds the run's estimate; after it ends, the lead records the bill in the
+  spend ledger. The tell-James threshold is a lead process, not code. `cloud/modal_guard` keeps only what protects
+  the work: detached apps, the timeout, teardown proof, paced AppCreate, checkpoint re-entry and local-disk staging.
+  **Allocations are dated.** The last ones were the weekend of 2026-09-26/28: a $150 total across round 3 (cap $60),
+  explore (cap $35) and IDM, with James told before spend passed $150. That weekend is over, round 3 is retired and
+  the IDM is parked; before the next paid run the lead confirms the current allocation with James. The weekend's
+  per-run history is in git (`git log -p -- docs/compute.md`) and in `docs/steering/spend-ledger-20260927.md`.
+  Standing guidance kept from it: when quality and a small saving conflict, choose quality (matched devices, clean
+  comparisons); an arm that clearly beats its control goes next to a multi-seed confirm run, not to more single-seed
+  variants. Changing a document or on-disk constant does not change an already-running guard.
 - A confirm-track fan-out (round 3's `handoff/modal/fanout/`) calls only the reviewed entry point
   (`policy/range_bc/cm3_run.py fit --arm --seed`), one fit per call, each authenticated by a lead-approved receipt.
   It never retries training automatically. The harness itself is launch plumbing, covered in "The two experiment tracks".

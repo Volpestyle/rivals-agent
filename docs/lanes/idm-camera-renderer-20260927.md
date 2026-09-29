@@ -1,5 +1,11 @@
 # Parameterised camera illustration
 
+**Status (2026-09-29): PARKED.** `policy/idm/camera_demo.py` is parked with the IDM ([decision](../research/policy-next-bet-scripted-baseline-20260928.md)); nothing below is scheduled.
+
+---
+
+## History (superseded)
+
 Owner: idm-owner / VUH-1353. Code-only follow-up to the delivered TRAIN-range
 illustration in `idm-camera-demo-20260927.md`. No new footage was read or decoded
 during the camera sitting. The Mac heavy slot is released, but the sitting hold

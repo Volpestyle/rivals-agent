@@ -36,8 +36,8 @@ gets them as one-line text files and loads no repo skills; set it to `true` and 
 | `docs/machines.md` | Mac/PC responsibilities, remote access and transfer procedure |
 | `docs/compute.md` | The compute protocol: which machine runs what, the Mac queue and PC memory rules, Modal/AWS caps and teardown, the explore and confirm tracks, and job status for the dashboard. The `rivals-compute` skill points at it |
 | `data/calibration/<sitting>/SITTING.md` | What a supervised pad sitting actually ran, measured and left open; newer than any plan |
-| `docs/steering/` | The steering charter: roles, the explore/confirm tracks, the portfolio and what is paused |
-| `docs/lanes/<lane>.md` | Each lane's present-state notes and measured facts; the lane's owner is its only writer |
+| `docs/steering/` | The retired steering pane's charter and handoff (history, 2026-09-26/27) and the spend ledger (current) |
+| `docs/lanes/<lane>.md` | Each lane's technical findings and measured facts; the lane's owner is its only writer. Status is on Linear |
 | `docs/spiderman-kit.md` | Sourced controller bindings, cooldowns, tracer rule, combos, settings. Its "Patch reflected" line is read at run time: keep it byte-identical within the first 2,000 characters |
 | `docs/evidence/` | Hash-pinned run records: frames, receipts, reports and the scripts that made them. Never edited or moved; `docs/evidence/README.md` indexes them |
 | `agent/` | `State` contract, intents, scripted brain, tracker, pad controller, live loop and start phase, learned range brains, human demonstration import and whole-session intake, placement, Jev client (frozen), replay |
@@ -48,6 +48,43 @@ gets them as one-line text files and loads no repo skills; set it to `true` and 
 | `tests/` | `uv run pytest` (stdlib) and `uv run --group perception pytest`; fixtures under `tests/fixtures/` |
 | `justfile`, `ruff.toml`, `.pre-commit-config.yaml`, `.github/` | `just test`, `test-perception`, `check`, `closure`; lint; the `DECLARATION:` commit guard for the identity-pinned files; CI |
 | `.env` | `JEV_URL`, `JEV_MODEL`, `JEV_KEY` (TypeSafe's direct API, the default route) and `OPENROUTER_API_KEY` (fallback), and `HF_TOKEN` (read-only Hugging Face token, for gated pretrained encoders only; nothing is ever uploaded); gitignored, also at `C:\rivals-agent\.env`. Never print or log a key. `JEV_KEY` goes to whatever `JEV_URL` names, so set or clear them together |
+| `docs/README.md` | Which docs and lane notes are current, history or frozen |
+
+## Documentation: one home per fact
+
+Nobody writes the same fact twice. Each kind of fact has one home; every other place links to it or carries a
+one-line pointer. When two places disagree, the newest dated record wins (`SITTING.md`, the tail of
+`docs/recording-log.md`, an evidence README, the issue's latest Linear comment), and you fix the older place to link
+to it instead of adding a third statement.
+
+| Fact | Its one home | Everywhere else |
+|---|---|---|
+| Status: done, in progress, blocked, owner, next action | The Linear issue | Nothing else keeps status; plans and lane notes link the issue |
+| A sitting: what ran, what it measured, what is open | `data/calibration/<sitting>/SITTING.md` | Linear gives the outcome in a line and links it |
+| A run's result, receipts and analysis | `docs/evidence/<folder>/README.md` (frozen once written) | `SITTING.md` and Linear give the one-line result and link it |
+| A lane's technical findings | `docs/lanes/<lane>.md` (owner only) | Plans link the note; the note links the plan, never repeats it |
+| Scope, direction, architecture | `docs/plan.md` (lead) | Lane notes and skills link it |
+| Gates, milestones, reward contract | `docs/learning-plan.md` (lead) | |
+| Recording takes and James's settings statements | `docs/recording-log.md` | |
+| Compute rules, caps, the spend process; spend actuals | `docs/compute.md`; `docs/steering/spend-ledger-20260927.md` | Skills and plans link them |
+| How to operate a tool (live game, compute, Linear) | The skill in `.agents/skills/` | `AGENTS.md` names the skill and keeps only a safety rule and its reason |
+| Kit, bindings, patch | `docs/spiderman-kit.md`, `docs/pad-bindings.md` | |
+
+- **Linear gets the outcome, the decision or blocker and the next action in a few lines, plus a link.** Never the
+  detail: numbers, tables and reasoning stay in the record they came from.
+- **One result, one record.** A run's analysis lives in its evidence README; a sitting's `SITTING.md` logs the sitting
+  and links it. Don't open a new note for a launch plan, a receipt refresh or a check-in: that belongs in the run's
+  evidence folder or its Linear comment.
+- **Marking something superseded.** Don't rewrite history in place. Start the stale passage with
+  `*Superseded YYYY-MM-DD by <link>: <one line>.*`, or put a status line under a note's title:
+  `**Status (YYYY-MM-DD): CURRENT | HISTORY | SUPERSEDED | PARKED.** <one line with a link to what replaced it>.`
+- **Keep or delete.** Evidence, `data/`, and any note or code file whose sha256 a receipt or freeze manifest pins are
+  never edited, moved or deleted ("Frozen review packets" below). An unpinned working note that nobody consults any
+  more is trimmed to its status line or removed with `git rm` by its owner or the lead; git history is the archive,
+  so don't copy it into `docs/archive/`. Fix inbound links first, and keep a file that a frozen record links to.
+  Never delete an untracked file you didn't create.
+- **Instructions name one place.** A doc or skill that tells agents to record something names a single home from the
+  table above.
 
 ## Rules that came from real failures
 
@@ -62,25 +99,33 @@ gets them as one-line text files and loads no repo skills; set it to `true` and 
   the brain never reads unknown as zero.
 - Any loop that sends input confirms the range HUD on a fresh frame first and stops when
   it disappears. Workers never navigate the lobby; they hand back to the lead.
+- A live guard protects safety only: game focus, the range HUD and idle warning (monitored throughout, not only
+  before attach), human takeover (any key or mouse button), a deadline and a guaranteed pad release. Judge data
+  quality (a still or textured view, a confident image shift, frame age under a fixed stick schedule) offline from
+  retained frames and native video, and discard the bad spans instead of refusing the run.
+  Frame age is a safety check only when the input depends on what the frame shows. Sittings b–e (2026-09-27/28)
+  refused about seven camera-calibration attempts on quality checks and measured nothing; each refusal cost James
+  a sitting plus a code-and-review cycle, the way over-tight spend guards once cost more than they saved.
 - The outline finder drops small marks inside the hero's measured screen region (a frame-terms
   zone, `perception/outline.py`) before any box reaches the tracker; nothing in `agent/` filters
   detections by screen region, so that guard is the only hero-region protection. A labeller once
   boxed Spider-Man's arm as an enemy; the zone is measured, not guessed (VUH-1355).
-- Capture and pad code run inside the PC's desktop session, not plain SSH.
 - The PC's GPU belongs to the game while it is running. Train on the Mac (MPS), niced;
   CUDA training is an explicit exception while the game and recording are stopped.
   Live-agent inference may use the PC's GPU while the game runs (James, 2026-09-27); the owner measures and
   reports the game's FPS cost.
-- Capture, perception, safety and latency-sensitive control stay on the PC. SSH moves
-  jobs and artifacts; a Mac round trip is not the default live action path.
+- Capture, perception, safety and latency-sensitive control stay on the PC, and capture and pad code run inside
+  its desktop session, not plain SSH. SSH moves jobs and artifacts; a Mac round trip is not the default live
+  action path.
 - One agent drives the PC desktop at a time.
 
 ## Agent delivery protocol
 
-Use `herdr-lead` for swarm coordination and `herdr` for pane operations. Codex workers don't receive Swarm messages
-while idle: a Codex worker checks `swarm_inbox` at task start and at each material handoff, and for an idle Codex
-recipient the lead sends a Herdr prompt asking it to check its inbox. That prompt doesn't repeat the assignment, and
-nobody polls an idle model in a loop (`~/dotfiles/docs/agents/swarm-launch.md`). Keep one
+Use `herdr-lead` for swarm coordination and `herdr` for pane operations. An idle Codex worker receives nothing
+through Swarm, and `codex queue` does not wake the `--no-daemon` panes (tested 2026-09-28). So the lead sends a
+message to a Codex worker as one Herdr prompt carrying the whole message, confirms it was submitted, and sends no
+Swarm copy. Workers reply to the lead with `swarm_send`, which reaches a Claude lead on its own. Nobody polls an idle
+model in a loop (`~/dotfiles/docs/agents/swarm-launch.md`). Keep one
 lead responsible for dispatch, shared integration and Linear status transitions;
 co-leads route scope decisions through that lead. A status request alone creates no work.
 
@@ -95,15 +140,15 @@ co-leads route scope decisions through that lead. A status request alone creates
   Check the actual model and effort against `herdr-lead` before assigning consequential work.
 - **Use Linear as the result record.** Reuse the issue for the independently acceptable
   outcome; use checklists for its steps and blocking relations only for real prerequisites.
-  Keep acceptance, accountable owner, current evidence, limitations and next action there.
+  Keep acceptance, accountable owner, a link to the current evidence, limitations and next action there.
   Workers publish substantive results once; the lead owns disputed acceptance and transitions.
   Before handing off a material result, reconcile the affected issue's current result, remaining
   acceptance and next action, then read back the write. The lead reconciles changed dependencies,
   milestones and project entry points in that same delivery; `rivals-progress` gives the procedure.
   If publication fails, keep the exact pending correction and owner in the existing handoff and
   report the result as produced but not yet recorded. Preserve frozen and historical evidence.
-  Load `linear-issues` and use the direct workspace Linear MCP for writes. Plans hold design,
-  lane docs hold technical findings, and panes hold coordination; none is a second status queue.
+  Load `linear-issues` and use the direct workspace Linear MCP for writes. Panes hold coordination and are not a
+  status queue; where each result's detail goes is in "Documentation: one home per fact" above.
 - **Validate measurements early.** Pair a reader or label-rule change with a small inspected
   native-frame sample before a large extraction. Test the demonstrated failures and valid
   controls together; synthetic correctness alone cannot establish that a label is true.
@@ -138,9 +183,8 @@ co-leads route scope decisions through that lead. A status request alone creates
   load the `shared-checkout` skill before committing.
 - **Frozen review packets.** A lane note whose current bytes are pinned by a review receipt or a freeze
   manifest is never edited or moved, not even to fix a link or a stale "not yet accepted" line; the receipt
-  that pins it records its acceptance. `docs/lanes/range-lead.md` lists the pinned range notes and states
-  their present status, and `docs/evidence/README.md` does the same for evidence, which follows the same
-  rule. Before editing a lane note, search `docs/evidence/` and `data/` for its sha256 (both the LF and CRLF
+  that pins it records its acceptance. `docs/README.md` lists the pinned notes (`docs/lanes/range-lead.md` gives
+  the range ones' status), and `docs/evidence/README.md` indexes evidence, which follows the same rule. Before editing a lane note, search `docs/evidence/` and `data/` for its sha256 (both the LF and CRLF
   forms). Code has an equivalent: editing any file of a deployment freeze (for checkpoint `698d8831`, the 16
   files hashed in `data/runtime/galacta-pilot-20260923-preflight/*-deployed.json`) forces a re-freeze before
   that checkpoint runs again.

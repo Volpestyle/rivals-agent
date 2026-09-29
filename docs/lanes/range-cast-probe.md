@@ -1,5 +1,7 @@
 # VUH-1346: scripted Web-Cluster calibration probe
 
+**Status (2026-09-29): HISTORY.** Old-profile (265/75); do not run before the VUH-1319 rebind.
+
 2026-09-22. Proposal-clock eligibility correction independently reviewed;
 **lead adopts this scheduler delta for native measurement.** Startup remains
 accepted/pushed `3a1165f`, with root reporting that it worked in B/C. RCP1 and

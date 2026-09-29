@@ -1,5 +1,7 @@
 # Full03: bounded reader and support qualification proposal
 
+**Status (2026-09-29): PARKED.** Parked with the IDM; not authorized ([decision](../research/policy-next-bet-scripted-baseline-20260928.md)).
+
 Owner: idm-owner / VUH-1353. 2026-09-28. **Proposal only: send to herdr-lead before compute.** This follows the development failures in `docs/evidence/idm-yaw-readiness-20260928/report.md` (SHA256 `a828b67c34ed69e3da6c9d4902f32d0fba5fc4dca73ba507368c200606b5ca96`). It does not authorize a refit, fresh validation, sealed access or shard labeling.
 
 ## Authority and intended result

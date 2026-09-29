@@ -1,5 +1,7 @@
 # Re-entry: PLAY lobby to the Practice Range as Spider-Man (VUH-1299)
 
+**Status (2026-09-29): CURRENT.** `scripts/reenter.py` is the standard way into the range ([rivals-live-game skill](../../.agents/skills/rivals-live-game/SKILL.md)); the "lead-run only ... none re-run live" wording below dates from 2026-09-20.
+
 **Built and tested offline on `tests/fixtures/reentry`; lead-run only.** `scripts/reenter.py` takes the game from the PLAY
 lobby into the Practice Range as Spider-Man and stops at the first thing it cannot verify. 190 tests (`tests/test_reenter.py`)
 pass; `--dry-run` classifies a live or saved frame and prints what it would do without opening a pad. The live trials
@@ -260,7 +262,7 @@ what `arrival_step` decides on each fresh frame (a pure function of the frame an
 1. proves the range HUD and no idle banner on a fresh frame before every step (either one stops it with no further input); every stick
    still goes through `Safe` on `in_range`, re-proven at the write;
 2. finds the door and steers its pane onto **the hero's column** (`HERO_X` 0.40), not the screen centre: more than `DOOR_TOL` (8% of
-   the width) off it, it turns the camera (`YAW_STICK` 0.45 = 172 deg/s, focal 465 px at 1280 wide) instead of walking; on it, it walks a
+   the width) off it, it turns the camera (`YAW_STICK` 0.45 = 172 deg/s, focal 465 px at 1280 wide; old profile H/V 265/75; alt measures 153.9 deg/s at RX +0.45, VUH-1384) instead of walking; on it, it walks a
    0.5 s step. A door blob is at least `DOOR_H` 100 px tall and `DOOR_MIN_PX` 3k px, except at the arrival's FIRST choice, where a blob
    on his column (within `DOOR_TOL` of `HERO_X`) counts down to `SPAWN_DOOR_H` 60 px, and for the door being kept, matched down to the
    same height (a known door seen short is an edge or an occlusion). With no door kept it takes **the door nearest his column**, not

@@ -1,8 +1,12 @@
 # L2 — HUD readers
 
+**Status (2026-09-29): CURRENT.** The HUD readers and the event-format spec. The "Upgrading a loader from format 2" section is history: `agent/demos.py` reads format 5 (`EVENT_FORMAT` in `agent/demos.py`).
+
 ## Event stream format
 
 ### Upgrading a loader from format 2 — the exact diff
+
+*Superseded 2026-09-29 by `agent/demos.py` (`EVENT_FORMAT = 5`): the loader now reads format 5; this diff is history.*
 
 `agent/demos.py` reads format 2 and so refuses every file on disk. Everything
 below is what changed. **Nothing was removed or renamed between 2 and 4**; format

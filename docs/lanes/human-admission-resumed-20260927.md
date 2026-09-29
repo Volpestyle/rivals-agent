@@ -1,5 +1,7 @@
 # Admission resumed — 2026-09-27
 
+**Status (2026-09-29): SUPERSEDED.** The work it resumed is complete ([night set](human-admission-night-complete-20260927.md)).
+
 The lead explicitly unparked the lane after -8 acceptance landed in
 `521359c`. This supersedes the pause in `human-admission-park-20260927.md`.
 Continue -10 owner review and independent review, then -11/-12 from vote60,

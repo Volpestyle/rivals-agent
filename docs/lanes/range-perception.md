@@ -1,5 +1,7 @@
 # VUH-1346 source perception diagnosis — 2026-09-22
 
+**Status (2026-09-29): CURRENT.** Perception facts. The "awaiting independent review" lines below are stale: the VUH-1314 outline repair was accepted ([lead acceptance](#lead-acceptance-of-the-ownership-delta)), and `perception/outline.py` has changed since (VUH-1355).
+
 Current delivery: the [bounded VUH-1314 repair](#bounded-vuh-1314-repair-awaiting-independent-review)
 below is implemented; its [evidence-ownership review fixes](#evidence-ownership-review-delta)
 are now ready for the same admission-review owner and root integration. The

@@ -1,5 +1,11 @@
 ﻿# Camera + FPS operator commands (2026-09-27)
 
+**Status (2026-09-29): SUPERSEDED — do not run.** Calibration is open-loop ([`scripts/calibrate_camera_schedule.py`](../../scripts/calibrate_camera_schedule.py), receipt [review-v2-receipt.json](../evidence/camera-schedule-20260929-v2/review-v2-receipt.json)); newest record: [alt-cam-20260929b/SITTING.md](../../data/calibration/alt-cam-20260929b/SITTING.md).
+
+---
+
+## History (superseded)
+
 Operator/desktop owner: herdr-lead, authorized by James to navigate and refresh
 activity. No input from live-loop or its workers. Run ONE command at a time,
 inspect its result, then choose the next. Do not paste all commands as a batch.

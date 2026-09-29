@@ -1,5 +1,11 @@
 # Expanded IDM refit: complete eligible range cohort
 
+**Status (2026-09-29): HISTORY.** The expanded refit it planned ran as full01 to full03 ([full03 result](../evidence/idm-expanded-full03-result-20260928/)); the IDM is parked ([decision](../research/policy-next-bet-scripted-baseline-20260928.md)).
+
+---
+
+## History (superseded)
+
 Owner: idm-owner, VUH-1353. Metadata checked 2026-09-27 around 20:25 UTC. EXPLORATORY preparation; no new decode or fit launched. Press02 continues unchanged.
 
 The next expanded refit includes every currently eligible whole-session TRAIN range, including the three without native IDM stores. The earlier five-range refit was explicitly interim, not the full corpus. Missing range stores are IDM's work and do not wait for more match admission.

@@ -1,5 +1,7 @@
 # Human admission: admission-codex, from 2026-09-27
 
+**Status (2026-09-29): CURRENT.** The admission owner's note. Its "Work in progress" items are history: the night batches are complete ([night set](human-admission-night-complete-20260927.md)). Status is on Linear.
+
 Continues `human-admission-2.md` and the accepted ownership handoff
 `human-admission-handoff-20260927.md`. Earlier snapshots and evidence remain intact.
 

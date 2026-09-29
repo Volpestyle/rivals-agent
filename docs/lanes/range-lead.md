@@ -5,8 +5,13 @@ This page covers the practice-range work as it stands, plus an index of the rang
 [docs/archive/range-lead-20260922.md](../archive/range-lead-20260922.md). Acceptance and results live in Linear
 (VUH-1311, VUH-1319, VUH-1346, VUH-1347, VUH-1351).
 
-## Present state (2026-09-23)
+## Present state (2026-09-29)
 
+- **Now.** The range-skill caller and checkpoint `698d8831` below are the baseline, not the product. Live work is the
+  camera calibration of the current alt profile (H/V 247/124, VUH-1384): open-loop `scripts/calibrate_camera_schedule.py`,
+  first point RX +0.45 = 153.9°/s ([native count](../evidence/camera-native-turn-20260929/README.md); newest sitting
+  `data/calibration/alt-cam-*/SITTING.md`). Then VUH-1319: rebind the scripted controller to that profile and run a
+  brief live compatibility check (narrowed 2026-09-28; no ten-trial campaign). Everything below is as of 2026-09-23.
 - **Direction.** Whole-session recording feeds one end-to-end policy that outputs semantic actions plus camera
   degrees, executed by the pad ([recording protocol](../recording-protocol.md), [end-to-end fit](end-to-end-fit.md)).
 - `docs/lanes/end-to-end-fit-patch-equivalence.md`: cohorts by kit version (2026-09-24), the fit lane's pre-registration for game builds that change nothing in the kit; `end-to-end-fit.md` is frozen by `changed-boundary-reviews-20260924/review-window-loss.md`, so new fit-lane sections go in new notes.
@@ -75,7 +80,8 @@ pinned (`AGENTS.md`, "Frozen review packets").
 | [range-policy-reframe](range-policy-reframe.md) | Design of the web-start event head and the `RangeSkill` controller boundary; implemented, and its direction was superseded on 2026-09-23 | implemented in `agent/intents.py` and `policy/range_skill_policy.py` | no |
 | [range-skill-controller](range-skill-controller.md) | `RangeSkill` controller: independent movement and aim plus one requested Web-Cluster pulse. A fused two-bot box can't be refused by its shape (VUH-1356, 2026-09-23) | landed `33303c0` | no |
 | [range-cast-probe](range-cast-probe.md) | Runbook for `scripts/range_cast_probe.py`, the scripted Web-Cluster calibration probe. Run D: 2 confirmed casts, 1 refused | `evidence/range-cast-calibration-d-20260922` | no |
-| [range-benchmark](range-benchmark.md) | VUH-1319 offline encounter scorer (`agent/episodes.py`, `scripts/range_benchmark.py`). The gate is at least 8 of 10 audited designated completions within 20 s, with zero scope breaches | landed `f841527` | no |
+| [range-benchmark](range-benchmark.md) | VUH-1319 offline encounter scorer (`agent/episodes.py`, `scripts/range_benchmark.py`). Its 8-of-10 gate was dropped on 2026-09-28: VUH-1319 is now a rebind plus a brief live compatibility check | landed `f841527`; pinned by `data/diagnostics/range-hud-20260922/freeze-sha256.json` | yes |
+| [placement](placement.md) | VUH-1359 placement design: home on the Galacta pair, re-entry as the last resort | `evidence/placement-20260923/lowmap-2-handback.md` | yes |
 | [learned-range](learned-range.md) | The legacy v1 Idle/Engage GRU candidate (`policy/range_policy.py`, `agent/learned_range.py`); offline only now | superseded by the event contract | no |
 | [galacta-pilot](galacta-pilot.md) | Pilot 1's 20-slot schedule and pilot 2's predeclaration for `698d8831` | `data/benchmarks/galacta-pilot-2026092{2,3}/` | no (pinned at `93dc9f1`, since appended) |
 

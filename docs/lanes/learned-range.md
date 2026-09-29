@@ -1,5 +1,11 @@
 # Executable learned range candidate — VUH-1346
 
+**Status (2026-09-29): SUPERSEDED.** The legacy v1 Idle/Engage GRU candidate (`policy/range_policy.py`, `agent/learned_range.py`): offline only, refused live; superseded by the event contract ([range-policy-reframe](range-policy-reframe.md)) and then by the whole-session direction ([range-lead](range-lead.md)).
+
+---
+
+## History (superseded)
+
 Owner: learned-range. Lead owns integration, independent review, admission and
 acceptance. Base `77d5032`; four new files only, uncommitted pending review.
 No real/sealed data inspected or trained; no capture, pad creation or input.

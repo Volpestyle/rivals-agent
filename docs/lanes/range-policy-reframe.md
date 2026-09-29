@@ -1,5 +1,11 @@
 # Executable policy reframe — lead direction, 2026-09-22
 
+**Status (2026-09-29): SUPERSEDED.** Superseded on 2026-09-23 by whole-session recordings and one end-to-end policy ([recording protocol](../recording-protocol.md), [range-lead](range-lead.md)); its event contract is implemented in `agent/intents.py` and `policy/range_skill_policy.py`.
+
+---
+
+## History (superseded)
+
 **Build a first mechanical policy that requests individual Web-Cluster
 starts, alongside independently running scripted movement/aim.** Learn
 `start_web_cluster` versus `no_new_web_cluster`, with unknown supervision masked.

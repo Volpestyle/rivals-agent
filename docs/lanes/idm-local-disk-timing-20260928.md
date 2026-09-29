@@ -1,5 +1,7 @@
 # IDM local-disk timing follow-up
 
+**Status (2026-09-29): HISTORY.** The local-disk timing ran: [timing02 result](../evidence/idm-local-timing02-result-20260928/); the IDM is parked ([decision](../research/policy-next-bet-scripted-baseline-20260928.md)).
+
 Owner: idm-owner, VUH-1353. EXPLORATORY. Replaces the proposed unchanged rerun after full01 stopped. Its record is `docs/evidence/idm-expanded-full01-stopped-20260928/` (01c0401); no checkpoint or completed fit exists.
 
 The local route retains the existing mount, sealed, receipt-current, registry, role and target preflight. Only after it returns admitted targets does `local_store.py` build an explicit three-file store list per selected session. Store manifests must match their pinned hashes and target session/media identity. Sources stay under the resolved admitted mount; arbitrary files, changed sizes, symlinks and conflicting identities are refused. Each source is streamed in 1 MiB blocks to fresh ephemeral disk while hashed, then independently destination-hashed. Completion is written last. Partial or altered caches fail closed. A fresh container may rebuild a missing local cache; the unchanged shared guard still refuses a partial fit.

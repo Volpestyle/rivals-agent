@@ -6,6 +6,12 @@ first-RL-experiment proposal; source fidelity, expert practice-range segments, t
 perception and normalization (including the warning not to blanket-mask the chat column); the VOD character-box
 pilot; and the 2026-09-20/21 acquisition logs.*
 
+**Read this plan for gates and design, not status.** Since 2026-09-23 the product is one end-to-end policy trained on
+whole-session keyboard/mouse recordings; it outputs semantic actions plus camera degrees, and the calibrated pad
+executes them ([plan](plan.md#direction-learn-from-demonstrations)). Sections below that describe option or intent
+policies, web-start heads or keyboard/mouse checkpoints as the first product are marked superseded and kept for their
+gates and lessons. Current status is on Linear; `docs/README.md` maps the rest.
+
 ## Objective and decision
 
 The agent learns Spider-Man decisions and execution from expert demonstrations:
@@ -20,7 +26,7 @@ These behaviors overlap: a player can move and scan while firing or deciding to
 help an ally. The policy must not collapse normal play into attack versus standing
 still. Neutral output remains a fault/refusal response, not a required human class.
 
-The first mechanical policy learns individual Web-Cluster starts from recent
+*Superseded 2026-09-23 (see the note at the top):* the first mechanical policy learns individual Web-Cluster starts from recent
 causal observations, with a fixed visible-target selector and independently
 updated scripted aim/movement. The larger policy will learn execution and
 movement as well as tactical choices. Jev remains an optional baseline or
@@ -49,7 +55,10 @@ custom-lobby input; verified lobby navigation and an appropriate guard are prere
 
 This milestone's run-by-run record (the runtime runs and the 2026-09-22 Galacta pilot) moved verbatim to
 [history](archive/learning-plan-history.md#first-visible-learned-range-milestone-2026-09-22).
-The range work's present state is [lanes/range-lead.md](lanes/range-lead.md). The gate, unchanged:
+The range work's present state is [lanes/range-lead.md](lanes/range-lead.md). **Status (2026-09-28):** pilot 2
+proved the pipe and the gate below is not being pursued; VUH-1319 is now only the scripted baseline's rebind to the
+current profile plus a brief live compatibility check, with no ten-trial campaign
+([evaluator revision](research/policy-next-bet-scripted-baseline-20260928.md)). The gate as declared:
 
 Predeclared first pilot: **ten scheduled trials**, each with a verified ready
 start and a 20-second deadline, at least eight audited designated-bot completions
@@ -185,9 +194,8 @@ flowchart TD
   D -. RL experience informs later experiments .-> F
 ```
 
-Codex owns the learning specification, curation criteria and reward/evaluation
-design. Claude owns dispatch, integration and Linear, assigning implementation
-to the existing dataset, HUD and controller owners or a named training owner.
+The lead owns dispatch, integration, Linear and this plan, assigning implementation
+to the existing dataset, HUD and controller owners or a named training owner (`AGENTS.md`).
 Existing dependencies include VUH-1306 (events), VUH-1309 (paired recording),
 VUH-1310 (AI-only lobby), VUH-1314 (tracks) and VUH-1315 (observed option status).
 Milestone issues are A VUH-1306/VUH-1319, B VUH-1311, C VUH-1320, D VUH-1321,
@@ -287,8 +295,8 @@ elapsed time as well as return. In custom games, also report deaths, wins and
 objective outcomes.
 Claim improvement only at the tested scope; inconclusive results call for more
 evidence, not promotion of the highest-return checkpoint. Keep the preceding
-working policy available for rollback. Training stays local first, with the
-approved initial $100 cloud allowance governed by the compute section below.
+working policy available for rollback. Training stays local first; cloud spend follows
+[compute.md](compute.md).
 
 ## Data and labels
 
@@ -365,8 +373,8 @@ or fix changed readers, invalid actions, missing mechanics or incorrect rewards.
 ### E enablers: bounded offline pilots
 
 These pilots use retained media and existing workers, with no live input or new
-footage collection. Claude assigns execution; Codex owns the label specification
-and independent audit. Their outputs are measured feasibility results, not a claim
+footage collection. The lead assigns execution; the label specification's owner
+and an independent auditor are named per pilot. Their outputs are measured feasibility results, not a claim
 that a detector or inverse-dynamics model already supplies trustworthy labels.
 
 #### Camera motion and inverse dynamics: feasibility before inferred controls
@@ -394,7 +402,8 @@ compression, mouse controls or different sensitivity/FOV. A swing cast's camera
 direction is only one feature: anchor, momentum, movement and release also matter;
 charge/cooldown events do not establish continuous button-hold duration.
 
-The bounded probe reports 97–99% direction agreement on held-out ordinary range
+The bounded probe (old camera profile H/V 265/75; the current alt profile is being calibrated under VUH-1384)
+reports 97–99% direction agreement on held-out ordinary range
 turns at 60 fps, with approximate rate recovery (389 versus the calibrated
 415 degrees/s at full stick). The same fast-turn footage sampled at 10 Hz fits
 only 34% of intervals and reads a median 83 versus 172 degrees/s. The measured
@@ -500,7 +509,8 @@ flowchart LR
     R --> D
 ```
 
-Policy v0 learns the existing intent vocabulary; a fixed targeting heuristic selects
+*Superseded 2026-09-23 (see the note at the top): the diagram above, this paragraph and the next three describe the
+intent-policy v0, kept for their limits on claims.* Policy v0 learns the existing intent vocabulary; a fixed targeting heuristic selects
 among current live detections, and evaluation holds that selector constant across
 policies. This isolates intent learning while VOD target labels are expensive.
 A small annotated target set measures observability and supports later learned target
@@ -550,17 +560,15 @@ selected architecture has a suitable implementation, otherwise PyTorch/MPS. New 
 execution training uses PyTorch across Windows and Mac, as specified above. The PC GPU
 belongs to the live game.
 Runtime placement is measured against latency and game performance before adoption.
-The policy lane's current offline baseline uses a frozen DINO ViT-S/16 encoder
-and a two-layer GRU head in MLX; the encoder choice is provisional and its
-reported held-out results do not establish gameplay improvement. Independent
+The policy lane's 2026-09-2x offline baseline (history) used a frozen DINO ViT-S/16 encoder
+and a two-layer GRU head in MLX; the current end-to-end fits and encoder results are in
+[lanes/explore-policy.md](lanes/explore-policy.md) and [lanes/end-to-end-fit.md](lanes/end-to-end-fit.md). Independent
 data-pipeline review and runtime validation remain acceptance gates. The RL
 actor/value plan above extends that baseline rather than choosing a large VLM.
 
-James approves an initial $100 cloud-compute budget (2026-09-20). Local hardware
-is a starting point, not an architectural limit: rent a GPU when measured throughput,
-memory requirements or iteration speed justify it. Track spend against that initial
-allocation and revisit funding before exceeding it; $100 is not an estimate for
-the complete project. Hosted annotation and storage costs are estimated separately.
+Local hardware is a starting point, not an architectural limit: rent a GPU when measured throughput,
+memory requirements or iteration speed justify it. Cloud caps and the spend process live only in
+[compute.md](compute.md).
 
 The [local-model measurement](archive/local-jev.md) is a concrete placement constraint:
 the 35B-A3B server answers in about 85 ms median on the Mac but 175 ms median /

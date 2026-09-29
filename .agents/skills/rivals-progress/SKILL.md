@@ -39,7 +39,9 @@ The result owner publishes a meaningful result once, labelled as produced,
 landed, provisional, accepted or demonstrated as the evidence warrants. In that
 same delivery, reconcile the issue's current text so a new reader can identify:
 
-- The bounded result and its evidence, with the observation date where needed.
+- The bounded result in a line, with the observation date where needed, and a link to its one record
+  (`SITTING.md` or the evidence README). The detail stays there, never in Linear (`AGENTS.md`, "Documentation:
+  one home per fact").
 - What remains unverified or unfinished against the existing acceptance.
 - The next action, its accountable owner and the gate or consumer it enables.
 

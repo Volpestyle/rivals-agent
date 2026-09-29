@@ -30,9 +30,13 @@ scripts/padrun.sh "ls:0,1,0.4 w:0.5" /tmp/shot.png   # tokens: scripts/pad.py do
 ```
 
 It focuses the game, runs `C:\rivals-agent\pad.py` in the desktop session, then pulls a
-screenshot. Read the screenshot before the next input. Deploy the shared
-`C:\rivals-agent\agent\pad_bindings.py` with the reviewed `pad.py`; the flat
-hand-tool copy now imports it. No standalone copy of the combat mapping.
+screenshot. Read the screenshot before the next input.
+
+**The deployed copy is older than this checkout (checked 2026-09-28).** `C:\rivals-agent\pad.py` dates from
+2026-09-20, has no `combat:` tokens, and `C:\rivals-agent\agent\pad_bindings.py` is not deployed. Through
+`padrun.sh`, use raw tokens only (`ls:x,y,s`, `rt:v,s`, button names). The `combat:` tokens below exist only in
+`scripts/pad.py` in this checkout, and they reach the PC only when the reviewed `pad.py` is deployed together with
+the shared `agent/pad_bindings.py`, never a standalone copy of the combat mapping.
 
 Raw tokens remain physical menu/button controls. `combat:<action>:<seconds>`
 resolves the current combat mapping and holds it for 0 < seconds <= 10, then
@@ -161,7 +165,9 @@ ready to start (code deployed, reviewer done), not before.
 
 A range the lead did not enter itself has an unknown idle timer. On 2026-09-28 the plaza raised the banner a few
 minutes after James handed over, before the first measurement attached. Move and attack right before launching any
-measurement, even when the range "was just entered".
+measurement, even when the range "was just entered". A manual refresh step still got skipped twice that day (sitting
+c `yaw-01`, sitting e `yaw-02`), and each skip cost an attempt. So a live tool should make its own first pad input a
+short move-and-attack, which also ends the fresh-pad left drift, rather than depend on an operator doing it.
 
 `scripts/reenter.py` does the menus reliably (lobby to in-range as Spider-Man, every press
 behind its proof). Its arrival walk can snag on the left jamb of the spawn room's green door
@@ -211,9 +217,14 @@ The learned policy still masks ultimate, melee, team_up and goh_targeting under
 its existing pre-registration. Full reference and pending touch-test procedure:
 `docs/spiderman-kit.md`, `docs/pad-bindings.md`.
 
-Historical camera values below are **stale for the alt at H/V 247/124**; its
-Advanced curve/settings are not yet shown. No alt run before review, calibration,
-touch test and re-freeze. Camera (old Linear curve, H/V 265/75, aim assist 0): yaw responds at once,
+**No current camera map exists.** The alt at H/V 247/124 has one measured point so far: RX +0.45 turns right at
+153.9°/s (2026-09-29, `docs/evidence/camera-native-turn-20260929/README.md`); no other deflection, left turns, pitch
+or focal. The values below are for the old profile (H/V 265/75); none of them apply to
+the alt, not even for offline planning. Its calibration is VUH-1384. The newest
+`data/calibration/alt-cam-*/SITTING.md` holds its state, and the new map will be recorded there and on the issue.
+From 2026-09-28 the calibration runs open-loop: live, it sends a fixed right-stick schedule behind safety guards
+only; offline, it measures yaw from retained frames and native video (see `AGENTS.md`, "A live guard protects safety
+only"). No alt run before review, calibration, touch test and re-freeze. Old profile (Linear curve, H/V 265/75, aim assist 0): yaw responds at once,
 18 deg/s at 0.1 stick, 172 at 0.45, 415 at 1.0; pitch 43 deg/s at 0.5, 99 at 1.0. Horizontal
 FOV is ~108 deg (focal ~465 px at 1280 wide). The full map is in `docs/lanes/l4-controller.md`;
 re-measure it after any sensitivity change.

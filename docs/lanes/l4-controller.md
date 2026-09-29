@@ -1,5 +1,10 @@
 # L4 controller
 
+> **Status 2026-09-29 (lead):** this note is the old profile's history (Linear curve, H/V 265/75). Its camera
+> map and the 465 px focal do not apply to the alt profile at H/V 247/124. The current calibration is VUH-1384:
+> `data/calibration/alt-cam-20260929/SITTING.md` has the first measured point (RX +0.45 = 153.9°/s), and the controller
+> rebind is VUH-1319 (live-loop). The rest of this note is unchanged history.
+
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
 The game is in the Practice Range as Spider-Man on the plaza beside the Luna Snow bot at the Hero Simulation console, where

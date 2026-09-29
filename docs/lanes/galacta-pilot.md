@@ -1,5 +1,7 @@
 # VUH-1319 Galacta pilot input — 2026-09-22
 
+**Status (2026-09-29): HISTORY.** Old-profile (265/75); do not run before the VUH-1319 rebind. Pilots 1-2 ran ([2026-09-22](../evidence/galacta-pilot-20260922/), [2026-09-23](../evidence/galacta-pilot-20260923/)); the "unexecuted" below predates them.
+
 Prepared against main `cdf3a7ab1011dc27a785fae2e02f31f93b002bb4`. Root owns
 desktop collection and integration. This delivery supplies an **unexecuted**
 schedule for the accepted offline scorer; it is not a launch authorization or

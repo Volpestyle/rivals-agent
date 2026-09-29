@@ -1,5 +1,11 @@
 # Camera and FPS sitting: startup repair accepted
 
+**Status (2026-09-29): SUPERSEDED — do not run.** Sittings 09-28 to 09-29 ran and calibration is now open-loop ([`scripts/calibrate_camera_schedule.py`](../../scripts/calibrate_camera_schedule.py); newest record: [alt-cam-20260929b/SITTING.md](../../data/calibration/alt-cam-20260929b/SITTING.md)). FPS: [live-fps-20260928b/RESULT.md](../evidence/live-fps-20260928b/RESULT.md); yaw: [camera-native-turn-20260929](../evidence/camera-native-turn-20260929/README.md).
+
+---
+
+## History (superseded)
+
 Owner live-loop; desktop/booking/Linear owner herdr-lead; input reviewer binds-review.
 VUH-1384, 2026-09-27. This is the next-attempt plan, not acceptance evidence.
 

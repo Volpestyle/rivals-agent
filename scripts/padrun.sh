@@ -1,6 +1,7 @@
 #!/bin/zsh
 # Send a pad token sequence to the live game, then pull a screenshot to this Mac.
 #   scripts/padrun.sh "<tokens>" <shot.png> [--dangerous]     tokens: see scripts/pad.py
+# It runs the PC's deployed C:\rivals-agent\pad.py, which is older than scripts/pad.py and lacks the combat: tokens.
 # X, START, BACK and the d-pad are refused without --dangerous: pass it only after reading a screenshot.
 # Runs pad.py inside the PC's desktop session (a C:\desk job), focusing the game first:
 # the game ignores the pad while another window has focus.

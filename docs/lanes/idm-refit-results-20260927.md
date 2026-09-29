@@ -13,7 +13,7 @@ Collected report, checkpoint, run manifest, run log, console/resource log and ex
 - [All artifact hashes](../../data/idm/explore-20260927/refit-result/refit-final-hashes.json).
 - Wall time **56m 59s**; training 54m 06s. Epoch losses 1.2860, 0.7241, 0.6034. Peak RSS 53.30 GiB; peak process footprint 3.78 GiB; zero process swaps. RSS includes mapped stores, not just active model memory.
 
-The failed launcher attempt and corrected wrapper are recorded in [the launch note](idm-refit-launch-20260927.md). The wrapper-only delta remains subject to independent post-run review before result acceptance; no receipt for that delta is included in this packet. No commit or deployment was made.
+The failed launcher attempt and corrected wrapper are recorded in the launch note (`idm-refit-launch-20260927.md`, removed 2026-09-29; in git history at `f8fd92c`). The wrapper-only delta remains subject to independent post-run review before result acceptance; no receipt for that delta is included in this packet. No commit or deployment was made.
 
 ## Camera on heldout range dev
 

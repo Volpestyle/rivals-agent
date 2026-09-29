@@ -1,5 +1,7 @@
 # Camera turn analysis — VUH-1384 — 2026-09-27
 
+**Status (2026-09-29): HISTORY.** The first alt rate (153.9°/s at RX +0.45) came from a native turn count ([camera-native-turn-20260929](../evidence/camera-native-turn-20260929/README.md)), not this estimator; calibration is now open-loop ([`scripts/calibrate_camera_schedule.py`](../../scripts/calibrate_camera_schedule.py)).
+
 Owner: camera-analysis; next consumer and integration owner: live-loop.
 Scope: the new offline `perception/camera_turn_analysis.py`, its synthetic tests,
 and this note only. No capture, actuator, native-game, GPU, corpus, or Linear

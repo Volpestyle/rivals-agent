@@ -1,5 +1,7 @@
 # Policy: the learned chooser (steps 1-3)
 
+**Status (2026-09-29): HISTORY.** The MLX chooser and the VUH-1311 offline consumer (`policy/behaviour.py`); this note stays their record. Current policy work is `policy/range_bc/` ([end-to-end fit](end-to-end-fit.md), [interim](end-to-end-fit-interim.md), [explore-policy](explore-policy.md)).
+
 ## Expert future-behaviour offline consumer (VUH-1311)
 
 `policy/behaviour.py` implements the offline consumer independently accepted at
