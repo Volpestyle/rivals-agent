@@ -654,3 +654,24 @@ started. Whole-sampler latency/memory and synthetic-update throughput remain
 PENDING explicit lead release. Prepared bounded benchmark is not launched. No
 Modal creates, dataset/sealed reads, live input, fit or paid proposal. Current
 camera calibration remains a target-validity prerequisite, not an IDM dependency.
+
+## Native full-policy feasibility complete, 2026-09-28 18:54 CDT
+
+The [final note](../research/nitrogen/native-policy-feasibility-20260928.md) recommends
+NO extensive integration or paid native-label adaptation with the unchanged sampler.
+Authenticated actual 25D/18-action/16-iteration policy measured 341.623 ms p50 /
+387.553 ms p95 on RTX 4080 SUPER, FP32 weights/BF16 autocast, 30 calls after 3 warmups.
+Every sample exceeds 250 ms before capture/preprocessing/pad. Inference allocated 1.871 GiB;
+full released-scope synthetic batch-1 AdamW 3.863 updates/s, allocated 7.132 GiB/reserved 7.514 GiB;
+host peak 2.561 GiB. All 493,631,513 parameters loaded strictly; 468,440,089 trainable.
+No actual fit/model quality result; no claim against action-pretraining transfer.
+
+The declared 30 Hz shift-3 timeline puts row 0 at 100 ms; at p95 387.6 ms eight target
+intervals are over, ninth underway, and existing freshness rejects the whole chunk.
+Timestamp/edge and receipt arithmetic checks pass. No automatic offset copying,
+extra 100 ms wait, shortened sampler, long pad lease or partial integration proposed.
+GPU released directly to herdr-lead after process exit; game absent, idle OBS
+explicitly allowed only after recording stop was verified. $0/no Modal/no sealed
+or dataset reads/no model checkpoint. Raw runtime receipt SHA256
+0c8e7d93125c60fc5328aac910f6dbcc202af977478c5cdcc3e37b4b55c02dba.
+Lead owns any new runtime-optimization dispatch and VUH-1346 reconciliation.

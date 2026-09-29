@@ -1,0 +1,2 @@
+benchmark_gpu_release.py -text
+gpu-01/* -text whitespace=cr-at-eol

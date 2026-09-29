@@ -1,0 +1,73 @@
+Total number of DiT parameters:  121992192
+Total number of SelfAttentionTransformer parameters:  50384896
+Tune action head multi_projector: True
+Tune action head diffusion model: True
+Tune action head vision tower: True
+Tune action head mm_projector: True
+Tune action head vl_mixing: True
+total number of parameters: %e 468440089
+{
+  "sampler": {
+    "calls": 30,
+    "warmup": 3,
+    "ms": [
+      407.60919998865575,
+      328.81360000465065,
+      323.1707999948412,
+      342.5127000082284,
+      349.7713999822736,
+      354.88270001951605,
+      402.7872000588104,
+      347.6718000601977,
+      366.4280999219045,
+      344.43699999246746,
+      364.38549996819347,
+      337.4988000141457,
+      336.2231000792235,
+      345.3479999443516,
+      334.47380003053695,
+      321.50070008356124,
+      356.6771999467164,
+      328.1626000534743,
+      363.57519996818155,
+      337.10420003626496,
+      368.9330000197515,
+      315.8524999162182,
+      320.71060000453144,
+      361.2042999593541,
+      319.9041999178007,
+      329.6987999929115,
+      338.01329997368157,
+      342.99150004517287,
+      332.06399995833635,
+      340.73289996013045
+    ],
+    "p50_ms": 341.62279998417944,
+    "p95_ms": 387.5528100412338,
+    "peak_allocated_bytes": 2008952320,
+    "peak_reserved_bytes": 2023751680
+  },
+  "synthetic_training": {
+    "batch": 1,
+    "warmup": 2,
+    "measured_updates": 10,
+    "seconds": [
+      0.2609311999985948,
+      0.2874366999603808,
+      0.2883201000513509,
+      0.24489590001758188,
+      0.24242660007439554,
+      0.2566129999468103,
+      0.2495623999275267,
+      0.2450601999880746,
+      0.2481011999770999,
+      0.26513970002997667
+    ],
+    "updates_s": 3.8632606615791287,
+    "peak_allocated_bytes": 7657850368,
+    "peak_reserved_bytes": 8067743744,
+    "scope": "all released trainable modules; upstream vision layer11/head remain frozen",
+    "exclusions": "no real data I/O, masks/calibration qualification, evaluation or checkpoint writes; not a fit"
+  },
+  "process_peak_working_set_bytes": 2750119936
+}

@@ -1,0 +1,10 @@
+{
+  "benchmark_gpu_release.py": "3579c797d6f0bcb70d6867cfe43db0f7a86561e0eec5e1b594f9da37fa8aa1c0",
+  "gpu-01/completion.json": "f493fc8aafb763da86ced553a723a69a8252a2d122692fb10dc647489f17ead6",
+  "gpu-01/contract-cpu-executed.json": "0378beeaac3d6629f33b305d30a21bdf75fda9b037fae782bc4ec58a359a3e4b",
+  "gpu-01/requirements.txt": "278a8b9f9b998131710cfe59295d7f318aa606312c46bc9f5e51aeab2df07b7d",
+  "gpu-01/runtime-gpu-01.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "gpu-01/runtime-gpu-01.json": "0c8e7d93125c60fc5328aac910f6dbcc202af977478c5cdcc3e37b4b55c02dba",
+  "gpu-01/runtime-gpu-01.log": "6fc777bb935e1e189c6fc58526a1638ef5d22909e4e963c94ef3ff037dfe87a3",
+  "gpu-01/runtime-gpu-01.sampler.json": "6dffd8568eeeec1a9189a6c2b50ce771d496a9f070000ab96a05fea6fd792c2f"
+}
