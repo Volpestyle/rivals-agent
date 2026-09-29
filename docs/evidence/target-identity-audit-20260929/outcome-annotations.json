@@ -1,0 +1,516 @@
+{
+  "phase": "outcome_visual_frozen_before_yaw_or_membership_unblind",
+  "annotator": "explore-policy owner visual interpretation",
+  "completed_utc": "2026-09-29 07:23:51 UTC",
+  "causal_commit": "5b55f96",
+  "causal_sha256": "73d29d5c8964de4f41d4c22b9fac9330a2ab943e8bf0a1fe13ed2e0d5be2ddc7",
+  "method": "Ten evenly spaced following native frames across at most one second inspected as full-frame sheets and unscaled native center crops. Independently visible fresh attack/contact/damage required; old tracer/KO alone insufficient. Primary recipient is first defensibly resolved recipient when multiple occur. Hindsight never modifies causal annotations.",
+  "examples": [
+    {
+      "id": "E01",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Runs off platform after prior KO; no new attack/contact/damage recipient in following second."
+    },
+    {
+      "id": "E02",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "multiple-target choice",
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Moves and jumps toward two bots, no observed attack or contact differentiates them."
+    },
+    {
+      "id": "E03",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "multiple-target choice",
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Runs/jumps toward lane with several bots; no directed attack."
+    },
+    {
+      "id": "E04",
+      "eventual_target": "new lower-lane bot",
+      "pre_anchor_id": null,
+      "categories": [
+        "acquisition",
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Around outcome frame 24 web visibly strikes lower-lane bot and tracer appears. This bot was hidden below roof at causal anchor; cannot link it to causal rooftop B1."
+    },
+    {
+      "id": "E05",
+      "eventual_target": "B2",
+      "pre_anchor_id": "B2",
+      "categories": [
+        "acquisition",
+        "multiple-target choice",
+        "continued engagement"
+      ],
+      "confidence": "high",
+      "note": "Web pull/contact and repeated hits land on nearer right/front B2, then KO and engagement transitions toward rear B1. First independently supported recipient is B2; both eventually engaged."
+    },
+    {
+      "id": "E06",
+      "eventual_target": "B1",
+      "pre_anchor_id": "B1",
+      "categories": [
+        "continued engagement",
+        "traversal/reorientation"
+      ],
+      "confidence": "medium",
+      "note": "Remains in contact with sole Ultra while climbing; fresh tracer mark appears by outcome frame 27. Same continuously visible body, though traversal overlaps."
+    },
+    {
+      "id": "E07",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Runs and jumps around building with no bot engagement."
+    },
+    {
+      "id": "E08",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "multiple-target choice",
+        "traversal/reorientation"
+      ],
+      "confidence": "medium",
+      "note": "Jump/flip between bots; late extended-hand pose but no clear projectile contact or damage recipient. Do not infer target from framing."
+    },
+    {
+      "id": "E09",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Jumps and attaches swing line to architecture, leaving prior bots. No fresh bot engagement."
+    },
+    {
+      "id": "E10",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "multiple-target choice",
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Attack animations/web splash on empty foreground and airborne movement; no visibly struck or damaged bot among far pair."
+    },
+    {
+      "id": "E11",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation",
+        "unknown"
+      ],
+      "confidence": "high",
+      "note": "Airborne movement and punch animation over several distant bots, no discernible recipient or hit."
+    },
+    {
+      "id": "E12",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Climbs column and leaps toward roof. No bot-directed attack/contact."
+    },
+    {
+      "id": "E13",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation",
+        "unknown"
+      ],
+      "confidence": "medium",
+      "note": "Causal B1 collapses at left during finishing punch/KO animation. No fresh outcome impact is independently resolved; this supports a completed past engagement, not a new eventual recipient. Conservatively unknown."
+    },
+    {
+      "id": "E14",
+      "eventual_target": "B1 (defeated)",
+      "pre_anchor_id": "B1",
+      "categories": [
+        "continued engagement",
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Direct hit flash on B1 at outcome frame 3, empty health and collapse follow. Then hero flips away; survivor is not assumed to be next target."
+    },
+    {
+      "id": "E15",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation",
+        "unknown"
+      ],
+      "confidence": "medium",
+      "note": "Causal B1 falls away during finishing animation before hero turns toward empty lane. No fresh outcome impact is independently resolved; this supports a completed past engagement, not a new eventual recipient. Conservatively unknown."
+    },
+    {
+      "id": "E16",
+      "eventual_target": "B2",
+      "pre_anchor_id": "B2",
+      "categories": [
+        "continued engagement"
+      ],
+      "confidence": "high",
+      "note": "Tether draws causal B2 in, then repeated visible contact flashes and decreasing health confirm engagement."
+    },
+    {
+      "id": "E17",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation",
+        "unknown"
+      ],
+      "confidence": "medium",
+      "note": "Marked low-health B1 remains visible but hero jumps/backflips away; no fresh hit/contact/damage in outcome views. Prior damage alone does not establish an eventual target."
+    },
+    {
+      "id": "E18",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Repeated flips away from corpse and surviving bot; no new contact."
+    },
+    {
+      "id": "E19",
+      "eventual_target": "B1",
+      "pre_anchor_id": "B1",
+      "categories": [
+        "continued engagement"
+      ],
+      "confidence": "high",
+      "note": "Airborne marked B1 is hit by visible golden/web projectiles at frames 21-30, with impact flashes and damage number."
+    },
+    {
+      "id": "E20",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation",
+        "multiple-target choice"
+      ],
+      "confidence": "medium",
+      "note": "Flips/activates ability over platform. Late web shot goes toward lower lane but no clear target impact; fresh bright bot is respawning, not assumed damaged."
+    },
+    {
+      "id": "E21",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation",
+        "unknown"
+      ],
+      "confidence": "high",
+      "note": "Leaves crater, corpse and marked survivor; flips toward platform and fires into empty platform. No fresh bot recipient resolves causal ambiguity."
+    },
+    {
+      "id": "E22",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Runs around cylinder then punches/climbs wall. Visible impact is on architecture, not bot."
+    },
+    {
+      "id": "E23",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation",
+        "multiple-target choice"
+      ],
+      "confidence": "high",
+      "note": "Jumps on panel toward roof; several bots remain visible without a new attack or contact recipient."
+    },
+    {
+      "id": "E24",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "multiple-target choice",
+        "unknown"
+      ],
+      "confidence": "medium",
+      "note": "Moves toward bots near ability station and casts web late, but projectile/contact does not clearly identify recipient. Incoming purple bot fire is not evidence of hero selection."
+    },
+    {
+      "id": "E25",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Flips away after a KO and runs toward the lane. No independently visible attack recipient in the following second."
+    },
+    {
+      "id": "E26",
+      "eventual_target": "B1",
+      "pre_anchor_id": "B1",
+      "categories": [
+        "continued engagement"
+      ],
+      "confidence": "high",
+      "note": "The marked near bot remains identifiable below the hero; late white impact flashes, decreasing health and ultimate charge reaching 100 support repeated contact with B1."
+    },
+    {
+      "id": "E27",
+      "eventual_target": "B1",
+      "pre_anchor_id": "B1",
+      "categories": [
+        "visible acquisition"
+      ],
+      "confidence": "high",
+      "note": "Repeated web impacts from frame 18 onward visibly reduce the near bot's health; continuous identity links it to causal B1."
+    },
+    {
+      "id": "E28",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation",
+        "unknown"
+      ],
+      "confidence": "high",
+      "note": "Airborne casts toward the lane have no visible bot endpoint or damage. Nearby body and surviving bot do not establish recipient."
+    },
+    {
+      "id": "E29",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Architectural web swing above the lane; bots visible below but no independently visible attack on one."
+    },
+    {
+      "id": "E30",
+      "eventual_target": "B1",
+      "pre_anchor_id": "B1",
+      "categories": [
+        "continued engagement"
+      ],
+      "confidence": "high",
+      "note": "Repeated melee/web impacts on marked B1 visibly drain health and end in KO; then approaches another bot."
+    },
+    {
+      "id": "E31",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "unknown"
+      ],
+      "confidence": "high",
+      "note": "Stationary beside stairs with no bot contact or attack recipient."
+    },
+    {
+      "id": "E32",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation",
+        "unknown"
+      ],
+      "confidence": "medium",
+      "note": "Passes rooftop bot while airborne. Hand extended and web splat on floor, but no clear bot impact, marker or damage; no recipient assigned."
+    },
+    {
+      "id": "E33",
+      "eventual_target": "B2",
+      "pre_anchor_id": "B2",
+      "categories": [
+        "visible acquisition",
+        "multiple-target choice",
+        "continued engagement"
+      ],
+      "confidence": "high",
+      "note": "Web tether pulls hero to the nearer partly rim-occluded B2; impact and KO identify first recipient. Then attacks farther B3. Primary is first independently resolved recipient B2."
+    },
+    {
+      "id": "E34",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation",
+        "unknown"
+      ],
+      "confidence": "medium",
+      "note": "Marked damaged B1 is followed around the pillar, but no new resolved hit/contact in the outcome span; prior marker alone does not establish an eventual attack."
+    },
+    {
+      "id": "E35",
+      "eventual_target": "B1",
+      "pre_anchor_id": "B1",
+      "categories": [
+        "continued engagement"
+      ],
+      "confidence": "high",
+      "note": "Tether to marked Ultra B1, followed by direct uppercut and repeated hits with health loss."
+    },
+    {
+      "id": "E36",
+      "eventual_target": "B2",
+      "pre_anchor_id": "B2",
+      "categories": [
+        "continued engagement",
+        "multiple-target choice"
+      ],
+      "confidence": "high",
+      "note": "Airborne corner bot B2 takes clear repeated melee impacts; later casts toward lower doorway B1 lack a resolved hit within the span. Primary recipient is B2."
+    },
+    {
+      "id": "E37",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation",
+        "multiple-target choice"
+      ],
+      "confidence": "high",
+      "note": "Jumps the rail and approaches the lane with several bots; no attack/contact."
+    },
+    {
+      "id": "E38",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Climbs and vaults the magenta panel. Nearby bots are visible without targeted contact."
+    },
+    {
+      "id": "E39",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Backflip toward stairs and ultimate-charge station; no targeted contact."
+    },
+    {
+      "id": "E40",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation",
+        "unknown"
+      ],
+      "confidence": "medium",
+      "note": "Airborne above marked rooftop Ultra, but no new resolved attack/damage in the following second. Prior marker alone insufficient."
+    },
+    {
+      "id": "E41",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Runs and jumps beside lane with distant survivor and corpse. No resolved attack."
+    },
+    {
+      "id": "E42",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Backflip and run past already fallen bot after triple KO. No new attack or target acquisition."
+    },
+    {
+      "id": "E43",
+      "eventual_target": "B1",
+      "pre_anchor_id": "B1",
+      "categories": [
+        "continued engagement"
+      ],
+      "confidence": "high",
+      "note": "Projectile strikes distant B1 at frame 9, tracer appears and health decreases. Subsequent shot continues same recipient."
+    },
+    {
+      "id": "E44",
+      "eventual_target": "B1",
+      "pre_anchor_id": "B1",
+      "categories": [
+        "visible acquisition"
+      ],
+      "confidence": "high",
+      "note": "Previously partly occluded Ultra emerges; punch/contact frame 12 and bright impacts frames 15-18 establish B1, continuous around panel."
+    },
+    {
+      "id": "E45",
+      "eventual_target": "B1",
+      "pre_anchor_id": "B1",
+      "categories": [
+        "continued engagement"
+      ],
+      "confidence": "high",
+      "note": "Tethered Ultra B1 takes repeated airborne melee hits with clear impact flashes and health reduction."
+    },
+    {
+      "id": "E46",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Jumping through upper pavilion and landing; bots visible through glass but no recipient."
+    },
+    {
+      "id": "E47",
+      "eventual_target": "B2",
+      "pre_anchor_id": "B2",
+      "categories": [
+        "multiple-target choice",
+        "continued engagement"
+      ],
+      "confidence": "high",
+      "note": "Right-hand marked bot takes visible early impact and later fresh web hit/tether at frames 21-30. Continuous identity links recipient to B2, distinct from frozen causal focus B1."
+    },
+    {
+      "id": "E48",
+      "eventual_target": "unknown",
+      "pre_anchor_id": null,
+      "categories": [
+        "traversal/reorientation"
+      ],
+      "confidence": "high",
+      "note": "Runs/jumps up stairs near friendly bots firing toward enemies. No hero attack; bot firing and unrelated KO feed do not identify hero target."
+    }
+  ]
+}
