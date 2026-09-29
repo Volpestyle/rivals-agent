@@ -1,0 +1,17 @@
+{
+  ".gitattributes": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da",
+  "checks.json": "e922e3fe5b4f3724721a1cddd374d824b951a9daf80cc17f33b89e7351aa10e2",
+  "dry-preflight/events.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "dry-preflight/failure.json": "b0d881bf81271067cc9fb00b06fe8e21cea481a58614d94c0dc109967b188728",
+  "dry-preflight/frame-retention.json": "854d02bdd669161381c7a31fdab31f9b15e147b9725b5b73733da287f923d708",
+  "dry-preflight/frames.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "dry-preflight/manifest.json": "e352a64cc69651a721761f5074bc47b0420256183c40dba877dcd07bd57ae035",
+  "dry-preflight.ps1": "3424418a37a1eab45bdc311a6b847090604398fbedc294ec99c748a9ac6d573a",
+  "dry-result.json": "de1de5f3e8286a7bcd8f5015846ca5f192d8484332aef98a23d1d9fe4cd10c7b",
+  "dry.stderr.log": "202cd4b5e9d9edd66bc1036a74fc91c611bbb149af5d67107c3e28ec4e629b1a",
+  "dry.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "freeze.json": "a3949e6ccca40b66493232664ba68033dd73a1c6bb17555eddd8ac19b4469d32",
+  "OPERATOR.md": "2cb5dac93924cf5c9f42769d8a373e74c4bf67ba1136f525463cd1bc6e009cec",
+  "READINESS.md": "ff24fe72aaae7edac34dc65a85df98777ba245041dd9bfa36e4016a91c4906b6",
+  "verify_freeze.py": "2062241b003b7a05e005f930224ad305100c037dfdcbce25e990b9d43b0158c3"
+}

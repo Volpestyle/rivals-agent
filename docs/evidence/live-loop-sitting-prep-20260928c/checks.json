@@ -1,0 +1,11 @@
+{
+  "dry_focus_gate": "expected_refusal",
+  "session_id": 1,
+  "child_exited": true,
+  "numeric_exit_code": null,
+  "numeric_exit_code_limitation": "PowerShell process wrapper returned null; failure.json and traceback establish the gate refusal",
+  "no_input_basis": "unmodified reviewed driver refuses at focused() before Capture and Live construction; report_timing null and no ready-attach token",
+  "receipt_pins_match_after_preflight": true,
+  "status_file": "C:\\Users\\volpe\\jobs\\live-loop-camera-sitting-prep-20260928c.status.json",
+  "runtime_source_changed": false
+}

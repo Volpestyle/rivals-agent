@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "C:\Users\volpe\repos\rivals-agent\scripts\measure_camera_turns.py", line 615, in <module>
+    main()
+  File "C:\Users\volpe\repos\rivals-agent\scripts\measure_camera_turns.py", line 538, in main
+    require(focused(), "game must already be focused")
+  File "C:\Users\volpe\repos\rivals-agent\agent\live_range_bc.py", line 26, in require
+    raise ValueError(message)
+ValueError: game must already be focused

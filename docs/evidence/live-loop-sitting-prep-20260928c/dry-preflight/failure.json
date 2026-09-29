@@ -1,0 +1,1 @@
+{"acceptance":"failed","error":"ValueError('game must already be focused')","initialization_excluded":{"detail_if_present":"initialization.json","interval_events":"events.jsonl"},"refusal_evidence":null,"report_timing":null}
