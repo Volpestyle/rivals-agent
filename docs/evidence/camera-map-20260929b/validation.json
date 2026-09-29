@@ -1,0 +1,27 @@
+{
+  "candidate_sha256": "0e062286bd942aad776d719cd5841321b83773ae5b9e4b74ae8443b8795709d9",
+  "separate_candidate_checks": "pass; verify_candidate.py output observed",
+  "pytest": {
+    "command": [
+      "python",
+      "-m",
+      "pytest",
+      "tests/test_camera_map.py",
+      "tests/test_camera_turn_analysis.py",
+      "-q",
+      "-k",
+      "not alt_candidate_is_only_usable_offline_and_never_mirrored"
+    ],
+    "passed": 77,
+    "deselected": 1,
+    "elapsed_s": 18.56
+  },
+  "known_stale_placeholder_test": {
+    "status": "failed as expected: -0.45 is now measured",
+    "log": "D:\\rivals-agent-evidence\\camera-map-20260929b\\stale-placeholder-test.txt",
+    "sha256": "2c9484d0bc4437c3efa8278f4c9bc927653726ffdfa303a011a855088c9d25f0",
+    "owner": "live-loop, per lead 2026-09-29",
+    "test_file_sha256": "8e0d8437b3f711532413e7d98e1a5a7d9de7730962b2ae4503bf6301ec47955b"
+  },
+  "acceptance_registered": false
+}

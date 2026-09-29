@@ -1,0 +1,422 @@
+[
+  {
+    "segment": {
+      "run": "pitch-01",
+      "role": "pitch-0",
+      "axis": "pitch",
+      "stick": 0.45,
+      "on_t": 780347.4268839,
+      "off_t": 780347.9268044,
+      "on_pts": 249.5950792689612,
+      "off_pts": 250.09499976905434,
+      "actual_duration_s": 0.4999205000931397,
+      "scheduled_duration_s": 0.5
+    },
+    "noise_max_frame_dy_px_1280": 0.00376129150390625,
+    "motion_threshold_frame_dy_px_1280": 0.12,
+    "onset_relative_to_report_s": [
+      -0.016079268961192383,
+      0.0009207310388035239
+    ],
+    "scene_pixel_rate_median_1280": 610.1019897460938,
+    "scene_pixel_rate_q10_q90_1280": [
+      604.953857421875,
+      653.0597412109375
+    ],
+    "steady_pair_count": 23,
+    "late_motion_pairs": 4,
+    "late_pair_count": 4,
+    "degrees_rate": null,
+    "degree_refusal": "No qualified focal / orbit-corrected angular scale; scene-pixel rate is not degrees per second."
+  },
+  {
+    "segment": {
+      "run": "pitch-01",
+      "role": "pitch-1",
+      "axis": "pitch",
+      "stick": -0.45,
+      "on_t": 780348.4268012,
+      "off_t": 780348.9271985,
+      "on_pts": 250.59499656902997,
+      "off_pts": 251.0953938690284,
+      "actual_duration_s": 0.5003972999984398,
+      "scheduled_duration_s": 0.5
+    },
+    "noise_max_frame_dy_px_1280": 0.0051727294921875,
+    "motion_threshold_frame_dy_px_1280": 0.12,
+    "onset_relative_to_report_s": [
+      -0.015996569029965713,
+      0.0010034309700301947
+    ],
+    "scene_pixel_rate_median_1280": -612.0506591796875,
+    "scene_pixel_rate_q10_q90_1280": [
+      -774.7346557617187,
+      -491.6076293945313
+    ],
+    "steady_pair_count": 23,
+    "late_motion_pairs": 4,
+    "late_pair_count": 4,
+    "degrees_rate": null,
+    "degree_refusal": "No qualified focal / orbit-corrected angular scale; scene-pixel rate is not degrees per second."
+  },
+  {
+    "segment": {
+      "run": "pitch-01",
+      "role": "pitch-2",
+      "axis": "pitch",
+      "stick": 0.3,
+      "on_t": 780349.4267804,
+      "off_t": 780349.9269991,
+      "on_pts": 251.594975768988,
+      "off_pts": 252.09519446902348,
+      "actual_duration_s": 0.5002187000354752,
+      "scheduled_duration_s": 0.5
+    },
+    "noise_max_frame_dy_px_1280": 0.004364013671875,
+    "motion_threshold_frame_dy_px_1280": 0.12,
+    "onset_relative_to_report_s": [
+      -0.015975768987999572,
+      0.001024231011996335
+    ],
+    "scene_pixel_rate_median_1280": 381.05322265625,
+    "scene_pixel_rate_q10_q90_1280": [
+      287.27686767578126,
+      499.9714294433594
+    ],
+    "steady_pair_count": 23,
+    "late_motion_pairs": 4,
+    "late_pair_count": 4,
+    "degrees_rate": null,
+    "degree_refusal": "No qualified focal / orbit-corrected angular scale; scene-pixel rate is not degrees per second."
+  },
+  {
+    "segment": {
+      "run": "pitch-01",
+      "role": "pitch-3",
+      "axis": "pitch",
+      "stick": -0.3,
+      "on_t": 780350.4267406,
+      "off_t": 780350.9263107,
+      "on_pts": 252.5949359690342,
+      "off_pts": 253.09450606902035,
+      "actual_duration_s": 0.4995700999861583,
+      "scheduled_duration_s": 0.5
+    },
+    "noise_max_frame_dy_px_1280": 0.00885009765625,
+    "motion_threshold_frame_dy_px_1280": 0.12,
+    "onset_relative_to_report_s": [
+      0.0010640309658072056,
+      0.018064030965803113
+    ],
+    "scene_pixel_rate_median_1280": -382.23443603515625,
+    "scene_pixel_rate_q10_q90_1280": [
+      -501.69232788085935,
+      -286.85380859375
+    ],
+    "steady_pair_count": 23,
+    "late_motion_pairs": 4,
+    "late_pair_count": 4,
+    "degrees_rate": null,
+    "degree_refusal": "No qualified focal / orbit-corrected angular scale; scene-pixel rate is not degrees per second."
+  },
+  {
+    "segment": {
+      "run": "pitch-02",
+      "role": "pitch-0",
+      "axis": "pitch",
+      "stick": 0.6,
+      "on_t": 780532.0041107,
+      "off_t": 780532.2538322,
+      "on_pts": 434.1723060689904,
+      "off_pts": 434.42202756896523,
+      "actual_duration_s": 0.2497214999748394,
+      "scheduled_duration_s": 0.25
+    },
+    "noise_max_frame_dy_px_1280": 0.0044403076171875,
+    "motion_threshold_frame_dy_px_1280": 0.12,
+    "onset_relative_to_report_s": [
+      -0.009306068990383665,
+      0.006693931009579046
+    ],
+    "scene_pixel_rate_median_1280": 834.74951171875,
+    "scene_pixel_rate_q10_q90_1280": [
+      769.1059692382812,
+      955.9513244628906
+    ],
+    "steady_pair_count": 8,
+    "late_motion_pairs": 4,
+    "late_pair_count": 4,
+    "degrees_rate": null,
+    "degree_refusal": "No qualified focal / orbit-corrected angular scale; scene-pixel rate is not degrees per second."
+  },
+  {
+    "segment": {
+      "run": "pitch-02",
+      "role": "pitch-1",
+      "axis": "pitch",
+      "stick": -0.6,
+      "on_t": 780532.7535374,
+      "off_t": 780533.0039662,
+      "on_pts": 434.9217327690488,
+      "off_pts": 435.17216156905425,
+      "actual_duration_s": 0.25042880000546575,
+      "scheduled_duration_s": 0.25
+    },
+    "noise_max_frame_dy_px_1280": 0.00579833984375,
+    "motion_threshold_frame_dy_px_1280": 0.12,
+    "onset_relative_to_report_s": [
+      -0.008732769048776845,
+      0.007267230951185866
+    ],
+    "scene_pixel_rate_median_1280": -847.1416931152344,
+    "scene_pixel_rate_q10_q90_1280": [
+      -891.2988220214844,
+      -839.570751953125
+    ],
+    "steady_pair_count": 8,
+    "late_motion_pairs": 4,
+    "late_pair_count": 4,
+    "degrees_rate": null,
+    "degree_refusal": "No qualified focal / orbit-corrected angular scale; scene-pixel rate is not degrees per second."
+  },
+  {
+    "segment": {
+      "run": "pitch-02",
+      "role": "pitch-2",
+      "axis": "pitch",
+      "stick": 0.8,
+      "on_t": 780533.5037611,
+      "off_t": 780533.7540433,
+      "on_pts": 435.6719564690059,
+      "off_pts": 435.92223866905925,
+      "actual_duration_s": 0.25028220005333424,
+      "scheduled_duration_s": 0.25
+    },
+    "noise_max_frame_dy_px_1280": 0.0032501220703125,
+    "motion_threshold_frame_dy_px_1280": 0.12,
+    "onset_relative_to_report_s": [
+      -0.008956469005909184,
+      0.007043530994053526
+    ],
+    "scene_pixel_rate_median_1280": 1144.275146484375,
+    "scene_pixel_rate_q10_q90_1280": [
+      1135.4585571289062,
+      1211.9652221679687
+    ],
+    "steady_pair_count": 8,
+    "late_motion_pairs": 4,
+    "late_pair_count": 4,
+    "degrees_rate": null,
+    "degree_refusal": "No qualified focal / orbit-corrected angular scale; scene-pixel rate is not degrees per second."
+  },
+  {
+    "segment": {
+      "run": "pitch-02",
+      "role": "pitch-3",
+      "axis": "pitch",
+      "stick": -0.8,
+      "on_t": 780534.2538313,
+      "off_t": 780534.5033333,
+      "on_pts": 436.4220266689584,
+      "off_pts": 436.67152866900807,
+      "actual_duration_s": 0.24950200004968792,
+      "scheduled_duration_s": 0.25
+    },
+    "noise_max_frame_dy_px_1280": 0.00494384765625,
+    "motion_threshold_frame_dy_px_1280": 0.12,
+    "onset_relative_to_report_s": [
+      -0.00902666895837001,
+      0.006973331041592701
+    ],
+    "scene_pixel_rate_median_1280": -1149.066650390625,
+    "scene_pixel_rate_q10_q90_1280": [
+      -1212.69990234375,
+      -1131.8337036132812
+    ],
+    "steady_pair_count": 8,
+    "late_motion_pairs": 4,
+    "late_pair_count": 4,
+    "degrees_rate": null,
+    "degree_refusal": "No qualified focal / orbit-corrected angular scale; scene-pixel rate is not degrees per second."
+  },
+  {
+    "segment": {
+      "run": "pitch-03",
+      "role": "pitch-0",
+      "axis": "pitch",
+      "stick": 1.0,
+      "on_t": 780679.1790812,
+      "off_t": 780679.4290656,
+      "on_pts": 581.3472765690451,
+      "off_pts": 581.5972609690427,
+      "actual_duration_s": 0.24998439999762923,
+      "scheduled_duration_s": 0.25
+    },
+    "noise_max_frame_dy_px_1280": 0.0032806396484375,
+    "motion_threshold_frame_dy_px_1280": 0.12,
+    "onset_relative_to_report_s": [
+      -0.009276569045141514,
+      0.006723430954934884
+    ],
+    "scene_pixel_rate_median_1280": 1407.8743286132812,
+    "scene_pixel_rate_q10_q90_1280": [
+      1300.0903686523438,
+      1491.5444213867188
+    ],
+    "steady_pair_count": 8,
+    "late_motion_pairs": 4,
+    "late_pair_count": 4,
+    "degrees_rate": null,
+    "degree_refusal": "No qualified focal / orbit-corrected angular scale; scene-pixel rate is not degrees per second."
+  },
+  {
+    "segment": {
+      "run": "pitch-03",
+      "role": "pitch-1",
+      "axis": "pitch",
+      "stick": -1.0,
+      "on_t": 780679.9290918,
+      "off_t": 780680.178698,
+      "on_pts": 582.0972871690094,
+      "off_pts": 582.3468933690376,
+      "actual_duration_s": 0.24960620002821088,
+      "scheduled_duration_s": 0.25
+    },
+    "noise_max_frame_dy_px_1280": 0.0027923583984375,
+    "motion_threshold_frame_dy_px_1280": 0.12,
+    "onset_relative_to_report_s": [
+      -0.009287169009439822,
+      0.006712830990636576
+    ],
+    "scene_pixel_rate_median_1280": -1408.2817993164062,
+    "scene_pixel_rate_q10_q90_1280": [
+      -1493.3275756835938,
+      -1401.0222412109374
+    ],
+    "steady_pair_count": 8,
+    "late_motion_pairs": 4,
+    "late_pair_count": 4,
+    "degrees_rate": null,
+    "degree_refusal": "No qualified focal / orbit-corrected angular scale; scene-pixel rate is not degrees per second."
+  },
+  {
+    "segment": {
+      "run": "pitch-04",
+      "role": "pitch-0",
+      "axis": "pitch",
+      "stick": 0.1,
+      "on_t": 781032.5499764,
+      "off_t": 781033.0500997,
+      "on_pts": 934.7181717689884,
+      "off_pts": 935.218295068996,
+      "actual_duration_s": 0.5001233000075445,
+      "scheduled_duration_s": 0.5
+    },
+    "noise_max_frame_dy_px_1280": 0.00365447998046875,
+    "motion_threshold_frame_dy_px_1280": 0.12,
+    "onset_relative_to_report_s": [
+      0.0028282310115628206,
+      0.01982823101161557
+    ],
+    "scene_pixel_rate_median_1280": 65.31658935546875,
+    "scene_pixel_rate_q10_q90_1280": [
+      50.57115859985352,
+      80.54728698730469
+    ],
+    "steady_pair_count": 23,
+    "late_motion_pairs": 4,
+    "late_pair_count": 4,
+    "degrees_rate": null,
+    "degree_refusal": "No qualified focal / orbit-corrected angular scale; scene-pixel rate is not degrees per second."
+  },
+  {
+    "segment": {
+      "run": "pitch-04",
+      "role": "pitch-1",
+      "axis": "pitch",
+      "stick": -0.1,
+      "on_t": 781033.5499651,
+      "off_t": 781034.0501309,
+      "on_pts": 935.7181604690188,
+      "off_pts": 936.2183262690007,
+      "actual_duration_s": 0.5001657999819145,
+      "scheduled_duration_s": 0.5
+    },
+    "noise_max_frame_dy_px_1280": 0.00368499755859375,
+    "motion_threshold_frame_dy_px_1280": 0.12,
+    "onset_relative_to_report_s": [
+      -0.014160469018861477,
+      0.002839530981191274
+    ],
+    "scene_pixel_rate_median_1280": -66.35867309570312,
+    "scene_pixel_rate_q10_q90_1280": [
+      -80.15530548095703,
+      -54.58290634155273
+    ],
+    "steady_pair_count": 23,
+    "late_motion_pairs": 4,
+    "late_pair_count": 4,
+    "degrees_rate": null,
+    "degree_refusal": "No qualified focal / orbit-corrected angular scale; scene-pixel rate is not degrees per second."
+  },
+  {
+    "segment": {
+      "run": "pitch-04",
+      "role": "pitch-2",
+      "axis": "pitch",
+      "stick": 0.2,
+      "on_t": 781034.550357,
+      "off_t": 781035.0501135,
+      "on_pts": 936.7185523689761,
+      "off_pts": 937.2183088689846,
+      "actual_duration_s": 0.499756500008516,
+      "scheduled_duration_s": 0.5
+    },
+    "noise_max_frame_dy_px_1280": 0.003692626953125,
+    "motion_threshold_frame_dy_px_1280": 0.12,
+    "onset_relative_to_report_s": [
+      -0.014552368976183061,
+      0.0024476310238696897
+    ],
+    "scene_pixel_rate_median_1280": 202.4423828125,
+    "scene_pixel_rate_q10_q90_1280": [
+      194.91468505859376,
+      230.64545288085938
+    ],
+    "steady_pair_count": 23,
+    "late_motion_pairs": 4,
+    "late_pair_count": 4,
+    "degrees_rate": null,
+    "degree_refusal": "No qualified focal / orbit-corrected angular scale; scene-pixel rate is not degrees per second."
+  },
+  {
+    "segment": {
+      "run": "pitch-04",
+      "role": "pitch-3",
+      "axis": "pitch",
+      "stick": -0.2,
+      "on_t": 781035.5501264,
+      "off_t": 781036.0502685,
+      "on_pts": 937.7183217689665,
+      "off_pts": 938.2184638690007,
+      "actual_duration_s": 0.5001421000342816,
+      "scheduled_duration_s": 0.5
+    },
+    "noise_max_frame_dy_px_1280": 0.002288818359375,
+    "motion_threshold_frame_dy_px_1280": 0.12,
+    "onset_relative_to_report_s": [
+      -0.014321768966510717,
+      0.0026782310335420334
+    ],
+    "scene_pixel_rate_median_1280": -213.73971557617188,
+    "scene_pixel_rate_q10_q90_1280": [
+      -286.5608215332031,
+      -158.6091766357422
+    ],
+    "steady_pair_count": 23,
+    "late_motion_pairs": 4,
+    "late_pair_count": 4,
+    "degrees_rate": null,
+    "degree_refusal": "No qualified focal / orbit-corrected angular scale; scene-pixel rate is not degrees per second."
+  }
+]

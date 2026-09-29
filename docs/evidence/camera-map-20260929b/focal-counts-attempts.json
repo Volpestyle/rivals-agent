@@ -1,0 +1,310 @@
+[
+  {
+    "folder": "sweep-second",
+    "rows": [
+      {
+        "signed_counts": 2812,
+        "raw_burst": {
+          "start": 7.164607698730193,
+          "end": 12.233313298718073,
+          "dx": 2812,
+          "dy": 72,
+          "abs_dx": 2916,
+          "abs_dy": 220,
+          "events": 393
+        },
+        "far_landmark": false,
+        "level_camera": false,
+        "endpoint_count_uncertainty": null,
+        "qualification": "Far-point edge-to-edge endpoints and level camera not established; raw burst totals are not qualified HFOV counts.",
+        "gain_evidence": {
+          "ref": "docs/evidence/camera-map-20260929b/gain-provenance.json",
+          "sha256": "7c160f339567731926b9c85b268c8e2ee59ca2a6aac4619edc8811824d79b693"
+        },
+        "native_evidence": {
+          "ref": "D:\\rivals-agent-evidence\\camera-map-20260929b\\sweep-second\\index.json",
+          "sha256": "d2030cd1a73f111ebb67129570d2023a17a175b55f2c89e35837446770db0e65"
+        }
+      },
+      {
+        "signed_counts": -2736,
+        "raw_burst": {
+          "start": 13.349600898734295,
+          "end": 14.84163329871744,
+          "dx": -2736,
+          "dy": 81,
+          "abs_dx": 2736,
+          "abs_dy": 203,
+          "events": 146
+        },
+        "far_landmark": false,
+        "level_camera": false,
+        "endpoint_count_uncertainty": null,
+        "qualification": "Far-point edge-to-edge endpoints and level camera not established; raw burst totals are not qualified HFOV counts.",
+        "gain_evidence": {
+          "ref": "docs/evidence/camera-map-20260929b/gain-provenance.json",
+          "sha256": "7c160f339567731926b9c85b268c8e2ee59ca2a6aac4619edc8811824d79b693"
+        },
+        "native_evidence": {
+          "ref": "D:\\rivals-agent-evidence\\camera-map-20260929b\\sweep-second\\index.json",
+          "sha256": "d2030cd1a73f111ebb67129570d2023a17a175b55f2c89e35837446770db0e65"
+        }
+      },
+      {
+        "signed_counts": 2793,
+        "raw_burst": {
+          "start": 17.31659789877385,
+          "end": 21.722313198776916,
+          "dx": 2793,
+          "dy": -72,
+          "abs_dx": 2797,
+          "abs_dy": 160,
+          "events": 511
+        },
+        "far_landmark": false,
+        "level_camera": false,
+        "endpoint_count_uncertainty": null,
+        "qualification": "Far-point edge-to-edge endpoints and level camera not established; raw burst totals are not qualified HFOV counts.",
+        "gain_evidence": {
+          "ref": "docs/evidence/camera-map-20260929b/gain-provenance.json",
+          "sha256": "7c160f339567731926b9c85b268c8e2ee59ca2a6aac4619edc8811824d79b693"
+        },
+        "native_evidence": {
+          "ref": "D:\\rivals-agent-evidence\\camera-map-20260929b\\sweep-second\\index.json",
+          "sha256": "d2030cd1a73f111ebb67129570d2023a17a175b55f2c89e35837446770db0e65"
+        }
+      },
+      {
+        "signed_counts": -2810,
+        "raw_burst": {
+          "start": 24.170758898769506,
+          "end": 25.789631798680873,
+          "dx": -2810,
+          "dy": 79,
+          "abs_dx": 2858,
+          "abs_dy": 317,
+          "events": 180
+        },
+        "far_landmark": false,
+        "level_camera": false,
+        "endpoint_count_uncertainty": null,
+        "qualification": "Far-point edge-to-edge endpoints and level camera not established; raw burst totals are not qualified HFOV counts.",
+        "gain_evidence": {
+          "ref": "docs/evidence/camera-map-20260929b/gain-provenance.json",
+          "sha256": "7c160f339567731926b9c85b268c8e2ee59ca2a6aac4619edc8811824d79b693"
+        },
+        "native_evidence": {
+          "ref": "D:\\rivals-agent-evidence\\camera-map-20260929b\\sweep-second\\index.json",
+          "sha256": "d2030cd1a73f111ebb67129570d2023a17a175b55f2c89e35837446770db0e65"
+        }
+      },
+      {
+        "signed_counts": 2796,
+        "raw_burst": {
+          "start": 28.325669898701832,
+          "end": 31.66772659873031,
+          "dx": 2796,
+          "dy": -11,
+          "abs_dx": 2806,
+          "abs_dy": 315,
+          "events": 333
+        },
+        "far_landmark": false,
+        "level_camera": false,
+        "endpoint_count_uncertainty": null,
+        "qualification": "Far-point edge-to-edge endpoints and level camera not established; raw burst totals are not qualified HFOV counts.",
+        "gain_evidence": {
+          "ref": "docs/evidence/camera-map-20260929b/gain-provenance.json",
+          "sha256": "7c160f339567731926b9c85b268c8e2ee59ca2a6aac4619edc8811824d79b693"
+        },
+        "native_evidence": {
+          "ref": "D:\\rivals-agent-evidence\\camera-map-20260929b\\sweep-second\\index.json",
+          "sha256": "d2030cd1a73f111ebb67129570d2023a17a175b55f2c89e35837446770db0e65"
+        }
+      },
+      {
+        "signed_counts": -2795,
+        "raw_burst": {
+          "start": 33.77459599874355,
+          "end": 35.366953098731116,
+          "dx": -2795,
+          "dy": 71,
+          "abs_dx": 2875,
+          "abs_dy": 285,
+          "events": 142
+        },
+        "far_landmark": false,
+        "level_camera": false,
+        "endpoint_count_uncertainty": null,
+        "qualification": "Far-point edge-to-edge endpoints and level camera not established; raw burst totals are not qualified HFOV counts.",
+        "gain_evidence": {
+          "ref": "docs/evidence/camera-map-20260929b/gain-provenance.json",
+          "sha256": "7c160f339567731926b9c85b268c8e2ee59ca2a6aac4619edc8811824d79b693"
+        },
+        "native_evidence": {
+          "ref": "D:\\rivals-agent-evidence\\camera-map-20260929b\\sweep-second\\index.json",
+          "sha256": "d2030cd1a73f111ebb67129570d2023a17a175b55f2c89e35837446770db0e65"
+        }
+      }
+    ],
+    "result": {
+      "status": "refused",
+      "reason": "inspected far landmark and level camera required; near control stays separate",
+      "focal_candidate": null
+    }
+  },
+  {
+    "folder": "sweep-tail",
+    "rows": [
+      {
+        "signed_counts": 2754,
+        "raw_burst": {
+          "start": 1333.5735510689476,
+          "end": 1339.391559368981,
+          "dx": 2754,
+          "dy": 109,
+          "abs_dx": 3554,
+          "abs_dy": 441,
+          "events": 312
+        },
+        "far_landmark": false,
+        "level_camera": false,
+        "endpoint_count_uncertainty": null,
+        "qualification": "Far-point edge-to-edge endpoints and level camera not established; raw burst totals are not qualified HFOV counts.",
+        "gain_evidence": {
+          "ref": "docs/evidence/camera-map-20260929b/gain-provenance.json",
+          "sha256": "7c160f339567731926b9c85b268c8e2ee59ca2a6aac4619edc8811824d79b693"
+        },
+        "native_evidence": {
+          "ref": "D:\\rivals-agent-evidence\\camera-map-20260929b\\sweep-tail\\index.json",
+          "sha256": "25c0cc870a5cc9b5bb28483b184a15ba1163776a769a8c12388a936abc455320"
+        }
+      },
+      {
+        "signed_counts": -2796,
+        "raw_burst": {
+          "start": 1341.5645586690437,
+          "end": 1346.2085512689584,
+          "dx": -2796,
+          "dy": -77,
+          "abs_dx": 2800,
+          "abs_dy": 109,
+          "events": 406
+        },
+        "far_landmark": false,
+        "level_camera": false,
+        "endpoint_count_uncertainty": null,
+        "qualification": "Far-point edge-to-edge endpoints and level camera not established; raw burst totals are not qualified HFOV counts.",
+        "gain_evidence": {
+          "ref": "docs/evidence/camera-map-20260929b/gain-provenance.json",
+          "sha256": "7c160f339567731926b9c85b268c8e2ee59ca2a6aac4619edc8811824d79b693"
+        },
+        "native_evidence": {
+          "ref": "D:\\rivals-agent-evidence\\camera-map-20260929b\\sweep-tail\\index.json",
+          "sha256": "25c0cc870a5cc9b5bb28483b184a15ba1163776a769a8c12388a936abc455320"
+        }
+      },
+      {
+        "signed_counts": 2770,
+        "raw_burst": {
+          "start": 1350.4455742689818,
+          "end": 1353.3135874689826,
+          "dx": 2770,
+          "dy": 78,
+          "abs_dx": 2840,
+          "abs_dy": 550,
+          "events": 266
+        },
+        "far_landmark": false,
+        "level_camera": false,
+        "endpoint_count_uncertainty": null,
+        "qualification": "Far-point edge-to-edge endpoints and level camera not established; raw burst totals are not qualified HFOV counts.",
+        "gain_evidence": {
+          "ref": "docs/evidence/camera-map-20260929b/gain-provenance.json",
+          "sha256": "7c160f339567731926b9c85b268c8e2ee59ca2a6aac4619edc8811824d79b693"
+        },
+        "native_evidence": {
+          "ref": "D:\\rivals-agent-evidence\\camera-map-20260929b\\sweep-tail\\index.json",
+          "sha256": "25c0cc870a5cc9b5bb28483b184a15ba1163776a769a8c12388a936abc455320"
+        }
+      },
+      {
+        "signed_counts": -3006,
+        "raw_burst": {
+          "start": 1355.008603969057,
+          "end": 1359.5105787689602,
+          "dx": -3006,
+          "dy": -16,
+          "abs_dx": 3086,
+          "abs_dy": 254,
+          "events": 436
+        },
+        "far_landmark": false,
+        "level_camera": false,
+        "endpoint_count_uncertainty": null,
+        "qualification": "Far-point edge-to-edge endpoints and level camera not established; raw burst totals are not qualified HFOV counts.",
+        "gain_evidence": {
+          "ref": "docs/evidence/camera-map-20260929b/gain-provenance.json",
+          "sha256": "7c160f339567731926b9c85b268c8e2ee59ca2a6aac4619edc8811824d79b693"
+        },
+        "native_evidence": {
+          "ref": "D:\\rivals-agent-evidence\\camera-map-20260929b\\sweep-tail\\index.json",
+          "sha256": "25c0cc870a5cc9b5bb28483b184a15ba1163776a769a8c12388a936abc455320"
+        }
+      },
+      {
+        "signed_counts": 3022,
+        "raw_burst": {
+          "start": 1361.7635832690205,
+          "end": 1363.3450111690247,
+          "dx": 3022,
+          "dy": 16,
+          "abs_dx": 3038,
+          "abs_dy": 420,
+          "events": 143
+        },
+        "far_landmark": false,
+        "level_camera": false,
+        "endpoint_count_uncertainty": null,
+        "qualification": "Far-point edge-to-edge endpoints and level camera not established; raw burst totals are not qualified HFOV counts.",
+        "gain_evidence": {
+          "ref": "docs/evidence/camera-map-20260929b/gain-provenance.json",
+          "sha256": "7c160f339567731926b9c85b268c8e2ee59ca2a6aac4619edc8811824d79b693"
+        },
+        "native_evidence": {
+          "ref": "D:\\rivals-agent-evidence\\camera-map-20260929b\\sweep-tail\\index.json",
+          "sha256": "25c0cc870a5cc9b5bb28483b184a15ba1163776a769a8c12388a936abc455320"
+        }
+      },
+      {
+        "signed_counts": -2757,
+        "raw_burst": {
+          "start": 1364.827554469047,
+          "end": 1371.5235028689997,
+          "dx": -2757,
+          "dy": 25,
+          "abs_dx": 2791,
+          "abs_dy": 261,
+          "events": 509
+        },
+        "far_landmark": false,
+        "level_camera": false,
+        "endpoint_count_uncertainty": null,
+        "qualification": "Far-point edge-to-edge endpoints and level camera not established; raw burst totals are not qualified HFOV counts.",
+        "gain_evidence": {
+          "ref": "docs/evidence/camera-map-20260929b/gain-provenance.json",
+          "sha256": "7c160f339567731926b9c85b268c8e2ee59ca2a6aac4619edc8811824d79b693"
+        },
+        "native_evidence": {
+          "ref": "D:\\rivals-agent-evidence\\camera-map-20260929b\\sweep-tail\\index.json",
+          "sha256": "25c0cc870a5cc9b5bb28483b184a15ba1163776a769a8c12388a936abc455320"
+        }
+      }
+    ],
+    "result": {
+      "status": "refused",
+      "reason": "inspected far landmark and level camera required; near control stays separate",
+      "focal_candidate": null
+    }
+  }
+]

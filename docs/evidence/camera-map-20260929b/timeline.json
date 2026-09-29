@@ -1,0 +1,957 @@
+{
+  "ledgers": [
+    {
+      "path": "C:\\Users\\volpe\\Videos\\RivalsInput\\20260929T200344-560Z-137068-1",
+      "video": "C:/Users/volpe/Videos/2026-09-29 15-03-44.mkv",
+      "metadata": {
+        "schema_version": 1,
+        "logger_version": "1.0.0",
+        "control_type": "keyboard_mouse",
+        "session_id": "20260929T200344-560Z-137068-1",
+        "status": "complete",
+        "started_utc": "2026-09-29T20:03:44.560Z",
+        "start_ns": 780097715469100,
+        "end_ns": 781487337054700,
+        "complete": true,
+        "clean_stop": true,
+        "video_path": "C:/Users/volpe/Videos/2026-09-29 15-03-44.mkv",
+        "target_executable": "Marvel-Win64-Shipping.exe",
+        "obs_version": "32.0.1",
+        "width": 2560,
+        "height": 1440,
+        "fps_num": 120,
+        "fps_den": 1,
+        "input_events": 9386,
+        "video_packets": 166717,
+        "frames_without_composition_timestamp": 0,
+        "queue_dropped_events": 0,
+        "writer_failed": false,
+        "first_queue_drop_ns": 0,
+        "last_queue_drop_ns": 0,
+        "raw_input_errors": 0,
+        "events_attempted": 176115,
+        "clock": "OBS os_gettime_ns; monotonic nanoseconds",
+        "input_time_semantics": "WM_INPUT received by logger thread, not device hardware time",
+        "video_time_semantics": "OBS encoder_packet_time.cts, not original game render time",
+        "capture_latency_calibrated": false,
+        "dpi": null,
+        "game_sensitivity": null,
+        "hero": null,
+        "game_patch": null,
+        "bindings": null
+      },
+      "clock_base": 780097.852804631,
+      "clock_offset_range_s": [
+        780097.8527768446,
+        780097.852832417
+      ],
+      "muxer_offset_s_provisional": 0.021,
+      "mouse_bursts": [
+        {
+          "start": 3.9676020689578726,
+          "end": 7.1966515690358355,
+          "dx": -3620,
+          "dy": 234,
+          "abs_dx": 6222,
+          "abs_dy": 808,
+          "events": 171
+        },
+        {
+          "start": 10.051587068991736,
+          "end": 16.309574769045227,
+          "dx": -9390,
+          "dy": -399,
+          "abs_dx": 9778,
+          "abs_dy": 947,
+          "events": 371
+        },
+        {
+          "start": 18.048573368977756,
+          "end": 18.654503869059496,
+          "dx": -180,
+          "dy": 4,
+          "abs_dx": 188,
+          "abs_dy": 42,
+          "events": 34
+        },
+        {
+          "start": 28.701629468988628,
+          "end": 28.836645869006404,
+          "dx": 9,
+          "dy": -4,
+          "abs_dx": 11,
+          "abs_dy": 6,
+          "events": 8
+        },
+        {
+          "start": 624.1926252689948,
+          "end": 624.5995908689722,
+          "dx": 18,
+          "dy": -93,
+          "abs_dx": 60,
+          "abs_dy": 163,
+          "events": 30
+        },
+        {
+          "start": 625.4176268689837,
+          "end": 628.768582069016,
+          "dx": 959,
+          "dy": 216,
+          "abs_dx": 5853,
+          "abs_dy": 1280,
+          "events": 329
+        },
+        {
+          "start": 647.1086414689701,
+          "end": 654.3696490689683,
+          "dx": 1111,
+          "dy": 236,
+          "abs_dx": 11869,
+          "abs_dy": 2920,
+          "events": 540
+        },
+        {
+          "start": 659.7385924689509,
+          "end": 661.5806136690583,
+          "dx": -366,
+          "dy": -13,
+          "abs_dx": 2412,
+          "abs_dy": 237,
+          "events": 164
+        },
+        {
+          "start": 668.7925916689485,
+          "end": 670.1475783690614,
+          "dx": 316,
+          "dy": -73,
+          "abs_dx": 396,
+          "abs_dy": 89,
+          "events": 103
+        },
+        {
+          "start": 1259.1945642689745,
+          "end": 1259.2975617689583,
+          "dx": -233,
+          "dy": 409,
+          "abs_dx": 233,
+          "abs_dy": 409,
+          "events": 13
+        },
+        {
+          "start": 1260.444637868953,
+          "end": 1261.582601868947,
+          "dx": 339,
+          "dy": -445,
+          "abs_dx": 2815,
+          "abs_dy": 765,
+          "events": 140
+        },
+        {
+          "start": 1263.458591769034,
+          "end": 1271.7585854690326,
+          "dx": -873,
+          "dy": 287,
+          "abs_dx": 15539,
+          "abs_dy": 4309,
+          "events": 776
+        },
+        {
+          "start": 1273.191556269004,
+          "end": 1282.6726378689557,
+          "dx": -6612,
+          "dy": -299,
+          "abs_dx": 13292,
+          "abs_dy": 5201,
+          "events": 843
+        },
+        {
+          "start": 1284.8496068689776,
+          "end": 1288.9263852689685,
+          "dx": -3540,
+          "dy": -227,
+          "abs_dx": 4870,
+          "abs_dy": 475,
+          "events": 313
+        },
+        {
+          "start": 1292.2786139690354,
+          "end": 1292.863597868992,
+          "dx": -524,
+          "dy": -953,
+          "abs_dx": 800,
+          "abs_dy": 1315,
+          "events": 68
+        },
+        {
+          "start": 1293.7755454689534,
+          "end": 1294.1465935690132,
+          "dx": 9,
+          "dy": 0,
+          "abs_dx": 9,
+          "abs_dy": 0,
+          "events": 9
+        },
+        {
+          "start": 1297.4416045690225,
+          "end": 1311.3185625690305,
+          "dx": -3294,
+          "dy": -182,
+          "abs_dx": 3798,
+          "abs_dy": 1844,
+          "events": 818
+        },
+        {
+          "start": 1312.624576169,
+          "end": 1313.6866246690545,
+          "dx": -54,
+          "dy": 224,
+          "abs_dx": 88,
+          "abs_dy": 370,
+          "events": 98
+        },
+        {
+          "start": 1314.4786054690405,
+          "end": 1315.9680728690503,
+          "dx": -24,
+          "dy": 70,
+          "abs_dx": 24,
+          "abs_dy": 70,
+          "events": 63
+        },
+        {
+          "start": 1316.7855633689826,
+          "end": 1317.0125747690247,
+          "dx": 9,
+          "dy": 0,
+          "abs_dx": 11,
+          "abs_dy": 0,
+          "events": 11
+        },
+        {
+          "start": 1319.3546020690621,
+          "end": 1322.6197635690253,
+          "dx": -1098,
+          "dy": -104,
+          "abs_dx": 1304,
+          "abs_dy": 158,
+          "events": 233
+        },
+        {
+          "start": 1325.2355527689717,
+          "end": 1326.787672468977,
+          "dx": -239,
+          "dy": -18,
+          "abs_dx": 287,
+          "abs_dy": 40,
+          "events": 86
+        },
+        {
+          "start": 1331.9695677690245,
+          "end": 1332.39187636895,
+          "dx": 14,
+          "dy": 0,
+          "abs_dx": 14,
+          "abs_dy": 4,
+          "events": 16
+        },
+        {
+          "start": 1333.5735510689476,
+          "end": 1339.391559368981,
+          "dx": 2754,
+          "dy": 109,
+          "abs_dx": 3554,
+          "abs_dy": 441,
+          "events": 312
+        },
+        {
+          "start": 1341.5645586690437,
+          "end": 1346.2085512689584,
+          "dx": -2796,
+          "dy": -77,
+          "abs_dx": 2800,
+          "abs_dy": 109,
+          "events": 406
+        },
+        {
+          "start": 1348.3765590689648,
+          "end": 1348.4688773690061,
+          "dx": 1,
+          "dy": -5,
+          "abs_dx": 1,
+          "abs_dy": 5,
+          "events": 3
+        },
+        {
+          "start": 1350.4455742689818,
+          "end": 1353.3135874689826,
+          "dx": 2770,
+          "dy": 78,
+          "abs_dx": 2840,
+          "abs_dy": 550,
+          "events": 266
+        },
+        {
+          "start": 1355.008603969057,
+          "end": 1359.5105787689602,
+          "dx": -3006,
+          "dy": -16,
+          "abs_dx": 3086,
+          "abs_dy": 254,
+          "events": 436
+        },
+        {
+          "start": 1360.894617368983,
+          "end": 1360.9909845690047,
+          "dx": -12,
+          "dy": -12,
+          "abs_dx": 12,
+          "abs_dy": 12,
+          "events": 6
+        },
+        {
+          "start": 1361.7635832690205,
+          "end": 1363.3450111690247,
+          "dx": 3022,
+          "dy": 16,
+          "abs_dx": 3038,
+          "abs_dy": 420,
+          "events": 143
+        },
+        {
+          "start": 1364.827554469047,
+          "end": 1371.5235028689997,
+          "dx": -2757,
+          "dy": 25,
+          "abs_dx": 2791,
+          "abs_dy": 261,
+          "events": 509
+        },
+        {
+          "start": 1373.172559969061,
+          "end": 1374.7065496689677,
+          "dx": 2767,
+          "dy": -44,
+          "abs_dx": 2791,
+          "abs_dy": 120,
+          "events": 133
+        },
+        {
+          "start": 1377.1295792690282,
+          "end": 1378.1265675690295,
+          "dx": -5,
+          "dy": -2,
+          "abs_dx": 39,
+          "abs_dy": 18,
+          "events": 22
+        },
+        {
+          "start": 1378.9305921689877,
+          "end": 1383.2071370690167,
+          "dx": -2768,
+          "dy": 116,
+          "abs_dx": 2808,
+          "abs_dy": 278,
+          "events": 453
+        }
+      ],
+      "hashes": {
+        "metadata.json": "0d1972a28c8d2f538be0df7751b0d4b35dac13914ddf9f924863317c640cb6a7",
+        "frames.csv": "bbbe713d71a491bb2ee3dfb4380dc6b1323466ec065f195a57501b3db914153f",
+        "inputs.jsonl": "1ce1444fa7834300313d50b8015c2c03a39702423222492d0a157f9db176a09e"
+      }
+    },
+    {
+      "path": "C:\\Users\\volpe\\Videos\\RivalsInput\\20260929T202708-927Z-137068-2",
+      "video": "C:/Users/volpe/Videos/2026-09-29 15-27-08.mkv",
+      "metadata": {
+        "schema_version": 1,
+        "logger_version": "1.0.0",
+        "control_type": "keyboard_mouse",
+        "session_id": "20260929T202708-927Z-137068-2",
+        "status": "complete",
+        "started_utc": "2026-09-29T20:27:08.927Z",
+        "start_ns": 781502077173800,
+        "end_ns": 781569601974600,
+        "complete": true,
+        "clean_stop": true,
+        "video_path": "C:/Users/volpe/Videos/2026-09-29 15-27-08.mkv",
+        "target_executable": "Marvel-Win64-Shipping.exe",
+        "obs_version": "32.0.1",
+        "width": 2560,
+        "height": 1440,
+        "fps_num": 120,
+        "fps_den": 1,
+        "input_events": 2823,
+        "video_packets": 8058,
+        "frames_without_composition_timestamp": 0,
+        "queue_dropped_events": 0,
+        "writer_failed": false,
+        "first_queue_drop_ns": 0,
+        "last_queue_drop_ns": 0,
+        "raw_input_errors": 0,
+        "events_attempted": 10887,
+        "clock": "OBS os_gettime_ns; monotonic nanoseconds",
+        "input_time_semantics": "WM_INPUT received by logger thread, not device hardware time",
+        "video_time_semantics": "OBS encoder_packet_time.cts, not original game render time",
+        "capture_latency_calibrated": false,
+        "dpi": null,
+        "game_sensitivity": null,
+        "hero": null,
+        "game_patch": null,
+        "bindings": null
+      },
+      "clock_base": 781502.1777749013,
+      "clock_offset_range_s": [
+        781502.1777735583,
+        781502.177776244
+      ],
+      "muxer_offset_s_provisional": 0.021,
+      "mouse_bursts": [
+        {
+          "start": 2.075586798767559,
+          "end": 3.42230909869913,
+          "dx": -20,
+          "dy": -159,
+          "abs_dx": 1082,
+          "abs_dy": 323,
+          "events": 87
+        },
+        {
+          "start": 4.4635767987268045,
+          "end": 6.097619798783213,
+          "dx": -31,
+          "dy": -15,
+          "abs_dx": 73,
+          "abs_dy": 51,
+          "events": 40
+        },
+        {
+          "start": 7.164607698730193,
+          "end": 12.233313298718073,
+          "dx": 2812,
+          "dy": 72,
+          "abs_dx": 2916,
+          "abs_dy": 220,
+          "events": 393
+        },
+        {
+          "start": 13.349600898734295,
+          "end": 14.84163329871744,
+          "dx": -2736,
+          "dy": 81,
+          "abs_dx": 2736,
+          "abs_dy": 203,
+          "events": 146
+        },
+        {
+          "start": 16.113592298751698,
+          "end": 16.289613298772835,
+          "dx": -6,
+          "dy": -3,
+          "abs_dx": 6,
+          "abs_dy": 3,
+          "events": 7
+        },
+        {
+          "start": 17.31659789877385,
+          "end": 21.722313198776916,
+          "dx": 2793,
+          "dy": -72,
+          "abs_dx": 2797,
+          "abs_dy": 160,
+          "events": 511
+        },
+        {
+          "start": 24.170758898769506,
+          "end": 25.789631798680873,
+          "dx": -2810,
+          "dy": 79,
+          "abs_dx": 2858,
+          "abs_dy": 317,
+          "events": 180
+        },
+        {
+          "start": 28.325669898701832,
+          "end": 31.66772659873031,
+          "dx": 2796,
+          "dy": -11,
+          "abs_dx": 2806,
+          "abs_dy": 315,
+          "events": 333
+        },
+        {
+          "start": 33.77459599874355,
+          "end": 35.366953098731116,
+          "dx": -2795,
+          "dy": 71,
+          "abs_dx": 2875,
+          "abs_dy": 285,
+          "events": 142
+        },
+        {
+          "start": 40.308582998746076,
+          "end": 45.21858439867292,
+          "dx": 2789,
+          "dy": -118,
+          "abs_dx": 2811,
+          "abs_dy": 244,
+          "events": 419
+        },
+        {
+          "start": 46.860598898775876,
+          "end": 46.882571098677815,
+          "dx": -4,
+          "dy": -4,
+          "abs_dx": 4,
+          "abs_dy": 4,
+          "events": 3
+        },
+        {
+          "start": 48.39961209874973,
+          "end": 49.512690498776735,
+          "dx": -2759,
+          "dy": 154,
+          "abs_dx": 2827,
+          "abs_dy": 156,
+          "events": 126
+        },
+        {
+          "start": 51.967600698749536,
+          "end": 55.6380043987222,
+          "dx": 2784,
+          "dy": -76,
+          "abs_dx": 2812,
+          "abs_dy": 212,
+          "events": 291
+        },
+        {
+          "start": 57.16760879876465,
+          "end": 57.93561839876138,
+          "dx": -68,
+          "dy": 4,
+          "abs_dx": 428,
+          "abs_dy": 294,
+          "events": 91
+        },
+        {
+          "start": 58.881628698719666,
+          "end": 60.09058329875488,
+          "dx": 45,
+          "dy": 21,
+          "abs_dx": 45,
+          "abs_dy": 23,
+          "events": 25
+        }
+      ],
+      "hashes": {
+        "metadata.json": "0cde0f3730d5bcabe936843f49219b326e7e2f070e850634a7e46d82d967c732",
+        "frames.csv": "49daa825061b337ad4c14264c8971097f7b4918d2bd795c230c96f7f427ad9dd",
+        "inputs.jsonl": "4edd03e5e7dd6f95c055c64abe7ce05d483e3da9738d35148c6ac34f8fb45b96"
+      }
+    }
+  ],
+  "runs": [
+    {
+      "run": "pitch-01",
+      "actuator": true,
+      "stop": "schedule_completed",
+      "removal": true,
+      "cleanup_error": null,
+      "manifest_sha256": "42f27a7105937d10c9a9cf55d4789768b9228407a95c3a42dce7f15ec6f59801",
+      "actuator_sha256": "58d0ade0de8385e56beba094d7aba2b0ee6cc2726a7bdbdd7389a90a72d423c7"
+    },
+    {
+      "run": "pitch-02",
+      "actuator": true,
+      "stop": "schedule_completed",
+      "removal": true,
+      "cleanup_error": null,
+      "manifest_sha256": "78af6ed5f7f36af5d8600b83b60d310c883238a6ed9cd22a19a69de8f41a6a24",
+      "actuator_sha256": "09c14093645d64bade521388376827462f37c42b73bf91b1cdfd01ff81cc22d0"
+    },
+    {
+      "run": "pitch-03",
+      "actuator": true,
+      "stop": "schedule_completed",
+      "removal": true,
+      "cleanup_error": null,
+      "manifest_sha256": "93dbcb9f9fdfdc5f170be21e77472988a2d4f1b1498f07212014226cae1791ad",
+      "actuator_sha256": "cd038e06f6c89d92fb2aa95b5c70f62bfed4767e55ad407eba05aabb41eeb20f"
+    },
+    {
+      "run": "pitch-04",
+      "actuator": true,
+      "stop": "schedule_completed",
+      "removal": true,
+      "cleanup_error": null,
+      "manifest_sha256": "1792d0e4d462e2606a3c2bdc3e86d0d16e1015ba3f91ccd6b6124165f76fee30",
+      "actuator_sha256": "0555e1b26f171c2fa3b2a299a398d74a4e5181c926cb587e50ae2a58bc94e58b"
+    },
+    {
+      "run": "yaw-01",
+      "actuator": true,
+      "stop": "schedule_completed",
+      "removal": true,
+      "cleanup_error": null,
+      "manifest_sha256": "176b6aa086ad97d38baa076454a1891ac44c0b48e7f102f9cd2398f024cfdbc8",
+      "actuator_sha256": "3a270fc74749c625dc6f5b99bf388b98929a17f414beeaee23b47b1b5da13960"
+    },
+    {
+      "run": "yaw-02",
+      "actuator": true,
+      "stop": "schedule_completed",
+      "removal": true,
+      "cleanup_error": null,
+      "manifest_sha256": "144c82421ff5c6403fb8208048de9ae11c8a8877d116f92085521e5cad2dd43a",
+      "actuator_sha256": "fb99f1be1716ccc28b2e134e429f857a4df16a4ee4949ca083ece874d7f15d90"
+    },
+    {
+      "run": "yaw-03",
+      "actuator": true,
+      "stop": "schedule_completed",
+      "removal": true,
+      "cleanup_error": null,
+      "manifest_sha256": "871186b90bd90546914b957af39c0741df8451e53ffa6719c3de15a2e267eea2",
+      "actuator_sha256": "8dffeeccd10cd80333836b255784c2a9bb794d6997bf29d8844b52b472fe9c23"
+    },
+    {
+      "run": "yaw-04",
+      "actuator": false
+    },
+    {
+      "run": "yaw-04b",
+      "actuator": true,
+      "stop": "schedule_completed",
+      "removal": true,
+      "cleanup_error": null,
+      "manifest_sha256": "5340df380a903e23b19b50149625728f7ce304fd9832e6c431ecf38a6fce1a03",
+      "actuator_sha256": "ae7a8585c7f030af760fe6ffe23d4fd7abf35f558cf72018431eca9dfe997e55"
+    }
+  ],
+  "segments": [
+    {
+      "run": "pitch-01",
+      "role": "pitch-0",
+      "axis": "pitch",
+      "stick": 0.45,
+      "on_t": 780347.4268839,
+      "off_t": 780347.9268044,
+      "on_pts": 249.5950792689612,
+      "off_pts": 250.09499976905434,
+      "actual_duration_s": 0.4999205000931397,
+      "scheduled_duration_s": 0.5
+    },
+    {
+      "run": "pitch-01",
+      "role": "pitch-1",
+      "axis": "pitch",
+      "stick": -0.45,
+      "on_t": 780348.4268012,
+      "off_t": 780348.9271985,
+      "on_pts": 250.59499656902997,
+      "off_pts": 251.0953938690284,
+      "actual_duration_s": 0.5003972999984398,
+      "scheduled_duration_s": 0.5
+    },
+    {
+      "run": "pitch-01",
+      "role": "pitch-2",
+      "axis": "pitch",
+      "stick": 0.3,
+      "on_t": 780349.4267804,
+      "off_t": 780349.9269991,
+      "on_pts": 251.594975768988,
+      "off_pts": 252.09519446902348,
+      "actual_duration_s": 0.5002187000354752,
+      "scheduled_duration_s": 0.5
+    },
+    {
+      "run": "pitch-01",
+      "role": "pitch-3",
+      "axis": "pitch",
+      "stick": -0.3,
+      "on_t": 780350.4267406,
+      "off_t": 780350.9263107,
+      "on_pts": 252.5949359690342,
+      "off_pts": 253.09450606902035,
+      "actual_duration_s": 0.4995700999861583,
+      "scheduled_duration_s": 0.5
+    },
+    {
+      "run": "pitch-02",
+      "role": "pitch-0",
+      "axis": "pitch",
+      "stick": 0.6,
+      "on_t": 780532.0041107,
+      "off_t": 780532.2538322,
+      "on_pts": 434.1723060689904,
+      "off_pts": 434.42202756896523,
+      "actual_duration_s": 0.2497214999748394,
+      "scheduled_duration_s": 0.25
+    },
+    {
+      "run": "pitch-02",
+      "role": "pitch-1",
+      "axis": "pitch",
+      "stick": -0.6,
+      "on_t": 780532.7535374,
+      "off_t": 780533.0039662,
+      "on_pts": 434.9217327690488,
+      "off_pts": 435.17216156905425,
+      "actual_duration_s": 0.25042880000546575,
+      "scheduled_duration_s": 0.25
+    },
+    {
+      "run": "pitch-02",
+      "role": "pitch-2",
+      "axis": "pitch",
+      "stick": 0.8,
+      "on_t": 780533.5037611,
+      "off_t": 780533.7540433,
+      "on_pts": 435.6719564690059,
+      "off_pts": 435.92223866905925,
+      "actual_duration_s": 0.25028220005333424,
+      "scheduled_duration_s": 0.25
+    },
+    {
+      "run": "pitch-02",
+      "role": "pitch-3",
+      "axis": "pitch",
+      "stick": -0.8,
+      "on_t": 780534.2538313,
+      "off_t": 780534.5033333,
+      "on_pts": 436.4220266689584,
+      "off_pts": 436.67152866900807,
+      "actual_duration_s": 0.24950200004968792,
+      "scheduled_duration_s": 0.25
+    },
+    {
+      "run": "pitch-03",
+      "role": "pitch-0",
+      "axis": "pitch",
+      "stick": 1.0,
+      "on_t": 780679.1790812,
+      "off_t": 780679.4290656,
+      "on_pts": 581.3472765690451,
+      "off_pts": 581.5972609690427,
+      "actual_duration_s": 0.24998439999762923,
+      "scheduled_duration_s": 0.25
+    },
+    {
+      "run": "pitch-03",
+      "role": "pitch-1",
+      "axis": "pitch",
+      "stick": -1.0,
+      "on_t": 780679.9290918,
+      "off_t": 780680.178698,
+      "on_pts": 582.0972871690094,
+      "off_pts": 582.3468933690376,
+      "actual_duration_s": 0.24960620002821088,
+      "scheduled_duration_s": 0.25
+    },
+    {
+      "run": "pitch-04",
+      "role": "pitch-0",
+      "axis": "pitch",
+      "stick": 0.1,
+      "on_t": 781032.5499764,
+      "off_t": 781033.0500997,
+      "on_pts": 934.7181717689884,
+      "off_pts": 935.218295068996,
+      "actual_duration_s": 0.5001233000075445,
+      "scheduled_duration_s": 0.5
+    },
+    {
+      "run": "pitch-04",
+      "role": "pitch-1",
+      "axis": "pitch",
+      "stick": -0.1,
+      "on_t": 781033.5499651,
+      "off_t": 781034.0501309,
+      "on_pts": 935.7181604690188,
+      "off_pts": 936.2183262690007,
+      "actual_duration_s": 0.5001657999819145,
+      "scheduled_duration_s": 0.5
+    },
+    {
+      "run": "pitch-04",
+      "role": "pitch-2",
+      "axis": "pitch",
+      "stick": 0.2,
+      "on_t": 781034.550357,
+      "off_t": 781035.0501135,
+      "on_pts": 936.7185523689761,
+      "off_pts": 937.2183088689846,
+      "actual_duration_s": 0.499756500008516,
+      "scheduled_duration_s": 0.5
+    },
+    {
+      "run": "pitch-04",
+      "role": "pitch-3",
+      "axis": "pitch",
+      "stick": -0.2,
+      "on_t": 781035.5501264,
+      "off_t": 781036.0502685,
+      "on_pts": 937.7183217689665,
+      "off_pts": 938.2184638690007,
+      "actual_duration_s": 0.5001421000342816,
+      "scheduled_duration_s": 0.5
+    },
+    {
+      "run": "yaw-01",
+      "role": "yaw-0",
+      "axis": "yaw",
+      "stick": -0.45,
+      "on_t": 780212.43893,
+      "off_t": 780232.4389755,
+      "on_pts": 114.60712536895089,
+      "off_pts": 134.6071708689481,
+      "actual_duration_s": 20.000045499997213,
+      "scheduled_duration_s": 20.0
+    },
+    {
+      "run": "yaw-01",
+      "role": "yaw-1",
+      "axis": "yaw",
+      "stick": 0.3,
+      "on_t": 780232.9386373,
+      "off_t": 780252.9389345,
+      "on_pts": 135.10683266905042,
+      "off_pts": 155.10712986898514,
+      "actual_duration_s": 20.00029719993472,
+      "scheduled_duration_s": 20.0
+    },
+    {
+      "run": "yaw-01",
+      "role": "yaw-2",
+      "axis": "yaw",
+      "stick": -0.3,
+      "on_t": 780253.4387885,
+      "off_t": 780273.4387186,
+      "on_pts": 155.60698386903758,
+      "off_pts": 175.60691396897099,
+      "actual_duration_s": 19.999930099933408,
+      "scheduled_duration_s": 20.0
+    },
+    {
+      "run": "yaw-01",
+      "role": "yaw-3",
+      "axis": "yaw",
+      "stick": 0.6,
+      "on_t": 780273.9386822,
+      "off_t": 780293.9385073,
+      "on_pts": 176.10687756904306,
+      "off_pts": 196.10670266899186,
+      "actual_duration_s": 19.999825099948794,
+      "scheduled_duration_s": 20.0
+    },
+    {
+      "run": "yaw-02",
+      "role": "yaw-0",
+      "axis": "yaw",
+      "stick": -0.6,
+      "on_t": 780399.6271325,
+      "off_t": 780419.6274349,
+      "on_pts": 301.7953278690614,
+      "off_pts": 321.7956302690357,
+      "actual_duration_s": 20.000302399974316,
+      "scheduled_duration_s": 20.0
+    },
+    {
+      "run": "yaw-02",
+      "role": "yaw-1",
+      "axis": "yaw",
+      "stick": 0.8,
+      "on_t": 780420.1272365,
+      "off_t": 780440.1274233,
+      "on_pts": 322.2954318690384,
+      "off_pts": 342.2956186689474,
+      "actual_duration_s": 20.000186799908988,
+      "scheduled_duration_s": 20.0
+    },
+    {
+      "run": "yaw-02",
+      "role": "yaw-2",
+      "axis": "yaw",
+      "stick": -0.8,
+      "on_t": 780440.6271981,
+      "off_t": 780460.6267743,
+      "on_pts": 342.79539346897883,
+      "off_pts": 362.79496966901144,
+      "actual_duration_s": 19.999576200032607,
+      "scheduled_duration_s": 20.0
+    },
+    {
+      "run": "yaw-02",
+      "role": "yaw-3",
+      "axis": "yaw",
+      "stick": 1.0,
+      "on_t": 780461.1271004,
+      "off_t": 780481.1264213,
+      "on_pts": 363.2952957690498,
+      "off_pts": 383.2946166690011,
+      "actual_duration_s": 19.99932089995127,
+      "scheduled_duration_s": 20.0
+    },
+    {
+      "run": "yaw-03",
+      "role": "yaw-0",
+      "axis": "yaw",
+      "stick": -1.0,
+      "on_t": 780573.8654686,
+      "off_t": 780593.86677,
+      "on_pts": 476.0336639689552,
+      "off_pts": 496.0349653689694,
+      "actual_duration_s": 20.0013014000142,
+      "scheduled_duration_s": 20.0
+    },
+    {
+      "run": "yaw-03",
+      "role": "yaw-1",
+      "axis": "yaw",
+      "stick": 0.2,
+      "on_t": 780594.3657678,
+      "off_t": 780614.3656188,
+      "on_pts": 496.53396316902155,
+      "off_pts": 516.5338141690511,
+      "actual_duration_s": 19.999851000029594,
+      "scheduled_duration_s": 20.0
+    },
+    {
+      "run": "yaw-03",
+      "role": "yaw-2",
+      "axis": "yaw",
+      "stick": -0.2,
+      "on_t": 780614.8656444,
+      "off_t": 780634.8653551,
+      "on_pts": 517.0338397690132,
+      "off_pts": 537.0335504690222,
+      "actual_duration_s": 19.999710700009018,
+      "scheduled_duration_s": 20.0
+    },
+    {
+      "run": "yaw-04b",
+      "role": "yaw-0",
+      "axis": "yaw",
+      "stick": 0.1,
+      "on_t": 781074.6269871,
+      "off_t": 781094.6265275,
+      "on_pts": 976.7951824690019,
+      "off_pts": 996.7947228689948,
+      "actual_duration_s": 19.99954039999284,
+      "scheduled_duration_s": 20.0
+    },
+    {
+      "run": "yaw-04b",
+      "role": "yaw-1",
+      "axis": "yaw",
+      "stick": -0.1,
+      "on_t": 781095.1270611,
+      "off_t": 781115.1263768,
+      "on_pts": 997.2952564689833,
+      "off_pts": 1017.2945721690114,
+      "actual_duration_s": 19.99931570002809,
+      "scheduled_duration_s": 20.0
+    }
+  ]
+}

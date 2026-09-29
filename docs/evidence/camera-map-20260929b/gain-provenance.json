@@ -1,0 +1,35 @@
+{
+  "sitting": "alt-cam-20260929b",
+  "gain_deg_per_mouse_count": 0.0330738,
+  "axis": "yaw only; historical pitch gain remains unknown",
+  "historical_precision_relative": 0.0002,
+  "diagnostic_relative_allowance": 0.0008,
+  "allowance_note": "0.08% is a conservative diagnostic allowance informed by the old left-turn checks, not a current statistical confidence interval or bound on endpoint geometry. No focal accepted.",
+  "attestation": {
+    "speaker": "James",
+    "relay": "lead to evaluator",
+    "date": "2026-09-29",
+    "time": "15:45 CDT",
+    "verbatim": "yes all is the same",
+    "question_answered": "Alt-account mouse sensitivity remains 1.89/1.89 and smoothing/acceleration unchanged from accepted alt gain calibration.",
+    "scope": "Verbal settings attestation for this sitting; not a new gain measurement."
+  },
+  "historical_settings": {
+    "sensitivity_h": 1.89,
+    "sensitivity_v": 1.89,
+    "smoothing": "on",
+    "acceleration": "on",
+    "acceleration_factor": 1.0,
+    "acceleration_activation_threshold": 1
+  },
+  "sources": [
+    {
+      "ref": "docs/evidence/whole-session-intake-20260923/calibration-take.md",
+      "sha256": "c97745de70119181879eb5a3fc3db14ec5534819cd9f1d1bf4eb02662389d9b6"
+    },
+    {
+      "ref": "data/human/calibration/20260926T162648-153Z-116800-4/calibration.json",
+      "sha256": "7c9c655ed4d93eaec14fefb9afbb7ac5319ee8e0849d9ba1714c1468372a9154"
+    }
+  ]
+}

@@ -10,31 +10,31 @@
   "focal": {
     "value": null,
     "status": "missing",
-    "sitting": null,
-    "receipt": null,
+    "sitting": "alt-cam-20260929b",
+    "receipt": "docs/evidence/camera-map-20260929b/README.md",
     "uncertainty": {
       "plus_minus": null,
-      "note": "Not measured or accepted for this profile."
+      "note": "Mouse gain settings verbally attested unchanged by James, relayed by lead at 15:45 CDT 2026-09-29. Neither recording establishes six verified far-point edge-to-edge, level sweeps with bounded endpoint counts. focal_from_counts refuses. 630/640 px orbit fits are conditional diagnostics with broad profiles, not qualified focal values or bounds."
     }
   },
   "latency": {
     "value": null,
     "status": "missing",
-    "sitting": null,
-    "receipt": null,
+    "sitting": "alt-cam-20260929b",
+    "receipt": "docs/evidence/camera-map-20260929b/README.md",
     "uncertainty": {
       "plus_minus": null,
-      "note": "Not measured or accepted for this profile."
+      "note": "OBS metadata explicitly says capture_latency_calibrated=false. Pitch onset intervals straddle the report timestamp under the provisional clock mapping; no independently calibrated pad-to-game/display latency measurement."
     }
   },
   "interpolation": {
     "value": null,
     "status": "missing",
-    "sitting": null,
-    "receipt": null,
+    "sitting": "alt-cam-20260929b",
+    "receipt": "docs/evidence/camera-map-20260929b/README.md",
     "uncertainty": {
       "plus_minus": null,
-      "note": "Not measured or accepted for this profile."
+      "note": "Only the declared knots are measured. No off-knot/model validation; neither directional symmetry nor interpolation is accepted."
     }
   },
   "yaw": {
@@ -42,39 +42,51 @@
       {
         "stick": 0.1,
         "measurement": {
-          "value": null,
-          "status": "missing",
-          "sitting": null,
-          "receipt": null,
+          "value": 19.83662983047608,
+          "status": "candidate",
+          "sitting": "alt-cam-20260929b/yaw-04b",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
           "uncertainty": {
             "plus_minus": null,
-            "note": "Not measured or accepted for this profile."
+            "interval": [
+              19.45945945945946,
+              20.13986013986014
+            ],
+            "note": "1 native full turn(s); conservative endpoint sampling/annotation bounds with 0.125 s extra guard at each endpoint, not a statistical confidence interval. Only one turn: no between-turn repeatability estimate. Independent signed measurement; no focal assumption."
           }
         }
       },
       {
         "stick": 0.2,
         "measurement": {
-          "value": null,
-          "status": "missing",
-          "sitting": null,
-          "receipt": null,
+          "value": 59.02919415247721,
+          "status": "candidate",
+          "sitting": "alt-cam-20260929b/yaw-03",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
           "uncertainty": {
             "plus_minus": null,
-            "note": "Not measured or accepted for this profile."
+            "interval": [
+              57.6,
+              61.276595744680854
+            ],
+            "note": "2 native full turn(s); conservative endpoint sampling/annotation bounds with 0.125 s extra guard at each endpoint, not a statistical confidence interval. Independent signed measurement; no focal assumption."
           }
         }
       },
       {
         "stick": 0.3,
         "measurement": {
-          "value": null,
-          "status": "missing",
-          "sitting": null,
-          "receipt": null,
+          "value": 99.2990852787265,
+          "status": "candidate",
+          "sitting": "alt-cam-20260929b/yaw-01",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
           "uncertainty": {
             "plus_minus": null,
-            "note": "Not measured or accepted for this profile."
+            "interval": [
+              96.80672268907563,
+              101.94690265486726
+            ],
+            "note": "4 native full turn(s); conservative endpoint sampling/annotation bounds with 0.125 s extra guard at each endpoint, not a statistical confidence interval. Independent signed measurement; no focal assumption."
           }
         }
       },
@@ -98,13 +110,241 @@
       {
         "stick": 0.6,
         "measurement": {
-          "value": null,
-          "status": "missing",
-          "sitting": null,
-          "receipt": null,
+          "value": 218.17269861965244,
+          "status": "candidate",
+          "sitting": "alt-cam-20260929b/yaw-01",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
           "uncertainty": {
             "plus_minus": null,
-            "note": "Not measured or accepted for this profile."
+            "interval": [
+              214.05405405405406,
+              223.09859154929578
+            ],
+            "note": "11 native full turn(s); conservative endpoint sampling/annotation bounds with 0.125 s extra guard at each endpoint, not a statistical confidence interval. Independent signed measurement; no focal assumption."
+          }
+        }
+      },
+      {
+        "stick": 0.8,
+        "measurement": {
+          "value": 298.1110746824994,
+          "status": "candidate",
+          "sitting": "alt-cam-20260929b/yaw-02",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
+          "uncertainty": {
+            "plus_minus": null,
+            "interval": [
+              291.8918918918919,
+              304.22535211267603
+            ],
+            "note": "15 native full turn(s); conservative endpoint sampling/annotation bounds with 0.125 s extra guard at each endpoint, not a statistical confidence interval. Independent signed measurement; no focal assumption."
+          }
+        }
+      },
+      {
+        "stick": 1.0,
+        "measurement": {
+          "value": 357.72900506032477,
+          "status": "candidate",
+          "sitting": "alt-cam-20260929b/yaw-02",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
+          "uncertainty": {
+            "plus_minus": null,
+            "interval": [
+              350.7692307692308,
+              364.8
+            ],
+            "note": "19 native full turn(s); conservative endpoint sampling/annotation bounds with 0.125 s extra guard at each endpoint, not a statistical confidence interval. Independent signed measurement; no focal assumption."
+          }
+        }
+      }
+    ],
+    "negative": [
+      {
+        "stick": 0.1,
+        "measurement": {
+          "value": 19.83705169818397,
+          "status": "candidate",
+          "sitting": "alt-cam-20260929b/yaw-04b",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
+          "uncertainty": {
+            "plus_minus": null,
+            "interval": [
+              19.45945945945946,
+              20.13986013986014
+            ],
+            "note": "1 native full turn(s); conservative endpoint sampling/annotation bounds with 0.125 s extra guard at each endpoint, not a statistical confidence interval. Only one turn: no between-turn repeatability estimate. Independent signed measurement; no focal assumption."
+          }
+        }
+      },
+      {
+        "stick": 0.2,
+        "measurement": {
+          "value": 59.944605661294695,
+          "status": "candidate",
+          "sitting": "alt-cam-20260929b/yaw-03",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
+          "uncertainty": {
+            "plus_minus": null,
+            "interval": [
+              58.18181818181818,
+              61.935483870967744
+            ],
+            "note": "2 native full turn(s); conservative endpoint sampling/annotation bounds with 0.125 s extra guard at each endpoint, not a statistical confidence interval. Independent signed measurement; no focal assumption."
+          }
+        }
+      },
+      {
+        "stick": 0.3,
+        "measurement": {
+          "value": 99.18850866520424,
+          "status": "candidate",
+          "sitting": "alt-cam-20260929b/yaw-01",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
+          "uncertainty": {
+            "plus_minus": null,
+            "interval": [
+              96.0,
+              101.05263157894737
+            ],
+            "note": "4 native full turn(s); conservative endpoint sampling/annotation bounds with 0.125 s extra guard at each endpoint, not a statistical confidence interval. Independent signed measurement; no focal assumption."
+          }
+        }
+      },
+      {
+        "stick": 0.45,
+        "measurement": {
+          "value": 159.09615325715495,
+          "status": "candidate",
+          "sitting": "alt-cam-20260929b/yaw-01",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
+          "uncertainty": {
+            "plus_minus": null,
+            "interval": [
+              155.07692307692307,
+              162.58064516129033
+            ],
+            "note": "7 native full turn(s); conservative endpoint sampling/annotation bounds with 0.125 s extra guard at each endpoint, not a statistical confidence interval. Independent signed measurement; no focal assumption."
+          }
+        }
+      },
+      {
+        "stick": 0.6,
+        "measurement": {
+          "value": 218.32858007451384,
+          "status": "candidate",
+          "sitting": "alt-cam-20260929b/yaw-02",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
+          "uncertainty": {
+            "plus_minus": null,
+            "interval": [
+              214.05405405405406,
+              223.09859154929578
+            ],
+            "note": "11 native full turn(s); conservative endpoint sampling/annotation bounds with 0.125 s extra guard at each endpoint, not a statistical confidence interval. Independent signed measurement; no focal assumption."
+          }
+        }
+      },
+      {
+        "stick": 0.8,
+        "measurement": {
+          "value": 298.34905610884465,
+          "status": "candidate",
+          "sitting": "alt-cam-20260929b/yaw-02",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
+          "uncertainty": {
+            "plus_minus": null,
+            "interval": [
+              291.8918918918919,
+              304.22535211267603
+            ],
+            "note": "15 native full turn(s); conservative endpoint sampling/annotation bounds with 0.125 s extra guard at each endpoint, not a statistical confidence interval. Independent signed measurement; no focal assumption."
+          }
+        }
+      },
+      {
+        "stick": 1.0,
+        "measurement": {
+          "value": 358.14135297051376,
+          "status": "candidate",
+          "sitting": "alt-cam-20260929b/yaw-03",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
+          "uncertainty": {
+            "plus_minus": null,
+            "interval": [
+              350.7692307692308,
+              364.8
+            ],
+            "note": "19 native full turn(s); conservative endpoint sampling/annotation bounds with 0.125 s extra guard at each endpoint, not a statistical confidence interval. Independent signed measurement; no focal assumption."
+          }
+        }
+      }
+    ]
+  },
+  "pitch": {
+    "positive": [
+      {
+        "stick": 0.1,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": "alt-cam-20260929b/pitch-04",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "RY +0.1: camera up observed; scene vertical flow median 65.32 px/s at 1280 width. Not angular rate: focal and third-person orbit conversion remain unqualified. All four inspected late 60 Hz frame-pairs still move in the commanded sign; no observed clamp stop."
+          }
+        }
+      },
+      {
+        "stick": 0.2,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": "alt-cam-20260929b/pitch-04",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "RY +0.2: camera up observed; scene vertical flow median 202.44 px/s at 1280 width. Not angular rate: focal and third-person orbit conversion remain unqualified. All four inspected late 60 Hz frame-pairs still move in the commanded sign; no observed clamp stop."
+          }
+        }
+      },
+      {
+        "stick": 0.3,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": "alt-cam-20260929b/pitch-01",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "RY +0.3: camera up observed; scene vertical flow median 381.05 px/s at 1280 width. Not angular rate: focal and third-person orbit conversion remain unqualified. All four inspected late 60 Hz frame-pairs still move in the commanded sign; no observed clamp stop."
+          }
+        }
+      },
+      {
+        "stick": 0.45,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": "alt-cam-20260929b/pitch-01",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "RY +0.45: camera up observed; scene vertical flow median 610.10 px/s at 1280 width. Not angular rate: focal and third-person orbit conversion remain unqualified. All four inspected late 60 Hz frame-pairs still move in the commanded sign; no observed clamp stop."
+          }
+        }
+      },
+      {
+        "stick": 0.6,
+        "measurement": {
+          "value": null,
+          "status": "missing",
+          "sitting": "alt-cam-20260929b/pitch-02",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
+          "uncertainty": {
+            "plus_minus": null,
+            "note": "RY +0.6: camera up observed; scene vertical flow median 834.75 px/s at 1280 width. Not angular rate: focal and third-person orbit conversion remain unqualified. All four inspected late 60 Hz frame-pairs still move in the commanded sign; no observed clamp stop."
           }
         }
       },
@@ -113,11 +353,11 @@
         "measurement": {
           "value": null,
           "status": "missing",
-          "sitting": null,
-          "receipt": null,
+          "sitting": "alt-cam-20260929b/pitch-02",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
           "uncertainty": {
             "plus_minus": null,
-            "note": "Not measured or accepted for this profile."
+            "note": "RY +0.8: camera up observed; scene vertical flow median 1144.28 px/s at 1280 width. Not angular rate: focal and third-person orbit conversion remain unqualified. All four inspected late 60 Hz frame-pairs still move in the commanded sign; no observed clamp stop."
           }
         }
       },
@@ -126,11 +366,11 @@
         "measurement": {
           "value": null,
           "status": "missing",
-          "sitting": null,
-          "receipt": null,
+          "sitting": "alt-cam-20260929b/pitch-03",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
           "uncertainty": {
             "plus_minus": null,
-            "note": "Not measured or accepted for this profile."
+            "note": "RY +1: camera up observed; scene vertical flow median 1407.87 px/s at 1280 width. Not angular rate: focal and third-person orbit conversion remain unqualified. All four inspected late 60 Hz frame-pairs still move in the commanded sign; no observed clamp stop."
           }
         }
       }
@@ -141,11 +381,11 @@
         "measurement": {
           "value": null,
           "status": "missing",
-          "sitting": null,
-          "receipt": null,
+          "sitting": "alt-cam-20260929b/pitch-04",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
           "uncertainty": {
             "plus_minus": null,
-            "note": "Not measured or accepted for this profile."
+            "note": "RY -0.1: camera down observed; scene vertical flow median -66.36 px/s at 1280 width. Not angular rate: focal and third-person orbit conversion remain unqualified. All four inspected late 60 Hz frame-pairs still move in the commanded sign; no observed clamp stop."
           }
         }
       },
@@ -154,11 +394,11 @@
         "measurement": {
           "value": null,
           "status": "missing",
-          "sitting": null,
-          "receipt": null,
+          "sitting": "alt-cam-20260929b/pitch-04",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
           "uncertainty": {
             "plus_minus": null,
-            "note": "Not measured or accepted for this profile."
+            "note": "RY -0.2: camera down observed; scene vertical flow median -213.74 px/s at 1280 width. Not angular rate: focal and third-person orbit conversion remain unqualified. All four inspected late 60 Hz frame-pairs still move in the commanded sign; no observed clamp stop."
           }
         }
       },
@@ -167,11 +407,11 @@
         "measurement": {
           "value": null,
           "status": "missing",
-          "sitting": null,
-          "receipt": null,
+          "sitting": "alt-cam-20260929b/pitch-01",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
           "uncertainty": {
             "plus_minus": null,
-            "note": "Not measured or accepted for this profile."
+            "note": "RY -0.3: camera down observed; scene vertical flow median -382.23 px/s at 1280 width. Not angular rate: focal and third-person orbit conversion remain unqualified. All four inspected late 60 Hz frame-pairs still move in the commanded sign; no observed clamp stop."
           }
         }
       },
@@ -180,11 +420,11 @@
         "measurement": {
           "value": null,
           "status": "missing",
-          "sitting": null,
-          "receipt": null,
+          "sitting": "alt-cam-20260929b/pitch-01",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
           "uncertainty": {
             "plus_minus": null,
-            "note": "Not measured or accepted for this profile."
+            "note": "RY -0.45: camera down observed; scene vertical flow median -612.05 px/s at 1280 width. Not angular rate: focal and third-person orbit conversion remain unqualified. All four inspected late 60 Hz frame-pairs still move in the commanded sign; no observed clamp stop."
           }
         }
       },
@@ -193,11 +433,11 @@
         "measurement": {
           "value": null,
           "status": "missing",
-          "sitting": null,
-          "receipt": null,
+          "sitting": "alt-cam-20260929b/pitch-02",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
           "uncertainty": {
             "plus_minus": null,
-            "note": "Not measured or accepted for this profile."
+            "note": "RY -0.6: camera down observed; scene vertical flow median -847.14 px/s at 1280 width. Not angular rate: focal and third-person orbit conversion remain unqualified. All four inspected late 60 Hz frame-pairs still move in the commanded sign; no observed clamp stop."
           }
         }
       },
@@ -206,11 +446,11 @@
         "measurement": {
           "value": null,
           "status": "missing",
-          "sitting": null,
-          "receipt": null,
+          "sitting": "alt-cam-20260929b/pitch-02",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
           "uncertainty": {
             "plus_minus": null,
-            "note": "Not measured or accepted for this profile."
+            "note": "RY -0.8: camera down observed; scene vertical flow median -1149.07 px/s at 1280 width. Not angular rate: focal and third-person orbit conversion remain unqualified. All four inspected late 60 Hz frame-pairs still move in the commanded sign; no observed clamp stop."
           }
         }
       },
@@ -219,69 +459,11 @@
         "measurement": {
           "value": null,
           "status": "missing",
-          "sitting": null,
-          "receipt": null,
+          "sitting": "alt-cam-20260929b/pitch-03",
+          "receipt": "docs/evidence/camera-map-20260929b/README.md",
           "uncertainty": {
             "plus_minus": null,
-            "note": "Not measured or accepted for this profile."
-          }
-        }
-      }
-    ]
-  },
-  "pitch": {
-    "positive": [
-      {
-        "stick": 0.5,
-        "measurement": {
-          "value": null,
-          "status": "missing",
-          "sitting": null,
-          "receipt": null,
-          "uncertainty": {
-            "plus_minus": null,
-            "note": "Not measured or accepted for this profile."
-          }
-        }
-      },
-      {
-        "stick": 1.0,
-        "measurement": {
-          "value": null,
-          "status": "missing",
-          "sitting": null,
-          "receipt": null,
-          "uncertainty": {
-            "plus_minus": null,
-            "note": "Not measured or accepted for this profile."
-          }
-        }
-      }
-    ],
-    "negative": [
-      {
-        "stick": 0.5,
-        "measurement": {
-          "value": null,
-          "status": "missing",
-          "sitting": null,
-          "receipt": null,
-          "uncertainty": {
-            "plus_minus": null,
-            "note": "Not measured or accepted for this profile."
-          }
-        }
-      },
-      {
-        "stick": 1.0,
-        "measurement": {
-          "value": null,
-          "status": "missing",
-          "sitting": null,
-          "receipt": null,
-          "uncertainty": {
-            "plus_minus": null,
-            "note": "Not measured or accepted for this profile."
+            "note": "RY -1: camera down observed; scene vertical flow median -1408.28 px/s at 1280 width. Not angular rate: focal and third-person orbit conversion remain unqualified. All four inspected late 60 Hz frame-pairs still move in the commanded sign; no observed clamp stop."
           }
         }
       }

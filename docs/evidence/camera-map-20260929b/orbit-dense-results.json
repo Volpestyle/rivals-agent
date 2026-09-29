@@ -1,0 +1,1754 @@
+[
+  {
+    "best": {
+      "focal": 685.0,
+      "pitch_deg": 7.0,
+      "shoulder_over_radius": -0.12174334049754586,
+      "rms_pixel": 7.136123541446525,
+      "max_point_rms_pixel": 10.365516562643974,
+      "depth_min": 1.6205001536166437,
+      "depth_max": 4.3410880794643845
+    },
+    "profile_plus_half_pixel": [
+      580.0,
+      850.0
+    ],
+    "profile_is_confidence_interval": false,
+    "profile": [
+      {
+        "focal": 525.0,
+        "pitch_deg": 12.000000000000002,
+        "shoulder_over_radius": 0.7360044739786532,
+        "rms_pixel": 16.624022376669444,
+        "max_point_rms_pixel": 53.54619206338139,
+        "depth_min": 1.9827800950749772,
+        "depth_max": 7.76431958180068
+      },
+      {
+        "focal": 530.0,
+        "pitch_deg": 11.0,
+        "shoulder_over_radius": 0.5086789354872423,
+        "rms_pixel": 11.332032115842857,
+        "max_point_rms_pixel": 25.220039856443794,
+        "depth_min": 2.71296265412961,
+        "depth_max": 7.7125988086127695
+      },
+      {
+        "focal": 535.0,
+        "pitch_deg": 10.0,
+        "shoulder_over_radius": 0.3260802745299026,
+        "rms_pixel": 9.94679576674689,
+        "max_point_rms_pixel": 17.522872383267377,
+        "depth_min": 2.4919420502587464,
+        "depth_max": 7.53558968012216
+      },
+      {
+        "focal": 540.0,
+        "pitch_deg": 10.0,
+        "shoulder_over_radius": 0.21645047308106075,
+        "rms_pixel": 9.240515475445017,
+        "max_point_rms_pixel": 13.83950064838865,
+        "depth_min": 2.339393145394194,
+        "depth_max": 8.323538993836326
+      },
+      {
+        "focal": 545.0,
+        "pitch_deg": 10.0,
+        "shoulder_over_radius": 0.12980208713598135,
+        "rms_pixel": 8.798980533306489,
+        "max_point_rms_pixel": 11.848146860374815,
+        "depth_min": 2.2171570019810583,
+        "depth_max": 9.0665937218279
+      },
+      {
+        "focal": 550.0,
+        "pitch_deg": 10.0,
+        "shoulder_over_radius": 0.0611865537545796,
+        "rms_pixel": 8.488472249573807,
+        "max_point_rms_pixel": 10.634958107437,
+        "depth_min": 2.118481880279484,
+        "depth_max": 9.381745369256175
+      },
+      {
+        "focal": 555.0,
+        "pitch_deg": 10.0,
+        "shoulder_over_radius": 0.006587977223369902,
+        "rms_pixel": 8.255656714088738,
+        "max_point_rms_pixel": 10.368650710470577,
+        "depth_min": 2.037999850579756,
+        "depth_max": 9.416285181251936
+      },
+      {
+        "focal": 560.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.059384039241003106,
+        "rms_pixel": 8.073811971599596,
+        "max_point_rms_pixel": 10.412458936684223,
+        "depth_min": 1.960217417196021,
+        "depth_max": 9.339789852361642
+      },
+      {
+        "focal": 565.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.0914802786199777,
+        "rms_pixel": 7.923145524917501,
+        "max_point_rms_pixel": 10.445072944126656,
+        "depth_min": 1.9077335916152647,
+        "depth_max": 9.104419228194743
+      },
+      {
+        "focal": 570.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.11672439979527037,
+        "rms_pixel": 7.7998969889388325,
+        "max_point_rms_pixel": 10.472766817999899,
+        "depth_min": 1.8640805379211027,
+        "depth_max": 8.812399433729187
+      },
+      {
+        "focal": 575.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.13643212949615643,
+        "rms_pixel": 7.697640872888454,
+        "max_point_rms_pixel": 10.495901997803522,
+        "depth_min": 1.8275292882370735,
+        "depth_max": 8.495538122529055
+      },
+      {
+        "focal": 580.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.15162501101984224,
+        "rms_pixel": 7.611943494696384,
+        "max_point_rms_pixel": 10.514827869982708,
+        "depth_min": 1.796746227426031,
+        "depth_max": 8.173172280760948
+      },
+      {
+        "focal": 585.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.16311069922909202,
+        "rms_pixel": 7.539623714655263,
+        "max_point_rms_pixel": 10.529884737581858,
+        "depth_min": 1.7706849739608965,
+        "depth_max": 7.856664263333608
+      },
+      {
+        "focal": 590.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.17153733571736263,
+        "rms_pixel": 7.478326178679559,
+        "max_point_rms_pixel": 10.541405246848656,
+        "depth_min": 1.7485129156234112,
+        "depth_max": 7.552675938395104
+      },
+      {
+        "focal": 595.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.1774310799908644,
+        "rms_pixel": 7.426260895930552,
+        "max_point_rms_pixel": 10.549712917044683,
+        "depth_min": 1.729560241333054,
+        "depth_max": 7.264177018712719
+      },
+      {
+        "focal": 600.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.18122277358090205,
+        "rms_pixel": 7.382036972645125,
+        "max_point_rms_pixel": 10.555119163258686,
+        "depth_min": 1.713283570704312,
+        "depth_max": 6.992447494503458
+      },
+      {
+        "focal": 605.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.18326748371070184,
+        "rms_pixel": 7.34455248572043,
+        "max_point_rms_pixel": 10.557920155159122,
+        "depth_min": 1.6992392411154995,
+        "depth_max": 6.737726847694009
+      },
+      {
+        "focal": 610.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.18385924645752488,
+        "rms_pixel": 7.312919323515651,
+        "max_point_rms_pixel": 10.558394275150244,
+        "depth_min": 1.6870631757674879,
+        "depth_max": 6.499596264427676
+      },
+      {
+        "focal": 615.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.19032500631959426,
+        "rms_pixel": 7.282868091792767,
+        "max_point_rms_pixel": 10.570139213859626,
+        "depth_min": 1.6792613102768135,
+        "depth_max": 6.317760700801915
+      },
+      {
+        "focal": 620.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.18760436867540306,
+        "rms_pixel": 7.2557506116953,
+        "max_point_rms_pixel": 10.562701665810483,
+        "depth_min": 1.6709350977433,
+        "depth_max": 6.107274151872642
+      },
+      {
+        "focal": 625.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.18410649169755336,
+        "rms_pixel": 7.232703489814391,
+        "max_point_rms_pixel": 10.553452730438282,
+        "depth_min": 1.6636571451464301,
+        "depth_max": 5.910850871277894
+      },
+      {
+        "focal": 630.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.1799685995658811,
+        "rms_pixel": 7.213299887264193,
+        "max_point_rms_pixel": 10.542602856585324,
+        "depth_min": 1.6572622444650142,
+        "depth_max": 5.727440065128107
+      },
+      {
+        "focal": 635.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.17530508051378985,
+        "rms_pixel": 7.197173761050919,
+        "max_point_rms_pixel": 10.530341550072233,
+        "depth_min": 1.6516135668645657,
+        "depth_max": 5.5560232483259355
+      },
+      {
+        "focal": 640.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.17021139023774212,
+        "rms_pixel": 7.184008165201778,
+        "max_point_rms_pixel": 10.516838826570169,
+        "depth_min": 1.6465975520292293,
+        "depth_max": 5.3956369383938805
+      },
+      {
+        "focal": 645.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.16476725112568094,
+        "rms_pixel": 7.1735263182375695,
+        "max_point_rms_pixel": 10.502246768797269,
+        "depth_min": 1.6421197673050183,
+        "depth_max": 5.245383651028553
+      },
+      {
+        "focal": 650.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.15903928399550643,
+        "rms_pixel": 7.1654846942600114,
+        "max_point_rms_pixel": 10.48670110654218,
+        "depth_min": 1.6381015404888033,
+        "depth_max": 5.1044357466957395
+      },
+      {
+        "focal": 655.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.15308317969520763,
+        "rms_pixel": 7.159667611818821,
+        "max_point_rms_pixel": 10.470322762954888,
+        "depth_min": 1.6344772131961607,
+        "depth_max": 4.972035009738783
+      },
+      {
+        "focal": 660.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.15554057297856896,
+        "rms_pixel": 7.1534779357908915,
+        "max_point_rms_pixel": 10.478805296102452,
+        "depth_min": 1.6322661933333498,
+        "depth_max": 4.872848683708664
+      },
+      {
+        "focal": 665.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.14890516080006552,
+        "rms_pixel": 7.146688996536646,
+        "max_point_rms_pixel": 10.45729705164936,
+        "depth_min": 1.6295134359292551,
+        "depth_max": 4.753956177610417
+      },
+      {
+        "focal": 670.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.1421849296305202,
+        "rms_pixel": 7.141693851998159,
+        "max_point_rms_pixel": 10.435140803702296,
+        "depth_min": 1.6269878042571237,
+        "depth_max": 4.641839886078265
+      },
+      {
+        "focal": 675.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.1354048140914535,
+        "rms_pixel": 7.138351448254849,
+        "max_point_rms_pixel": 10.412414275963306,
+        "depth_min": 1.624659539464887,
+        "depth_max": 4.535969779795966
+      },
+      {
+        "focal": 680.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.1285853404308208,
+        "rms_pixel": 7.1365336199666025,
+        "max_point_rms_pixel": 10.389186043922775,
+        "depth_min": 1.622503867664416,
+        "depth_max": 4.4358647708449555
+      },
+      {
+        "focal": 685.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.12174334049754586,
+        "rms_pixel": 7.136123541446525,
+        "max_point_rms_pixel": 10.365516562643974,
+        "depth_min": 1.6205001536166437,
+        "depth_max": 4.3410880794643845
+      },
+      {
+        "focal": 690.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.1148925479057349,
+        "rms_pixel": 7.137014423931453,
+        "max_point_rms_pixel": 10.341459088638265,
+        "depth_min": 1.6186312022054279,
+        "depth_max": 4.251242914482553
+      },
+      {
+        "focal": 695.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.10804409675559261,
+        "rms_pixel": 7.139108410523702,
+        "max_point_rms_pixel": 10.31706050435427,
+        "depth_min": 1.6168826807827261,
+        "depth_max": 4.165968504971828
+      },
+      {
+        "focal": 700.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.10120693960332702,
+        "rms_pixel": 7.142315631487869,
+        "max_point_rms_pixel": 10.292362054082863,
+        "depth_min": 1.6152426405715834,
+        "depth_max": 4.084936490807394
+      },
+      {
+        "focal": 705.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.09438819838979724,
+        "rms_pixel": 7.1465533909159324,
+        "max_point_rms_pixel": 10.267399999943322,
+        "depth_min": 1.6137011194095299,
+        "depth_max": 4.007847662118351
+      },
+      {
+        "focal": 710.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.10231922269940152,
+        "rms_pixel": 7.151422756913764,
+        "max_point_rms_pixel": 10.293824985568943,
+        "depth_min": 1.6076139902674862,
+        "depth_max": 3.951627085157752
+      },
+      {
+        "focal": 715.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.09567519633361533,
+        "rms_pixel": 7.153442731362028,
+        "max_point_rms_pixel": 10.265914064775828,
+        "depth_min": 1.60607232868587,
+        "depth_max": 3.880762767300351
+      },
+      {
+        "focal": 720.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.0890809451851967,
+        "rms_pixel": 7.156366141683472,
+        "max_point_rms_pixel": 10.237793685324858,
+        "depth_min": 1.6045928328152426,
+        "depth_max": 3.813146509518213
+      },
+      {
+        "focal": 725.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.08253808931093136,
+        "rms_pixel": 7.160130495763141,
+        "max_point_rms_pixel": 10.209486193166072,
+        "depth_min": 1.6031716183218094,
+        "depth_max": 3.748564908646901
+      },
+      {
+        "focal": 730.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.07604753279354703,
+        "rms_pixel": 7.164677709687453,
+        "max_point_rms_pixel": 10.181011029603399,
+        "depth_min": 1.6018055417079313,
+        "depth_max": 3.6868222405482793
+      },
+      {
+        "focal": 735.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.06960958679617205,
+        "rms_pixel": 7.169953739791048,
+        "max_point_rms_pixel": 10.152385074369093,
+        "depth_min": 1.6004920714556437,
+        "depth_max": 3.627738745091826
+      },
+      {
+        "focal": 740.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.0632240735157949,
+        "rms_pixel": 7.175908254421139,
+        "max_point_rms_pixel": 10.123622951264462,
+        "depth_min": 1.5992291805777985,
+        "depth_max": 3.5711490945714752
+      },
+      {
+        "focal": 745.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.056890414112649695,
+        "rms_pixel": 7.182494340194875,
+        "max_point_rms_pixel": 10.094737300824418,
+        "depth_min": 1.5980152569177648,
+        "depth_max": 3.5170308517824873
+      },
+      {
+        "focal": 750.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.050607703180924446,
+        "rms_pixel": 7.189668238370726,
+        "max_point_rms_pixel": 10.06573902395581,
+        "depth_min": 1.5968490281814969,
+        "depth_max": 3.4651182680503276
+      },
+      {
+        "focal": 755.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.044374771903591397,
+        "rms_pixel": 7.197389107638404,
+        "max_point_rms_pixel": 10.036637500041714,
+        "depth_min": 1.5957294992113633,
+        "depth_max": 3.4152773412615844
+      },
+      {
+        "focal": 760.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.038190241684450815,
+        "rms_pixel": 7.205618810188885,
+        "max_point_rms_pixel": 10.007440782596044,
+        "depth_min": 1.5946558994415165,
+        "depth_max": 3.3673881161708734
+      },
+      {
+        "focal": 765.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.03205256976053521,
+        "rms_pixel": 7.214321718383513,
+        "max_point_rms_pixel": 9.97815577518991,
+        "depth_min": 1.593627638827731,
+        "depth_max": 3.3213395348715564
+      },
+      {
+        "focal": 770.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.025960088057212463,
+        "rms_pixel": 7.223464539719588,
+        "max_point_rms_pixel": 9.948788390049824,
+        "depth_min": 1.5926442708349575,
+        "depth_max": 3.2770286464483718
+      },
+      {
+        "focal": 775.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.019911036347893856,
+        "rms_pixel": 7.233016158104933,
+        "max_point_rms_pixel": 9.919343691444242,
+        "depth_min": 1.59170546130488,
+        "depth_max": 3.234359896772698
+      },
+      {
+        "focal": 780.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.0382785383438421,
+        "rms_pixel": 7.242231922196525,
+        "max_point_rms_pixel": 9.987615685625233,
+        "depth_min": 1.577809720467251,
+        "depth_max": 3.2038926906024168
+      },
+      {
+        "focal": 785.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.03281716194825353,
+        "rms_pixel": 7.2496626022642605,
+        "max_point_rms_pixel": 9.957588326961762,
+        "depth_min": 1.576501032223059,
+        "depth_max": 3.1638028466463166
+      },
+      {
+        "focal": 790.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.02741129103676837,
+        "rms_pixel": 7.257490119446926,
+        "max_point_rms_pixel": 9.927532654156384,
+        "depth_min": 1.5752247286527616,
+        "depth_max": 3.1251288847140435
+      },
+      {
+        "focal": 795.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.022058939073436288,
+        "rms_pixel": 7.265688992374733,
+        "max_point_rms_pixel": 9.897452153281662,
+        "depth_min": 1.5739809109707938,
+        "depth_max": 3.0877976725812655
+      },
+      {
+        "focal": 800.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.016758134197028048,
+        "rms_pixel": 7.2742353081437985,
+        "max_point_rms_pixel": 9.867349865018992,
+        "depth_min": 1.572769687490449,
+        "depth_max": 3.051740956603929
+      },
+      {
+        "focal": 805.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.011506930298436037,
+        "rms_pixel": 7.2831066274190945,
+        "max_point_rms_pixel": 9.837228464523866,
+        "depth_min": 1.5715911647166447,
+        "depth_max": 3.0168949679247534
+      },
+      {
+        "focal": 810.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.006303416363852876,
+        "rms_pixel": 7.292281897213117,
+        "max_point_rms_pixel": 9.807090334325446,
+        "depth_min": 1.570445440008474,
+        "depth_max": 2.9832000654783855
+      },
+      {
+        "focal": 815.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.001145724359076972,
+        "rms_pixel": 7.301741370636576,
+        "max_point_rms_pixel": 9.776937631073144,
+        "depth_min": 1.5693325955390445,
+        "depth_max": 2.9506004119442055
+      },
+      {
+        "focal": 820.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": 0.003967964111426882,
+        "rms_pixel": 7.311466532992707,
+        "max_point_rms_pixel": 9.746772346847582,
+        "depth_min": 1.568252693324926,
+        "depth_max": 2.9190436792348704
+      },
+      {
+        "focal": 825.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": 0.009039412172338208,
+        "rms_pixel": 7.321440033652598,
+        "max_point_rms_pixel": 9.716596365668863,
+        "depth_min": 1.5672057711350453,
+        "depth_max": 2.8884807804946746
+      },
+      {
+        "focal": 830.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": 0.014070322903618792,
+        "rms_pixel": 7.3316456232062,
+        "max_point_rms_pixel": 9.686411515760202,
+        "depth_min": 1.5661918391200333,
+        "depth_max": 2.858992143824044
+      },
+      {
+        "focal": 835.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": 0.01906233528168744,
+        "rms_pixel": 7.342068095434042,
+        "max_point_rms_pixel": 9.656219618059296,
+        "depth_min": 1.5652108770292323,
+        "depth_max": 2.8304299862677222
+      },
+      {
+        "focal": 840.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": 0.024017020713798853,
+        "rms_pixel": 7.352693233688612,
+        "max_point_rms_pixel": 9.737923250383291,
+        "depth_min": 1.5642628319043899,
+        "depth_max": 2.8027304078532183
+      },
+      {
+        "focal": 845.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": 0.028935880062026166,
+        "rms_pixel": 7.363507761313049,
+        "max_point_rms_pixel": 9.824464701736346,
+        "depth_min": 1.5633476161574096,
+        "depth_max": 2.7758550951974077
+      },
+      {
+        "focal": 850.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": 0.03382034106878137,
+        "rms_pixel": 7.37449929575889,
+        "max_point_rms_pixel": 9.910744151817898,
+        "depth_min": 1.5624651059549088,
+        "depth_max": 2.7497679471550827
+      }
+    ],
+    "start": 138,
+    "rate": 99.24,
+    "tracks": 17
+  },
+  {
+    "best": {
+      "focal": 630.0,
+      "pitch_deg": 7.0,
+      "shoulder_over_radius": -0.37905266154244377,
+      "rms_pixel": 1.0682714254115666,
+      "max_point_rms_pixel": 2.0421722990719124,
+      "depth_min": 2.301145022731245,
+      "depth_max": 15.410907455544532
+    },
+    "profile_plus_half_pixel": [
+      595.0,
+      725.0
+    ],
+    "profile_is_confidence_interval": false,
+    "profile": [
+      {
+        "focal": 585.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -1.5321498305088144,
+        "rms_pixel": 5.428029628964796,
+        "max_point_rms_pixel": 24.805202414974517,
+        "depth_min": 3.977494827214516,
+        "depth_max": 69.60511859673275
+      },
+      {
+        "focal": 590.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -1.2371840941567176,
+        "rms_pixel": 1.723718137587618,
+        "max_point_rms_pixel": 3.854890781759336,
+        "depth_min": 3.5557388462061845,
+        "depth_max": 76.45538082602931
+      },
+      {
+        "focal": 595.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.9100826319442287,
+        "rms_pixel": 1.3890053489252876,
+        "max_point_rms_pixel": 2.593757008915896,
+        "depth_min": 3.095624087837128,
+        "depth_max": 56.91528214651793
+      },
+      {
+        "focal": 600.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.7321712694548683,
+        "rms_pixel": 1.2302941399598282,
+        "max_point_rms_pixel": 2.052389685651431,
+        "depth_min": 2.842154206420416,
+        "depth_max": 42.163386673322435
+      },
+      {
+        "focal": 605.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.6211046931514148,
+        "rms_pixel": 1.1552669675777685,
+        "max_point_rms_pixel": 2.041526561101362,
+        "depth_min": 2.680144772859164,
+        "depth_max": 32.79301150823729
+      },
+      {
+        "focal": 610.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.5445824402386672,
+        "rms_pixel": 1.1152895750255263,
+        "max_point_rms_pixel": 2.0352517597286703,
+        "depth_min": 2.5655029583821047,
+        "depth_max": 26.717670946779172
+      },
+      {
+        "focal": 615.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.48797069014900013,
+        "rms_pixel": 1.092008772163459,
+        "max_point_rms_pixel": 2.0325297522936636,
+        "depth_min": 2.4782739336010833,
+        "depth_max": 22.53414604957174
+      },
+      {
+        "focal": 620.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.44395033869969835,
+        "rms_pixel": 1.0781484773268801,
+        "max_point_rms_pixel": 2.032939120937577,
+        "depth_min": 2.4084703232813602,
+        "depth_max": 19.499004869201933
+      },
+      {
+        "focal": 625.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.40845976775245646,
+        "rms_pixel": 1.0706722228417456,
+        "max_point_rms_pixel": 2.0362230611969774,
+        "depth_min": 2.3505430235338234,
+        "depth_max": 17.20398880563935
+      },
+      {
+        "focal": 630.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.37905266154244377,
+        "rms_pixel": 1.0682714254115666,
+        "max_point_rms_pixel": 2.0421722990719124,
+        "depth_min": 2.301145022731245,
+        "depth_max": 15.410907455544532
+      },
+      {
+        "focal": 635.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.3541597368361255,
+        "rms_pixel": 1.0703643956480926,
+        "max_point_rms_pixel": 2.0505928872014487,
+        "depth_min": 2.258125879054927,
+        "depth_max": 13.972760599408064
+      },
+      {
+        "focal": 640.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.33272351391742394,
+        "rms_pixel": 1.076668219602946,
+        "max_point_rms_pixel": 2.0612978732243548,
+        "depth_min": 2.220033990454704,
+        "depth_max": 12.794368332852565
+      },
+      {
+        "focal": 645.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.3140028403415025,
+        "rms_pixel": 1.0870072145384213,
+        "max_point_rms_pixel": 2.074106053637701,
+        "depth_min": 2.1858500144230373,
+        "depth_max": 11.811566701745301
+      },
+      {
+        "focal": 650.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.29746136185221844,
+        "rms_pixel": 1.1012268136552785,
+        "max_point_rms_pixel": 2.0888427317817095,
+        "depth_min": 2.154834661779285,
+        "depth_max": 10.979604488840922
+      },
+      {
+        "focal": 655.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.28270047031234435,
+        "rms_pixel": 1.1191574526525623,
+        "max_point_rms_pixel": 2.105340849090317,
+        "depth_min": 2.1264371276610143,
+        "depth_max": 10.266355125903441
+      },
+      {
+        "focal": 660.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.269417203660208,
+        "rms_pixel": 1.140603110941879,
+        "max_point_rms_pixel": 2.1234419685671577,
+        "depth_min": 2.100237563172824,
+        "depth_max": 9.64817689411778
+      },
+      {
+        "focal": 665.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.2573768307834653,
+        "rms_pixel": 1.1653419832291905,
+        "max_point_rms_pixel": 2.142996969229407,
+        "depth_min": 2.0759095936552336,
+        "depth_max": 9.107295274620544
+      },
+      {
+        "focal": 670.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.24639443630526708,
+        "rms_pixel": 1.1931326650867684,
+        "max_point_rms_pixel": 2.1638664437509108,
+        "depth_min": 2.053195130147229,
+        "depth_max": 8.630094743212208
+      },
+      {
+        "focal": 675.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.23632221577778,
+        "rms_pixel": 1.223722218344833,
+        "max_point_rms_pixel": 2.1859208365838025,
+        "depth_min": 2.0318869849706007,
+        "depth_max": 8.205972774231128
+      },
+      {
+        "focal": 680.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.22704050439831117,
+        "rms_pixel": 1.2568541363028214,
+        "max_point_rms_pixel": 2.2090403716956915,
+        "depth_min": 2.0118165920942426,
+        "depth_max": 7.826552015664162
+      },
+      {
+        "focal": 685.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.21845131147159993,
+        "rms_pixel": 1.2922752132749409,
+        "max_point_rms_pixel": 2.2331148182709755,
+        "depth_min": 1.9928451549084714,
+        "depth_max": 7.485126822748119
+      },
+      {
+        "focal": 690.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.21047357579525566,
+        "rms_pixel": 1.329740923340321,
+        "max_point_rms_pixel": 2.258043137329939,
+        "depth_min": 1.9748571486711985,
+        "depth_max": 7.1762668328353
+      },
+      {
+        "focal": 695.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.195125785587493,
+        "rms_pixel": 1.3584851514769682,
+        "max_point_rms_pixel": 1.9896967392450173,
+        "depth_min": 1.9468820497523311,
+        "depth_max": 6.996250361759253
+      },
+      {
+        "focal": 700.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.1884534981732119,
+        "rms_pixel": 1.3868280373200754,
+        "max_point_rms_pixel": 2.013183056987862,
+        "depth_min": 1.9309687879205093,
+        "depth_max": 6.7315127380019675
+      },
+      {
+        "focal": 705.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.18218731340871477,
+        "rms_pixel": 1.4171821873821853,
+        "max_point_rms_pixel": 2.0375297406531088,
+        "depth_min": 1.9157459619631085,
+        "depth_max": 6.489180387310078
+      },
+      {
+        "focal": 710.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.17628831899167152,
+        "rms_pixel": 1.4493692436575254,
+        "max_point_rms_pixel": 2.0626426985811515,
+        "depth_min": 1.9011564362044509,
+        "depth_max": 6.266526786519896
+      },
+      {
+        "focal": 715.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.17072307745233872,
+        "rms_pixel": 1.4832156411270805,
+        "max_point_rms_pixel": 2.0884361131970515,
+        "depth_min": 1.887150644771321,
+        "depth_max": 6.061249956073153
+      },
+      {
+        "focal": 720.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.16546268561597957,
+        "rms_pixel": 1.5185549827172269,
+        "max_point_rms_pixel": 2.1148319580804635,
+        "depth_min": 1.8736853036489447,
+        "depth_max": 5.87139304658701
+      },
+      {
+        "focal": 725.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.16048202473143633,
+        "rms_pixel": 1.555229650567388,
+        "max_point_rms_pixel": 2.1511087856451616,
+        "depth_min": 1.8607223834622726,
+        "depth_max": 5.695282082157696
+      },
+      {
+        "focal": 730.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.15575915739759422,
+        "rms_pixel": 1.5930917908569946,
+        "max_point_rms_pixel": 2.228122491689807,
+        "depth_min": 1.8482282829714527,
+        "depth_max": 5.531476692562833
+      },
+      {
+        "focal": 735.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.1512748386397003,
+        "rms_pixel": 1.6320038027639017,
+        "max_point_rms_pixel": 2.3071088705620824,
+        "depth_min": 1.8361731586182326,
+        "depth_max": 5.3835983373238445
+      },
+      {
+        "focal": 740.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.14701211656701343,
+        "rms_pixel": 1.6718384485591657,
+        "max_point_rms_pixel": 2.3877540421437766,
+        "depth_min": 1.8245303765140157,
+        "depth_max": 5.245800469290201
+      },
+      {
+        "focal": 745.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.14295600393277935,
+        "rms_pixel": 1.712478684986785,
+        "max_point_rms_pixel": 2.4697809993603346,
+        "depth_min": 1.8132760613195966,
+        "depth_max": 5.116438600844944
+      },
+      {
+        "focal": 750.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.13909320625935354,
+        "rms_pixel": 1.7538172985072853,
+        "max_point_rms_pixel": 2.552945982515115,
+        "depth_min": 1.8023887224082593,
+        "depth_max": 4.994758905209703
+      },
+      {
+        "focal": 755.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.1354118954259462,
+        "rms_pixel": 1.7957564103477222,
+        "max_point_rms_pixel": 2.6370348901432514,
+        "depth_min": 1.7918489421308779,
+        "depth_max": 4.88010272914635
+      },
+      {
+        "focal": 760.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.13190152004981973,
+        "rms_pixel": 1.8382069025050474,
+        "max_point_rms_pixel": 2.721859872651821,
+        "depth_min": 1.7816391143318686,
+        "depth_max": 4.771874467474929
+      },
+      {
+        "focal": 765.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.1285526458392213,
+        "rms_pixel": 1.8810878032752052,
+        "max_point_rms_pixel": 2.807256187885576,
+        "depth_min": 1.7717432237930364,
+        "depth_max": 4.669541525030338
+      },
+      {
+        "focal": 770.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.12535682051079655,
+        "rms_pixel": 1.9243256605612777,
+        "max_point_rms_pixel": 2.8930793530894943,
+        "depth_min": 1.762146659217873,
+        "depth_max": 4.572633295707928
+      },
+      {
+        "focal": 775.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.12230645895599626,
+        "rms_pixel": 1.9678539229855472,
+        "max_point_rms_pixel": 2.979202599334563,
+        "depth_min": 1.7528360538625374,
+        "depth_max": 4.48072798768321
+      },
+      {
+        "focal": 780.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.11832912550675695,
+        "rms_pixel": 2.009031653101957,
+        "max_point_rms_pixel": 3.2481061970098435,
+        "depth_min": 1.7418431479338945,
+        "depth_max": 4.438247001514615
+      },
+      {
+        "focal": 785.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.11558476993343658,
+        "rms_pixel": 2.0452625821589194,
+        "max_point_rms_pixel": 3.316747382299612,
+        "depth_min": 1.7331078053603222,
+        "depth_max": 4.351898498374003
+      },
+      {
+        "focal": 790.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.11295464594870004,
+        "rms_pixel": 2.0819561136045692,
+        "max_point_rms_pixel": 3.386253528487812,
+        "depth_min": 1.7246104316922741,
+        "depth_max": 4.269790714070802
+      },
+      {
+        "focal": 795.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.1104337568412824,
+        "rms_pixel": 2.1190521173335726,
+        "max_point_rms_pixel": 3.4565022062980435,
+        "depth_min": 1.716341661032237,
+        "depth_max": 4.191618059789686
+      },
+      {
+        "focal": 800.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.10801755465640074,
+        "rms_pixel": 2.1564949936026734,
+        "max_point_rms_pixel": 3.527381412135465,
+        "depth_min": 1.708292794918719,
+        "depth_max": 4.117103624991445
+      },
+      {
+        "focal": 805.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.105701895549007,
+        "rms_pixel": 2.1942333988943337,
+        "max_point_rms_pixel": 3.5987887844806,
+        "depth_min": 1.7004557395034665,
+        "depth_max": 4.045995893073837
+      },
+      {
+        "focal": 810.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.1034830007726647,
+        "rms_pixel": 2.2322199699047833,
+        "max_point_rms_pixel": 3.670630840156673,
+        "depth_min": 1.6928229504271344,
+        "depth_max": 3.978065897907105
+      },
+      {
+        "focal": 815.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.10135742247995089,
+        "rms_pixel": 2.270411050997664,
+        "max_point_rms_pixel": 3.742822241428738,
+        "depth_min": 1.6853873842739513,
+        "depth_max": 3.9131047537813077
+      },
+      {
+        "focal": 820.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.09932201364562547,
+        "rms_pixel": 2.308766429022706,
+        "max_point_rms_pixel": 3.8152851009836977,
+        "depth_min": 1.6781424556701912,
+        "depth_max": 3.850921502835955
+      },
+      {
+        "focal": 825.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.09737390153440145,
+        "rms_pixel": 2.3472490782426703,
+        "max_point_rms_pixel": 3.887948328877023,
+        "depth_min": 1.6710819992419195,
+        "depth_max": 3.791341233406027
+      },
+      {
+        "focal": 830.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.09551046422598838,
+        "rms_pixel": 2.3858249171969326,
+        "max_point_rms_pixel": 3.960747023328859,
+        "depth_min": 1.6642002357710697,
+        "depth_max": 3.7342034303571006
+      },
+      {
+        "focal": 835.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.09372930978502168,
+        "rms_pixel": 2.424462578617288,
+        "max_point_rms_pixel": 4.033621905651251,
+        "depth_min": 1.6574917419908592,
+        "depth_max": 3.6793605247400554
+      },
+      {
+        "focal": 840.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.09202825772551552,
+        "rms_pixel": 2.4631331929648437,
+        "max_point_rms_pixel": 4.106518798458879,
+        "depth_min": 1.6509514235459246,
+        "depth_max": 3.6266766152458167
+      },
+      {
+        "focal": 845.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.09040532247108565,
+        "rms_pixel": 2.5018101857447106,
+        "max_point_rms_pixel": 4.179388145546088,
+        "depth_min": 1.6445744907126914,
+        "depth_max": 3.5760263381954416
+      },
+      {
+        "focal": 850.0,
+        "pitch_deg": 5.0,
+        "shoulder_over_radius": -0.08885869855520495,
+        "rms_pixel": 2.540469088451367,
+        "max_point_rms_pixel": 4.252184571318112,
+        "depth_min": 1.6383564365340206,
+        "depth_max": 3.5272938663302527
+      }
+    ],
+    "start": 146,
+    "rate": 99.24,
+    "tracks": 26
+  },
+  {
+    "best": {
+      "focal": 640.0,
+      "pitch_deg": 7.0,
+      "shoulder_over_radius": -0.2560860643795155,
+      "rms_pixel": 0.6187541044748629,
+      "max_point_rms_pixel": 0.832319203040245,
+      "depth_min": 3.3475650572042643,
+      "depth_max": 5.6652753560018
+    },
+    "profile_plus_half_pixel": [
+      570.0,
+      720.0
+    ],
+    "profile_is_confidence_interval": false,
+    "profile": [
+      {
+        "focal": 520.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.5912637644004601,
+        "rms_pixel": 2.505986808698768,
+        "max_point_rms_pixel": 5.2552028522430385,
+        "depth_min": 7.146794471921907,
+        "depth_max": 57.18923536450493
+      },
+      {
+        "focal": 525.0,
+        "pitch_deg": 10.0,
+        "shoulder_over_radius": -0.6789116664746975,
+        "rms_pixel": 1.9549064999925858,
+        "max_point_rms_pixel": 3.759530651654494,
+        "depth_min": 6.201375435304495,
+        "depth_max": 53.91195194207546
+      },
+      {
+        "focal": 530.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.49677041233220853,
+        "rms_pixel": 1.7648468535551392,
+        "max_point_rms_pixel": 3.316195714485253,
+        "depth_min": 6.685765901271101,
+        "depth_max": 43.35425646024552
+      },
+      {
+        "focal": 535.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.4393916023871489,
+        "rms_pixel": 1.6221336786977694,
+        "max_point_rms_pixel": 2.963865073961668,
+        "depth_min": 6.492124546527768,
+        "depth_max": 33.360283793700795
+      },
+      {
+        "focal": 540.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.4019065280081551,
+        "rms_pixel": 1.5099170945908489,
+        "max_point_rms_pixel": 2.686363643200724,
+        "depth_min": 6.2425838607395345,
+        "depth_max": 26.713953283013517
+      },
+      {
+        "focal": 545.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.37760597546082525,
+        "rms_pixel": 1.416211046389259,
+        "max_point_rms_pixel": 2.4575285997659893,
+        "depth_min": 5.974182554060195,
+        "depth_max": 22.199411185144335
+      },
+      {
+        "focal": 550.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.36186072396681307,
+        "rms_pixel": 1.3348524056063646,
+        "max_point_rms_pixel": 2.261918162172934,
+        "depth_min": 5.707165876300541,
+        "depth_max": 18.98430455841374
+      },
+      {
+        "focal": 555.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.35177603693248777,
+        "rms_pixel": 1.2626124861002663,
+        "max_point_rms_pixel": 2.090917851191055,
+        "depth_min": 5.451318229259251,
+        "depth_max": 16.594682760919774
+      },
+      {
+        "focal": 560.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.3455312421468856,
+        "rms_pixel": 1.1977627618363755,
+        "max_point_rms_pixel": 1.9397165040716815,
+        "depth_min": 5.210857620059475,
+        "depth_max": 14.755381088869319
+      },
+      {
+        "focal": 565.0,
+        "pitch_deg": 9.0,
+        "shoulder_over_radius": -0.34195350197534163,
+        "rms_pixel": 1.139385437053274,
+        "max_point_rms_pixel": 1.8056868434761668,
+        "depth_min": 4.987128402008459,
+        "depth_max": 13.299499255325266
+      },
+      {
+        "focal": 570.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.26705946800205294,
+        "rms_pixel": 1.0736613650562752,
+        "max_point_rms_pixel": 1.576266707607672,
+        "depth_min": 5.082960272257745,
+        "depth_max": 11.970718837122186
+      },
+      {
+        "focal": 575.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.268465908310788,
+        "rms_pixel": 1.0096078037589622,
+        "max_point_rms_pixel": 1.4286963364021528,
+        "depth_min": 4.8704496508532475,
+        "depth_max": 11.017348263420136
+      },
+      {
+        "focal": 580.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.2706783773846628,
+        "rms_pixel": 0.9500343465473073,
+        "max_point_rms_pixel": 1.2925400272445018,
+        "depth_min": 4.67496991120733,
+        "depth_max": 10.2154428055505
+      },
+      {
+        "focal": 585.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.27345944494629104,
+        "rms_pixel": 0.8950529746460909,
+        "max_point_rms_pixel": 1.1953537760644368,
+        "depth_min": 4.495030859019336,
+        "depth_max": 9.531758967733584
+      },
+      {
+        "focal": 590.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.27664323629546467,
+        "rms_pixel": 0.844898133962989,
+        "max_point_rms_pixel": 1.1136266108602304,
+        "depth_min": 4.329173877969865,
+        "depth_max": 8.942115005249939
+      },
+      {
+        "focal": 595.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.2801125081490684,
+        "rms_pixel": 0.799897668568902,
+        "max_point_rms_pixel": 1.0388623349413342,
+        "depth_min": 4.176031570939674,
+        "depth_max": 8.428466016665995
+      },
+      {
+        "focal": 600.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.28378359569085354,
+        "rms_pixel": 0.7604444351162425,
+        "max_point_rms_pixel": 0.9808931656527045,
+        "depth_min": 4.034352361469924,
+        "depth_max": 7.9770835350234295
+      },
+      {
+        "focal": 605.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.28759634707479875,
+        "rms_pixel": 0.7269622748522464,
+        "max_point_rms_pixel": 0.9648358067544697,
+        "depth_min": 3.903006436903043,
+        "depth_max": 7.577343610397086
+      },
+      {
+        "focal": 610.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.29150728058064945,
+        "rms_pixel": 0.6998627359238986,
+        "max_point_rms_pixel": 0.9538061386979114,
+        "depth_min": 3.78098208491894,
+        "depth_max": 7.220899745369131
+      },
+      {
+        "focal": 615.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.29548486219887915,
+        "rms_pixel": 0.6794929213226039,
+        "max_point_rms_pixel": 0.9478508177393941,
+        "depth_min": 3.667377432341989,
+        "depth_max": 6.9011058568503305
+      },
+      {
+        "focal": 620.0,
+        "pitch_deg": 8.0,
+        "shoulder_over_radius": -0.2995062018808976,
+        "rms_pixel": 0.6660801816147915,
+        "max_point_rms_pixel": 0.9469272253935559,
+        "depth_min": 3.5613903392203348,
+        "depth_max": 6.612605630776496
+      },
+      {
+        "focal": 625.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.24320668912773266,
+        "rms_pixel": 0.6517053072309886,
+        "max_point_rms_pixel": 0.8548514486548332,
+        "depth_min": 3.6277263537415765,
+        "depth_max": 6.315391052075614
+      },
+      {
+        "focal": 630.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.24755756916484425,
+        "rms_pixel": 0.6337368833360081,
+        "max_point_rms_pixel": 0.8420336851827734,
+        "depth_min": 3.5282245816203517,
+        "depth_max": 6.07941682762886
+      },
+      {
+        "focal": 635.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.25185094478300024,
+        "rms_pixel": 0.6227409949628677,
+        "max_point_rms_pixel": 0.8345239413175688,
+        "depth_min": 3.435026036192676,
+        "depth_max": 5.863528961144582
+      },
+      {
+        "focal": 640.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.2560860643795155,
+        "rms_pixel": 0.6187541044748629,
+        "max_point_rms_pixel": 0.832319203040245,
+        "depth_min": 3.3475650572042643,
+        "depth_max": 5.6652753560018
+      },
+      {
+        "focal": 645.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.26026349868254617,
+        "rms_pixel": 0.621596641973154,
+        "max_point_rms_pixel": 0.8610409729058038,
+        "depth_min": 3.265337996988044,
+        "depth_max": 5.482994023346163
+      },
+      {
+        "focal": 650.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.2643847243376807,
+        "rms_pixel": 0.630883924998982,
+        "max_point_rms_pixel": 0.9515261381894129,
+        "depth_min": 3.1878955944036362,
+        "depth_max": 5.314495890220856
+      },
+      {
+        "focal": 655.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.2684518230183042,
+        "rms_pixel": 0.6460683105072311,
+        "max_point_rms_pixel": 1.047485958992266,
+        "depth_min": 3.1148363068045235,
+        "depth_max": 5.158279437172879
+      },
+      {
+        "focal": 660.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.2724672636296757,
+        "rms_pixel": 0.6664995879844384,
+        "max_point_rms_pixel": 1.1469354117873571,
+        "depth_min": 3.045800500401886,
+        "depth_max": 5.013053268390601
+      },
+      {
+        "focal": 665.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.2764337446359281,
+        "rms_pixel": 0.6914873562463267,
+        "max_point_rms_pixel": 1.2485155595075625,
+        "depth_min": 2.980465398104445,
+        "depth_max": 4.877700593107777
+      },
+      {
+        "focal": 670.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.2803540801078028,
+        "rms_pixel": 0.7203528607014688,
+        "max_point_rms_pixel": 1.35129182007569,
+        "depth_min": 2.9185406893107384,
+        "depth_max": 4.751250730970992
+      },
+      {
+        "focal": 675.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.28423111769283366,
+        "rms_pixel": 0.752464614955715,
+        "max_point_rms_pixel": 1.4546156716650824,
+        "depth_min": 2.859764714613987,
+        "depth_max": 4.6328560122655915
+      },
+      {
+        "focal": 680.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.28806767996455435,
+        "rms_pixel": 0.7872580451529321,
+        "max_point_rms_pixel": 1.5580327815796697,
+        "depth_min": 2.8039011479288383,
+        "depth_max": 4.521772919607183
+      },
+      {
+        "focal": 685.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.2918665229269617,
+        "rms_pixel": 0.8242426025930917,
+        "max_point_rms_pixel": 1.6612223380879378,
+        "depth_min": 2.750736108061616,
+        "depth_max": 4.417484291166735
+      },
+      {
+        "focal": 690.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.2956303071159364,
+        "rms_pixel": 0.8630005703192769,
+        "max_point_rms_pixel": 1.763956739668101,
+        "depth_min": 2.700075640660672,
+        "depth_max": 4.320530076884654
+      },
+      {
+        "focal": 695.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.29936157794329904,
+        "rms_pixel": 0.9031812004371853,
+        "max_point_rms_pixel": 1.8660744889856222,
+        "depth_min": 2.6517435195482113,
+        "depth_max": 4.229516401411708
+      },
+      {
+        "focal": 700.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.3030627528050898,
+        "rms_pixel": 0.9444927812486659,
+        "max_point_rms_pixel": 1.9674617004605368,
+        "depth_min": 2.6055793235732363,
+        "depth_max": 4.1434045277616045
+      },
+      {
+        "focal": 705.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.30673611311657245,
+        "rms_pixel": 0.9866942578288497,
+        "max_point_rms_pixel": 2.068039289878768,
+        "depth_min": 2.561436751353393,
+        "depth_max": 4.062023065591601
+      },
+      {
+        "focal": 710.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.3103837999079127,
+        "rms_pixel": 1.0295872986434027,
+        "max_point_rms_pixel": 2.1677539642708603,
+        "depth_min": 2.5191821416577307,
+        "depth_max": 3.984924776100333
+      },
+      {
+        "focal": 715.0,
+        "pitch_deg": 7.0,
+        "shoulder_over_radius": -0.3140078119629715,
+        "rms_pixel": 1.0730092214591347,
+        "max_point_rms_pixel": 2.2665717913426966,
+        "depth_min": 2.4786931718070795,
+        "depth_max": 3.9116760543772457
+      },
+      {
+        "focal": 720.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.2586447980349256,
+        "rms_pixel": 1.114939707409867,
+        "max_point_rms_pixel": 2.3788403290359725,
+        "depth_min": 2.539710848094761,
+        "depth_max": 3.8405050211132723
+      },
+      {
+        "focal": 725.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.26181621196368693,
+        "rms_pixel": 1.1542126642177934,
+        "max_point_rms_pixel": 2.4753960037117295,
+        "depth_min": 2.5009667402824007,
+        "depth_max": 3.7734229345483614
+      },
+      {
+        "focal": 730.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.26494876837407794,
+        "rms_pixel": 1.1941702230631561,
+        "max_point_rms_pixel": 2.571472670288155,
+        "depth_min": 2.4637869378602617,
+        "depth_max": 3.709486275803464
+      },
+      {
+        "focal": 735.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.2680447596005684,
+        "rms_pixel": 1.2346841760520049,
+        "max_point_rms_pixel": 2.6670141334645407,
+        "depth_min": 2.4280766245465797,
+        "depth_max": 3.6486978342179825
+      },
+      {
+        "focal": 740.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.2711063014261078,
+        "rms_pixel": 1.2756454142711475,
+        "max_point_rms_pixel": 2.7619786498261387,
+        "depth_min": 2.3937484195807226,
+        "depth_max": 3.590616642135217
+      },
+      {
+        "focal": 745.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.27413534263550665,
+        "rms_pixel": 1.3169613001579892,
+        "max_point_rms_pixel": 2.856336146398235,
+        "depth_min": 2.360721678755225,
+        "depth_max": 3.5350664005234016
+      },
+      {
+        "focal": 750.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.27713367397112165,
+        "rms_pixel": 1.3585533593333532,
+        "max_point_rms_pixel": 2.950066027827564,
+        "depth_min": 2.3289218717970357,
+        "depth_max": 3.4818857620693326
+      },
+      {
+        "focal": 755.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.28010293647381534,
+        "rms_pixel": 1.4003552764783354,
+        "max_point_rms_pixel": 3.043155436692852,
+        "depth_min": 2.298280026744699,
+        "depth_max": 3.430926780561934
+      },
+      {
+        "focal": 760.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.28304462920917284,
+        "rms_pixel": 1.4423111689867174,
+        "max_point_rms_pixel": 3.1355978648512393,
+        "depth_min": 2.2687322332248843,
+        "depth_max": 3.382053549001748
+      },
+      {
+        "focal": 765.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.2859601163906539,
+        "rms_pixel": 1.484374107770073,
+        "max_point_rms_pixel": 3.2273920384555432,
+        "depth_min": 2.24021919760714,
+        "depth_max": 3.335141000207568
+      },
+      {
+        "focal": 770.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.2888506339191954,
+        "rms_pixel": 1.5265048540953754,
+        "max_point_rms_pixel": 3.318541017661215,
+        "depth_min": 2.212685843937477,
+        "depth_max": 3.290073847770237
+      },
+      {
+        "focal": 775.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.2917172953638025,
+        "rms_pixel": 1.5686707829722093,
+        "max_point_rms_pixel": 3.409051465777566,
+        "depth_min": 2.18608095534237,
+        "depth_max": 3.246901619071761
+      },
+      {
+        "focal": 780.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.2945610974106544,
+        "rms_pixel": 1.610844966292472,
+        "max_point_rms_pixel": 3.4989330529373257,
+        "depth_min": 2.16035685127486,
+        "depth_max": 3.2054526725296206
+      },
+      {
+        "focal": 785.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.29738292480976036,
+        "rms_pixel": 1.6530053920047048,
+        "max_point_rms_pixel": 3.5881979671593136,
+        "depth_min": 2.1354690965599956,
+        "depth_max": 3.1655467942386717
+      },
+      {
+        "focal": 790.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.30018355484871156,
+        "rms_pixel": 1.695134298697331,
+        "max_point_rms_pixel": 3.676860511606092,
+        "depth_min": 2.1113762387019284,
+        "depth_max": 3.127099767342548
+      },
+      {
+        "focal": 795.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.302963661382842,
+        "rms_pixel": 1.7372176078686414,
+        "max_point_rms_pixel": 3.764936771372916,
+        "depth_min": 2.088039570351459,
+        "depth_max": 3.0900333730037906
+      },
+      {
+        "focal": 800.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.30572381845039903,
+        "rms_pixel": 1.779244438780191,
+        "max_point_rms_pixel": 3.852444336631188,
+        "depth_min": 2.065422914210535,
+        "depth_max": 3.054274865090329
+      },
+      {
+        "focal": 805.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.30846450350031784,
+        "rms_pixel": 1.82120669309293,
+        "max_point_rms_pixel": 3.939402071648289,
+        "depth_min": 2.0434924279776965,
+        "depth_max": 3.019756499001715
+      },
+      {
+        "focal": 810.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.3111861002589806,
+        "rms_pixel": 1.8630986984752027,
+        "max_point_rms_pixel": 4.025829921304202,
+        "depth_min": 2.0222164272230185,
+        "depth_max": 2.986434741373113
+      },
+      {
+        "focal": 815.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.3138889012610473,
+        "rms_pixel": 1.90491690207188,
+        "max_point_rms_pixel": 4.111748748368562,
+        "depth_min": 2.0015652243284907,
+        "depth_max": 2.954426179482277
+      },
+      {
+        "focal": 820.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.31657311006812017,
+        "rms_pixel": 1.946659606164242,
+        "max_point_rms_pixel": 4.1971801960931945,
+        "depth_min": 1.9815109818455374,
+        "depth_max": 2.9234754795285016
+      },
+      {
+        "focal": 825.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.3192388431976945,
+        "rms_pixel": 1.9883267395642508,
+        "max_point_rms_pixel": 4.282146571697479,
+        "depth_min": 1.9620275788096802,
+        "depth_max": 2.8935312893731773
+      },
+      {
+        "focal": 830.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.321886131783595,
+        "rms_pixel": 2.029919659306064,
+        "max_point_rms_pixel": 4.3666707471346085,
+        "depth_min": 1.9430904887169425,
+        "depth_max": 2.8645455017985673
+      },
+      {
+        "focal": 835.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.3245149229879225,
+        "rms_pixel": 2.071440978051812,
+        "max_point_rms_pixel": 4.450776074176522,
+        "depth_min": 1.9246766680108844,
+        "depth_max": 2.836473000720683
+      },
+      {
+        "focal": 840.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.32712508118343603,
+        "rms_pixel": 2.1128944133428833,
+        "max_point_rms_pixel": 4.534486311373761,
+        "depth_min": 1.906764454055569,
+        "depth_max": 2.809642927142823
+      },
+      {
+        "focal": 845.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.32971638892431254,
+        "rms_pixel": 2.154284655425889,
+        "max_point_rms_pixel": 4.61782556086701,
+        "depth_min": 1.889333471681005,
+        "depth_max": 2.78617127498369
+      },
+      {
+        "focal": 850.0,
+        "pitch_deg": 6.000000000000001,
+        "shoulder_over_radius": -0.33228854772233934,
+        "rms_pixel": 2.1956172508822376,
+        "max_point_rms_pixel": 4.700818213365216,
+        "depth_min": 1.872364547485342,
+        "depth_max": 2.76338721859839
+      }
+    ],
+    "start": 159,
+    "rate": -99.2,
+    "tracks": 16
+  },
+  {
+    "refused": "fewer_than_six_tracks",
+    "start": 167,
+    "rate": -99.2,
+    "tracks": 3
+  }
+]
