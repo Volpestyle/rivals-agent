@@ -1,0 +1,28 @@
+{
+  "format": "idm-paired-access-review-v1",
+  "verdict": "LAND",
+  "reviewer": "live-review w2:p3E (Claude Opus 5.5, independent of the IDM lane)",
+  "reviewed_at": "2026-09-29T19:25-05:00",
+  "scope": "delta over review v1: D1, D2, N1, N2",
+  "manifest_sha256": "c8cfc58b7aad64cda0aa7f1d9e3ebbc8ea66aff5044a6925a0223425c23a0c8b",
+  "review_sha256": "b78058b38c84d032678808edb148f358a508fc30020bdf4324aed534e9ae6858",
+  "previous_receipt_sha256": "7407c6f71580a97b940141b8b54a3a3421e5ddda9a533f4981cc87e1184225e8",
+  "files": {
+    "docs/evidence/idm-paired-camera-access-20260929-v2/audit.py": "d57ea321eb4b49681183e0916bb63f4b9ad5d9012605d67ff1eaf4e5b17d2f2a",
+    "docs/evidence/idm-paired-camera-access-20260929-v2/test_refusals.py": "5bc5ff5418a44397a208e253c424ca25850ba2dc68b93a644dbbd64e4072eaf5",
+    "docs/evidence/idm-paired-camera-access-20260929-v2/README.md": "cd968ef913a1c665bde687176f36f8d5644e1dfffd61253518f615076ab237e3",
+    "docs/evidence/idm-paired-camera-access-20260929-v2/.gitattributes": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da",
+    "agent/human_demos.py": "222b346a371438a2748ff73fbfe2f83da3ad4471ab16b5db71e51eb164e7a208",
+    "agent/human_intake.py": "6000f4a624b8201bec4d6eea5c1e55b65fa606cd3a156502608eb7e6a39b4381",
+    "docs/evidence/idm-paired-camera-access-20260929/SHA256SUMS.json": "66a6e11e57a70d9a06c77f48415a606567b8fda881f68a323e6d5eee0566fda0",
+    "docs/evidence/idm-paired-camera-access-20260929/review-v1-receipt.json": "7407c6f71580a97b940141b8b54a3a3421e5ddda9a533f4981cc87e1184225e8"
+  },
+  "resolved": {
+    "D1": "fixed: human_intake.load_denylist single authenticated LF read + row validation",
+    "D2": "fixed: both sides normalised; owner tests + reviewer 6-variant synthetic check refuse",
+    "N1": "fixed: explicit utf-8",
+    "N2": "fixed: ledger_pin_policy recorded"
+  },
+  "data_access_by_reviewer": "none; only synthetic tests (main() never called)",
+  "conditions": "Authorizes this phase-one audit only; any mapping/inference phase needs its own frozen review."
+}
