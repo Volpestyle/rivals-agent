@@ -57,6 +57,9 @@ sequential `LS RS` taps for an ultimate. `combat:goh_targeting:0.1` still needs
   What produces the rate (the game, Steam Input or the attach) is not established.
 - Capture and pad code must run inside the desktop session (a `C:\desk` job that
   `Start-Process`es it). Over plain SSH dxcam fails with `DXGI_ERROR_NOT_CURRENTLY_AVAILABLE`.
+  The `C:\desk` runner is the scheduled task `desk-agent`. If jobs sit in `C:\desk\jobs` without reaching `done\`, it has
+  exited (it did mid-sitting on 2026-09-28): `Start-ScheduledTask -TaskName desk-agent` restarts it, and it drains the
+  queue. Any queued job then runs late, so don't leave pad jobs queued.
 - A monitor that is OFF kills dxcam silently. With the monitor switched off at its power button
   (what happened on 2026-09-20: James turns it off by hand when he leaves) the DisplayPort link
   drops, Windows shows 0 monitors (`@(Get-PnpDevice -Class Monitor | Where-Object Present).Count`;
@@ -155,6 +158,10 @@ settings visits. Put a move-and-attack step inside every measurement or trial, a
 menu visits under ~5 minutes. An idle agent cannot feed the timer: a worker that ends its
 turn waiting on someone else stops sending input, so enter the range only when the run is
 ready to start (code deployed, reviewer done), not before.
+
+A range the lead did not enter itself has an unknown idle timer. On 2026-09-28 the plaza raised the banner a few
+minutes after James handed over, before the first measurement attached. Move and attack right before launching any
+measurement, even when the range "was just entered".
 
 `scripts/reenter.py` does the menus reliably (lobby to in-range as Spider-Man, every press
 behind its proof). Its arrival walk can snag on the left jamb of the spawn room's green door
