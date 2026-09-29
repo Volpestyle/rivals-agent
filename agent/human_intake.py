@@ -608,16 +608,20 @@ def _tiles(spans, intervals):
 SEALED_ALLOWED = ("test", "gate2")   # a sealed identity's only allowed split; a row without `allowed_split` is test
 
 
-def load_denylist(path, *, sha256_pin=None):
+def load_denylist(path, *, sha256_pin):
     """The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}.
 
     Since v2 (2026-09-26, review B2) a row may carry `allowed_split` ("test" or "gate2"; absent means test). A gate2 row
     also names its `session_group`: the pair it belongs to. Membership of a sealed split is authoritative here, never
-    in the candidate registry."""
+    in the candidate registry. The caller must supply the independently recorded LF sha256; the exact bytes
+    authenticated below are also the bytes parsed, with no unauthenticated second read."""
+    _require(isinstance(sha256_pin, str) and re.fullmatch(r"[0-9a-fA-F]{64}", sha256_pin) is not None,
+             "sealed denylist needs an independently supplied 64-hex sha256 pin")
     path = Path(path)
-    if sha256_pin is not None:
-        _require(lf_sha256(path) == sha256_pin, "sealed denylist differs from its pinned sha256 (LF form)")
-    doc = json.loads(path.read_text(encoding="utf-8"))
+    raw = path.read_bytes().replace(b"\r\n", b"\n")
+    _require(hashlib.sha256(raw).hexdigest() == sha256_pin.lower(),
+             "sealed denylist differs from its pinned sha256 (LF form)")
+    doc = json.loads(raw.decode("utf-8"))
     _require(doc.get("schema_version") == 1 and isinstance(doc.get("sessions"), list) and doc["sessions"],
              "sealed denylist needs sessions")
     for row in doc["sessions"]:

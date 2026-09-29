@@ -246,7 +246,7 @@ def check_sources(context, stage):
     sources = context["sources"]
     expected = {**cm3.TRAIN_TABLES, **cm3.DEV_SESSIONS}
     require(set(sources) == set(expected), "frozen seven-source allowlist required")
-    denylist = human_intake.load_denylist(pinned(context["denylist"]))
+    denylist = human_intake.load_denylist(pinned(context["denylist"]), sha256_pin=steps.DENYLIST_SHA256)
     registrations = human_intake.check_registry(pinned(context["registry"]), denylist=denylist)
     for sid, spec in sources.items():
         require(set(spec) == {"role", "table", "cache", "cache_manifest_sha256", "sidecar"}, "source schema/bypass")

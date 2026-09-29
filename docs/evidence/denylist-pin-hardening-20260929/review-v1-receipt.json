@@ -1,0 +1,25 @@
+{
+  "format": "denylist-pin-hardening-receipt-v1",
+  "verdict": "LAND",
+  "reviewer": "live-review w2:p3E (Claude Opus 5.5, independent of the admission lane)",
+  "reviewed_at": "2026-09-29T03:25-05:00",
+  "review_inputs_sha256": "c9068d47c555511ce58a8e7849bf984853b9af3d4f81316e61ab382d08d00e25",
+  "baseline_commit": "e0e3fc83b64ad8839d63d8a6f6fbc41c78c9f7da",
+  "review_sha256": "177816f9e5ecd18d0fd67d9a94332dc9850731d98b860bf024f07b1705f77e46",
+  "files": {
+    "agent/human_intake.py": "6000f4a624b8201bec4d6eea5c1e55b65fa606cd3a156502608eb7e6a39b4381",
+    "policy/range_bc/steps.py": "0023310ede887ec5a9b5bcaffc52e766480b88612882443209e83a455b2093cf",
+    "policy/range_bc/cm3_run.py": "46f72e39a9ad7f4a22fca10b79b574765c1e3da62083760546ba4ca753644de1",
+    "tests/test_denylist_pin_hardening.py": "a464c8df3d103dd6a1cd0e784c2bc4196b7d2d314819959b4889ef4e58db3c30",
+    "docs/evidence/denylist-pin-hardening-20260929/excluded-loaders.json": "cba864b725bf4fcb61af6e57aca5b2c7f20563d7d1920413160f14a92fda8d62",
+    "docs/evidence/denylist-pin-hardening-20260929/pin-checks.json": "7c50f961729d974468a50ec1a8c2fc372c056dfb07d0e18303c60f1dc01e65de",
+    "docs/evidence/denylist-pin-hardening-20260929/README.md": "2ca56d7753e1a723590680ffc6745cc493232b04fc6af57ce48dcbcafd56988e",
+    "docs/evidence/denylist-pin-hardening-20260929/verification.json": "b7bfd7bf5271bd43d1e030791eca861bfdf527e66b0303410cf6b801dc86020b"
+  },
+  "findings": {
+    "blocking": [],
+    "R1": "low: cm3_run.py:406-408 later routes the denylist path to idle_sidecar.load_weights -> authorize (raw hash then separate small_json parse); covered by the parked-idle_sidecar condition, name it in the record",
+    "R2": "note: cm3 context must now also match steps.DENYLIST_SHA256 (v2); older-version contexts refuse (fail closed)"
+  },
+  "conditions": "No sealed data opened. idle_sidecar authorize must be fixed before any round-3/sidecar/cm3 training use; stale 439c80df consumers remain fail-closed and out of scope."
+}

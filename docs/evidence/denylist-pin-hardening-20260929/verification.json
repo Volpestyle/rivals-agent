@@ -1,0 +1,22 @@
+{
+  "command": "uv run pytest tests/test_denylist_pin_hardening.py tests/test_human_intake.py::test_registry_naming_the_sealed_take_as_train_is_refused tests/test_human_intake.py::test_pins_survive_a_crlf_checkout tests/test_human_intake.py::test_steps_v1_refuses_injected_input_sealed_sessions_and_bad_reviews -q",
+  "result": "63 passed in 0.36s",
+  "exit_code": 0,
+  "fixtures": "synthetic only",
+  "additional_checks": [
+    {
+      "command": "git diff --check -- agent/human_intake.py policy/range_bc/steps.py policy/range_bc/cm3_run.py tests/test_denylist_pin_hardening.py",
+      "exit_code": 0
+    },
+    {
+      "command": "uv run python -m compileall -q agent/human_intake.py policy/range_bc/steps.py policy/range_bc/cm3_run.py tests/test_denylist_pin_hardening.py",
+      "exit_code": 0
+    }
+  ],
+  "not_run": [
+    "full suite (known corpus-reading tests)",
+    "real corpus/media/intake/transfer/decode",
+    "training or cloud jobs",
+    "cm3 training-stack import"
+  ]
+}

@@ -198,13 +198,9 @@ def load_denylist(path=DENYLIST, sha256_pin=DENYLIST_SHA256):
         sys.path.insert(0, str(root))
     from agent import human_intake
     full = Path(path) if Path(path).is_absolute() else root / path
-    # The pin is over LF-normalised bytes (the git blob): a Windows checkout with core.autocrlf writes CRLF, and a raw
-    # pin would then refuse the committed file itself (seen on 6f4dba2). Checked here, then parsed by intake's reader.
-    if sha256_pin is not None:
-        got = hashlib.sha256(full.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
-        require(got == sha256_pin, f"sealed denylist refused: {full} differs from its pinned sha256 (LF-normalised)")
+    # Intake authenticates and parses the same LF-normalised bytes, including on CRLF checkouts.
     try:
-        return human_intake.load_denylist(full)
+        return human_intake.load_denylist(full, sha256_pin=sha256_pin)
     except Exception as exc:
         raise StepError(f"sealed denylist refused: {exc}") from exc
 
