@@ -8,15 +8,17 @@ The lead supplied the current Linear description/comments at 01:05 CDT.
 ## Delivered boundary
 
 `agent/camera_map.py` and `agent/camera_maps/{legacy-265-75,alt-247-124}.json`
-provide the data contract. The controller, startup and loop changes are an
-**unapplied patch**, with tests, in
-`docs/evidence/live-loop-rebind-20260929/`. No active live-input path was changed.
+provide the data contract. The controller/startup/camera-selection changes remain an **unapplied patch**.
+The safety follow-up changes only the active `agent/loop.py` and owned tests;
+its current delta-review packet is `docs/evidence/live-loop-safety-rebind-20260929-v2/`.
+The v1 packet and its FIX review are preserved unchanged.
+The initial `live-loop-rebind-20260929/` packet is preserved as historical evidence.
 
 The lead explicitly prohibited edits to controller/startup tonight: their bytes
 are pinned by `camera-schedule-20260929-v2/review-inputs.json`. The pending patch
 must be applied only after calibration acceptance, independently reviewed by
-live-review and included in a new deployment freeze. It also changes loop.py;
-shipping that part early would leave an inconsistent runtime.
+live-review and included in a new deployment freeze. Its camera-selection hunks also change loop.py and remain deferred. The refreshed
+patch uses the final safety-loop bytes as its preimage.
 
 ## Profile contract
 
@@ -56,6 +58,14 @@ The rounded point retains those asymmetric bounds and links the native-count
 record. The lead will accept the map as a unit after the remaining points exist;
 this delivery grants no single-point acceptance.
 
+Live admission in the deferred v2 patch additionally requires an explicit map,
+an operator settings-match declaration, and a whole-map acceptance record whose
+SHA-256 is in the code-reviewed `REVIEWED_ACCEPTANCES` registry. The registry is
+empty: neither the legacy nor alt map has live acceptance in this delivery.
+The record pins map bytes, settings and evidence bytes; status strings alone
+cannot authorize live input. All timed turns are checked before attach and
+locally bounded to four times the legacy duration, and recorded in metadata.
+
 To consume an accepted revision, fill a versioned JSON using the same schema
 and select its explicit path with the pending `--camera-map` argument. No new
 controller code is needed for different rates, focal, latency or directional
@@ -76,7 +86,7 @@ the sitting; a JSON label does not prove which settings the game is using.
 | `controller` aim policy | KP 20, KI 2, done .4 degrees, max integral 5, pitch budget .30 stick-seconds, residual threshold .03 | Policy limits, not measured camera curves; retained, to be observed in the compatibility check. |
 | `agent/startup.py` | Prime +.45 and search -.45, each .3 s; legacy prime about 52–58 degrees; 5 s settle and .15 s inter-turn wait | Loop-supplied calibration preserves nominal 51.6-degree turns using independent signed durations. Other direct callers keep their original .3 s pulses. Existing time/turn budgets stay. |
 | `agent/loop.py:_camera` and `agent/tracker.py:reproject` | Controller yaw/pitch history at `t-latency`, focal scaled to actual frame width; tracker projection uses supplied focal | Pass the selected controller through the loop. Add profile/hash/settings to summary and start metadata, including pose-only. |
-| `agent/placement.py` | `FOCAL_PX=930` at 2560; `YAW_DEG_PER_S=172` at .45; bearing and turn-time calculations | Known separate caller, outside the lead-approved rebind scope. |
+| `agent/placement.py:33,92`; `docs/lanes/reentry.md:263` | `FOCAL_PX=930` at 2560; `YAW_DEG_PER_S=172` at .45; bearing and turn-time calculations | Pinned by the range-benchmark freeze. Needs re-measurement and re-freeze after map acceptance; no hand edits tonight. |
 | `agent/placement_sim.py` | Uses placement's focal and turn model | Historical placement simulator, unchanged. |
 | `scripts/place.py` | TURN_STICK .45, low-map settings Linear 265/75 assist 0, default `Cal`, placement pitch-reset timings | Outside scope; do not use it as an alt-calibrated placement tool. |
 | `scripts/reenter.py` | YAW_STICK .45, YAW_DEG_S 172, FOCAL 465 for arrival geometry | Outside scope; menu/arrival ownership remains with lead. |
@@ -112,14 +122,19 @@ older `698d8831` deployment freeze before that checkpoint can run again.
    Report compatibility or a named failure per exercised behavior, with unknowns
    intact. This is not a KO benchmark or a learned-policy result.
 
-**Follow-up authorized by the lead:** bare `agent.loop` has no human-takeover monitor, and
-its focus composition is limited to range-skill/episode-collection mode. This
-patch preserves that boundary. After this data/patch delivery, live-loop owns the
-fix in `agent/loop.py`, reusing the existing all-key/mouse takeover helper and
-focus composition without editing pinned implementations. Tests must cover all
-stop paths. The lead will route the frozen fix and the rebinding patch together
-to live-review before any run. A bare-loop command is not authorized by this
-plan; calibration completeness alone does not remove this operational gap.
+**Safety follow-up produced:** every live CLI mode now requires the explicit game
+PID and uses the existing read-only focus guard and calibration tool's all-key/
+mouse-button takeover reader. A latched monitor checks focus, takeover and the
+hard startup-plus-run deadline independently of capture; pixel proofs check HUD
+and idle throughout startup, controller sends and scoreboard transitions. Every
+CLI exit closes the pad and monitor. Bare `LiveIO()` refuses before hardware;
+callers must provide an explicitly guarded `Live`. The bridge owner must update
+`agent/session.py` before enabling VUH-1316. No bridge file was edited.
+
+This is offline preparation. The lead routes the frozen safety delta and updated
+controller/startup patch to live-review `w2:p3E` before landing or running it.
+Calibration completeness, independent review, application of the deferred patch
+and a new deployment freeze remain required for the VUH-1319 live check.
 
 ## Verification and handoff
 
@@ -129,13 +144,40 @@ runs synthetic controller/startup/loop tests and compares 1,500 exact pad report
 and camera states with the pinned pre-patch controller. No real pad, desktop,
 GPU, paid compute, held-out recordings or sealed data were used.
 
-The initial packet records **296 passed** targeted checks. Full stdlib and
-perception checks are still being reconciled against unmodified runtime HEAD;
-the perception group already has an unrelated missing-torch collection failure.
-The safety follow-up will carry the final broad-suite results and failure lists,
-separately from the pending-patch checks. The lead owns Linear publication and
-acceptance; no account connector was substituted for unavailable direct workspace
-tools. Pending VUH-1319 correction: record the standalone loader/maps and unapplied
-patch as produced, retain calibration acceptance, independent delta review,
-deployment freeze and brief compatibility check as remaining work, and name the
-human-takeover/focus wrapper gap. VUH-1384 remains the calibration prerequisite.
+The initial packet records **296 passed**. The safety follow-up has **331 passed**
+targeted tests and **521 passed** with the deferred camera patch applied only to
+disposable copies. Its receipt records nine matching current calibration pins.
+The packet README holds the broad-suite failure reconciliation and remaining
+limitations. No account connector was substituted for unavailable direct
+workspace Linear tools. The lead owns VUH-1319 publication/readback, review
+routing and acceptance; this remains preparation produced, not calibration
+accepted or behavior demonstrated live. VUH-1384 remains the calibration
+prerequisite.
+
+Final isolated full stdlib run (no exclusion, after 657020d): 2690 passed,
+138 skipped, 28 failed and 12 errors. All bad node IDs reproduce without this
+lane runtime on the 8331c45 baseline; perception adds five distinct bad IDs,
+also baseline-reproduced. Exact names and CRLF attribution are in the packet
+`baseline-failures.md`. No lane-caused failure remains. The safety delta stays
+uncommitted and frozen for the lead-routed independent live-input review.
+
+## Safety review v2 follow-up
+
+V1 review required a scoreboard fix: negative HUD proof during the native
+RETURN_S fade wait incorrectly latched range loss. V2 opens a bounded
+scoreboard-only latch exemption and closes it in finally. A false proof stays
+false; focus, all-key/mouse takeover, deadline, idle and reader failures still
+close immediately. Real Live plus fake pad/capture tests cover return, timeout
+and each hard stop. Scripted/Jev/learned now stop on the first missing HUD frame;
+the former 0.25 s live grace is intentionally removed under AGENTS.md, confirmed
+by the lead. Ordinary offline replay grace remains.
+
+Known caller gap: scripts/range_cast_probe.py:324-347 must gain takeover and an
+independent scope monitor before its next live use (owner: range-cast probe).
+Bridge owner (VUH-1316): agent/session.py must pass an explicitly guarded Live
+before enabling the bridge. Neither caller was edited.
+
+The v2 README and review-inputs.json carry the frozen bytes, tests and next
+consumer. Only agent/loop.py and tests/test_loop_safety.py change from the v1
+active safety delta; controller/startup and all nine calibration pins remain
+untouched. V2 is produced, pending independent delta review, not live approval.
