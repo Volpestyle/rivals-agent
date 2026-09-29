@@ -1,0 +1,396 @@
+{
+  "format": "external-evidence-index-v1",
+  "root": "D:/rivals-agent-evidence/focal-orbit-20260929",
+  "files": {
+    "dense/decode-command.json": {
+      "sha256": "56cba9cc56f305fa478b4244d4e96b79cf3f420589233064cb965f2c4499a053",
+      "bytes": 487
+    },
+    "dense/decode.log": {
+      "sha256": "ed1a5712a3e23e322e05ba8e9accb2b4a7daf591a6c680640072be0fb1244d01",
+      "bytes": 31939
+    },
+    "dense/native-0001.png": {
+      "sha256": "e93a6f3b09977900a68b3a5ddc4791e565ed885b1780fd2167ec03ef117bf4e2",
+      "bytes": 3442581
+    },
+    "dense/native-0002.png": {
+      "sha256": "5996f56b1841e7e7582ee0187d1191bc780f2b6a7b4a223762d160ffce4b5771",
+      "bytes": 3484436
+    },
+    "dense/native-0003.png": {
+      "sha256": "081d35f232997114e6a656cd1ebc690cf0f8e95d4dc3fb01b14fbb3adf5645fc",
+      "bytes": 3313925
+    },
+    "dense/native-0004.png": {
+      "sha256": "1bbf12cc449bfab468fd83a8904a4b04f1cab9e83e91017d4da021a7a32ccc08",
+      "bytes": 3469715
+    },
+    "dense/native-0005.png": {
+      "sha256": "69e6a508b37c9016e0150423a666c409315fecf6f2ee432ae1b15d34e3235de5",
+      "bytes": 3500508
+    },
+    "dense/native-0006.png": {
+      "sha256": "87fcff3921695f3e47dade22e85f604e9f357dac382cac3e61c44cd34382e628",
+      "bytes": 3352295
+    },
+    "dense/native-0007.png": {
+      "sha256": "797a4b6066504abd443cefdfc4bbe503ab7963cfa9bcbe2bc78cbef0b0f5ecbb",
+      "bytes": 3473917
+    },
+    "dense/native-0008.png": {
+      "sha256": "18e166742ab8b92c0b5a8db0e6d961a6d32cf313daa855c10a4df2c3a0c3fc7e",
+      "bytes": 3563107
+    },
+    "dense/native-0009.png": {
+      "sha256": "d184c00e529180c8e0315dffc8c65a98fca4541494cbcc5552d1f5037ec0dd47",
+      "bytes": 3416210
+    },
+    "dense/native-0010.png": {
+      "sha256": "95ff2a3f60f3afd8ccea655f67d247b2abda3485ed9ccabb480ba23a32331c7b",
+      "bytes": 3497192
+    },
+    "dense/native-0011.png": {
+      "sha256": "fed56291d012cc34f68ea478a7336c3d441517578226a778dc0f42e21928570c",
+      "bytes": 3403875
+    },
+    "dense/native-0012.png": {
+      "sha256": "d624ada5f64cae96ffd7a0b6b22e6b30f5ce7fa920dbff79a2cc03bfb21eeca2",
+      "bytes": 3202122
+    },
+    "dense/native-0013.png": {
+      "sha256": "defd0c593426ed59e54d89ed10d339a128462e2487dd9486799846802bf2e1f9",
+      "bytes": 3327069
+    },
+    "dense/native-0014.png": {
+      "sha256": "586239608edbcab95cfeca4bfada34f3639f620176a1ac7b6fb8b2c44a3bb98c",
+      "bytes": 3300511
+    },
+    "dense/native-0015.png": {
+      "sha256": "12bec725902617dad3af2e33adce4511f73e6dac2d627375d7538cf137fdd204",
+      "bytes": 3163646
+    },
+    "dense/native-0016.png": {
+      "sha256": "aea7b39a40adcaa0728d40fb1b02c63c8119b0624ad613a3f88da2af164e32da",
+      "bytes": 3365440
+    },
+    "dense/native-0017.png": {
+      "sha256": "d1336f4811d87fad96ae81a32369c4f936b8cdde4e345d093c08064aaed446f9",
+      "bytes": 3374800
+    },
+    "dense/native-0018.png": {
+      "sha256": "f5104de9727ab52b34f5592c018fb4a5976a8259dd98c3699c75fe3a75abf2ff",
+      "bytes": 3265686
+    },
+    "dense/native-0019.png": {
+      "sha256": "b1c1fada9f582ffbe1883e86da5b379d887aec2fd82063ca8e49352b3114ad88",
+      "bytes": 3551322
+    },
+    "dense/native-0020.png": {
+      "sha256": "4e100fab306b70b73a36d03714beedd7c9ad04444db918ae281c2a72546b0cbe",
+      "bytes": 3592380
+    },
+    "dense/native-0021.png": {
+      "sha256": "ff01fa6481a451cfe9cf206740f013f13df45d8eb946f7540b17fadd82b78471",
+      "bytes": 3614721
+    },
+    "dense/native-0022.png": {
+      "sha256": "f8fdfd0d7c10998bd303e684df391d2a3bfd9d80b19873090960a0fb019a827e",
+      "bytes": 3777810
+    },
+    "dense/native-0023.png": {
+      "sha256": "a6a954ed1195321761ce44d9d526006736ae350a6ce3679899a468cc75fd592c",
+      "bytes": 3876427
+    },
+    "dense/native-0024.png": {
+      "sha256": "4ff7e78b80dc71f68acb4a3e05939e681df0ad595d7879bef95343edad1bcd99",
+      "bytes": 3734960
+    },
+    "dense/native-0025.png": {
+      "sha256": "e663b312414c43d0944d8d8d6bd65ee305bfa670d8550a445f96d9c54ea9f17b",
+      "bytes": 3903925
+    },
+    "dense/native-0026.png": {
+      "sha256": "99c5b1b936bdee3f2b2d5722e7df98537c6153679a23ed5f17116eea8476f1da",
+      "bytes": 3672543
+    },
+    "dense/native-0027.png": {
+      "sha256": "38cdaf078889859047816cf31731614fc66ff2354ef1d2b5ef89e28e65ec1182",
+      "bytes": 3390081
+    },
+    "dense/native-0028.png": {
+      "sha256": "893dc622d9ceffc03ef60bb5476981d9aa4fc059797de9fd7d103b59eab5292b",
+      "bytes": 3419542
+    },
+    "dense/native-0029.png": {
+      "sha256": "cbd63434c68b113cc5fe80f44fec0c287f8b518a528c9f9555e89ed6bd96e022",
+      "bytes": 3366021
+    },
+    "dense/native-0030.png": {
+      "sha256": "48c69b7173b63e5d76a4872501919b91ec79e2b4b0876f26523e14c8775fb9e1",
+      "bytes": 3128250
+    },
+    "dense/native-0031.png": {
+      "sha256": "f4840003e8f0a90cf3d25ea94b08b8f00d168b6db580450c55cb0c98180d1cec",
+      "bytes": 3226092
+    },
+    "dense/native-0032.png": {
+      "sha256": "86f4b8c0a4d6e7a798aa5f9932892e0b97c89b37c813aece893e15cffb5be11c",
+      "bytes": 3238016
+    },
+    "dense/native-0033.png": {
+      "sha256": "371d80de9c923ca5ec557f30de21d378e4832c8d5f6a6b57fecf490df09e2309",
+      "bytes": 3097365
+    },
+    "dense/native-0034.png": {
+      "sha256": "392b267b0912da1bb7940d499cefd1e28a4e5efcdf3035bd09ed41297e06f768",
+      "bytes": 3057404
+    },
+    "dense/native-0035.png": {
+      "sha256": "e473ea9b981d42e1aa95ce11fe9b5d13f710bafe3623679a78ad8550f6c2ba27",
+      "bytes": 3091971
+    },
+    "dense/native-0036.png": {
+      "sha256": "cdf9e39e56fe44c942c246c58bd2e45461e05e55623e05c8bead583a5b65d2c2",
+      "bytes": 3187075
+    },
+    "dense/native-0037.png": {
+      "sha256": "95784f0a0ed20809c3417eeffa20538ddd2b5258ee4b32fc050b3bf89300d208",
+      "bytes": 3042191
+    },
+    "dense/native-0038.png": {
+      "sha256": "bf28eaa33417f8a833fb9da8ec2078b7a220f64eec1861a5b210babb63eaf7a1",
+      "bytes": 3199172
+    },
+    "dense/native-0039.png": {
+      "sha256": "fd44167ab34408c5b8c5e09ddc54e1890326f8939d64d9d843c0d221a4fbdd3a",
+      "bytes": 3157542
+    },
+    "dense/native-0040.png": {
+      "sha256": "c585a4337d84348d12dd260c592dc00451088aa09c7821dab7d8303583a97602",
+      "bytes": 3011195
+    },
+    "dense/native-0041.png": {
+      "sha256": "640dd5c2dc2d4eed799e49c82433104d9ca51eab7e6084551680d4b147138df4",
+      "bytes": 3213968
+    },
+    "dense/native-0042.png": {
+      "sha256": "150ac341a10d0ac747ccaa90183e83f85b9775c8c662d7f531104d14033e32aa",
+      "bytes": 3155393
+    },
+    "dense/native-0043.png": {
+      "sha256": "6807d572da6c69bbca66d4e85c370534d9bead6d348bd8fd68f916ff10b26aee",
+      "bytes": 2985846
+    },
+    "dense/native-0044.png": {
+      "sha256": "02348b8f8bc60ec49f75a795685c41224772de99888fc1a7a6bf6023977dc1fc",
+      "bytes": 3134306
+    },
+    "dense/native-0045.png": {
+      "sha256": "2e91042064ccf12d4f8b247b26317bb50f0e249d4563c1a70c2b7077f94d71a9",
+      "bytes": 2977723
+    },
+    "dense/native-0046.png": {
+      "sha256": "4dd3e2b05bd7dabb4dfdca2407c72bc6a90f41dca8e6b6c85757d2bf7691dec4",
+      "bytes": 3016774
+    },
+    "dense/native-0047.png": {
+      "sha256": "2a68c1ffa48c67353d270180d64c5bd6a7227fe91f7ef13de13c9b6277981152",
+      "bytes": 3072660
+    },
+    "dense/native-0048.png": {
+      "sha256": "399d4d4e553ea31be4f52fc340d48e371b1e07972a4f612daa6c348a7297c4d7",
+      "bytes": 2877348
+    },
+    "dense/native-0049.png": {
+      "sha256": "05fb045422f18bd0f7e0702efcbbabd60946653556378f382994a34236495110",
+      "bytes": 3077525
+    },
+    "dense/native-0050.png": {
+      "sha256": "6d1e2bda2bdd8a49a3bbafbaca652bbcda62db6ab3a7e236f0ed57a30c636675",
+      "bytes": 3105912
+    },
+    "dense/native-0051.png": {
+      "sha256": "3b19f15a3c5e91863fd11de1f47de53811f2b57106858cccb70a2999aab2d2af",
+      "bytes": 3001348
+    },
+    "dense/native-0052.png": {
+      "sha256": "3b2e9fe27f0b0ea06b5b3f892acbdff888796fbbbef35b2f237644606a40b7fb",
+      "bytes": 3178392
+    },
+    "dense/native-0053.png": {
+      "sha256": "55862391add561a07ad05374283a03fd1cb308317b644e2437bbe0811ab8ea1a",
+      "bytes": 3186398
+    },
+    "dense/native-0054.png": {
+      "sha256": "4114ed5d24e6282ae12afc43f5b37236d1ac2542fb1a4e52dbf2102a6569d1b4",
+      "bytes": 3133579
+    },
+    "dense/native-0055.png": {
+      "sha256": "cf4a6dc7c9fd7ab93a2d39c702cd7250a41de35ec059e4390ae080fd8b8eeadc",
+      "bytes": 3279781
+    },
+    "dense/native-0056.png": {
+      "sha256": "cd63e0cfc3af37d21abb92b0c6b4ebcb117e5924e17a87a0663955621cca5606",
+      "bytes": 3261922
+    },
+    "dense/native-0057.png": {
+      "sha256": "82fd79fcd1fb3a9f879849cacd22bd900b0cc352cfa4f9a0308b5113e1c3e8e1",
+      "bytes": 3108507
+    },
+    "dense/native-0058.png": {
+      "sha256": "560797d1dfebcb8e305830ea7b56a851c620e7d3d17e45b574136d28668bed3f",
+      "bytes": 3183270
+    },
+    "dense/native-0059.png": {
+      "sha256": "559d81ab5b2d6efc6adeb7a75854036ba840bea4027a848481fb57f92ba96eed",
+      "bytes": 3226754
+    },
+    "dense/native-0060.png": {
+      "sha256": "d07ec452ad2fac8be94fd242b94a7f24104353651139afd450e5cb6dfc2dd3fb",
+      "bytes": 3084834
+    },
+    "dense/native-0061.png": {
+      "sha256": "3d61f13b371df2fd53738e08ca65ee2a9bd6e86c0828cbe5dda23fa8a1730361",
+      "bytes": 3245607
+    },
+    "dense/native-0062.png": {
+      "sha256": "090027fc420110695c1ea8c94217f08f1d1eac150f15be364b7847ee03d3b5d9",
+      "bytes": 3220139
+    },
+    "dense/native-0063.png": {
+      "sha256": "97ade341cad48619caadf4219491ef3b2d1f3141c10f865dbef31fe644c39e49",
+      "bytes": 3076519
+    },
+    "dense/native-0064.png": {
+      "sha256": "ca1e5df37383a4441c84dfa8ac2c5731926857e518b03b7c258f549262d1214a",
+      "bytes": 3232683
+    },
+    "dense/native-0065.png": {
+      "sha256": "e1b3bb4aa8ddc24adbabfbb2b0073f7e2e5f8819acdd54ac5fefb022617a981c",
+      "bytes": 3307132
+    },
+    "dense/native-0066.png": {
+      "sha256": "5e70d9e0acaac7638c5c557734bfd417bd52b3255ea672e8d7706c171552e2ea",
+      "bytes": 3091121
+    },
+    "dense/native-0067.png": {
+      "sha256": "e619da44fe92a22b2d0dc7be1b93a2ba9ce8c0c3f2e547978a8a67cd65c60b84",
+      "bytes": 3233972
+    },
+    "dense/native-0068.png": {
+      "sha256": "a4c239cec27a74e5493f2a4f64dbef86e86655dce7339421cba260b228011c5f",
+      "bytes": 3316072
+    },
+    "dense/native-0069.png": {
+      "sha256": "c20b8c39f39dc41fe5942138cea93f8cd3bf073fb7f9420f29f6cbe0bb4fb7a4",
+      "bytes": 3312714
+    },
+    "dense/native-0070.png": {
+      "sha256": "198ba759752dea7612c4e34bfc68ef93adebf6ca3b00d6346fae19afca0195ce",
+      "bytes": 3440028
+    },
+    "dense/native-0071.png": {
+      "sha256": "74244b8aa8f7ed1024c1b54f89c9dedc35e82a441be3b7cffe32d6902265d23f",
+      "bytes": 3463954
+    },
+    "dense/native-0072.png": {
+      "sha256": "328740377a2557ae2c8826e864f7d0ea322727dbd7ce2804855f649b5930f1aa",
+      "bytes": 3331347
+    },
+    "dense/native-0073.png": {
+      "sha256": "cdcbdf8d05fa85b22cf57d9e07f68bb7936d884462d67c1536e8f8e3108963e8",
+      "bytes": 3521258
+    },
+    "dense/native-0074.png": {
+      "sha256": "af7f09b6098bd8677055dadd0ed5818704a5ccbb6f61fd75ebf77b9dc806aae5",
+      "bytes": 3399697
+    },
+    "dense/native-0075.png": {
+      "sha256": "5311d1f75894646efa577c5ee4c7ccadf4a63184e2c89eaed9413fd6f8c16a2f",
+      "bytes": 3274475
+    },
+    "dense/result.json": {
+      "sha256": "710c54ded099d0fba13196c3cbbb1314c161e2d7f0c89a5b93e94528db78a1f6",
+      "bytes": 14211
+    },
+    "dense/source.json": {
+      "sha256": "3dfc5c14987378825da84cf6c41fcae3132cc60864df4c0c0430c7ea528d93c5",
+      "bytes": 12074
+    },
+    "dense/tracks-00.jpg": {
+      "sha256": "d23565a2cb216c68b7906c779ec4b5e0312a1000cfca1c3eff012a88b504f0ac",
+      "bytes": 416619
+    },
+    "dense/tracks-18.jpg": {
+      "sha256": "dd25f3f204f04940acd756d8e2b69fa33990e40880d445a5648b0e3eeadfba7f",
+      "bytes": 419890
+    },
+    "dense/tracks-36.jpg": {
+      "sha256": "2c0a5fabe741b94ed500554e52ecca33c81605be01b90484aad68cb1f008e74d",
+      "bytes": 383098
+    },
+    "dense/tracks-54.jpg": {
+      "sha256": "5047669ed462cb8883152c0bd104bdfe37bfa5b89ff8068a0f932dc60acc2596",
+      "bytes": 402119
+    },
+    "dense/tracks.json": {
+      "sha256": "42043fea1c989c9fe0924ed3bec3d0caf41806835b6be929d0448c1d73a300f1",
+      "bytes": 14772
+    },
+    "dense-v1.py": {
+      "sha256": "a6c28489eacb1358d970e38f47deec82b77dc8d2c94ba0ddc04bf1b68f0b40ec",
+      "bytes": 5835
+    },
+    "dense.py": {
+      "sha256": "89098f287262bcf291a5e60e939839589467a0cb4ed7f3c3c112fbc6f616920a",
+      "bytes": 6168
+    },
+    "lk/result.json": {
+      "sha256": "b782ea268a1b185cf67cb901f55ebd413341f911e1039746fa12784566e282b1",
+      "bytes": 18536
+    },
+    "lk/tracks-00.jpg": {
+      "sha256": "5df27c71fece989a6bc02f1690802056e2afa7a59e225ecdfc7864509db45b80",
+      "bytes": 417647
+    },
+    "lk/tracks-18.jpg": {
+      "sha256": "01257db814f80b4e39562aecc2c16e6f81f82020e5795c9eaec7fa71218cb612",
+      "bytes": 420499
+    },
+    "lk/tracks-36.jpg": {
+      "sha256": "a905b0e088cddadfaa0aaa5b4a262b5dbd4f343b451924d2fa0a4491b349ef83",
+      "bytes": 384604
+    },
+    "lk/tracks-54.jpg": {
+      "sha256": "40d5e521d8f445e060905be5dfe1c7726110b97629f01e9c64a946fc665705a3",
+      "bytes": 405783
+    },
+    "lk/tracks.json": {
+      "sha256": "9c2bffed32df45a0a0c357d8faf560f6f66673fd5e8e79c7b42ee821d12de57d",
+      "bytes": 47856
+    },
+    "lk.py": {
+      "sha256": "425936261642cdab31deaaa1bae21a3f6b4baaf382055c3da1a8de18c7ce5dd5",
+      "bytes": 3315
+    },
+    "probe.py": {
+      "sha256": "dd99a12c8140952bdf5422e24e41a82f15af444b48aa104862b0cb39002ea188",
+      "bytes": 8519
+    },
+    "result.json": {
+      "sha256": "6f5f44ec6088c22917f27423c290598fa36a26a37cd7126d972a5ab7bec4c625",
+      "bytes": 3345
+    },
+    "synthetic.json": {
+      "sha256": "36de3a0b5c5b49468e26e1648bcfa6dc7dfd88c30e1ffdca55435e0280a84e16",
+      "bytes": 2886
+    },
+    "tracks.json": {
+      "sha256": "39773c9ff5bec100b2e6f64819a6d7f09176b28cfd5e440e51970afc934df92f",
+      "bytes": 23807
+    }
+  },
+  "verified_accepted_8hz_inputs": 60,
+  "source_index_sha256": "59a26d33c867f802d5dce690149f3c953790c518250af3075742980956649752"
+}
