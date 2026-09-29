@@ -4,6 +4,9 @@ from pathlib import Path
 
 import pytest
 
+pytest.importorskip("numpy")
+pytest.importorskip("torch")
+
 from policy.range_bc import spatial_yaw_local as local
 from policy.range_bc import spatial_yaw_train as runner
 
