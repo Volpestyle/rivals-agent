@@ -1,4 +1,4 @@
-"""Prepare, or execute one reviewed fixed camera schedule in the practice range.
+"""Prepare, or execute one reviewed fixed yaw schedule in the practice range.
 
 Capture/retention live in the supervisor. A separate owned process drives the
 pad, checks scope, and releases independently of capture. No quality analysis
@@ -188,7 +188,7 @@ def run_live(args, rows, journal, receipt):
     bands, process, result, last_band = [], None, None, -1.
     stop_reason, forced = None, False
     prime_start = next(r.start for r in rows if r.role == "prime")
-    settle_end = next(r.start for r in rows if r.role.startswith(("yaw-", "pitch-")))
+    settle_end = next(r.start for r in rows if r.role.startswith("yaw-"))
     try:
         while time.perf_counter() < end:
             now = time.perf_counter()
@@ -292,8 +292,6 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--deflections", type=float, nargs="+", default=[.45])
     parser.add_argument("--seconds", type=float, default=20.)
-    parser.add_argument("--axis", choices=("yaw", "pitch"), default="yaw",
-                        help="pitch requires explicit --seconds between 0.1 and 0.5")
     parser.add_argument("--scope-seconds", type=float, default=180.)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--live", action="store_true")
@@ -302,7 +300,7 @@ def main(argv=None):
     parser.add_argument("--sitting")
     parser.add_argument("--recording-ref")
     args = parser.parse_args(argv)
-    rows = schedule(args.deflections, args.seconds, args.scope_seconds, axis=args.axis)
+    rows = schedule(args.deflections, args.seconds, args.scope_seconds)
     receipt = None
     if args.live:
         if (platform.system() != "Windows" or not args.game_pid or not 0 < args.game_pid <= 0xffffffff
@@ -311,7 +309,7 @@ def main(argv=None):
         receipt = verify_receipt(args.review_receipt)
     from agent.live_range_bc import Journal
     journal = Journal(args.output, {"format": "camera-schedule-v1", "schedule": [asdict(r) for r in rows],
-        "scope_seconds": args.scope_seconds, "semantic_blackout_s": BLACKOUT_S, "live": args.live, "axis": args.axis,
+        "scope_seconds": args.scope_seconds, "semantic_blackout_s": BLACKOUT_S, "live": args.live,
         "sitting": args.sitting, "recording_ref": args.recording_ref, "review": receipt,
         "wall_time_unix": time.time(), "monotonic_t": time.perf_counter(), "source_sha256": pins()})
     try:

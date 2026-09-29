@@ -1,4 +1,4 @@
-"""Bounded calibration opener and single-axis actuator; never used by learned gameplay.
+"""Bounded calibration opener and yaw actuator; never used by learned gameplay.
 
 The caller supplies a semantic safety monitor, not an image-derived action.
 All native device imports are lazy. Tests use a fake ViGEm target.
@@ -21,27 +21,20 @@ class Segment:
     rx: float
     ly: float = 0.
     rt: float = 0.
-    ry: float = 0.
 
 
-def schedule(deflections, seconds=20., scope=180., *, axis="yaw"):
-    """One walk/RT opener and yaw prime, then up to four single-axis segments.
-
-    Pitch cannot rotate continuously: short pulses keep clamp-contaminated
-    evidence small. The operator declares paired signs; no automatic re-level.
-    """
-    minimum, maximum = (.1, .5) if axis == "pitch" else (.5, 20.)
-    if (axis not in ("yaw", "pitch") or not 1 <= len(deflections) <= 4 or len(set(deflections)) != len(deflections)
+def schedule(deflections, seconds=20., scope=180.):
+    """One walk/RT opener, one prime, then one to four fixed yaw segments."""
+    if (not 1 <= len(deflections) <= 4 or len(set(deflections)) != len(deflections)
             or any(type(d) not in (int, float) or not math.isfinite(d) or not 0 < abs(d) <= 1 for d in deflections)
-            or not math.isfinite(seconds) or not minimum <= seconds <= maximum
+            or not math.isfinite(seconds) or not .5 <= seconds <= 20
             or not math.isfinite(scope) or not 0 < scope <= 180):
         raise ValueError("invalid calibration schedule")
     rows = [Segment("opener", 0., OPENER_S, 0., OPENER_LY, OPENER_RT),
             Segment("prime", OPENER_S, OPENER_S + PRIME_S, PRIME_RX)]
     start = OPENER_S + PRIME_S + SETTLE_S
     for i, d in enumerate(deflections):
-        rows.append(Segment(f"{axis}-{i}", start, start + seconds,
-                            d if axis == "yaw" else 0., ry=d if axis == "pitch" else 0.))
+        rows.append(Segment(f"yaw-{i}", start, start + seconds, d))
         start += seconds + .5
     if rows[-1].end + .1 >= scope:
         raise ValueError("schedule must fit inside the outer scope")
@@ -113,7 +106,7 @@ def scope_reason(now, last_range, heartbeat, deadline, cancelled, focused, takeo
 
 
 class CameraPad:
-    """One walk/RT opener, then one camera axis at a time; unplug and a deadman."""
+    """One fixed walk/RT opener, then yaw only; explicit unplug and a deadman."""
     def __init__(self, pad, safety, deadline, *, clock=time.perf_counter):
         self.pad, self.safety, self.deadline, self.clock = pad, safety, deadline, clock
         self.lock, self.closed = threading.Lock(), threading.Event()
@@ -128,22 +121,20 @@ class CameraPad:
             self.close()
             raise
 
-    def _report(self, rx, role, ly=0., rt=0., ry=0.):
+    def _report(self, rx, role, ly=0., rt=0.):
         # reset() zeros buttons, both triggers and both sticks. No other channel
         # can be nonzero except the declared opener. Record return time, not delivery.
         self.pad.reset()
-        self.pad.right_joystick_float(rx, ry)
+        self.pad.right_joystick_float(rx, 0.)
         if ly or rt:
             self.pad.left_joystick_float(0., ly)
             self.pad.right_trigger_float(rt)
         self.pad.update()
-        self.reports.append({"returned_t": self.clock(), "rx": rx, "ry": ry, "ly": ly, "rt": rt, "role": role})
+        self.reports.append({"returned_t": self.clock(), "rx": rx, "ly": ly, "rt": rt, "role": role})
 
-    def send(self, rx, role, end, *, ly=0., rt=0., ry=0.):
-        if any(type(v) not in (int, float) or not math.isfinite(v) or abs(v) > 1 for v in (rx, ry)):
+    def send(self, rx, role, end, *, ly=0., rt=0.):
+        if type(rx) not in (int, float) or not math.isfinite(rx) or abs(rx) > 1:
             raise ValueError("right-stick magnitude exceeds calibration limit")
-        if (rx and ry) or (ry and not role.startswith("pitch-")):
-            raise ValueError("only one declared camera axis at a time")
         with self.lock:
             now = self.clock()
             reason = self.reason or self.safety() or ("deadline" if now >= self.deadline else None)
@@ -156,7 +147,7 @@ class CameraPad:
                 self.lease = None
                 return False
             if role == "opener":
-                if (rx,ry,ly,rt) != (0.,0.,OPENER_LY,OPENER_RT) or self.opener_finished:
+                if (rx,ly,rt) != (0.,OPENER_LY,OPENER_RT) or self.opener_finished:
                     raise ValueError("only the declared first move-and-attack is permitted")
                 if self.opener_until is None:
                     if end-now > OPENER_S + 1e-6:
@@ -166,12 +157,12 @@ class CameraPad:
                     raise ValueError("opener cannot be restarted or extended")
             elif ly or rt:
                 raise ValueError("walk/attack forbidden outside opener")
-            elif rx or ry:
+            elif rx:
                 if self.opener_until is None:
                     raise ValueError("the first non-neutral report must be the opener")
                 self.opener_finished = True
-            self._report(rx, role, ly, rt, ry)
-            self.lease = min(now + LEASE_S, end, self.deadline) if rx or ry or ly or rt else None
+            self._report(rx, role, ly, rt)
+            self.lease = min(now + LEASE_S, end, self.deadline) if rx or ly or rt else None
             return True
 
     def close(self):
@@ -229,7 +220,7 @@ def execute(pad, rows, start, *, clock=time.perf_counter, sleep=time.sleep, tick
             active = next((r for r in rows if start + r.start <= now < start + r.end), None)
             next_boundary = start + active.end if active else min(start + r.start for r in rows if start + r.start > now)
             pad.send(active.rx if active else 0., active.role if active else "neutral", next_boundary,
-                     ly=active.ly if active else 0., rt=active.rt if active else 0., ry=active.ry if active else 0.)
+                     ly=active.ly if active else 0., rt=active.rt if active else 0.)
             sleep(min(.02, max(0., next_boundary - clock())))
     except BaseException as exc:
         error = exc

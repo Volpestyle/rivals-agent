@@ -1,0 +1,29 @@
+{
+  "format": "camera-schedule-review-v1",
+  "verdict": "LAND",
+  "reviewer": "live-review w2:p3E (Claude Opus 5.5, independent of the evaluator lane)",
+  "reviewed_at": "2026-09-29T01:25-05:00",
+  "scope": "RY (pitch) extension delta over camera schedule v2; unchanged-boundary evidence reused from v2 LAND",
+  "review_inputs_sha256": "d3f0a89637526e1d856b74df38655ffff59e9f4da945fbe616ff4fc2aff27773",
+  "base_commit": "8331c456a0029fd7ec75139380b4624067d96512",
+  "review_sha256": "6a10acdf8f596bcaf8e017028d538e133560ba121279ec1557bdcd403cba767a",
+  "previous_receipt_sha256": "d5da242d4a92e8dc81d6d3b3eed1227ace4fe57c90cfdd6d5afce51d4650f48b",
+  "files": {
+    "scripts/calibrate_camera_schedule.py": "3f336ea04c558f068c1f8eb0e65675aee33b98cbe6ed758f02780be9bd69b2fd",
+    "agent/camera_calibration.py": "eda24c010a49d5815e59ec0ddfe540d1355201b4283c93d27c8328da4a3cd402",
+    "agent/controller.py": "25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+    "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "scripts/l4_measure.py": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+    "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1"
+  },
+  "findings": {
+    "blocking": [],
+    "N1": "low: FakePad no longer asserts ry==0; restore a yaw-mode RY==0 test invariant (tests only, no receipt impact)",
+    "N2": "condition: code-only receipt; RY admits up to 4 values |ry|<=1 for 0.1-0.5 s",
+    "F3": "residual disclosed: unpinned agent.intents/state/tracker via pinned controller.py"
+  },
+  "conditions": "No live authority from this receipt. A live grant must name exact --axis, --deflections, --seconds, --scope-seconds and sitting. Hardware ViGEm removal, pitch clamp/sign and opener idle effect unverified."
+}

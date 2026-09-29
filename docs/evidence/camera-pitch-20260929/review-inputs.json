@@ -1,0 +1,30 @@
+{
+  "format": "camera-schedule-freeze-v1",
+  "status": "pitch_delta_independent_review_pending",
+  "base_commit": "8331c456a0029fd7ec75139380b4624067d96512",
+  "files": {
+    "scripts/calibrate_camera_schedule.py": "3f336ea04c558f068c1f8eb0e65675aee33b98cbe6ed758f02780be9bd69b2fd",
+    "agent/camera_calibration.py": "eda24c010a49d5815e59ec0ddfe540d1355201b4283c93d27c8328da4a3cd402",
+    "agent/controller.py": "25a635d7b6e923c024485995960eb2c35ba4d9777b396b8166e338ea863c0c3c",
+    "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "scripts/l4_measure.py": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+    "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1"
+  },
+  "changed_runtime_files": [
+    "agent/camera_calibration.py",
+    "scripts/calibrate_camera_schedule.py"
+  ],
+  "support_files": {
+    "docs/evidence/camera-pitch-20260929/delta.diff": "96300d685a0bd2fd7a184917663c33ecf57d1b1b708cd9baf844468552216f8c",
+    "docs/evidence/camera-pitch-20260929/owner-ruff.txt": "743e2474d263ce56e9e3136b24d77d218d00760384786c8135fdc284f7f6904d",
+    "docs/evidence/camera-pitch-20260929/owner-tests.txt": "6f34886526486c9a2c3b555d9ba2ebe59a0926e5e693b304fa120143a2c6c7f8",
+    "docs/evidence/camera-pitch-20260929/README.md": "78d41d5ef7c21652d49cec772810eea9a681ae176b599ac6780859165d379ca5",
+    "docs/evidence/camera-pitch-20260929/before/agent/camera_calibration.py": "364f82cc0a2e27c1dceb6548795f4cca2238591f68291460cd29a085b95ddf07",
+    "docs/evidence/camera-pitch-20260929/before/scripts/calibrate_camera_schedule.py": "67148899804df9808c6a57e2d800dce38e11a8f0fe17f8ca3cfbaa8bf36bc4e3",
+    "docs/evidence/camera-pitch-20260929/before/tests/test_camera_calibration_schedule.py": "1e99ded0772336dec583bb80ec98c83df278a18c92db0888d922ffb540c13f26",
+    "tests/test_camera_calibration_schedule.py": "f604f77079d4ee456e20a9d973d2710b4fa98a251c453bdf85d0b51505c26ed7"
+  }
+}

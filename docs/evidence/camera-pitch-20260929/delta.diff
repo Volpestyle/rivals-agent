@@ -1,0 +1,349 @@
+diff --git a/agent/camera_calibration.py b/agent/camera_calibration.py
+index aae9e42..d7379be 100644
+--- a/agent/camera_calibration.py
++++ b/agent/camera_calibration.py
+@@ -1,4 +1,4 @@
+-"""Bounded calibration opener and yaw actuator; never used by learned gameplay.
++"""Bounded calibration opener and single-axis actuator; never used by learned gameplay.
+ 
+ The caller supplies a semantic safety monitor, not an image-derived action.
+ All native device imports are lazy. Tests use a fake ViGEm target.
+@@ -20,21 +20,28 @@ class Segment:
+     end: float
+     rx: float
+     ly: float = 0.
+-    rt: float = 0.
+-
+-
+-def schedule(deflections, seconds=20., scope=180.):
+-    """One walk/RT opener, one prime, then one to four fixed yaw segments."""
+-    if (not 1 <= len(deflections) <= 4 or len(set(deflections)) != len(deflections)
++    rt: float = 0.
++    ry: float = 0.
++
++
++def schedule(deflections, seconds=20., scope=180., *, axis="yaw"):
++    """One walk/RT opener and yaw prime, then up to four single-axis segments.
++
++    Pitch cannot rotate continuously: short pulses keep clamp-contaminated
++    evidence small. The operator declares paired signs; no automatic re-level.
++    """
++    minimum, maximum = (.1, .5) if axis == "pitch" else (.5, 20.)
++    if (axis not in ("yaw", "pitch") or not 1 <= len(deflections) <= 4 or len(set(deflections)) != len(deflections)
+             or any(type(d) not in (int, float) or not math.isfinite(d) or not 0 < abs(d) <= 1 for d in deflections)
+-            or not math.isfinite(seconds) or not .5 <= seconds <= 20
++            or not math.isfinite(seconds) or not minimum <= seconds <= maximum
+             or not math.isfinite(scope) or not 0 < scope <= 180):
+         raise ValueError("invalid calibration schedule")
+     rows = [Segment("opener", 0., OPENER_S, 0., OPENER_LY, OPENER_RT),
+             Segment("prime", OPENER_S, OPENER_S + PRIME_S, PRIME_RX)]
+     start = OPENER_S + PRIME_S + SETTLE_S
+     for i, d in enumerate(deflections):
+-        rows.append(Segment(f"yaw-{i}", start, start + seconds, d))
++        rows.append(Segment(f"{axis}-{i}", start, start + seconds,
++                            d if axis == "yaw" else 0., ry=d if axis == "pitch" else 0.))
+         start += seconds + .5
+     if rows[-1].end + .1 >= scope:
+         raise ValueError("schedule must fit inside the outer scope")
+@@ -105,8 +112,8 @@ def scope_reason(now, last_range, heartbeat, deadline, cancelled, focused, takeo
+     return None
+ 
+ 
+-class CameraPad:
+-    """One fixed walk/RT opener, then yaw only; explicit unplug and a deadman."""
++class CameraPad:
++    """One walk/RT opener, then one camera axis at a time; unplug and a deadman."""
+     def __init__(self, pad, safety, deadline, *, clock=time.perf_counter):
+         self.pad, self.safety, self.deadline, self.clock = pad, safety, deadline, clock
+         self.lock, self.closed = threading.Lock(), threading.Event()
+@@ -121,20 +128,22 @@ class CameraPad:
+             self.close()
+             raise
+ 
+-    def _report(self, rx, role, ly=0., rt=0.):
++    def _report(self, rx, role, ly=0., rt=0., ry=0.):
+         # reset() zeros buttons, both triggers and both sticks. No other channel
+         # can be nonzero except the declared opener. Record return time, not delivery.
+         self.pad.reset()
+-        self.pad.right_joystick_float(rx, 0.)
++        self.pad.right_joystick_float(rx, ry)
+         if ly or rt:
+             self.pad.left_joystick_float(0., ly)
+             self.pad.right_trigger_float(rt)
+         self.pad.update()
+-        self.reports.append({"returned_t": self.clock(), "rx": rx, "ly": ly, "rt": rt, "role": role})
++        self.reports.append({"returned_t": self.clock(), "rx": rx, "ry": ry, "ly": ly, "rt": rt, "role": role})
+ 
+-    def send(self, rx, role, end, *, ly=0., rt=0.):
+-        if type(rx) not in (int, float) or not math.isfinite(rx) or abs(rx) > 1:
+-            raise ValueError("right-stick magnitude exceeds calibration limit")
++    def send(self, rx, role, end, *, ly=0., rt=0., ry=0.):
++        if any(type(v) not in (int, float) or not math.isfinite(v) or abs(v) > 1 for v in (rx, ry)):
++            raise ValueError("right-stick magnitude exceeds calibration limit")
++        if (rx and ry) or (ry and not role.startswith("pitch-")):
++            raise ValueError("only one declared camera axis at a time")
+         with self.lock:
+             now = self.clock()
+             reason = self.reason or self.safety() or ("deadline" if now >= self.deadline else None)
+@@ -147,7 +156,7 @@ class CameraPad:
+                 self.lease = None
+                 return False
+             if role == "opener":
+-                if (rx,ly,rt) != (0.,OPENER_LY,OPENER_RT) or self.opener_finished:
++                if (rx,ry,ly,rt) != (0.,0.,OPENER_LY,OPENER_RT) or self.opener_finished:
+                     raise ValueError("only the declared first move-and-attack is permitted")
+                 if self.opener_until is None:
+                     if end-now > OPENER_S + 1e-6:
+@@ -157,12 +166,12 @@ class CameraPad:
+                     raise ValueError("opener cannot be restarted or extended")
+             elif ly or rt:
+                 raise ValueError("walk/attack forbidden outside opener")
+-            elif rx:
++            elif rx or ry:
+                 if self.opener_until is None:
+                     raise ValueError("the first non-neutral report must be the opener")
+                 self.opener_finished = True
+-            self._report(rx, role, ly, rt)
+-            self.lease = min(now + LEASE_S, end, self.deadline) if rx or ly or rt else None
++            self._report(rx, role, ly, rt, ry)
++            self.lease = min(now + LEASE_S, end, self.deadline) if rx or ry or ly or rt else None
+             return True
+ 
+     def close(self):
+@@ -219,8 +228,8 @@ def execute(pad, rows, start, *, clock=time.perf_counter, sleep=time.sleep, tick
+                 break
+             active = next((r for r in rows if start + r.start <= now < start + r.end), None)
+             next_boundary = start + active.end if active else min(start + r.start for r in rows if start + r.start > now)
+-            pad.send(active.rx if active else 0., active.role if active else "neutral", next_boundary,
+-                     ly=active.ly if active else 0., rt=active.rt if active else 0.)
++            pad.send(active.rx if active else 0., active.role if active else "neutral", next_boundary,
++                     ly=active.ly if active else 0., rt=active.rt if active else 0., ry=active.ry if active else 0.)
+             sleep(min(.02, max(0., next_boundary - clock())))
+     except BaseException as exc:
+         error = exc
+diff --git a/scripts/calibrate_camera_schedule.py b/scripts/calibrate_camera_schedule.py
+index 685b4af..ca479fc 100644
+--- a/scripts/calibrate_camera_schedule.py
++++ b/scripts/calibrate_camera_schedule.py
+@@ -1,4 +1,4 @@
+-"""Prepare, or execute one reviewed fixed yaw schedule in the practice range.
++"""Prepare, or execute one reviewed fixed camera schedule in the practice range.
+ 
+ Capture/retention live in the supervisor. A separate owned process drives the
+ pad, checks scope, and releases independently of capture. No quality analysis
+@@ -188,7 +188,7 @@ def run_live(args, rows, journal, receipt):
+     bands, process, result, last_band = [], None, None, -1.
+     stop_reason, forced = None, False
+     prime_start = next(r.start for r in rows if r.role == "prime")
+-    settle_end = next(r.start for r in rows if r.role.startswith("yaw-"))
++    settle_end = next(r.start for r in rows if r.role.startswith(("yaw-", "pitch-")))
+     try:
+         while time.perf_counter() < end:
+             now = time.perf_counter()
+@@ -291,7 +291,9 @@ def run_live(args, rows, journal, receipt):
+ def main(argv=None):
+     parser = argparse.ArgumentParser(description=__doc__)
+     parser.add_argument("--deflections", type=float, nargs="+", default=[.45])
+-    parser.add_argument("--seconds", type=float, default=20.)
++    parser.add_argument("--seconds", type=float, default=20.)
++    parser.add_argument("--axis", choices=("yaw", "pitch"), default="yaw",
++                        help="pitch requires explicit --seconds between 0.1 and 0.5")
+     parser.add_argument("--scope-seconds", type=float, default=180.)
+     parser.add_argument("--output", type=Path, required=True)
+     parser.add_argument("--live", action="store_true")
+@@ -300,7 +302,7 @@ def main(argv=None):
+     parser.add_argument("--sitting")
+     parser.add_argument("--recording-ref")
+     args = parser.parse_args(argv)
+-    rows = schedule(args.deflections, args.seconds, args.scope_seconds)
++    rows = schedule(args.deflections, args.seconds, args.scope_seconds, axis=args.axis)
+     receipt = None
+     if args.live:
+         if (platform.system() != "Windows" or not args.game_pid or not 0 < args.game_pid <= 0xffffffff
+@@ -309,7 +311,7 @@ def main(argv=None):
+         receipt = verify_receipt(args.review_receipt)
+     from agent.live_range_bc import Journal
+     journal = Journal(args.output, {"format": "camera-schedule-v1", "schedule": [asdict(r) for r in rows],
+-        "scope_seconds": args.scope_seconds, "semantic_blackout_s": BLACKOUT_S, "live": args.live,
++        "scope_seconds": args.scope_seconds, "semantic_blackout_s": BLACKOUT_S, "live": args.live, "axis": args.axis,
+         "sitting": args.sitting, "recording_ref": args.recording_ref, "review": receipt,
+         "wall_time_unix": time.time(), "monotonic_t": time.perf_counter(), "source_sha256": pins()})
+     try:
+diff --git a/tests/test_camera_calibration_schedule.py b/tests/test_camera_calibration_schedule.py
+index 9cbe780..b8ec125 100644
+--- a/tests/test_camera_calibration_schedule.py
++++ b/tests/test_camera_calibration_schedule.py
+@@ -17,16 +17,16 @@ class FakePad:
+     def __init__(self):
+         self._devicep, self._busp = object(), object()
+         self.rx, self.buttons, self.rows = 0., 0, []
+-        self.ly, self.rt = 0., 0.
++        self.ly, self.rt, self.ry = 0., 0., 0.
++        self.ry_rows = []
+         self.fail_update = False
+         self.report = SimpleNamespace(wButtons=0,sThumbLX=0,sThumbLY=0,sThumbRX=0,sThumbRY=0,
+                                       bLeftTrigger=0,bRightTrigger=0)
+     def reset(self):
+         self.rx, self.buttons = 0., 0
+-        self.ly, self.rt = 0., 0.
++        self.ly, self.rt, self.ry = 0., 0., 0.
+     def right_joystick_float(self, rx, ry):
+-        assert ry == 0
+-        self.rx = rx
++        self.rx, self.ry = rx, ry
+     def left_joystick_float(self,lx,ly):
+         assert lx == 0
+         self.ly = ly
+@@ -39,10 +39,12 @@ class FakePad:
+     def update(self):
+         if self.fail_update:
+             raise OSError('update failed')
+-        self.report.sThumbRX = round(self.rx*32767)
++        self.report.sThumbRX = round(self.rx*32767)
++        self.report.sThumbRY = round(self.ry*32767)
+         self.report.sThumbLY = round(self.ly*32767)
+         self.report.bRightTrigger = round(self.rt*255)
+-        self.rows.append((self.rx,self.buttons,self.ly,self.rt))
++        self.rows.append((self.rx,self.buttons,self.ly,self.rt))
++        self.ry_rows.append((self.rx,self.ry,self.buttons,self.ly,self.rt))
+ 
+ 
+ def device(remove_fails=False):
+@@ -200,7 +202,7 @@ def _supervisor_with_abandoned_lock(state, old_lock, ready, hold_requested, held
+         time.sleep(.01)
+ 
+ 
+-@pytest.mark.parametrize('role',['opener','yaw-0'])
++@pytest.mark.parametrize('role',['opener','yaw-0','pitch-0'])
+ def test_hard_killed_supervisor_with_abandoned_lock_cannot_block_release(role):
+     from scripts.calibrate_camera_schedule import shared_state
+     ctx=mp.get_context('spawn')
+@@ -223,8 +225,9 @@ def test_hard_killed_supervisor_with_abandoned_lock_cannot_block_release(role):
+             return c.scope_reason(time.perf_counter(),seen.value,heartbeat.value,end,bool(cancel.value),True,False)
+         pad=c.CameraPad(target,safety,end)
+         pad.send(0.,'opener',time.perf_counter()+.2,ly=.25,rt=1.)
+-        if role != 'opener':
+-            pad.send(.45,role,time.perf_counter()+2)
++        if role != 'opener':
++            pad.send(.45 if role == 'yaw-0' else 0.,role,time.perf_counter()+.5,
++                     ry=.45 if role == 'pitch-0' else 0.)
+         hold_requested.value=1
+         until=time.perf_counter()+1
+         while not held.value and time.perf_counter()<until:
+@@ -238,7 +241,8 @@ def test_hard_killed_supervisor_with_abandoned_lock_cannot_block_release(role):
+         assert pad.closed.wait(c.HEARTBEAT_S+.15), 'dead supervisor blocked the release path'
+         assert pad.reason == 'supervisor_heartbeat'
+         assert count['remove'] == 1 and not count['attached']
+-        assert target.rows[-1] == (0.,0,0.,0.)
++        assert target.rows[-1] == (0.,0,0.,0.)
++        assert target.ry_rows[-1] == (0.,0.,0,0.,0.)
+         assert pad.reports[-1]['returned_t']-heartbeat.value <= c.HEARTBEAT_S+.15
+         assert any(r['role']=='lease_release' for r in pad.reports)
+         assert not any(hasattr(v,'get_lock') or hasattr(v,'is_set') for v in state)
+@@ -437,7 +441,7 @@ def test_offline_reuses_signed_yaw_estimator_on_actual_geometry():
+ 
+ 
+ # Supervisor stop cases adapted from independent live-review v1 scratch tests.
+-def _run_supervised_stop(tmp_path, monkeypatch, *, gap=None, range_until=None, takeover_at=None):
++def _run_supervised_stop(tmp_path, monkeypatch, *, gap=None, range_until=None, takeover_at=None, axis='yaw'):
+     np = pytest.importorskip("numpy")
+     from scripts import calibrate_camera_schedule as driver
+     from scripts import record
+@@ -487,7 +491,7 @@ def _run_supervised_stop(tmp_path, monkeypatch, *, gap=None, range_until=None, t
+     monkeypatch.setattr(driver, "execute", execute)
+     try:
+         with pytest.raises(RuntimeError) as err:
+-            driver.run_live(args, c.schedule([.45], seconds=10., scope=30.), journal, receipt)
++            driver.run_live(args, c.schedule([.45], seconds=.5 if axis == 'pitch' else 10., scope=30., axis=axis), journal, receipt)
+         result = json.loads((journal.output / "execution.json").read_text())
+     finally:
+         journal.close()
+@@ -495,7 +499,8 @@ def _run_supervised_stop(tmp_path, monkeypatch, *, gap=None, range_until=None, t
+ 
+ 
+ def _last_nonneutral(result):
+-    return max((r["returned_t"] for r in result["actuator"]["reports"] if r["rx"] or r["ly"] or r["rt"]), default=None)
++    return max((r["returned_t"] for r in result["actuator"]["reports"]
++                if r["rx"] or r.get('ry', 0) or r["ly"] or r["rt"]), default=None)
+ 
+ 
+ def test_blackout_over_one_second_stops_mid_yaw(tmp_path, monkeypatch):
+@@ -513,8 +518,76 @@ def test_range_loss_mid_yaw_stops_promptly(tmp_path, monkeypatch):
+     assert _last_nonneutral(result) - t0 < 7. + .15
+ 
+ 
+-def test_takeover_mid_yaw_stops_promptly(tmp_path, monkeypatch):
++def test_takeover_mid_yaw_stops_promptly(tmp_path, monkeypatch):
+     err, result, target, count, t0 = _run_supervised_stop(tmp_path, monkeypatch, takeover_at=7.)
+     print(err, result["supervisor_stop"], result["actuator"]["monitor_stop"])
+     assert count["remove"] == 1 and target.rows[-1][0] == 0
+-    assert _last_nonneutral(result) - t0 < 7. + .1
++    assert _last_nonneutral(result) - t0 < 7. + .1
++
++
++@pytest.mark.parametrize('seconds', [.099, .501, 20., float('nan')])
++def test_pitch_refuses_long_or_invalid_pulses(seconds):
++    with pytest.raises(ValueError): c.schedule([.45], seconds, axis='pitch')
++
++
++def test_pitch_schedule_has_only_declared_single_axis_and_neutral_gaps():
++    rows = c.schedule([.1,-.1,1.,-1.], .25, axis='pitch')
++    assert rows[:2] == c.schedule([.45])[:2]  # opener and yaw prime are unchanged
++    assert [r.ry for r in rows[2:]] == [.1,-.1,1.,-1.]
++    assert all(r.rx == r.ly == r.rt == 0 for r in rows[2:])
++    assert all(b.start-a.end == pytest.approx(.5) for a,b in zip(rows[2:], rows[3:]))
++    with pytest.raises(ValueError): c.schedule([.45], axis='roll')
++
++
++def test_pitch_lease_zeroes_both_axes_and_cleanup_detaches():
++    target,count = device()
++    pad = c.CameraPad(target,lambda:None,time.perf_counter()+3)
++    try:
++        pad.send(0.,'opener',time.perf_counter()+.2,ly=.25,rt=1.)
++        for rx,ry,role in ((.1,.1,'pitch-0'),(0.,.1,'prime'),(0.,float('nan'),'pitch-0')):
++            with pytest.raises(ValueError): pad.send(rx,role,time.perf_counter()+.25,ry=ry)
++        pad.send(0.,'pitch-0',time.perf_counter()+.25,ry=-.45)
++        assert target.ry_rows[-1] == (0.,-.45,0,0.,0.)
++        assert target.report.sThumbRY == round(-.45*32767)
++        time.sleep(.14)
++        assert target.ry_rows[-1] == (0.,0.,0,0.,0.)
++        assert pad.reports[-1]['role'] == 'lease_release'
++    finally:
++        pad.close()
++    assert count['remove'] == 1
++
++
++@pytest.mark.parametrize('stop', ['focus_lost','range_or_idle','human_takeover','capture_blackout','deadline'])
++def test_pitch_independent_monitor_neutralizes_and_detaches_on_each_stop(stop):
++    target,count = device(); reason = [None]
++    pad = c.CameraPad(target,lambda:reason[0],time.perf_counter()+3)
++    try:
++        pad.send(0.,'opener',time.perf_counter()+.2,ly=.25,rt=1.)
++        pad.send(0.,'pitch-0',time.perf_counter()+.5,ry=1.)
++        reason[0] = stop
++        assert pad.closed.wait(.3)
++        assert pad.reason == stop and count['remove'] == 1
++        assert target.ry_rows[-1] == (0.,0.,0,0.,0.)
++    finally:
++        pad.close()
++
++
++@pytest.mark.parametrize('kind', ['blackout','range','takeover'])
++def test_supervisor_stops_during_pitch(tmp_path,monkeypatch,kind):
++    kw = {'gap':(4.9,8.)} if kind == 'blackout' else {'range_until':5.7} if kind == 'range' else {'takeover_at':5.7}
++    err,result,target,count,t0 = _run_supervised_stop(tmp_path,monkeypatch,axis='pitch',**kw)
++    assert any(r.get('ry') for r in result['actuator']['reports'])
++    assert count['remove'] == 1 and result['actuator']['device_removal_confirmed']
++    assert target.ry_rows[-1] == (0.,0.,0,0.,0.)
++    assert _last_nonneutral(result)-t0 < (6.05 if kind == 'blackout' else 5.85)
++
++
++def test_prepare_pitch_is_offline_and_pins_exact_schedule(tmp_path,monkeypatch):
++    from scripts import calibrate_camera_schedule as driver
++    monkeypatch.setattr(driver,'native_pad',lambda:pytest.fail('native device'))
++    monkeypatch.setattr(driver,'capture_frames',lambda *a:pytest.fail('capture'))
++    out=tmp_path/'pitch'
++    driver.main(['--output',str(out),'--axis','pitch','--seconds','.25','--deflections','.6','-.6'])
++    manifest=json.loads((out/'manifest.json').read_text())
++    assert manifest['axis'] == 'pitch'
++    assert [r['ry'] for r in manifest['schedule']] == [0.,0.,.6,-.6]

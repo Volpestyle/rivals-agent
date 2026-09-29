@@ -17,16 +17,16 @@ class FakePad:
     def __init__(self):
         self._devicep, self._busp = object(), object()
         self.rx, self.buttons, self.rows = 0., 0, []
-        self.ly, self.rt, self.ry = 0., 0., 0.
-        self.ry_rows = []
+        self.ly, self.rt = 0., 0.
         self.fail_update = False
         self.report = SimpleNamespace(wButtons=0,sThumbLX=0,sThumbLY=0,sThumbRX=0,sThumbRY=0,
                                       bLeftTrigger=0,bRightTrigger=0)
     def reset(self):
         self.rx, self.buttons = 0., 0
-        self.ly, self.rt, self.ry = 0., 0., 0.
+        self.ly, self.rt = 0., 0.
     def right_joystick_float(self, rx, ry):
-        self.rx, self.ry = rx, ry
+        assert ry == 0
+        self.rx = rx
     def left_joystick_float(self,lx,ly):
         assert lx == 0
         self.ly = ly
@@ -40,11 +40,9 @@ class FakePad:
         if self.fail_update:
             raise OSError('update failed')
         self.report.sThumbRX = round(self.rx*32767)
-        self.report.sThumbRY = round(self.ry*32767)
         self.report.sThumbLY = round(self.ly*32767)
         self.report.bRightTrigger = round(self.rt*255)
         self.rows.append((self.rx,self.buttons,self.ly,self.rt))
-        self.ry_rows.append((self.rx,self.ry,self.buttons,self.ly,self.rt))
 
 
 def device(remove_fails=False):
@@ -202,7 +200,7 @@ def _supervisor_with_abandoned_lock(state, old_lock, ready, hold_requested, held
         time.sleep(.01)
 
 
-@pytest.mark.parametrize('role',['opener','yaw-0','pitch-0'])
+@pytest.mark.parametrize('role',['opener','yaw-0'])
 def test_hard_killed_supervisor_with_abandoned_lock_cannot_block_release(role):
     from scripts.calibrate_camera_schedule import shared_state
     ctx=mp.get_context('spawn')
@@ -226,8 +224,7 @@ def test_hard_killed_supervisor_with_abandoned_lock_cannot_block_release(role):
         pad=c.CameraPad(target,safety,end)
         pad.send(0.,'opener',time.perf_counter()+.2,ly=.25,rt=1.)
         if role != 'opener':
-            pad.send(.45 if role == 'yaw-0' else 0.,role,time.perf_counter()+.5,
-                     ry=.45 if role == 'pitch-0' else 0.)
+            pad.send(.45,role,time.perf_counter()+2)
         hold_requested.value=1
         until=time.perf_counter()+1
         while not held.value and time.perf_counter()<until:
@@ -242,7 +239,6 @@ def test_hard_killed_supervisor_with_abandoned_lock_cannot_block_release(role):
         assert pad.reason == 'supervisor_heartbeat'
         assert count['remove'] == 1 and not count['attached']
         assert target.rows[-1] == (0.,0,0.,0.)
-        assert target.ry_rows[-1] == (0.,0.,0,0.,0.)
         assert pad.reports[-1]['returned_t']-heartbeat.value <= c.HEARTBEAT_S+.15
         assert any(r['role']=='lease_release' for r in pad.reports)
         assert not any(hasattr(v,'get_lock') or hasattr(v,'is_set') for v in state)
@@ -441,7 +437,7 @@ def test_offline_reuses_signed_yaw_estimator_on_actual_geometry():
 
 
 # Supervisor stop cases adapted from independent live-review v1 scratch tests.
-def _run_supervised_stop(tmp_path, monkeypatch, *, gap=None, range_until=None, takeover_at=None, axis='yaw'):
+def _run_supervised_stop(tmp_path, monkeypatch, *, gap=None, range_until=None, takeover_at=None):
     np = pytest.importorskip("numpy")
     from scripts import calibrate_camera_schedule as driver
     from scripts import record
@@ -491,7 +487,7 @@ def _run_supervised_stop(tmp_path, monkeypatch, *, gap=None, range_until=None, t
     monkeypatch.setattr(driver, "execute", execute)
     try:
         with pytest.raises(RuntimeError) as err:
-            driver.run_live(args, c.schedule([.45], seconds=.5 if axis == 'pitch' else 10., scope=30., axis=axis), journal, receipt)
+            driver.run_live(args, c.schedule([.45], seconds=10., scope=30.), journal, receipt)
         result = json.loads((journal.output / "execution.json").read_text())
     finally:
         journal.close()
@@ -499,8 +495,7 @@ def _run_supervised_stop(tmp_path, monkeypatch, *, gap=None, range_until=None, t
 
 
 def _last_nonneutral(result):
-    return max((r["returned_t"] for r in result["actuator"]["reports"]
-                if r["rx"] or r.get('ry', 0) or r["ly"] or r["rt"]), default=None)
+    return max((r["returned_t"] for r in result["actuator"]["reports"] if r["rx"] or r["ly"] or r["rt"]), default=None)
 
 
 def test_blackout_over_one_second_stops_mid_yaw(tmp_path, monkeypatch):
@@ -523,71 +518,3 @@ def test_takeover_mid_yaw_stops_promptly(tmp_path, monkeypatch):
     print(err, result["supervisor_stop"], result["actuator"]["monitor_stop"])
     assert count["remove"] == 1 and target.rows[-1][0] == 0
     assert _last_nonneutral(result) - t0 < 7. + .1
-
-
-@pytest.mark.parametrize('seconds', [.099, .501, 20., float('nan')])
-def test_pitch_refuses_long_or_invalid_pulses(seconds):
-    with pytest.raises(ValueError): c.schedule([.45], seconds, axis='pitch')
-
-
-def test_pitch_schedule_has_only_declared_single_axis_and_neutral_gaps():
-    rows = c.schedule([.1,-.1,1.,-1.], .25, axis='pitch')
-    assert rows[:2] == c.schedule([.45])[:2]  # opener and yaw prime are unchanged
-    assert [r.ry for r in rows[2:]] == [.1,-.1,1.,-1.]
-    assert all(r.rx == r.ly == r.rt == 0 for r in rows[2:])
-    assert all(b.start-a.end == pytest.approx(.5) for a,b in zip(rows[2:], rows[3:]))
-    with pytest.raises(ValueError): c.schedule([.45], axis='roll')
-
-
-def test_pitch_lease_zeroes_both_axes_and_cleanup_detaches():
-    target,count = device()
-    pad = c.CameraPad(target,lambda:None,time.perf_counter()+3)
-    try:
-        pad.send(0.,'opener',time.perf_counter()+.2,ly=.25,rt=1.)
-        for rx,ry,role in ((.1,.1,'pitch-0'),(0.,.1,'prime'),(0.,float('nan'),'pitch-0')):
-            with pytest.raises(ValueError): pad.send(rx,role,time.perf_counter()+.25,ry=ry)
-        pad.send(0.,'pitch-0',time.perf_counter()+.25,ry=-.45)
-        assert target.ry_rows[-1] == (0.,-.45,0,0.,0.)
-        assert target.report.sThumbRY == round(-.45*32767)
-        time.sleep(.14)
-        assert target.ry_rows[-1] == (0.,0.,0,0.,0.)
-        assert pad.reports[-1]['role'] == 'lease_release'
-    finally:
-        pad.close()
-    assert count['remove'] == 1
-
-
-@pytest.mark.parametrize('stop', ['focus_lost','range_or_idle','human_takeover','capture_blackout','deadline'])
-def test_pitch_independent_monitor_neutralizes_and_detaches_on_each_stop(stop):
-    target,count = device(); reason = [None]
-    pad = c.CameraPad(target,lambda:reason[0],time.perf_counter()+3)
-    try:
-        pad.send(0.,'opener',time.perf_counter()+.2,ly=.25,rt=1.)
-        pad.send(0.,'pitch-0',time.perf_counter()+.5,ry=1.)
-        reason[0] = stop
-        assert pad.closed.wait(.3)
-        assert pad.reason == stop and count['remove'] == 1
-        assert target.ry_rows[-1] == (0.,0.,0,0.,0.)
-    finally:
-        pad.close()
-
-
-@pytest.mark.parametrize('kind', ['blackout','range','takeover'])
-def test_supervisor_stops_during_pitch(tmp_path,monkeypatch,kind):
-    kw = {'gap':(4.9,8.)} if kind == 'blackout' else {'range_until':5.7} if kind == 'range' else {'takeover_at':5.7}
-    err,result,target,count,t0 = _run_supervised_stop(tmp_path,monkeypatch,axis='pitch',**kw)
-    assert any(r.get('ry') for r in result['actuator']['reports'])
-    assert count['remove'] == 1 and result['actuator']['device_removal_confirmed']
-    assert target.ry_rows[-1] == (0.,0.,0,0.,0.)
-    assert _last_nonneutral(result)-t0 < (6.05 if kind == 'blackout' else 5.85)
-
-
-def test_prepare_pitch_is_offline_and_pins_exact_schedule(tmp_path,monkeypatch):
-    from scripts import calibrate_camera_schedule as driver
-    monkeypatch.setattr(driver,'native_pad',lambda:pytest.fail('native device'))
-    monkeypatch.setattr(driver,'capture_frames',lambda *a:pytest.fail('capture'))
-    out=tmp_path/'pitch'
-    driver.main(['--output',str(out),'--axis','pitch','--seconds','.25','--deflections','.6','-.6'])
-    manifest=json.loads((out/'manifest.json').read_text())
-    assert manifest['axis'] == 'pitch'
-    assert [r['ry'] for r in manifest['schedule']] == [0.,0.,.6,-.6]
