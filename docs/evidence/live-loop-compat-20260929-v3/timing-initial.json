@@ -1,0 +1,514 @@
+{
+  "source": "data\\calibration\\alt-cam-20260929b\\yaw-01\\ready-attach.png",
+  "source_sha256": "9155f1e6ff27ffbe312ebbcbf8828d4c7d0452212fc7b3af6ab9c57f68ab1f31",
+  "opencv_threads": 32,
+  "scope": "retained-frame copy + native pixel guards + finder + tracker + identity match; no dxcam acquisition or disk decode in timed section",
+  "native": {
+    "runs": 50,
+    "p50_ms": 25.791299995034933,
+    "p95_ms": 28.8052000105381,
+    "max_ms": 80.93429997097701,
+    "samples": [
+      {
+        "elapsed_ms": 80.93429997097701,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0029619000852108,
+          "finder_s": 0.05291059997398406,
+          "detection_count": 1,
+          "post_perception_age_s": 0.07998660008888692
+        }
+      },
+      {
+        "elapsed_ms": 25.23769997060299,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0030441000126302242,
+          "finder_s": 0.019489399972371757,
+          "detection_count": 1,
+          "post_perception_age_s": 0.023512199986726046
+        }
+      },
+      {
+        "elapsed_ms": 26.83320001233369,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0028298000106588006,
+          "finder_s": 0.021396799944341183,
+          "detection_count": 1,
+          "post_perception_age_s": 0.025242500007152557
+        }
+      },
+      {
+        "elapsed_ms": 25.791299995034933,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.00338260002899915,
+          "finder_s": 0.019586100010201335,
+          "detection_count": 1,
+          "post_perception_age_s": 0.023988100001588464
+        }
+      },
+      {
+        "elapsed_ms": 24.83610005583614,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0024100999580696225,
+          "finder_s": 0.019894800032489002,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02315269992686808
+        }
+      },
+      {
+        "elapsed_ms": 24.657099973410368,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.00247150007635355,
+          "finder_s": 0.019799700006842613,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02305390010587871
+        }
+      },
+      {
+        "elapsed_ms": 25.65710002090782,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.002432400011457503,
+          "finder_s": 0.020844400045461953,
+          "detection_count": 1,
+          "post_perception_age_s": 0.024060299969278276
+        }
+      },
+      {
+        "elapsed_ms": 28.77730003092438,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.002933999989181757,
+          "finder_s": 0.022843499900773168,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02659339993260801
+        }
+      },
+      {
+        "elapsed_ms": 27.629900025203824,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0036587000358849764,
+          "finder_s": 0.02148160000797361,
+          "detection_count": 1,
+          "post_perception_age_s": 0.026059499941766262
+        }
+      },
+      {
+        "elapsed_ms": 26.55190008226782,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.002291399985551834,
+          "finder_s": 0.021833700011484325,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02500070002861321
+        }
+      },
+      {
+        "elapsed_ms": 27.89300004951656,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0023449999280273914,
+          "finder_s": 0.022567300009541214,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02570430003106594
+        }
+      },
+      {
+        "elapsed_ms": 27.64489990659058,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0023650999646633863,
+          "finder_s": 0.02285519998986274,
+          "detection_count": 1,
+          "post_perception_age_s": 0.026017699972726405
+        }
+      },
+      {
+        "elapsed_ms": 26.3026999309659,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.002356500015594065,
+          "finder_s": 0.02115409995894879,
+          "detection_count": 1,
+          "post_perception_age_s": 0.024313399917446077
+        }
+      },
+      {
+        "elapsed_ms": 27.47470000758767,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0024527000496163964,
+          "finder_s": 0.021656200056895614,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02536980004515499
+        }
+      },
+      {
+        "elapsed_ms": 24.499299935996532,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.002572000026702881,
+          "finder_s": 0.01913919998332858,
+          "detection_count": 1,
+          "post_perception_age_s": 0.022803000058047473
+        }
+      },
+      {
+        "elapsed_ms": 28.8052000105381,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.002386300009675324,
+          "finder_s": 0.023784999968484044,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02701270009856671
+        }
+      },
+      {
+        "elapsed_ms": 25.767099927179515,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0026735999854281545,
+          "finder_s": 0.020255499985069036,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02400350000243634
+        }
+      },
+      {
+        "elapsed_ms": 28.35019992198795,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0024616000009700656,
+          "finder_s": 0.02264780004043132,
+          "detection_count": 1,
+          "post_perception_age_s": 0.026060600066557527
+        }
+      },
+      {
+        "elapsed_ms": 26.4927000971511,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0035500000230968,
+          "finder_s": 0.02050099999178201,
+          "detection_count": 1,
+          "post_perception_age_s": 0.025024000089615583
+        }
+      },
+      {
+        "elapsed_ms": 23.32609996665269,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.002347899950109422,
+          "finder_s": 0.018589399987831712,
+          "detection_count": 1,
+          "post_perception_age_s": 0.021766999969258904
+        }
+      },
+      {
+        "elapsed_ms": 24.36050004325807,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.00229199999012053,
+          "finder_s": 0.019468000042252243,
+          "detection_count": 1,
+          "post_perception_age_s": 0.0225770000834018
+        }
+      },
+      {
+        "elapsed_ms": 25.99810005631298,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.002654600073583424,
+          "finder_s": 0.020198100013658404,
+          "detection_count": 1,
+          "post_perception_age_s": 0.023828100063838065
+        }
+      },
+      {
+        "elapsed_ms": 27.211799984797835,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0026216000551357865,
+          "finder_s": 0.02194580005016178,
+          "detection_count": 1,
+          "post_perception_age_s": 0.025715499999932945
+        }
+      },
+      {
+        "elapsed_ms": 26.847500004805624,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0023287999210879207,
+          "finder_s": 0.021341800107620656,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02445069991517812
+        }
+      },
+      {
+        "elapsed_ms": 24.921200005337596,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.002353799995034933,
+          "finder_s": 0.019623100059106946,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02279890002682805
+        }
+      },
+      {
+        "elapsed_ms": 24.70559999346733,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0027395999059081078,
+          "finder_s": 0.019393799942918122,
+          "detection_count": 1,
+          "post_perception_age_s": 0.023012399906292558
+        }
+      },
+      {
+        "elapsed_ms": 28.560500009916723,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0023369999835267663,
+          "finder_s": 0.022911099949851632,
+          "detection_count": 1,
+          "post_perception_age_s": 0.026050499989651144
+        }
+      },
+      {
+        "elapsed_ms": 27.145200059749186,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0026105999713763595,
+          "finder_s": 0.021570199984125793,
+          "detection_count": 1,
+          "post_perception_age_s": 0.025041499990038574
+        }
+      },
+      {
+        "elapsed_ms": 25.213400018401444,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.002839699969626963,
+          "finder_s": 0.01924350007902831,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02353390003554523
+        }
+      },
+      {
+        "elapsed_ms": 28.252700110897422,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0022957000182941556,
+          "finder_s": 0.022623399971053004,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02602720004506409
+        }
+      },
+      {
+        "elapsed_ms": 24.771900032646954,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0024271999718621373,
+          "finder_s": 0.019818500033579767,
+          "detection_count": 1,
+          "post_perception_age_s": 0.023136899922974408
+        }
+      },
+      {
+        "elapsed_ms": 25.368999922648072,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.002310900017619133,
+          "finder_s": 0.020425700000487268,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02357810002285987
+        }
+      },
+      {
+        "elapsed_ms": 29.2765999911353,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.002307899994775653,
+          "finder_s": 0.02338140003848821,
+          "detection_count": 1,
+          "post_perception_age_s": 0.026560999918729067
+        }
+      },
+      {
+        "elapsed_ms": 27.74759999010712,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.003104300005361438,
+          "finder_s": 0.02178870001807809,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02575480006635189
+        }
+      },
+      {
+        "elapsed_ms": 25.731800007633865,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0023865000111982226,
+          "finder_s": 0.020348999998532236,
+          "detection_count": 1,
+          "post_perception_age_s": 0.023627299931831658
+        }
+      },
+      {
+        "elapsed_ms": 27.804900077171624,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0026135999942198396,
+          "finder_s": 0.022331799962557852,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02627470006700605
+        }
+      },
+      {
+        "elapsed_ms": 25.156900053843856,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.00241800001822412,
+          "finder_s": 0.02040310006123036,
+          "detection_count": 1,
+          "post_perception_age_s": 0.023643400054425
+        }
+      },
+      {
+        "elapsed_ms": 24.463100009597838,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.002328600035980344,
+          "finder_s": 0.019769400008954108,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02288639999460429
+        }
+      },
+      {
+        "elapsed_ms": 27.027699979953468,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.00247269996907562,
+          "finder_s": 0.02213390008546412,
+          "detection_count": 1,
+          "post_perception_age_s": 0.025422399980016053
+        }
+      },
+      {
+        "elapsed_ms": 26.840099948458374,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.002432700013741851,
+          "finder_s": 0.02196899999398738,
+          "detection_count": 1,
+          "post_perception_age_s": 0.025250200065784156
+        }
+      },
+      {
+        "elapsed_ms": 28.696299996227026,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.002350800088606775,
+          "finder_s": 0.023908200091682374,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02710770000703633
+        }
+      },
+      {
+        "elapsed_ms": 25.20959998946637,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0023662999738007784,
+          "finder_s": 0.02000320004299283,
+          "detection_count": 1,
+          "post_perception_age_s": 0.023199199931696057
+        }
+      },
+      {
+        "elapsed_ms": 25.534600019454956,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.002607200061902404,
+          "finder_s": 0.020143399946391582,
+          "detection_count": 1,
+          "post_perception_age_s": 0.023945100023411214
+        }
+      },
+      {
+        "elapsed_ms": 25.43920010793954,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0023529999889433384,
+          "finder_s": 0.02057169994805008,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02376360003836453
+        }
+      },
+      {
+        "elapsed_ms": 26.00830001756549,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0026304000057280064,
+          "finder_s": 0.020710699958726764,
+          "detection_count": 1,
+          "post_perception_age_s": 0.024153899983502924
+        }
+      },
+      {
+        "elapsed_ms": 24.882499943487346,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0023216999834403396,
+          "finder_s": 0.020073799998499453,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02326699998229742
+        }
+      },
+      {
+        "elapsed_ms": 24.30289995390922,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0022831999231129885,
+          "finder_s": 0.019503199961036444,
+          "detection_count": 1,
+          "post_perception_age_s": 0.022607299964874983
+        }
+      },
+      {
+        "elapsed_ms": 23.781900061294436,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0023104000138118863,
+          "finder_s": 0.019151599961332977,
+          "detection_count": 1,
+          "post_perception_age_s": 0.022272499976679683
+        }
+      },
+      {
+        "elapsed_ms": 24.796599987894297,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0023938000667840242,
+          "finder_s": 0.02011589996982366,
+          "detection_count": 1,
+          "post_perception_age_s": 0.02330720005556941
+        }
+      },
+      {
+        "elapsed_ms": 24.798800004646182,
+        "result": "observed",
+        "observation": {
+          "capture_age_s": 0.0023256000131368637,
+          "finder_s": 0.020076699904166162,
+          "detection_count": 1,
+          "post_perception_age_s": 0.023188899969682097
+        }
+      }
+    ]
+  }
+}

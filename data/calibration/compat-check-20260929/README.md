@@ -17,8 +17,12 @@ launch. No whole-map acceptance, combat trial or live success is implied.
    silently declare a match. This tool neither navigates menus nor changes settings.
 2. Put bots in view. The actual sequence needs a visible bot left of the
    crosshair, then a visible bot to the right after the first alignment.
-   A stationary pair, initially straddling the crosshair, is the useful setup;
-   keep offsets modest. Each acquisition needs more than 24 horizontal pixels
+   The LEFT target must sit outside the measured hero-region exclusion:
+   x < 0.27 of frame width (x < 691.2 at 2560, more than about 590 px left
+   of centre), or above y = 0.39 of frame height (y < 561.6 at 1440).
+   **Prefer the left target above y = 0.39**: a far-left target at ordinary
+   height can enter the excluded region while yaw converges. The right target
+   stays right of the crosshair as before. Each acquisition needs more than 24 horizontal pixels
    at 1280-width scale (48 pixels at 2560). A single centered bot cannot pass
    both phases. If the needed targets are absent, fix the setup before launch.
    There is no blind search or automatic repositioning.
@@ -72,11 +76,16 @@ if ($compatGames.Count -ne 1) { throw 'Expected exactly one game process; inspec
 $compatGamePid = [int]$compatGames[0].Id
 $compatSitting = 'C:/Users/volpe/repos/rivals-agent/data/calibration/compat-check-20260929'
 $compatOut = Join-Path $compatSitting 'run-01'
+$compatPlacementOut = Join-Path $compatSitting 'run-01-placement'
 $compatStdout = Join-Path $compatSitting 'run-01.stdout.log'
 $compatStderr = Join-Path $compatSitting 'run-01.stderr.log'
 if ((Test-Path -LiteralPath $compatOut) -or (Test-Path -LiteralPath $compatStdout) -or (Test-Path -LiteralPath $compatStderr)) {
     throw 'Attempt paths already exist; preserve them and return to the lead'
 }
+# For any lead-authorized retry, select fresh run/log/placement names above;
+# run-01 already exists and must remain intact. This procedure grants no retry.
+& $compatUv run --no-project --python $compatPython python docs/evidence/live-loop-compat-20260929-v3/placement_preflight.py --live-screenshot --game-pid $compatGamePid --out $compatPlacementOut
+if ($LASTEXITCODE -ne 0) { throw 'Finder placement preflight refused; do not launch' }
 # Exact child invocation: python -m agent.loop --compat --live --camera-map alt-247-124 --camera-settings-match alt-247-124 --game-pid CURRENT_PID --max-s 60 --out RUN_01
 $compatArguments = @(
     'run', '--no-project', '--python', $compatPython, 'python', '-m', 'agent.loop',
@@ -91,6 +100,16 @@ $compatProcess = Start-Process -FilePath $compatUv -ArgumentList $compatArgument
 The profile/settings declaration is explicit and operator supplied; hash
 preflight alone does not verify the in-game settings. The launch arguments
 contain no startup, brain, attack, movement, scoreboard or collection mode.
+The placement check captures a fresh native screenshot without pad input and
+requires the native finder to report an eligible LEFT and RIGHT enemy, range
+HUD, and no idle warning. The lead inspects the saved placement.png and
+placement.json to confirm the intended Galacta bots, then launches without
+repositioning or changing focus. Movement invalidates this preflight; an old
+screenshot or offline --frame result cannot satisfy it. One screenshot does
+not establish tracker identity or guarantee continued detection; the live
+runner still requires fresh guarded observations. The hero exclusion stays
+unchanged. See the [v3 LAND receipt](../../../docs/evidence/live-loop-compat-20260929-v3/review-v3-receipt.json)
+and [support-only cleanup note](../../../docs/evidence/live-loop-compat-20260929-v3/support-only-cleanup.md).
 Do not add throwaway movement or a different input path if attach or response
 fails. Observe the owned process/logs without changing game focus. Record the
 actual game PID, build, OBS path, settings declaration, start/end times and

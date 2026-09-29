@@ -99,8 +99,6 @@ def test_limits_and_stop_paths(stop):
         io.next = next_frame
     result = check.run()
     assert result['result'] != 'passed'
-    assert result['events'][-1]['event'] == 'stop'
-    assert result['events'][-1]['clause'] == result['result']
     assert not io.pad
     assert len(io.calls) <= 1
 
@@ -134,90 +132,6 @@ def test_slow_detector_refuses_before_input():
     check.percept.wide = slow
     assert 'stale' in check.run()['result']
     assert io.calls == []
-
-
-@pytest.mark.parametrize('failure', ['age', 'scope', 'reader', 'save'])
-def test_stop_retains_failing_frame_after_release_and_names_clause(failure):
-    check, io = setup()
-    saved = []
-    original = check.percept.wide
-    def finder(frame):
-        if failure in ('age', 'save'):
-            io.advance(.2)
-        elif failure == 'reader':
-            raise OSError('reader')
-        return original(frame)
-    check.percept.wide = finder
-    calls = []
-    def guard(frame):
-        calls.append(frame)
-        return failure != 'scope' or len(calls) == 1
-    check.guard = guard
-    def save(name, frame):
-        assert not io.pad and io.releases >= 2
-        if failure == 'save':
-            raise OSError('disk')
-        saved.append((name, frame))
-    check.save = save
-    if failure == 'reader':
-        with pytest.raises(OSError, match='reader'):
-            check.run()
-    else:
-        check.run()
-    stop = check.events[-1]
-    assert stop['event'] == 'stop' and not io.calls
-    if failure in ('age', 'save'):
-        assert stop['clause'] == 'stale_after_perception'
-        assert stop['observation']['post_perception_age_s'] > .1
-        assert len(calls) == 1  # preserve original short-circuit order
-    elif failure == 'scope':
-        assert stop['clause'] == 'scope_lost_after_perception'
-    else:
-        assert stop['clause'] == 'exception:OSError:reader'
-        assert stop['stage'] == 'target_finder'
-    if failure == 'save':
-        assert stop['retention_error'] == "OSError('disk')"
-    else:
-        assert stop['frame'] == 'stop.png' and saved[0][0] == 'stop'
-        assert saved[0][1] is check.last_frame
-
-
-def test_warmup_uses_only_synthetic_readers(monkeypatch):
-    import sys
-    frame = object()
-    calls = []
-    def zeros(shape, dtype):
-        assert shape == (1440, 2560, 3) and dtype == 'uint8'
-        return frame
-    monkeypatch.setitem(sys.modules, 'numpy', SimpleNamespace(zeros=zeros, uint8='uint8'))
-    def read(name, value):
-        def reader(f):
-            assert f is frame
-            calls.append(name)
-            return value
-        return reader
-    percept = SimpleNamespace(idle=read('idle',False), in_range=read('range',False),
-                              size=read('size',(2560,1440)), wide=read('finder',[]))
-    result = C.warm_perception(percept)
-    assert calls == ['idle','range','size','finder'] * 3
-    assert result['iterations'] == 3
-
-
-def test_screenshot_preflight_requires_detected_targets_outside_left_hero_zone():
-    import importlib.util
-    from pathlib import Path
-    path = Path(__file__).resolve().parents[1] / 'docs/evidence/live-loop-compat-20260929-v3/placement_preflight.py'
-    spec = importlib.util.spec_from_file_location('compat_placement', path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    def det(x, y):
-        return Detection(ENEMY, (x-10,y-10,x+10,y+10),1.)
-    right = det(1500,700)
-    assert not module.placement([right], (2560,1440))['pass']
-    assert not module.placement([det(1100,700),right], (2560,1440))['pass']
-    assert module.placement([det(680,700),right], (2560,1440))['pass']
-    assert module.placement([det(1100,550),right], (2560,1440))['pass']
-    assert not module.placement([det(680,700)], (2560,1440))['pass']
 
 
 @pytest.mark.parametrize('save_s', [.09, .1, .12])
@@ -397,10 +311,6 @@ def compat_cli(tmp_path,monkeypatch):
     monkeypatch.setattr(L,'foreground_pid_guard',lambda p: lambda: flags.focus)
     monkeypatch.setattr(L,'human_takeover_guard',lambda: lambda: flags.takeover)
     monkeypatch.setattr(L,'default_perception',lambda: SimpleNamespace(in_range=lambda f: True,idle=lambda f: False))
-    def warmup(p):
-        assert flags.device is None and flags.scope is None
-        return {"kind": "test_no_input"}
-    monkeypatch.setattr(C,'warm_perception',warmup)
     monkeypatch.setitem(sys.modules,'cv2',SimpleNamespace(imwrite=lambda *a: True))
     def open_io(scope,*args):
         flags.scope=scope;scope.start();device=Device();flags.device=device
@@ -411,8 +321,6 @@ def compat_cli(tmp_path,monkeypatch):
     class Check:
         events=[]
         pulses=0
-        def record_stop(self, reason):
-            self.events = [{"event": "stop", "clause": reason}]
         def __init__(self,*args,**kwargs):
             if flags.stage=='construct': raise OSError('construct')
         def run(self):

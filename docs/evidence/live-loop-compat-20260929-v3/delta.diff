@@ -1,0 +1,278 @@
+--- before/agent/camera_compat.py
++++ agent/camera_compat.py
+@@ -41,6 +41,29 @@
+         self.response_watch = response_watch
+         self.tracker, self.last_t, self.size = Tracker(), None, None
+         self.events, self.pulses, self.used_s, self.completed = [], 0, 0., []
++        self.last_frame, self.last_stamp, self.stage = None, None, "before_capture"
++        self.observation = {}
++        self.stop_record = None
++
++    def record_stop(self, reason):
++        """Called only after release; diagnostic retention cannot authorize input."""
++        if self.stop_record is not None:
++            return
++        record = {"event": "stop", "clause": reason, "stage": self.stage,
++                  "frame_t": self.last_stamp, "observation": dict(self.observation),
++                  "frame": None}
++        self.stop_record = record
++        self.events.append(record)
++        if self.last_frame is not None and self.save:
++            try:
++                self.save("stop", self.last_frame)
++                record["frame"] = "stop.png"
++            except Exception as e:
++                record["retention_error"] = repr(e)
++        elif self.last_frame is None:
++            record["frame_unavailable"] = "no frame returned by capture"
++        else:
++            record["frame_unavailable"] = "no retention callback"
+ 
+     def check_time(self):
+         now = self.io.now()
+@@ -49,28 +72,50 @@
+         return now
+ 
+     def observe(self):
++        self.stage = "capture"
+         self.check_time()
+         frame, stamp = self.io.next()
++        self.last_frame, self.last_stamp = frame, stamp
++        self.observation = {}
++        self.stage = "capture_freshness"
+         now = self.check_time()
++        self.observation["capture_age_s"] = now - stamp
+         if (not math.isfinite(stamp) or not 0 <= now - stamp <= LIMITS.frame_age_s
+                 or (self.last_t is not None and stamp <= self.last_t)):
+             raise CompatStop("stale_or_nonmonotonic_frame")
+         self.last_t = stamp
++        self.stage = "initial_scope"
++        started = self.check_time()
+         if not self.guard(frame):
+             raise CompatStop("range_or_scope_lost")
++        self.observation["initial_scope_s"] = self.check_time() - started
++        self.stage = "frame_size"
+         size = self.percept.size(frame)
+         if len(size) != 2 or any(type(v) is not int or v <= 0 for v in size) or (self.size and size != self.size):
+             raise CompatStop("frame_size_changed_or_invalid")
+         self.size = size
++        self.stage = "target_finder"
++        started = self.check_time()
+         detections = self.percept.wide(frame)
++        self.observation["finder_s"] = self.check_time() - started
++        self.observation["detection_count"] = len(detections)
++        self.stage = "detection_validation"
+         for d in detections:
+             x1, y1, x2, y2 = d.bbox
+             if (not all(math.isfinite(v) for v in d.bbox) or not 0 <= x1 < x2 <= size[0]
+                     or not 0 <= y1 < y2 <= size[1]):
+                 raise CompatStop("invalid_detection")
++        self.stage = "tracker"
++        started = self.check_time()
+         dets = self.tracker.update(detections, stamp, frame=size, cam=None)
+-        if self.check_time() - stamp > LIMITS.frame_age_s or not self.guard(frame):
+-            raise CompatStop("stale_perception_or_scope")
++        self.observation["tracker_s"] = self.check_time() - started
++        self.stage = "post_perception_freshness"
++        self.observation["post_perception_age_s"] = self.check_time() - stamp
++        if self.observation["post_perception_age_s"] > LIMITS.frame_age_s:
++            raise CompatStop("stale_after_perception")
++        self.stage = "post_perception_scope"
++        if not self.guard(frame):
++            raise CompatStop("scope_lost_after_perception")
+         self.events.append({"event": "observe", "t": stamp, "size": size,
+                             "detections": [{"id": d.track, "bbox": d.bbox} for d in dets]})
+         return frame, stamp, [d for d in dets if d.cls == ENEMY and d.track is not None]
+@@ -207,8 +252,13 @@
+                     obs, target = self.pulse(obs, target, axis, value, until)
+         except RangeLost as e:
+             reason = str(e)
++        except Exception as e:
++            reason = f"exception:{type(e).__name__}:{e}"
++            raise
+         finally:
+             self.io.release()
++            if reason != "passed":
++                self.record_stop(reason)
+         return {"result": reason, "completed_sides": self.completed, "pulses": self.pulses,
+                 "reserved_input_s": self.used_s, "limits": asdict(LIMITS), "camera": self.admission.receipt,
+                 "events": self.events, "latency_claim": "observed pixel response only; no guaranteed latency"}
+@@ -233,6 +283,23 @@
+         if self.timer is not None:
+             self.timer.cancel()
+             self.timer = None
++
++
++def warm_perception(percept):
++    """Prime native-resolution CPU readers before scope/attach, without game IO.
++
++    Synthetic pixels are never a range proof or an observation authorizing input.
++    """
++    import numpy as np
++    frame = np.zeros((1440, 2560, 3), dtype=np.uint8)
++    started = time.perf_counter()
++    for i in range(3):
++        percept.idle(frame)
++        percept.in_range(frame)
++        size = percept.size(frame)
++        Tracker().update(percept.wide(frame), float(i), frame=size, cam=None)
++    return {"kind": "synthetic_cpu_readers_no_input", "size": [2560, 1440],
++            "iterations": 3, "elapsed_s": time.perf_counter() - started}
+ 
+ 
+ def main(argv):
+@@ -256,6 +323,7 @@
+         if focus() is not True or takeover():
+             raise ValueError("focus/takeover preflight refused")
+         percept = L.default_perception()
++        warmup = warm_perception(percept)
+         if focus() is not True or takeover():
+             raise ValueError("focus/takeover after preload refused")
+         a.out.mkdir(parents=True, exist_ok=False)
+@@ -277,6 +345,9 @@
+         if not safety.check():
+             result["result"] = safety.status["stop_reason"]
+         return 0 if result["result"] == "passed" else 1
++    except Exception as e:
++        result["result"] = safety.status["stop_reason"] or f"exception:{type(e).__name__}:{e}"
++        raise
+     finally:
+         if watch is not None:
+             watch.cancel()
+@@ -288,7 +359,14 @@
+                 safety.close()
+             finally:
+                 if check is not None:
++                    if result["result"] != "passed":
++                        check.record_stop(result["result"])
+                     result.setdefault("events", check.events)
+                     result.setdefault("pulses", check.pulses)
++                elif result["result"] != "passed":
++                    result["events"] = [{"event": "stop", "clause": result["result"],
++                                         "stage": "attach_or_construct", "frame": None,
++                                         "frame_unavailable": "no compatibility observation"}]
+                 result["safety"] = safety.status
++                result["warmup"] = warmup
+                 (a.out / "result.json").write_text(json.dumps(result, indent=2) + "\n")
+--- before/tests/test_camera_compat.py
++++ tests/test_camera_compat.py
+@@ -99,6 +99,8 @@
+         io.next = next_frame
+     result = check.run()
+     assert result['result'] != 'passed'
++    assert result['events'][-1]['event'] == 'stop'
++    assert result['events'][-1]['clause'] == result['result']
+     assert not io.pad
+     assert len(io.calls) <= 1
+ 
+@@ -132,6 +134,90 @@
+     check.percept.wide = slow
+     assert 'stale' in check.run()['result']
+     assert io.calls == []
++
++
++@pytest.mark.parametrize('failure', ['age', 'scope', 'reader', 'save'])
++def test_stop_retains_failing_frame_after_release_and_names_clause(failure):
++    check, io = setup()
++    saved = []
++    original = check.percept.wide
++    def finder(frame):
++        if failure in ('age', 'save'):
++            io.advance(.2)
++        elif failure == 'reader':
++            raise OSError('reader')
++        return original(frame)
++    check.percept.wide = finder
++    calls = []
++    def guard(frame):
++        calls.append(frame)
++        return failure != 'scope' or len(calls) == 1
++    check.guard = guard
++    def save(name, frame):
++        assert not io.pad and io.releases >= 2
++        if failure == 'save':
++            raise OSError('disk')
++        saved.append((name, frame))
++    check.save = save
++    if failure == 'reader':
++        with pytest.raises(OSError, match='reader'):
++            check.run()
++    else:
++        check.run()
++    stop = check.events[-1]
++    assert stop['event'] == 'stop' and not io.calls
++    if failure in ('age', 'save'):
++        assert stop['clause'] == 'stale_after_perception'
++        assert stop['observation']['post_perception_age_s'] > .1
++        assert len(calls) == 1  # preserve original short-circuit order
++    elif failure == 'scope':
++        assert stop['clause'] == 'scope_lost_after_perception'
++    else:
++        assert stop['clause'] == 'exception:OSError:reader'
++        assert stop['stage'] == 'target_finder'
++    if failure == 'save':
++        assert stop['retention_error'] == "OSError('disk')"
++    else:
++        assert stop['frame'] == 'stop.png' and saved[0][0] == 'stop'
++        assert saved[0][1] is check.last_frame
++
++
++def test_warmup_uses_only_synthetic_readers(monkeypatch):
++    import sys
++    frame = object()
++    calls = []
++    def zeros(shape, dtype):
++        assert shape == (1440, 2560, 3) and dtype == 'uint8'
++        return frame
++    monkeypatch.setitem(sys.modules, 'numpy', SimpleNamespace(zeros=zeros, uint8='uint8'))
++    def read(name, value):
++        def reader(f):
++            assert f is frame
++            calls.append(name)
++            return value
++        return reader
++    percept = SimpleNamespace(idle=read('idle',False), in_range=read('range',False),
++                              size=read('size',(2560,1440)), wide=read('finder',[]))
++    result = C.warm_perception(percept)
++    assert calls == ['idle','range','size','finder'] * 3
++    assert result['iterations'] == 3
++
++
++def test_screenshot_preflight_requires_detected_targets_outside_left_hero_zone():
++    import importlib.util
++    from pathlib import Path
++    path = Path(__file__).resolve().parents[1] / 'docs/evidence/live-loop-compat-20260929-v3/placement_preflight.py'
++    spec = importlib.util.spec_from_file_location('compat_placement', path)
++    module = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(module)
++    def det(x, y):
++        return Detection(ENEMY, (x-10,y-10,x+10,y+10),1.)
++    right = det(1500,700)
++    assert not module.placement([right], (2560,1440))['pass']
++    assert not module.placement([det(1100,700),right], (2560,1440))['pass']
++    assert module.placement([det(680,700),right], (2560,1440))['pass']
++    assert module.placement([det(1100,550),right], (2560,1440))['pass']
++    assert not module.placement([det(680,700)], (2560,1440))['pass']
+ 
+ 
+ @pytest.mark.parametrize('save_s', [.09, .1, .12])
+@@ -311,6 +397,10 @@
+     monkeypatch.setattr(L,'foreground_pid_guard',lambda p: lambda: flags.focus)
+     monkeypatch.setattr(L,'human_takeover_guard',lambda: lambda: flags.takeover)
+     monkeypatch.setattr(L,'default_perception',lambda: SimpleNamespace(in_range=lambda f: True,idle=lambda f: False))
++    def warmup(p):
++        assert flags.device is None and flags.scope is None
++        return {"kind": "test_no_input"}
++    monkeypatch.setattr(C,'warm_perception',warmup)
+     monkeypatch.setitem(sys.modules,'cv2',SimpleNamespace(imwrite=lambda *a: True))
+     def open_io(scope,*args):
+         flags.scope=scope;scope.start();device=Device();flags.device=device
+@@ -321,6 +411,8 @@
+     class Check:
+         events=[]
+         pulses=0
++        def record_stop(self, reason):
++            self.events = [{"event": "stop", "clause": reason}]
+         def __init__(self,*args,**kwargs):
+             if flags.stage=='construct': raise OSError('construct')
+         def run(self):

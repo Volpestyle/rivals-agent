@@ -1,0 +1,14 @@
+--- review-inputs.json-reviewed
++++ review-inputs.json-land
+@@ -64,10 +64,7 @@
+     "docs\\evidence\\live-loop-compat-20260929-v3\\after\\agent\\camera_compat.py": "fac361a60c6a853609799d0c0189be72719cf938f438cc7886ea12300236a824",
+     "docs\\evidence\\live-loop-compat-20260929-v3\\after\\tests\\test_camera_compat.py": "715b731e0c85e976c78d99df7ec3c5e3d1ec083d2c75ae8556511e1927db568a",
+     "docs\\evidence\\live-loop-compat-20260929-v3\\before\\camera_compat.py": "b37e5617848b2250cc612dd928585aa003105890bde65a94cbd92c985493ed36",
+-    "docs\\evidence\\live-loop-compat-20260929-v3\\before\\test_camera_compat.py": "5eefbc95b3c9ba8fb9972ab16534cd3d5e72d1bd5dc01f364c59f38377227b5a",
+-    "docs\\evidence\\live-loop-compat-20260929-v3\\before\\__pycache__\\camera_compat.cpython-311.pyc": "61442f95fd092a98ea58ff836c5584758bec944b1a1810e403827b744ab4e7ac",
+-    "docs\\evidence\\live-loop-compat-20260929-v3\\__pycache__\\measure_observe.cpython-311.pyc": "6354d2342ac2a42e6bf6637d80e9b3e1d7dce8e78d04a6c15bf82db81ff76ab1",
+-    "docs\\evidence\\live-loop-compat-20260929-v3\\__pycache__\\placement_preflight.cpython-311.pyc": "20a16fa888cdda57fa9d2bfe9950f3d9f9acb7216ad05c2fc1a18aa8e9eaec94"
++    "docs\\evidence\\live-loop-compat-20260929-v3\\before\\test_camera_compat.py": "5eefbc95b3c9ba8fb9972ab16534cd3d5e72d1bd5dc01f364c59f38377227b5a"
+   },
+   "prior_freeze": {
+     "path": "docs\\evidence\\live-loop-compat-20260929-v2\\review-inputs.json",

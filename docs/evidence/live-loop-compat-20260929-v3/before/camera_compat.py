@@ -41,29 +41,6 @@ class CompatibilityCheck:
         self.response_watch = response_watch
         self.tracker, self.last_t, self.size = Tracker(), None, None
         self.events, self.pulses, self.used_s, self.completed = [], 0, 0., []
-        self.last_frame, self.last_stamp, self.stage = None, None, "before_capture"
-        self.observation = {}
-        self.stop_record = None
-
-    def record_stop(self, reason):
-        """Called only after release; diagnostic retention cannot authorize input."""
-        if self.stop_record is not None:
-            return
-        record = {"event": "stop", "clause": reason, "stage": self.stage,
-                  "frame_t": self.last_stamp, "observation": dict(self.observation),
-                  "frame": None}
-        self.stop_record = record
-        self.events.append(record)
-        if self.last_frame is not None and self.save:
-            try:
-                self.save("stop", self.last_frame)
-                record["frame"] = "stop.png"
-            except Exception as e:
-                record["retention_error"] = repr(e)
-        elif self.last_frame is None:
-            record["frame_unavailable"] = "no frame returned by capture"
-        else:
-            record["frame_unavailable"] = "no retention callback"
 
     def check_time(self):
         now = self.io.now()
@@ -72,50 +49,28 @@ class CompatibilityCheck:
         return now
 
     def observe(self):
-        self.stage = "capture"
         self.check_time()
         frame, stamp = self.io.next()
-        self.last_frame, self.last_stamp = frame, stamp
-        self.observation = {}
-        self.stage = "capture_freshness"
         now = self.check_time()
-        self.observation["capture_age_s"] = now - stamp
         if (not math.isfinite(stamp) or not 0 <= now - stamp <= LIMITS.frame_age_s
                 or (self.last_t is not None and stamp <= self.last_t)):
             raise CompatStop("stale_or_nonmonotonic_frame")
         self.last_t = stamp
-        self.stage = "initial_scope"
-        started = self.check_time()
         if not self.guard(frame):
             raise CompatStop("range_or_scope_lost")
-        self.observation["initial_scope_s"] = self.check_time() - started
-        self.stage = "frame_size"
         size = self.percept.size(frame)
         if len(size) != 2 or any(type(v) is not int or v <= 0 for v in size) or (self.size and size != self.size):
             raise CompatStop("frame_size_changed_or_invalid")
         self.size = size
-        self.stage = "target_finder"
-        started = self.check_time()
         detections = self.percept.wide(frame)
-        self.observation["finder_s"] = self.check_time() - started
-        self.observation["detection_count"] = len(detections)
-        self.stage = "detection_validation"
         for d in detections:
             x1, y1, x2, y2 = d.bbox
             if (not all(math.isfinite(v) for v in d.bbox) or not 0 <= x1 < x2 <= size[0]
                     or not 0 <= y1 < y2 <= size[1]):
                 raise CompatStop("invalid_detection")
-        self.stage = "tracker"
-        started = self.check_time()
         dets = self.tracker.update(detections, stamp, frame=size, cam=None)
-        self.observation["tracker_s"] = self.check_time() - started
-        self.stage = "post_perception_freshness"
-        self.observation["post_perception_age_s"] = self.check_time() - stamp
-        if self.observation["post_perception_age_s"] > LIMITS.frame_age_s:
-            raise CompatStop("stale_after_perception")
-        self.stage = "post_perception_scope"
-        if not self.guard(frame):
-            raise CompatStop("scope_lost_after_perception")
+        if self.check_time() - stamp > LIMITS.frame_age_s or not self.guard(frame):
+            raise CompatStop("stale_perception_or_scope")
         self.events.append({"event": "observe", "t": stamp, "size": size,
                             "detections": [{"id": d.track, "bbox": d.bbox} for d in dets]})
         return frame, stamp, [d for d in dets if d.cls == ENEMY and d.track is not None]
@@ -252,13 +207,8 @@ class CompatibilityCheck:
                     obs, target = self.pulse(obs, target, axis, value, until)
         except RangeLost as e:
             reason = str(e)
-        except Exception as e:
-            reason = f"exception:{type(e).__name__}:{e}"
-            raise
         finally:
             self.io.release()
-            if reason != "passed":
-                self.record_stop(reason)
         return {"result": reason, "completed_sides": self.completed, "pulses": self.pulses,
                 "reserved_input_s": self.used_s, "limits": asdict(LIMITS), "camera": self.admission.receipt,
                 "events": self.events, "latency_claim": "observed pixel response only; no guaranteed latency"}
@@ -285,23 +235,6 @@ class ResponseWatch:
             self.timer = None
 
 
-def warm_perception(percept):
-    """Prime native-resolution CPU readers before scope/attach, without game IO.
-
-    Synthetic pixels are never a range proof or an observation authorizing input.
-    """
-    import numpy as np
-    frame = np.zeros((1440, 2560, 3), dtype=np.uint8)
-    started = time.perf_counter()
-    for i in range(3):
-        percept.idle(frame)
-        percept.in_range(frame)
-        size = percept.size(frame)
-        Tracker().update(percept.wide(frame), float(i), frame=size, cam=None)
-    return {"kind": "synthetic_cpu_readers_no_input", "size": [2560, 1440],
-            "iterations": 3, "elapsed_s": time.perf_counter() - started}
-
-
 def main(argv):
     # A separate parser is deliberate: combat, brains, startup, scoreboard and
     # complete-controller options are unknown here and refuse before hardware.
@@ -323,7 +256,6 @@ def main(argv):
         if focus() is not True or takeover():
             raise ValueError("focus/takeover preflight refused")
         percept = L.default_perception()
-        warmup = warm_perception(percept)
         if focus() is not True or takeover():
             raise ValueError("focus/takeover after preload refused")
         a.out.mkdir(parents=True, exist_ok=False)
@@ -345,9 +277,6 @@ def main(argv):
         if not safety.check():
             result["result"] = safety.status["stop_reason"]
         return 0 if result["result"] == "passed" else 1
-    except Exception as e:
-        result["result"] = safety.status["stop_reason"] or f"exception:{type(e).__name__}:{e}"
-        raise
     finally:
         if watch is not None:
             watch.cancel()
@@ -359,14 +288,7 @@ def main(argv):
                 safety.close()
             finally:
                 if check is not None:
-                    if result["result"] != "passed":
-                        check.record_stop(result["result"])
                     result.setdefault("events", check.events)
                     result.setdefault("pulses", check.pulses)
-                elif result["result"] != "passed":
-                    result["events"] = [{"event": "stop", "clause": result["result"],
-                                         "stage": "attach_or_construct", "frame": None,
-                                         "frame_unavailable": "no compatibility observation"}]
                 result["safety"] = safety.status
-                result["warmup"] = warmup
                 (a.out / "result.json").write_text(json.dumps(result, indent=2) + "\n")

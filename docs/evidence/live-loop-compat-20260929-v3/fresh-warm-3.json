@@ -1,0 +1,26 @@
+{
+  "mode": "warm",
+  "warmup": {
+    "kind": "synthetic_cpu_readers_no_input",
+    "size": [
+      2560,
+      1440
+    ],
+    "iterations": 3,
+    "elapsed_s": 0.05962439998984337
+  },
+  "first": {
+    "elapsed_ms": 30.50770005211234,
+    "result": "observed",
+    "observation": {
+      "capture_age_s": 0.001692799967713654,
+      "initial_scope_s": 0.0009898999705910683,
+      "finder_s": 0.026931000058539212,
+      "detection_count": 1,
+      "tracker_s": 5.019991658627987e-05,
+      "post_perception_age_s": 0.02968069992493838
+    }
+  },
+  "p50_ms": 21.460599964484572,
+  "p95_ms": 28.888599947094917
+}

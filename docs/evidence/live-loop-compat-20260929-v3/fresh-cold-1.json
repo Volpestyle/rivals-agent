@@ -1,0 +1,18 @@
+{
+  "mode": "cold",
+  "warmup": null,
+  "first": {
+    "elapsed_ms": 41.50890000164509,
+    "result": "observed",
+    "observation": {
+      "capture_age_s": 0.001615299959667027,
+      "initial_scope_s": 0.004841099958866835,
+      "finder_s": 0.03422969998791814,
+      "detection_count": 1,
+      "tracker_s": 3.439991269260645e-05,
+      "post_perception_age_s": 0.04073639994021505
+    }
+  },
+  "p50_ms": 23.25960004236549,
+  "p95_ms": 30.0590000115335
+}
