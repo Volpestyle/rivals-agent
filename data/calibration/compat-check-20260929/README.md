@@ -194,7 +194,7 @@ an ordinary whole-camera controller map.
 ## First learned-policy sitting (2026-09-30)
 
 **Private closed-loop test after compat run-05, not a demo (James/lead,
-2026-09-30).** The lead selected `bc2-dt-s1-hybrid`: BC2 camera with the old
+2026-09-30).** The lead selected `bc2-l2h1536-hybrid`: BC2 camera with the old
 buttons, whose held-out yaw now beats zero. These commands authorize no sitting
 themselves.
 
@@ -212,7 +212,7 @@ of 60 seconds with `--yaw-scale 0.5`. Each can take `-ObsVideo '<native MKV path
 to record the operator-supplied video path. Outputs are `learned-01-a/` and
 `learned-01-b/`, with separate stdout/stderr; existing attempts are refused.
 
-The bundle defaults to `D:/rivals-policy/bundles/bc2-dt-s1-hybrid` and can be changed
+The bundle defaults to `D:/rivals-policy/bundles/bc2-l2h1536-hybrid` and can be changed
 with `-PolicyBundle`. Real policy/readers/finder warm-up happens before attach,
 then the recurrent policy resets. Both compat run-05 and learned runs opt into
 one guarded attach opener: LY=0.25 for at most 50 ms, with no camera, trigger or
@@ -230,8 +230,8 @@ Both launch modes cap new inference jobs at 15 Hz to leave time for camera
 execution inside the original 100 ms frame budget. Pending jobs are replaced
 with the latest fresh frame; the bundle is trained for intervals at 10–30 Hz.
 
-The loaded 30-second mocked-pad RAM replay at the 15 Hz cap produced 14.5
-decisions/s and 24.4% expiry (106/435 decisions) while four IDM CUDA shards
+The loaded 30-second mocked-pad RAM replay of `bc2-dt-s1-hybrid` at the 15 Hz
+cap produced 14.5 decisions/s and 24.4% expiry (106/435 decisions) while four IDM CUDA shards
 shared the PC. Of these, one was stale after inference and 105 expired during
 camera execution after partial mocked sends. That measurement preceded the
 completion-notification fix, which remains in the runner. Its retained result
