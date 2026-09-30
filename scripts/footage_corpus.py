@@ -96,7 +96,15 @@ def catalogue(root):
     return rows
 
 
-def verdict(frame):
+def portrait_crop(frame):
+    import cv2
+    from perception.events import PORTRAIT
+    h, w = frame.shape[:2]
+    x0, y0, x1, y1 = PORTRAIT
+    return cv2.resize(frame[int(y0*h):int(y1*h), int(x0*w):int(x1*w)], (64, 64))
+
+
+def verdict(frame, portrait_template=None):
     from perception import events, hud, scoreboard, replay_hud
     hp, max_hp = hud.read_hp(frame, hud.MK)
     bar = hud.read_bar_fill(frame)
@@ -111,9 +119,14 @@ def verdict(frame):
         return dict(accepted=False, reason="scoreboard", hp=hp, max_hp=max_hp)
     if replay_hud.followed_slot(frame) is not None:
         return dict(accepted=False, reason="replay_roster", hp=hp, max_hp=max_hp)
-    hero, score = events.hero_read(frame)
+    if portrait_template is not None:
+        import cv2
+        score = float(cv2.matchTemplate(portrait_crop(frame), portrait_template, cv2.TM_CCOEFF_NORMED)[0, 0])
+        hero = True if score >= .80 else None
+    else:
+        hero, score = events.hero_read(frame)
     icons = []
-    if hero is True and score is not None and score < events.PORTRAIT_WEAK:
+    if portrait_template is None and hero is True and score is not None and score < events.PORTRAIT_WEAK:
         # New heroes share the old one-class portrait's weak colour match.
         # A weak match needs independent ability evidence; otherwise unknown.
         hero = None

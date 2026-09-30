@@ -220,3 +220,37 @@ Jit `2887910767` proved to be an ongoing live stream (`is_live=true`), despite
 appearing in the archive listing. Its partial download is withheld and the owner
 stopped that download. New cloud code skips live/unfinished sources before media
 acquisition; the older running image does not yet contain that correction.
+
+### Native portrait profiles
+
+The generic portrait/ability geometry missed every retained second in the first
+full Simii scan. A native portrait profile compares the fixed HUD crop against
+a human-inspected Spider-Man frame from the same video, retaining the existing
+HUD, death, banner, scoreboard and replay exclusions. Two independent ability
+icons can still corroborate Spider-Man under colour effects. Reference IDs and
+timestamps live in `scripts/footage_modal.py`; no third-party raster is committed
+or returned by the cloud worker. The reference frame is extracted privately from
+the downloaded public source. A same-channel reference is available for other
+Simii videos and is recorded in each result.
+
+On 64 human-inspected native development controls, excluding each fitted
+reference frame, v3 kept 5/10 Spider-Man positives and admitted 1/54 exclusions;
+v4 kept 10/10 positives and admitted 0/54 exclusions. The private working table
+is `D:/rivals-expert-footage/audit/profile-validation.json`. These are small-sample
+checks, not whole-corpus accuracy or a sealed evaluation. Bulk v4 results still
+require retained-span inspection. Per-video profiles are needed because HUD
+geometry and portrait framing differ even across Day broadcasts.
+
+The observed scoreboard tap in Day `2882124665` was shorter than the sample
+interval: native 1594.0 seconds is a scoreboard, whereas 1593.75 and 1594.25
+are gameplay, and the latter's HP matches the cloud read. This demonstrates the
+documented sub-500ms limitation rather than a broken scoreboard reader. Its
+touching span remains explicitly excluded. Review intervals are applied after
+screening, so later classifications cannot restore that known bad span or the
+unrelated-game/watchparty tails.
+
+Network seeking for a one-second Twitch reference clip stalled or returned an
+empty fragment. Subsequent reference extraction uses a full temporary public
+download and local seek, the same path that already decoded successfully. The
+completed v3 sources remain usable while v4 is checked; a rescreen is not
+automatically promoted over an inspected result.
