@@ -200,3 +200,37 @@ def test_no_options_and_zero_temperature_is_still_the_plain_decode():
 def test_guard_frame_rewards_are_credited_to_the_preceding_decision():
     r = data.credit([0.05, 0.12, 0.31, 0.9], [1., 0., 10., 1.], [0.0, 0.1, 0.3])
     assert list(r) == [1., 0., 11.]          # 0.12 -> decision 0.1; 0.31 and 0.9 -> decision 0.3
+
+
+def test_after_episode_only_a_confirmed_respawn_counts_as_death_and_safety_stops_end_the_sitting():
+    from rl.online.sitting import after_episode
+    ready_plaza = {"result": "ready", "start_state": "plaza"}
+    ready_spawn = {"result": "ready", "start_state": "spawn"}
+    failed = {"result": "timeout", "start_state": "spawn"}
+    assert after_episode("deadline", None) == (True, False, None)
+    assert after_episode("deadline", ready_plaza) == (True, False, None)
+    assert after_episode("deadline", failed)[:2] == (False, False)
+    assert after_episode("range_lost", ready_spawn) == (True, True, None)
+    assert after_episode("range_lost", ready_plaza)[:2] == (False, False)      # no respawn seen: not a death
+    assert after_episode("range_lost", failed)[:2] == (False, False)
+    assert after_episode("range_lost", None)[:2] == (False, False)
+    for stop in ("focus_lost", "takeover", "idle", "stale_or_nonmonotonic_frame", "exception:ValueError:x", None):
+        assert after_episode(stop, ready_spawn)[:2] == (False, False)
+
+
+def test_reset_command_routes_live_and_dry():
+    from rl.online.sitting import reset_command
+    live = SimpleNamespace(reset_module="agent.range_reset", reset_s=45., live=True, game_pid=7,
+                           camera_settings_match="alt-247-124", dry=None)
+    cmd = reset_command(live, Path("o"))
+    assert cmd[1:3] == ["-m", "agent.range_reset"] and "--live" in cmd and cmd[cmd.index("--game-pid") + 1] == "7"
+    dry = SimpleNamespace(**{**vars(live), "live": False, "dry": Path("run")})
+    assert "--dry" in reset_command(dry, Path("o")) and "--live" not in reset_command(dry, Path("o"))
+
+
+@pytest.mark.skipif(not (RUN / "frames.jsonl").exists(), reason="retained learned-runner run not present")
+def test_confirmed_death_puts_the_penalty_on_the_last_decision():
+    e0 = data.episode(RUN, {"jump"})
+    e1 = data.episode(RUN, {"jump"}, death=True)
+    assert e1["events"]["death"] == 1 and e1["reward"][-1] == e0["reward"][-1] - 10
+    assert (e1["reward"][:-1] == e0["reward"][:-1]).all()

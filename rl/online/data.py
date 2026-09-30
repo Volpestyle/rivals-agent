@@ -113,8 +113,11 @@ def load_frames(run_dir, rows):
     return out
 
 
-def episode(run_dir, live_names, tower=None, device="cpu", weights=None):
-    """Everything the update needs from one episode, plus its KO/hit counts and duration."""
+def episode(run_dir, live_names, tower=None, device="cpu", weights=None, death=False):
+    """Everything the update needs from one episode, plus its KO/hit counts and duration.
+
+    death: the sitting confirmed a fall death after this episode (a range_lost followed by a pixel-confirmed respawn).
+    The death screen drops the HUD before any HP-0 frame is retained, so the penalty goes on the last decision."""
     rows, saved, result = decisions(run_dir)
     if not rows:
         return None
@@ -127,6 +130,10 @@ def episode(run_dir, live_names, tower=None, device="cpu", weights=None):
     per_frame, events = rewards(list(zip(all_frames, all_times)), weights)
     r = credit(all_times, per_frame, times)
     events["frames_read"] = len(saved)
+    if death and not events["death"]:
+        from rl.rewards import Weights
+        r[-1] += (weights or Weights()).death
+        events["death"] = 1
     out = {"run": str(run_dir), "t": np.array(times), "dt": intervals(times), "act": act, "act_known": known,
            "cam_class": cam, "cam_known": cam_known, "reward": r, "events": events,
            "seconds": times[-1] - times[0] if len(times) > 1 else 0., "result": result.get("result")}
