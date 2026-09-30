@@ -161,6 +161,10 @@ def sweep(prefix: str = "a", epochs: int = 12, seed: int = 0):
 def grid(spec: str):
     """spec: JSON list of fit kwargs, each with a unique "name"."""
     import json
-    calls = [fit.spawn(**kw) for kw in json.loads(spec)]
-    for call in calls:
-        print(call.get(), flush=True)
+    specs = json.loads(spec)
+    calls = [fit.spawn(**kw) for kw in specs]
+    for kw, call in zip(specs, calls):
+        try:
+            print(call.get(), flush=True)
+        except Exception as exc:          # one failed run must not stop the others
+            print({"name": kw["name"], "failed": str(exc)[:500]}, flush=True)

@@ -326,18 +326,22 @@ def pooled(results):
     return out
 
 
-def dev_loss(model, sessions, pw):
+def dev_loss(model, sessions, pw, chunk=512):
+    """Whole runs, in chunks with carried recurrent state (bounded activation memory)."""
     total, n = 0., 0
     for s in sessions:
         for a, b in s.runs:
-            idx = torch.arange(a, b, device=s.feats.device)[None]
-            with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16, enabled=s.feats.is_cuda):
-                x, y, _ = model(*s.inputs(idx))
-            batch_ = {"act": s.act[idx], "act_mask": s.act_mask[idx], "camera": s.cam[idx],
-                      "camera_mask": s.cam_mask[idx]}
-            terms = rtrain.loss_terms(x.float(), y.float(), batch_, pw)
-            w = b - a
-            total, n = total + w * float(sum(terms.values())), n + w
+            state = None
+            for c0 in range(a, b, chunk):
+                idx = torch.arange(c0, min(b, c0 + chunk), device=s.feats.device)[None]
+                inp = s.inputs(idx)
+                with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16, enabled=s.feats.is_cuda):
+                    x, y, state = model(*inp[:5], state, inp[6], inp[7])
+                batch_ = {"act": s.act[idx], "act_mask": s.act_mask[idx], "camera": s.cam[idx],
+                          "camera_mask": s.cam_mask[idx]}
+                terms = rtrain.loss_terms(x.float(), y.float(), batch_, pw)
+                w = idx.shape[1]
+                total, n = total + w * float(sum(terms.values())), n + w
     return total / n
 
 
