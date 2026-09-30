@@ -25,7 +25,7 @@ PROFILE_TIMES = {
 }
 
 
-def _screen_source(sid: str, pilot_seconds: int = 0, source_profile: bool = False):
+def _screen_source(sid: str, pilot_seconds: int = 0, source_profile: bool = False, profile_time: float = 0):
     import sys
     import time
     import subprocess
@@ -61,8 +61,8 @@ def _screen_source(sid: str, pilot_seconds: int = 0, source_profile: bool = Fals
         expected = pilot_seconds or info["duration"]
         template, reference = None, None
         if source_profile:
-            if sid in PROFILE_TIMES and not pilot_seconds:
-                reference = dict(source_id=sid, t=PROFILE_TIMES[sid], basis="human-inspected Spider-Man frame")
+            if (profile_time or sid in PROFILE_TIMES) and not pilot_seconds:
+                reference = dict(source_id=sid, t=profile_time or PROFILE_TIMES[sid], basis="human-inspected Spider-Man frame")
                 ref_media = media
                 ref_time = reference["t"]
             elif info["uploader_id"] == "simii_exe":
@@ -109,7 +109,7 @@ def _screen_source(sid: str, pilot_seconds: int = 0, source_profile: bool = Fals
         for span in spans:
             span["confidence"] = "2hz_hud_candidate"
         return dict(source_id=sid, url=url, spans=spans, dense_validated=True,
-                    classifier_version="native_portrait_profile_v4" if source_profile else "weak_portrait_requires_ability_v3",
+                    classifier_version="native_portrait_banner_v5" if source_profile else "ability_banner_v5",
                     portrait_reference=reference,
                     reads=reads,
                     gameplay_candidate_s=sum(s["end_s"]-s["start_s"] for s in spans),
@@ -123,9 +123,9 @@ def _screen_source(sid: str, pilot_seconds: int = 0, source_profile: bool = Fals
 @app.function(image=image, cpu=8, memory=4096,
               timeout=7200, max_containers=4, retries=0, scaledown_window=2,
               nonpreemptible=True)
-def screen_source(sid: str, pilot_seconds: int = 0, source_profile: bool = False):
+def screen_source(sid: str, pilot_seconds: int = 0, source_profile: bool = False, profile_time: float = 0):
     try:
-        return _screen_source(sid, pilot_seconds, source_profile)
+        return _screen_source(sid, pilot_seconds, source_profile, profile_time)
     except Exception as error:
         # One unavailable public source must not discard other completed results.
         return dict(source_id=sid, error=str(error), spans=[])
@@ -133,11 +133,14 @@ def screen_source(sid: str, pilot_seconds: int = 0, source_profile: bool = False
 
 @app.local_entrypoint()
 def main(ids: str = "2886339556", output: str = "/Users/james/dev/expert-footage-results", pilot_seconds: int = 0,
-         source_profile: bool = False):
+         source_profile: bool = False, profile_times: str = ""):
     out = Path(output)
     out.mkdir(parents=True, exist_ok=True)
-    for result in screen_source.map(ids.split(","), kwargs={"pilot_seconds": pilot_seconds,
-                                                         "source_profile": source_profile}, order_outputs=False):
+    source_ids = ids.split(",")
+    times = json.loads(Path(profile_times).read_text()) if profile_times else {}
+    for result in screen_source.map(source_ids, [pilot_seconds] * len(source_ids),
+                                    [source_profile] * len(source_ids),
+                                    [float(times.get(sid, 0)) for sid in source_ids], order_outputs=False):
         path = out / f"{result['source_id']}.json"
         temp = path.with_suffix(".tmp")
         temp.write_text(json.dumps(result, indent=2) + "\n")

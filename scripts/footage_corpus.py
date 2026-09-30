@@ -106,6 +106,27 @@ def portrait_crop(frame):
     return cv2.resize(frame[int(y0*h):int(y1*h), int(x0*w):int(x1*w)], (64, 64))
 
 
+def current_exclusion_banner(frame):
+    """Current-patch yellow respawn counter and adjacent status/menu heading.
+
+    The older word reader misses the moved PAST LIVES banner. Require ink in
+    both measured regions; this also excludes yellow hero-select headings.
+    Native development controls live privately in the external corpus.
+    """
+    import cv2
+    h, w = frame.shape[:2]
+    for x0, y0, x1, y1 in ((.016, .028, .075, .115), (.084, .073, .174, .105)):
+        region = frame[int(y0*h):int(y1*h), int(x0*w):int(x1*w)]
+        if not region.size:
+            return False
+        hsv = cv2.cvtColor(region, cv2.COLOR_BGR2HSV)
+        ink = ((hsv[:, :, 0] > 20) & (hsv[:, :, 0] < 40)
+               & (hsv[:, :, 1] > 110) & (hsv[:, :, 2] > 150))
+        if float(ink.mean()) <= .08:
+            return False
+    return True
+
+
 def verdict(frame, portrait_template=None):
     from perception import events, hud, scoreboard, replay_hud
     hp, max_hp = hud.read_hp(frame, hud.MK)
@@ -114,6 +135,8 @@ def verdict(frame, portrait_template=None):
         return dict(accepted=False, reason="no_hud", hp=hp, max_hp=max_hp)
     if hp == 0:
         return dict(accepted=False, reason="death", hp=hp, max_hp=max_hp)
+    if current_exclusion_banner(frame):
+        return dict(accepted=False, reason="yellow_exclusion_banner", hp=hp, max_hp=max_hp)
     banner = events.banner_word(frame)
     if banner:
         return dict(accepted=False, reason=banner, hp=hp, max_hp=max_hp)

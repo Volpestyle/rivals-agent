@@ -50,3 +50,20 @@ exploration is for.
 | 09-28 10:34 | $101.89 | $70.40 | After IDM full03 finished (stopped 15:30:57Z). Since 02:51, Ephemeral Apps rose $22.27 (full03 ≈ $21.9 plus the shakedown's lagged remainder) and Volumes $1.29 (storage for the retained 114 GB IDM input and ~70 finished-run output volumes). Nothing else is launched | $101.89 | Yes |
 
 `modal billing report` covers only complete days; use `modal billing summary` for the metered figure that includes today.
+
+## 2026-09-30 expert footage CPU screening
+
+| Experiment | Cost | Answer | Lesson lives in |
+|---|---:|---|---|
+| Public expert VOD acquisition and CPU HUD screening, first 20-hour delivery | $12.7473 reported app usage | Delivered 21.7285 gameplay hours / 3,450 admitted spans from 13 videos and four creators. Generic portrait geometry missed Simii; privately inspected native profiles restored useful recall. Known bad spans and a failed killcam source stay withheld | `docs/lanes/expert-footage.md`; `D:/rivals-expert-footage/README.md` |
+
+The `rivals` profile / `volpestyle` workspace billing report was queried after
+all eleven footage apps stopped, using `modal billing report --for today
+--resolution h --json`; it includes the failed probes and retried/preempted
+cohorts, not just successful calls. Its source is
+`D:/rivals-expert-footage/metrics/billing-20260930.json`. CPU only, no persistent
+volume; every function had a native timeout. The earlier $14.53 configured
+resource ceiling was an estimate for seven then-visible apps, not actual spend.
+The hourly billing command supports today's completed intervals; this supersedes
+the older complete-days-only description above for that command. Billing can
+lag, so later corrections belong in this dated section.

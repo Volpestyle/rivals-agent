@@ -288,3 +288,37 @@ cohorts completed. They used ephemeral CPU containers only, with bounded
 timeouts and no persistent volume. A local `metrics/cloud-usage.json` records
 the app IDs and resource estimates for the lead's spend ledger; exact billed
 usage is not exposed by the CLI used here. No PC GPU was used for this corpus.
+
+### Expansion: current-patch diversity and v5 exclusion
+
+The next requested consumer volume is about 50 admitted hours. New discovery
+prioritizes Luckyzeal (broadcast title: top 2 global / number 1 NA Spider-Man),
+RekRiot (broadcast title: top 3 Spider-Man / Season 10), and 6ftHumbleArab
+(Spider-Man-specific broadcasts; a same-name Season 10 player appears as
+Celestial 2 on the [third-party hero leaderboard](https://rivalsdata.com/heroes/spider-man/leaderboard)).
+Their primary archive URLs and claim limits are stored in the external
+`experts.json`; a matching display name is not authenticated leaderboard identity.
+Keyboard prompts must be inspected before admission. Humble's source stream is
+1664x936 at 60 fps, below the preferred 1080p; retain the true native geometry
+and prioritize the other creators' 1080p sources rather than upscaling metadata.
+
+V5 adds a conservative current-patch yellow exclusion detector: yellow ink must
+occupy more than 8% of both the measured respawn-counter region and its adjacent
+status-heading region. This catches the moved PAST LIVES/SPECTATING banners
+that the older word template missed. On 330 retained/distributed native working
+frames it detected eight exclusions: four hero-select screens, two spectating
+frames and two killcams, all inspected; it did not flag the inspected retained
+gameplay controls. The numeric table is private
+`D:/rivals-expert-footage/audit/banner-controls.json`. This is development
+evidence, not full-video or sealed accuracy. Known scoreboard-tap limitations
+remain. Each new source still needs its twelve retained-midpoint checks.
+
+Cloud profile times can now be supplied as a JSON mapping to the local entry
+point, avoiding a code change for each inspected public source. Bulk processing
+retains native function timeouts and ephemeral CPU containers. Source batches
+are reported to IDM as soon as their reviews pass.
+
+The Mac's installed CLI does expose `modal billing`. Its hourly report returned
+the first session's actual app usage, recorded in the requested
+[spend ledger](../steering/spend-ledger-20260927.md); the earlier availability
+assumption and configured estimate are superseded by that report.
