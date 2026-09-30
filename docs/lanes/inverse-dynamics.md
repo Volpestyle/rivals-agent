@@ -189,6 +189,58 @@ value, the creator's measurement and the basis, and it comes from `idm-labels-wo
 `labels.py export --camera-scale`. The two aligned tables the relief worker exported earlier (2871149954,
 2872282230) predate the column and are not rewritten.
 
+### Expert-footage sanity check (idm, 2026-09-30, time-boxed to about 1 h)
+
+A check for gross transfer failure of v2-cd on the expert corpus itself, not a second validation; James's held-out
+matches remain the answer key. Code: `policy/idm/expert_check.py`. Sheets and data are under
+`D:/rivals-agent-local/idm-expert-check/` (third-party frames, local only).
+
+**Corpus facts.** All 9,350 spans are keyboard/mouse (footage lane: KBM keycaps on the HUD) at nominal 60 fps
+(59.92-60.0; 1920x1080, and 1664x936 for 6fthumblearab). No pad players and no 30 fps VODs. Six spans of Rdpaco
+2875184846 drop to 30-43 fps locally; the labeller refuses them.
+
+**Camera.** A full-turn loop closure (the view returns to the same landmark, true yaw 360) is rare in expert play:
+players travel while turning, and a whole-frame or SIFT match mostly finds false returns. One closure was confirmed by eye, a
+Practice Range spin by 6fthumblearab: v2-cd integrates 341-342 deg against a true 360-370 deg, an under-read of
+about 5-8 % (plus or minus a few percent for the player's travel). A second, IDM-independent statistic is the slope of v2-cd yaw on the
+far-background image shift (phase correlation, overlays and HUD noised out). The geometric reference is noisy (1.1-1.4 deg
+per interval against logged truth, versus the IDM's 0.41-0.48), so only its ratio against the same statistic on James's held-out -11/-12
+(1080p re-encodes, truth known) is meaningful:
+
+| Source | IDM / geometric slope | vs James | Sign agreement | Usable intervals |
+|---|---:|---:|---:|---:|
+| James -11/-12 (truth known) | 0.617 | | 0.864 | 94 % |
+| rdpaco | 0.611 | -1 % | 0.895 | 41 % |
+| simii_exe | 0.614 | 0 % | 0.879 | 42 % |
+| reqmr | 0.602 | -2 % | 0.912 | 44 % |
+| rekriot | 0.599 | -3 % | 0.857 | 43 % |
+| 6fthumblearab | 0.583 | -6 % | 0.893 | 48 % |
+| necros | 0.581 | -6 % | 0.892 | 29 % |
+| luckyzeal | 0.660 | +7 % | 0.871 | 26 % |
+| **daymr** (8 spans) | **0.464** | **-25 %** | 0.772 | **11 %** |
+
+**Presses.** 20 predicted onsets (4 per action) were judged on native ability-row/webs-box strips plus world frames:
+
+| Action | Confirmed |
+|---|---|
+| swing | 4/4 (icon lights 0-83 ms) |
+| get_over_here | 4/4 |
+| web_cluster | 3/4 (miss: an amazing combo) |
+| jump | 3/4 (one unclear) |
+| amazing_combo | 2/4 (misses: a swing start and a web cluster) |
+
+That is 16/20 (80 %). Recall was not measured within the time-box. **The ability-row order differs by player**:
+James has team-up, swing, combo, GOH, ult; DayMR/LuckyZeal have team-up, swing, GOH, combo, ult; Rekriot and Simii
+differ again. The HUD branch learned James's slot positions, so the combo/GOH/cluster confusions above are expected
+where the layout differs.
+
+**Verdict.** There are no transfer red flags for 7 of 8 creators: camera direction agrees, the camera magnitude is
+within about 7 % of James's relation, and 80 % of the spot-checked presses are real. **DayMR is flagged**: his IDM/geometric slope is 25 % below James's on 8
+spans, and one unconfirmed closure candidate also suggests an under-read. Only 11 % of his intervals pass the
+reference's quality cut, so the geometric statistic may itself be failing on his footage (the animated avatar and stream overlay).
+Treat DayMR's camera magnitudes (7.1 h) as uncertain until checked. Combo/GOH press labels on creators whose HUD
+order differs from James's are the weakest labels.
+
 ### Cached-feature anchor alignment (IDM relief, 2026-09-30)
 
 Changing the IDM context window moved the first labelled timestamp and therefore the exporter's nominal 30 Hz
