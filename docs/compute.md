@@ -64,6 +64,9 @@ number; before planning a PC fit, check that it fits in the card's 16 GB (round 
   directory per experiment (`countermeasures2/`, `explore/`…) and `runs/`. Never write into another experiment's
   directory. Code runs from a pinned `git archive` (`code-<sha>/`) with its own venv, not from a live checkout.
 - Training on the Mac is fine while the game runs on the PC; the two don't share hardware.
+- **Keep the Mac usable for James.** Every Mac process runs at `nice -n 10` (plus `taskpolicy -b` for background
+  work), with decoders at `-threads 2` and torch/OMP at 2 threads. All lanes together stay within about 4–6 cores.
+  On 2026-09-30, ten uncapped labellers and an 8-thread decode maxed the fans; slower is fine.
 
 ## Modal
 
