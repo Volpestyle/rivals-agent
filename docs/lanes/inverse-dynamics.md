@@ -40,6 +40,43 @@ action). **Compression, 60 fps and 1080p/720p scaling are not the blocker for la
 test does not cover: 30 fps VODs (the 60 Hz window needs a retrained model), the expert's FOV (camera degrees scale
 with it), HUD scale/layout and overlays over the HUD crop, other heroes' and skins' pixels, and pad players.
 
+**IDM v2** (`policy/idm/v2.py`, launcher `policy/idm/v2_modal.py`). Changes from full03:
+- a wider motion encoder (48-96-128-192) that also sees the centre frame, with a 2x4 spatial pool;
+- a held-at-end head;
+- chunked contiguous store loading, about 10x less IO;
+- GPU augmentation, the same across a window: contrast/brightness, down-up rescale, noise, 0-2 static boxes
+  (overlays), HUD dropout 25 %;
+- beta-NLL camera loss (0.5), AdamW, cosine schedule, bf16, batch 8 chunks of <= 32 rows.
+
+Data: the 8 ranges, range-dev 205528 and matches -4..-10 (15 sessions), with 171533 as the val session. -11 and -12
+are held out whole. Checkpoints on `rivals-idm-v2-20260930-out`: v2-a (`/v2-a/v2.pt`, sha256 `1fc5b9f1...`,
++-8 window) and v2-b (`/v2-b-w12/v2.pt`, +-12 window). Each run is 8 epochs, about 34 min on one H100 (about $3).
+v2-a also trained on -7/-8/-10, which full03 did not, so this is a data plus model change, not an ablation.
+
+| Held out, original video | full03 moving yaw / pitch | v2-a | v2-b |
+|---|---|---|---|
+| -11 | 0.631 / 0.783 | **0.512 / 0.578** | 0.532 / 0.580 |
+| -12 | 0.669 / 0.750 | **0.552** / 0.585 | 0.569 / **0.578** |
+| -11 1080p60 | 0.650 / 0.805 | 0.538 / 0.591 | |
+| -12 1080p60 | 0.692 / 0.760 | 0.588 / 0.593 | |
+
+Press F1 at each model's TRAIN-rate thresholds (jump / combo / cluster):
+
+| Session | full03 | v2-a | v2-b |
+|---|---|---|---|
+| -11 | 0.48 / 0.56 / 0.44 | 0.67 / 0.85 / 0.50 | 0.70 / 0.82 / 0.49 |
+| -12 | 0.51 / 0.43 / 0.51 | 0.68 / 0.52 / 0.57 | 0.72 / 0.59 / 0.60 |
+
+Held-at-end F1 at 0.5 (-11 / -12):
+
+| Model | forward | left | right | back | swing | fire |
+|---|---|---|---|---|---|---|
+| v2-a | 0.71 / 0.74 | 0.46 / 0.53 | 0.51 / 0.56 | 0.14 / 0.14 | 0.75 / 0.64 | 0.40 / 0.36 |
+| v2-b | 0.72 / 0.74 | 0.47 / 0.52 | 0.51 / 0.55 | 0.12 / 0.10 | 0.84 / 0.82 | 0.46 / 0.43 |
+
+v2-a is the labeller, because camera matters most to `policy`. v2-b's gains on buttons and holds point at a longer
+window for the button heads next. Scores: `D:/rivals-agent-evidence/idm-vod-domain-20260930/v2a-vs-full03-scores.json`.
+
 ### Expert-footage labels (agreed with `policy`, 2026-09-30)
 
 Format: policy's REPLAY step table (`policy/range_bc/steps.py`, `source_kind: "replay"`, split `"replay"`), written by

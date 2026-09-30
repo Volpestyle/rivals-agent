@@ -46,8 +46,11 @@ def text(img, s, xy, scale=0.6, color=WHITE, thick=1):
 
 def thresholds(z, meta, ckpt=None):
     """Per-action onset thresholds: full03's TRAIN-rate ones where published, else the quantile of this span's
-    probabilities at the TRAIN press rate (rate matching, no truth used)."""
+    probabilities at the TRAIN press rate (rate matching, no truth used). A v2 checkpoint carries its own."""
     from policy.idm import train
+    _, _, own = vod.load_any(ckpt or meta["ckpt"], "cpu")
+    if own:
+        return {a: t for a, t in own.items() if t < 1.0}
     _, payload = train.load_checkpoint(ckpt or meta["ckpt"], device="cpu")
     counts = payload["meta"]["train_press_counts"]
     out = {}

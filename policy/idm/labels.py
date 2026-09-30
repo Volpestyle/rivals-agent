@@ -191,12 +191,17 @@ def export(ckpt, spans_path, work, out_dir, *, video=None, model=None):
     for vid, ss in sorted(by_video.items()):
         ss = sorted(ss, key=lambda s: s["start_s"])
         path = ss[0]["local_path"]
+        if not any(span_file(work, name, s).exists() for s in ss):
+            continue
         index_pts, tb = _video_index(path, Path(work))
-        rows = []
+        rows, has_held = [], False
         for s in ss:
             f = span_file(work, name, s)
             if f.exists():
-                rows += step_rows(np.load(f), thresholds, video_path=path, index_pts=index_pts, tb=tb,
+                with np.load(f) as z:
+                    z = {k: z[k] for k in z.files}
+                has_held = has_held or "held" in z
+                rows += step_rows(z, thresholds, video_path=path, index_pts=index_pts, tb=tb,
                                   run_id=s["span_id"], i0=len(rows))
         if not rows:
             continue
@@ -209,8 +214,7 @@ def export(ckpt, spans_path, work, out_dir, *, video=None, model=None):
             "split": "replay", "step_ns": STEP_NS, "frame_period_ns": FRAME_PERIOD_NS, "actions": list(vocab.NAMES),
             "calibration": {"kind": "replay_degrees", "source": f"idm {name} ({Path(ckpt).name})",
                             "label_sources": {"camera": f"idm {name}", "edges": f"idm {name} onset thresholds",
-                                              "movement": f"idm {name} held head" if "held" in np.load(
-                                                  span_file(work, name, ss[0])) else "none (unknown)"}},
+                                              "movement": f"idm {name} held head" if has_held else "none (unknown)"}},
             "expert_context": {"player": player, "match_id": "unknown",
                                "viewer_fov_assumption": "unknown: degrees are on James's FOV/sensitivity scale, "
                                                         "not calibrated per source",
@@ -226,6 +230,28 @@ def export(ckpt, spans_path, work, out_dir, *, video=None, model=None):
                 fh.write(json.dumps(r) + "\n")
         written[str(out)] = len(rows)
     return written
+
+
+def clips(spans_path, out_dir, *, videos, remote_prefix, margin=(3.0, 1.0)):
+    """Stream-copy each span of `videos` into its own mkv (timestamps kept: -copyts with an input-side duration), for
+    labelling on another machine. Writes out_dir/spans.jsonl with local_path pointing at remote_prefix/<clip>."""
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    rows = []
+    for s in spans(spans_path):
+        if s["video_id"] not in videos:
+            continue
+        name = s["span_id"].replace(":", "_") + ".mkv"
+        clip = out_dir / name
+        if not clip.exists():
+            start = max(0.0, s["start_s"] - margin[0])
+            subprocess.run(["ffmpeg", "-v", "error", "-nostdin", "-y", "-ss", f"{start:.3f}",
+                            "-t", f"{s['end_s'] + margin[1] - start:.3f}", "-copyts", "-i", s["local_path"],
+                            "-map", "0:v:0", "-c", "copy", str(clip) + ".part.mkv"], check=True)
+            Path(str(clip) + ".part.mkv").replace(clip)
+        rows.append({**s, "local_path": f"{remote_prefix}/{name}", "source_path": s["local_path"]})
+    (out_dir / "spans.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
+    return len(rows)
 
 
 def main(argv=None):
@@ -246,8 +272,15 @@ def main(argv=None):
     e.add_argument("out")
     e.add_argument("--video")
     e.add_argument("--model")
+    c = sub.add_parser("clips")
+    c.add_argument("spans")
+    c.add_argument("out")
+    c.add_argument("--videos", nargs="+", required=True)
+    c.add_argument("--remote-prefix", required=True)
     a = ap.parse_args(argv)
-    if a.cmd == "run":
+    if a.cmd == "clips":
+        print(clips(a.spans, a.out, videos=set(a.videos), remote_prefix=a.remote_prefix))
+    elif a.cmd == "run":
         k, n = (int(v) for v in a.shard.split("/"))
         run(a.ckpt, a.spans, a.work, video=a.video, shard=(k, n), device=a.device, model=a.model)
     else:

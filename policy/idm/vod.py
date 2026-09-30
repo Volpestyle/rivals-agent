@@ -218,7 +218,8 @@ def match(pred, truth, tol=2):
 
 
 def score(npz, targets_path=None, thresholds=None, rows_filter=None):
-    z = np.load(npz, allow_pickle=False)
+    with np.load(npz, allow_pickle=False) as f:          # materialise once: npz members decompress per access
+        z = {k: f[k] for k in f.files}
     meta = json.loads(str(z["meta"]))
     header, rows = load_targets(targets_path or meta["targets"])
     by_i = {r["i"]: r for r in rows}
@@ -289,7 +290,10 @@ def decode_span(video, start, end, *, ffmpeg="ffmpeg", threads=8):
     import tempfile
     pts = span_pts(video, start, end)
     sel = f"select=between(t\\,{start - 1e-4:.4f}\\,{end + 1e-4:.4f})"
-    seek = max(0.0, start - 2)
+    # input -ss counts from the container's start_time (0 for a whole VOD, the cut point for a span clip)
+    t0 = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=start_time", "-of", "csv=p=0",
+                               str(video)], check=True, capture_output=True, text=True).stdout.strip() or 0)
+    seek = max(0.0, start - 2 - t0)
     grey = np.empty((len(pts), *D.MOTION), np.uint8)               # preallocated: a 90 s span is ~0.9 GB
     hud = np.empty((len(pts), *D.FR.HUD_SHAPE), np.uint8)
     got = 0
@@ -299,7 +303,7 @@ def decode_span(video, start, end, *, ffmpeg="ffmpeg", threads=8):
         script.write_text(D.GRAPH.format(select=sel), encoding="ascii")
         # -t bounds the read: select alone would keep decoding to the end of a multi-hour VOD
         proc = subprocess.Popen([ffmpeg, "-v", "error", "-nostdin", "-threads", str(threads), "-ss", f"{seek:.3f}",
-                                 "-t", f"{end - seek + 1:.3f}", "-copyts", "-i", str(video), "-map", "0:v:0",
+                                 "-t", f"{end - t0 - seek + 1:.3f}", "-copyts", "-i", str(video), "-map", "0:v:0",
                                  "-filter_script:v", str(script), "-fps_mode", "passthrough", "-an", "-sn",
                                  "-pix_fmt", "rgb24", "-f", "rawvideo", "-"], stdout=subprocess.PIPE)
         while True:
