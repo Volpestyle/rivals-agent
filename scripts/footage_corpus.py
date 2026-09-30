@@ -50,6 +50,8 @@ def catalogue(root):
         channel = info.get("uploader_id", info.get("uploader"))
         review_path = root / "reviews" / f"{sid}.json"
         review = json.loads(review_path.read_text()) if review_path.exists() else {}
+        if review.get("media_path_override"):
+            media = Path(review["media_path_override"])
         complete = media.exists() and not media.with_name(media.stem + ".temp" + media.suffix).exists() \
             and not media.with_suffix(media.suffix + ".part").exists()
         probe = {}
@@ -103,7 +105,14 @@ def verdict(frame):
         return dict(accepted=False, reason="replay_roster", hp=hp, max_hp=max_hp)
     hero, score = events.hero_read(frame)
     icons = []
-    if hero is not True:
+    if hero is True and score is not None and score < events.PORTRAIT_WEAK:
+        # New heroes share the old one-class portrait's weak colour match.
+        # A weak match needs independent ability evidence; otherwise unknown.
+        hero = None
+        icons = [hud.identify_slot(frame, cx) for cx in hud.MK.slot_cx.values()]
+        if set(icons) & {"swing", "get_over_here", "uppercut"}:
+            hero = True
+    elif hero is not True and score is not None:
         icons = [hud.identify_slot(frame, cx) for cx in hud.MK.slot_cx.values()]
         # Two distinct Spider-Man abilities are independent visible evidence,
         # including under skins/colour grading the portrait templates miss.
@@ -325,7 +334,7 @@ def refresh(root):
             continue
         sources.append(result)
         for n, span in enumerate(result["spans"]):
-            exports.append(dict(source_id=result["source_id"], span_id=f"{result['source_id']}:{n}",
+            exports.append(dict(source_id=result["source_id"], span_id=f"{result['source_id']}:{span['start_s']:.3f}-{span['end_s']:.3f}",
                                 video_id=result["source_id"], local_path=meta["media_path"],
                                 sha256=review.get("sha256"), width=meta["resolution"][0], height=meta["resolution"][1],
                                 hero="spider_man", pov="player", input="mkb" if meta["input_device"] == "keyboard_mouse" else "unknown",
@@ -361,6 +370,35 @@ def refresh(root):
     return totals
 
 
+def import_cloud(root, folder):
+    """Adopt metadata-only cloud results after checking source and geometry."""
+    known = {r["source_id"]: r for r in catalogue(root)}
+    imported = []
+    for path in sorted(folder.glob("*.json")):
+        result = json.loads(path.read_text())
+        sid = result["source_id"]
+        if "error" in result:
+            continue
+        if sid in SEALED:
+            raise ValueError("sealed source refused")
+        if sid not in known:
+            continue  # download not yet started on PC
+        meta = known[sid]
+        info = result["info"]
+        if info["id"].removeprefix("v") != sid or [info["width"], info["height"]] != meta["resolution"]:
+            raise ValueError("cloud source/geometry differs from local media")
+        previous = -1
+        for span in result["spans"]:
+            lo, hi = span["start_s"], span["end_s"]
+            if lo < previous or hi <= lo or hi > meta["duration_s"] + 1:
+                raise ValueError("invalid cloud segment timeline")
+            previous = hi
+        result["media_path"] = meta["media_path"]
+        write_json(root / "spans" / f"{sid}.json", result)
+        imported.append(sid)
+    return dict(imported=imported, **refresh(root))
+
+
 def watch(root, hours, timeout):
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
@@ -382,6 +420,8 @@ def main():
     sub = p.add_subparsers(dest="command", required=True)
     sub.add_parser("catalogue")
     sub.add_parser("summary")
+    s = sub.add_parser("import-cloud")
+    s.add_argument("folder", type=Path)
     s = sub.add_parser("screen")
     s.add_argument("media", type=Path)
     s.add_argument("source_id")
@@ -407,6 +447,8 @@ def main():
     elif a.command == "dense":
         result = dense(a.root, a.source_id, a.start, a.duration, a.cuda)
         print(json.dumps({k: v for k, v in result.items() if k != "spans"}, indent=2))
+    elif a.command == "import-cloud":
+        print(json.dumps(import_cloud(a.root, a.folder), indent=2))
     else:
         watch(a.root, a.hours, a.timeout)
 

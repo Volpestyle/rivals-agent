@@ -46,7 +46,9 @@ balance patch. Do not silently promote that estimate into manifest provenance.
 |---|---|---|
 | DayMR | James's pick; channel describes rank 1 Spider-Man, One Above All and top-500 lobbies | [Channel upload](https://www.youtube.com/watch?v=wypnTJ3MqrE) explicitly contains promotional claims; leaderboard identity unverified |
 | ReqMR | James's pick; longstanding Spider-Man main with rank-1 upload claims | [Rank-1 upload](https://www.youtube.com/watch?v=ruW9Dr_1waQ); not independent leaderboard verification |
-| Necros | Well-known Spider-Man main, rank-1 one-trick and tournament gameplay titles; additional creator diversity | [Creator channel](https://www.youtube.com/@necrosow) and [Spider-Man-titled broadcast channel](https://www.twitch.tv/necros); current rank unverified |
+| Necros | Well-known Spider-Man main; own channel claims rank 1 and documents tournament gameplay | [Tournament upload](https://www.youtube.com/watch?v=Wx-ncoUWmXg) and [broadcast channel](https://www.twitch.tv/necros); current rank unverified |
+| Simii_exe | Well-known Spider-Man main; current broadcast titles claim rank 1 Spider-Man | [Creator archives](https://www.twitch.tv/simii_exe/videos); leaderboard claim unverified |
+| Jit (jitnoward) | Spider-Man main; titles claim rank 1 world and two MRC championships | [Creator archives](https://www.twitch.tv/jitnoward/videos); claims unverified independently, rerun-titled sources excluded |
 
 Twitch exposes 1080p60 for all three selected sources. YouTube metadata discovery
 works, but the first media probe returned a sign-in/bot check; Twitch supplied
@@ -130,3 +132,65 @@ The finalized Day file has a nominal 60-Hz Twitch profile but ffprobe average
 rate of about 59.983 Hz. Catalogue/manifests retain the measured average; IDM
 should decode by presentation timestamp rather than assuming frame index / 60
 is the exact clock over a whole broadcast.
+
+### Source checks and scaling
+
+Eight distributed frames from `2876184005` showed a Wolverine game, including
+cutscenes, rather than Marvel Rivals. Req `2873352801` switches Spider-Man/Jeff
+and includes menus/killcams; the readers accepted the two inspected Spider-Man
+frames and rejected the other six. Day `2886339556` switches heroes later in
+the broadcast, including Gambit, Deadpool, Daredevil and Jeff. Native source
+hours therefore remain distinct from screened Spider-Man hours.
+
+Necros `2879205768` supplied a fragmented MP4 that was slow to seek locally.
+It was remuxed with stream copy to `.normalized.mp4`, with the original retained.
+Its review's `media_path_override` points the catalogue/consumer at that indexed
+copy. Eight distributed frames include Spider-Man, other heroes and menus;
+the avatar/drops overlay covers part of the lower-left HUD. A later retained-span
+check found an occasional facecam at normalized `[.76,.38,1,.72]`; the review
+now records it, also inside the conservative right-side chat mask.
+
+To compensate for mixed-hero streams, acquisition was expanded to current-patch
+Spider-Man-titled Simii archives and Jit archives, excluding explicitly labelled
+reruns and unrelated game titles. Two ephemeral cloud cohorts use four CPU
+containers each; the PC only downloads/remuxes and inspects a few frames. The
+lead's notice that the game was reopening arrived after the owner had already
+stopped local NVDEC. All bulk decode stays in Modal.
+
+Cloud results can be adopted with:
+
+```powershell
+uv run python scripts/footage_corpus.py import-cloud D:/rivals-expert-footage/cloud-results
+```
+
+The importer checks source identity, geometry and nonoverlapping bounded
+timestamps against local media. Span IDs include timestamps, so a later dense
+pass cannot reuse a sparse span ID for different footage. Results remain private
+metadata; publishing a milestone sends the lead counts and paths, never frames.
+
+### First usable milestone (2026-09-30, 05:34 CDT)
+
+The private export held 669 spans / 3.265 candidate gameplay hours against
+33.479 downloaded hours across six completed sources. Req `2873352801` supplied
+2.329 hours and Necros `2879205768` 0.898 hours; the balance was the earlier
+Day sparse sample. Twelve distributed retained-span midpoints from each dense
+source were inspected: 24/24 showed Spider-Man player POV with HUD. This is
+sampled validation, not a claim that every frame is labelled correctly. The
+lead and IDM received the export paths and limitations; Linear owns acceptance.
+
+Day `2883793845` was withheld after its retained-span audit found multiple other
+heroes. The old one-class portrait matcher scored Gorr, Daredevil and Captain
+America around 0.34, inside its weak Spider-Man band. The footage classifier now
+requires independent ability evidence for a weak portrait match and never
+overrides an explicit known-other-hero match. Six inspected failure frames are
+rejected and both inspected Spider-Man controls pass. New cloud screenings retain
+numeric reads for later tuning without another decode. Existing accepted Req and
+Necros results retain their sampled-v2 provenance; new results name v3.
+
+The first diversity batch stopped on Twitch's changing HLS initialization
+fragments. The retry uses FFmpeg's HLS demuxer for that specific format error;
+an individual unavailable source now returns an error record and cannot abort
+the rest of the batch. No authentication or access-control workaround is used.
+The failed batch was confirmed stopped with zero containers. V3 Day and
+diversity runs remain bounded by 7,200-second function timeouts and ephemeral
+CLI lifetimes. No PC GPU or game input is used.

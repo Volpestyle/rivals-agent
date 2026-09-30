@@ -16,9 +16,7 @@ for relative in ("scripts/footage_corpus.py", "perception/hud.py", "perception/e
 app = modal.App("rivals-expert-footage-20260930")
 
 
-@app.function(image=image, cpu=8, memory=4096,
-              timeout=7200, max_containers=4, retries=0, scaledown_window=2)
-def screen_source(sid: str, pilot_seconds: int = 0):
+def _screen_source(sid: str, pilot_seconds: int = 0):
     import sys
     import time
     import subprocess
@@ -40,7 +38,13 @@ def screen_source(sid: str, pilot_seconds: int = 0):
                 "-o", str(base / "source.%(ext)s"), url]
         if pilot_seconds:
             args += ["--download-sections", f"*0-{pilot_seconds}"]
-        subprocess.run(args, check=True, timeout=3600)
+        download = subprocess.run(args, capture_output=True, text=True, timeout=3600)
+        if download.returncode and "Initialization fragment found after media fragments" in download.stderr:
+            # Twitch discontinuity/initialization changes need FFmpeg's HLS demuxer.
+            args += ["--downloader", "ffmpeg", "--force-overwrites"]
+            download = subprocess.run(args, capture_output=True, text=True, timeout=3600)
+        if download.returncode:
+            raise RuntimeError(download.stderr[-2000:])
         info = json.loads((base / "source.info.json").read_text())
         media = base / ("source." + info["ext"])
         expected = pilot_seconds or info["duration"]
@@ -71,12 +75,24 @@ def screen_source(sid: str, pilot_seconds: int = 0):
         for span in spans:
             span["confidence"] = "2hz_hud_candidate"
         return dict(source_id=sid, url=url, spans=spans, dense_validated=True,
+                    classifier_version="weak_portrait_requires_ability_v3",
+                    reads=reads,
                     gameplay_candidate_s=sum(s["end_s"]-s["start_s"] for s in spans),
                     sample_counts=dict(Counter(r["reason"] for r in reads)),
                     sampled_until_s=reads[-1]["t"], interval=[0, expected],
                     elapsed_s=time.monotonic()-started,
                     info={k: info.get(k) for k in ("id", "uploader_id", "title", "duration", "upload_date", "width", "height", "fps", "tbr")},
                     limitation="Private cloud 2-Hz HUD screening, inward 0.5s trims. Sub-500ms exclusions may escape sampling; human spot-check required.")
+
+
+@app.function(image=image, cpu=8, memory=4096,
+              timeout=7200, max_containers=4, retries=0, scaledown_window=2)
+def screen_source(sid: str, pilot_seconds: int = 0):
+    try:
+        return _screen_source(sid, pilot_seconds)
+    except Exception as error:
+        # One unavailable public source must not discard other completed results.
+        return dict(source_id=sid, error=str(error), spans=[])
 
 
 @app.local_entrypoint()
@@ -88,4 +104,7 @@ def main(ids: str = "2886339556", output: str = "/Users/james/dev/expert-footage
         temp = path.with_suffix(".tmp")
         temp.write_text(json.dumps(result, indent=2) + "\n")
         temp.replace(path)
-        print(f"RESULT {path} gameplay_hours={result['gameplay_candidate_s']/3600:.3f}", flush=True)
+        if "error" in result:
+            print(f"FAILED {path}: {result['error']}", flush=True)
+        else:
+            print(f"RESULT {path} gameplay_hours={result['gameplay_candidate_s']/3600:.3f}", flush=True)
