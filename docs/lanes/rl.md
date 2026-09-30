@@ -297,6 +297,13 @@ Code `rl/online/` (tests `tests/test_rl_online.py`, 9 passing). Launch: `rl/onli
 - **Exploration** (`explore.py`). Each live action's hold/press/release gate fires with probability
   `sigmoid((logit p - logit threshold) / T)` and goes through the policy's own `executor.decode_step`. T = 0 is the
   deterministic decode bit for bit, masked actions never fire, and the camera is untouched.
+- **Options** (added 2026-09-30, `ce5a2f6`). The base stays `bc2-mix399-s0`: policy's motion-dropout fix failed its keep
+  line (live hold 0.041, turn 0.045), and this base idles from a still start. On recorded range frames its hold
+  probabilities sit far below its thresholds (median 0.000-0.036 against 0.42-0.85). At T = 0.5 every action fires on
+  under 1% of steps; even at T = 2 Spider-Power fires on 1.8%.
+  So the RL arm adds options: one live action, weighted toward attacks, held 0.2-0.8 s, started at 0.5/s. They go
+  through the same `decode_step` and mask. Defaults: T = 1, 0.5 options/s; BC arm T = 0, no options. The idle start
+  is where RL can add something BC cannot: James never demonstrates it.
 - **Rewards** (`data.py`). The §1 readers on the runner's retained ~10 Hz frames: hit, KO, fall.
   **Targets:** the executed decisions (disposition `ready`).
   **Inputs:** bc2 features recomputed from the same frames, with frame interval `dt` (bc2 trains with 1-3 step
