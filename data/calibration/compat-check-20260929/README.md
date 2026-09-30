@@ -193,10 +193,10 @@ an ordinary whole-camera controller map.
 
 ## First learned-policy sitting (2026-09-30)
 
-**Do not launch learned play until held-out policy yaw beats the zero-yaw
-baseline (James/lead, 2026-09-30).** The current `ng-nohist-s1` bundle does not
-qualify. The runner and A/B launch commands below are prepared for a later
-qualifying bundle selected by the lead; they authorize no sitting themselves.
+**Private closed-loop test after compat run-05, not a demo (James/lead,
+2026-09-30).** The lead selected `bc2-bs8-hybrid`: BC2 camera with the old
+buttons, whose held-out yaw now beats zero. These commands authorize no sitting
+themselves.
 
 The lead launches this only after the quick live-input safety read and James's
 sitting grant. Use Spider-Man in the Practice Range near the Galacta bots, with
@@ -206,13 +206,13 @@ recording before launch; keep that original native video. The runner does not
 navigate, choose a hero or start OBS.
 
 Invoke `launch-learned-01.ps1 -Run A` for a maximum of 60 seconds with learned
-yaw disabled. After inspecting that result and arranging the next sitting,
+yaw at `--yaw-scale 1.0`. After inspecting that result and arranging the next sitting,
 invoke `launch-learned-01.ps1 -Run B` for another independently launched maximum
 of 60 seconds with `--yaw-scale 0.5`. Each can take `-ObsVideo '<native MKV path>'`
 to record the operator-supplied video path. Outputs are `learned-01-a/` and
 `learned-01-b/`, with separate stdout/stderr; existing attempts are refused.
 
-The bundle defaults to `D:/rivals-policy/bundles/ng-nohist-s1` and can be changed
+The bundle defaults to `D:/rivals-policy/bundles/bc2-bs8-hybrid` and can be changed
 with `-PolicyBundle`. Real policy/readers/finder warm-up happens before attach,
 then the recurrent policy resets. Both compat run-05 and learned runs opt into
 one guarded attach opener: LY=0.25 for at most 50 ms, with no camera, trigger or
@@ -225,8 +225,8 @@ capture and guarded input remain on the control thread. Native frames at up to
 request expiry/release times, inference/queue timing and the stop frame are
 retained alongside `result.json`. OBS remains the native session-video owner.
 
-Yaw uses measured signed knots, capped at |rx|=0.45; the policy's yaw is poor
-offline, hence the A/B setting. Pitch goes through an explicitly **unmeasured**
+Yaw uses measured signed knots, capped at |rx|=0.45; A/B compares full and half
+learned yaw in this private test. Pitch goes through an explicitly **unmeasured**
 rate approximation (signed yaw rate times 124/247), capped at |ry|=0.2. Each
 axis pulse is at most 1/60 second; action-only leases are at most 100 ms. Every
 input request still expires 100 ms after its original policy frame. Ult,
