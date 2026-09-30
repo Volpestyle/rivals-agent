@@ -162,6 +162,25 @@ expert_share=...)` mixes expert windows in, or pretrains on them then fine-tunes
 thresholds and pos_weight stay on James's data; the gain is measured on James's dev and val against the
 human-only runs above.
 
+Pipeline on the shared PC (2026-09-30). Two stops by Claude Code's host-memory guard led to this split:
+- The PC runs one views worker under `expert pipeline --views-only`, a supervisor that stops its whole process
+  tree below 6 GB free RAM or while the game runs.
+- Finished shards are packed as 4:4:4 q98 JPEG (3.4x smaller, mean error 0.7-1.0 grey levels) and shipped.
+- The Mac unpacks them (Pillow decodes these byte-identically to OpenCV), runs the tower on MPS (31.5k rows in
+  7.5 min) and uploads features to `rivals-policy-bc2-20260930:/expert-features/<shard>`.
+
+Each idm video is split by run into ~30k-row shards; the source video is recorded in the header.
+
+First result (labels v1 = IDM v2-a; one Req shard, 31,551 steps; seed 0; 2-layer 1536 base; the own-data rerun
+reproduces the earlier run exactly):
+
+| Arm | Val yaw | Val onset | Still false turn | Val press F1 | Val pitch | Dev yaw | Dev press F1 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| own data | 0.779 | 79.0% | 10.6% | 0.295 | 0.406 | 0.812 | 0.274 |
+| expert mixed in | 0.754 | 81.0% | 9.6% | 0.300 | 0.397 | 0.783 | 0.298 |
+| expert camera labels only | 0.775 | 80.9% | 8.1% | 0.317 | 0.401 | 0.789 | 0.271 |
+| pretrain on expert + own, then own only | 0.780 | 79.5% | 8.4% | 0.306 | 0.399 | 0.793 | 0.284 |
+
 # Policy: the learned chooser (steps 1-3)
 
 **Status (2026-09-29): HISTORY.** The MLX chooser and the VUH-1311 offline consumer (`policy/behaviour.py`); this part stays their record.
