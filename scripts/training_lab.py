@@ -4,6 +4,59 @@ from pathlib import Path
 import re
 
 
+def parse_runs(text):
+    """Parse the canonical eight-column table without interpreting Markdown/HTML."""
+    runs, warnings, seen = [], [], set()
+    in_table = False
+    for lineno, line in enumerate(text.splitlines(), 1):
+        if not line.strip().startswith('|'):
+            in_table = False
+            continue
+        cells = [c.strip().replace(r'\|', '|') for c in re.split(r'(?<!\\)\|', line.strip().strip('|'))]
+        if (len(cells) == 8 and cells[:5] == ['#', 'Date', 'Run', 'Where', 'Cost']
+                and cells[5].startswith('Result') and cells[6:] == ['Keep?', 'Visual']):
+            in_table = True
+            continue
+        if not in_table or all(re.fullmatch(r':?-+:?', c) for c in cells):
+            continue
+        if len(cells) != 8 or not cells[0].isdigit() or int(cells[0]) in seen:
+            warnings.append(f'Invalid or duplicate ledger row at line {lineno}.')
+            continue
+        keep = re.match(r'^(Yes|No|Pending)\b', cells[6], re.I)
+        if not keep:
+            warnings.append(f'Unknown Keep? value at line {lineno}; shown as Pending.')
+        verdict = {'yes': 'Kept', 'no': 'Discarded', 'pending': 'Pending'}.get(
+            keep[1].lower() if keep else '', 'Pending')
+        seen.add(int(cells[0]))
+        runs.append(dict(id=int(cells[0]), date=cells[1], name=cells[2], where=cells[3],
+                         cost=cells[4], result=cells[5], decision=cells[6],
+                         verdict=verdict, visual=cells[7]))
+    if not runs:
+        warnings.append('No results available from docs/runs-ledger.md.')
+    return runs, warnings
+
+
+def run_visual(data, value, alt):
+    """Resolve explicit manifest copies; other paths are text, never file reads."""
+    parts = []
+    for ref in value.split(';'):
+        ref = ref.strip().strip('`')
+        if not ref or ref == '\u2014':
+            continue
+        if 'sealed' in ref.lower():
+            parts.append('<p>Visual withheld.</p>')
+            continue
+        alias = next((name for name, item in data.get('media', {}).items()
+                      if ref == item.get('source') or ref in item.get('references', [])), None)
+        if alias:
+            parts.append(picture(data, alias, alt))
+        elif re.fullmatch(r'https://uploads\.linear\.app/[^\s"<>]+', ref):
+            parts.append(f'<p><a href="{escape(ref, quote=True)}" rel="noreferrer">Open retained visual</a></p>')
+        else:
+            parts.append(f'<p class="lab-source">Visual reference: {escape(ref)}</p>')
+    return '<details><summary>View retained visual</summary>' + ''.join(parts) + '</details>' if parts else ''
+
+
 CSS = """
 .lab-nav{display:flex;gap:18px;flex-wrap:wrap;margin:0 0 28px;font-size:13px}
 .lab-section{margin:0 0 32px;scroll-margin-top:20px}.lab-section h2{font-size:24px;letter-spacing:-.6px}
@@ -136,11 +189,13 @@ def render(data):
         if r.get('extra_image'):
             parts += ['<details class="technical"><summary>Takeover check sheet</summary>', picture(data,r['extra_image'],'Retained takeover check sheet'), '</details>']
         parts += [source(r['source']), '</article>']
-    parts += ['</div></section><section class="lab-section" id="results-timeline"><h2>The results, including the negatives</h2><p class="lab-note">Kept means the owner retained the result for its stated scope. It does not mean live-ready. Ordered by the source ledger, followed by later decisions; dates are report dates, not inferred launch times.</p><div class="lab-timeline">']
+    parts += ['</div></section><section class="lab-section" id="results-timeline"><h2>The results, including the negatives</h2><p class="lab-note">Kept means the owner retained the result for its stated scope. It does not mean live-ready. Rows and decisions follow docs/runs-ledger.md; dates are report dates, not inferred launch times.</p>']
+    parts += [f'<p class="lab-note">{escape(w)}</p>' for w in data.get('runs_warnings', [])]
+    parts += ['<div class="lab-timeline">']
     for r in data['runs']:
-        visual = f'<details><summary>View retained visual</summary>{picture(data,r.get("image"),r["name"])}</details>' if r.get('image') else ''
-        parts += [f'<article class="lab-card"><div class="eyebrow">{escape(r["date"])} · {r["id"]:02d}</div><h3>{escape(r["name"])}</h3>{pill(r["verdict"])}<span class="lab-cost">{escape(r["cost"])}</span><p>{escape(r["result"])}</p><p class="lab-source">Decision: {escape(r["decision"])}</p>{visual}</article>']
-    parts += ['</div>', source('Lead’s 23-row runs ledger (2026-09-30 14:05 CDT), superseded by later policy/rl lane verdicts where noted'), '</section>']
+        visual = run_visual(data, r.get('visual', ''), r['name'])
+        parts += [f'<article class="lab-card"><div class="eyebrow">{escape(r["date"])} · {r["id"]:02d} · {escape(r.get("where", ""))}</div><h3>{escape(r["name"])}</h3>{pill(r["verdict"])}<span class="lab-cost">{escape(r["cost"])}</span><p>{escape(r["result"])}</p><p class="lab-source">Decision: {escape(r["decision"])}</p>{visual}</article>']
+    parts += ['</div>', source(data.get('runs_source', 'docs/runs-ledger.md')), '</section>']
     idm_rows = [[escape(r['name']), number(r['yaw']), number(r['pitch']), escape(r['press'])] for r in data['idm']]
     parts += ['<section class="lab-section" id="idm-quality"><h2>Reading actions from video</h2><p class="lab-note">Same held-out match -11 across versions. Moving yaw/pitch MAE in degrees per 60 Hz interval; press F1 is jump / combo / cluster. These units differ from policy steps.</p>', table(['IDM version','Yaw ↓','Pitch ↓','Press F1 ↑'],idm_rows), '<p class="lab-note">v2-cd is the better labeller; the matched policy grid j still found no downstream yaw gain. <a href="/idm-labelling">Explore the labelling pipeline →</a></p>', source('docs/lanes/inverse-dynamics.md · v2 variants'), '</section>']
     parts += ['<section class="lab-section" id="world-model"><h2>Imagining the next few seconds</h2><p class="lab-note">A useful short-horizon prototype; the 2–3 second goal is unmet. Mean-prediction PSNR (dB) on [0,1], one seed. full-01 is scored at half resolution. GIFs show real and imagined frames, not autonomous gameplay.</p><div class="lab-grid">']

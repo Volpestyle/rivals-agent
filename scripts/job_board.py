@@ -557,11 +557,32 @@ class Board:
         jobs.sort(key=lambda j: (j.stage != "running", -j.updated, j.name))
         machine_health = health()
         snapshot = {"updated": stamp(time.time()), "jobs": [asdict(j) for j in jobs],
-                    "achievements": load(self.repo / "scripts/training_lab.json"),
+                    "achievements": self.achievements(),
                     "results": sorted(latest.values(), key=lambda r: -r["updated"]),
                     "waiting": waiting, **machine_health, "warnings": warnings,
                     "scan_seconds": round(time.monotonic() - started, 3)}
         return snapshot
+
+    def achievements(self):
+        data = load(self.repo / 'scripts/training_lab.json')
+        if not data:
+            return {}
+        with self.pc_lock:
+            pc, error = self.pc_data, self.pc_warning
+        text = read(self.repo / 'docs/runs-ledger.md')
+        origin = 'docs/runs-ledger.md (local checkout)'
+        warnings = []
+        if pc is not None and isinstance(pc.get('runs_ledger'), str):
+            text = pc['runs_ledger']
+            origin = 'docs/runs-ledger.md (PC checkout; observed ' + stamp(pc['observed']) + ')'
+            if error:
+                warnings.append('PC ledger refresh unavailable; showing the last fetched ledger.')
+        else:
+            warnings.append('PC ledger not yet fetched; showing the local checkout copy.')
+        data['runs'], parse_warnings = training_lab.parse_runs(text)
+        data['runs_warnings'] = warnings + parse_warnings
+        data['runs_source'] = origin
+        return data
 
     def reading(self, path, name):
         data = load(path)

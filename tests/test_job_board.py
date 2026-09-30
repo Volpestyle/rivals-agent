@@ -13,6 +13,74 @@ from scripts import job_board as board, job_status as status
 from scripts import training_lab as lab
 
 
+LEDGER_HEADER = '| # | Date | Run | Where | Cost | Result (one line) | Keep? | Visual |\n|---|---|---|---|---|---|---|---|\n'
+
+
+def ledger_row(n=1, keep='Yes, as baseline', visual='—'):
+    return f'| {n} | 2026-09-30 | Fit {n} | local | ~$1 | a \\| b | {keep} | {visual} |\n'
+
+
+def test_ledger_parses_decisions_preserves_costs_and_rejects_bad_rows():
+    text = (LEDGER_HEADER + ledger_row() + ledger_row(2, 'No (failed gate)')
+            + ledger_row(3, 'Pending local eval') + ledger_row(4, 'Unclear')
+            + ledger_row(1) + '| 5 | truncated |\n\n| 99 | unrelated table |')
+    rows, warnings = lab.parse_runs(text)
+    assert [r['verdict'] for r in rows] == ['Kept', 'Discarded', 'Pending', 'Pending']
+    assert rows[0]['result'] == 'a | b' and rows[0]['cost'] == '~$1'
+    assert rows[0]['decision'] == 'Yes, as baseline'
+    assert len(warnings) == 3
+    assert lab.parse_runs('missing')[0] == []
+
+
+def test_ledger_refresh_uses_new_pc_rows_and_keeps_billing_separate(tmp_path):
+    (tmp_path / 'scripts').mkdir()
+    (tmp_path / 'docs').mkdir()
+    billing = {'total': 123, 'as_of': 'yesterday'}
+    (tmp_path / 'scripts/training_lab.json').write_text(json.dumps({'billing': billing, 'runs': ['obsolete']}))
+    path = tmp_path / 'docs/runs-ledger.md'
+    path.write_text(LEDGER_HEADER + ledger_row(), encoding='utf-8')
+    b = board.Board(tmp_path, [])
+    assert len(b.achievements()['runs']) == 1
+    path.write_text(LEDGER_HEADER + ledger_row() + ledger_row(2), encoding='utf-8')
+    assert len(b.achievements()['runs']) == 2
+    b.pc_data = {'runs_ledger': LEDGER_HEADER + ledger_row(3, 'No'), 'observed': time.time()}
+    current = b.achievements()
+    assert [r['id'] for r in current['runs']] == [3]
+    assert current['billing'] == billing and 'PC checkout' in current['runs_source']
+    b.pc_warning = 'offline'
+    assert b.achievements()['runs_warnings']
+    b.pc_data['runs_ledger'] = ''
+    assert b.achievements()['runs'] == []  # no silent fallback to obsolete rows
+
+
+def test_pc_snapshot_carries_only_bounded_ledger_metadata(tmp_path):
+    (tmp_path / 'docs').mkdir()
+    path = tmp_path / 'docs/runs-ledger.md'
+    text = LEDGER_HEADER + ledger_row(1, visual='data/never-open.png')
+    path.write_text(text, encoding='utf-8')
+    def snapshot():
+        return status.pc_snapshot(root=tmp_path, compression_log=tmp_path/'absent',
+                                  procs=[], locations=[], repo=tmp_path)
+    assert snapshot()['runs_ledger'] == path.read_bytes().decode('utf-8')
+    path.write_bytes(b'x' * 131073)
+    assert snapshot()['runs_ledger'] == ''
+
+
+def test_ledger_visual_references_do_not_open_paths_or_execute_html():
+    url = 'https://uploads.linear.app/org/image'
+    data = {'media': {'copy.gif': {'source': 'rl/output.gif', 'references': [url]}}}
+    assert '/lab-media/copy.gif' in lab.run_visual(data, url, '<native>')
+    assert '&lt;native&gt;' in lab.run_visual(data, 'rl/output.gif', '<native>')
+    linked = lab.run_visual(data, 'https://uploads.linear.app/org/new', 'new')
+    assert 'href="https://uploads.linear.app/org/new"' in linked
+    for unsafe in ['javascript:alert(1)', 'https://uploads.linear.app.evil/image',
+                   'file:///D:/private.png', '<img src=x onerror=alert(1)>', 'https://[bad']:
+        html = lab.run_visual(data, unsafe, 'test')
+        assert '<a ' not in html and '<img ' not in html
+    assert lab.run_visual(data, '—', '') == ''
+    assert 'withheld' in lab.run_visual(data, 'data/sealed/x.png', '')
+
+
 def receipt(root, name="decoder-audit", **fields):
     return status.write(name, root=root, owner="r3-sidecar", stage="running", host="mac",
                         evidence="/never/open/recording.mkv", **fields)

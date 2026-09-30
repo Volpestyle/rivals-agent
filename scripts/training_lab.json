@@ -4,37 +4,58 @@
     "run-01.gif": {
       "source": "D:/rivals-agent-evidence/idm-v0-demo-20260930/idm-v0-demo-a.gif",
       "sha256": "3b0cd357f84f5ea4c99e124474ed3f9b547fc50d2fb5e2a7d8c864ca36d01b78",
-      "bytes": 6795691
+      "bytes": 6795691,
+      "references": [
+        "https://uploads.linear.app/75f1d1f0-542b-4095-9967-fd7b27093472/43d872ca-342a-48b1-9de1-c145cf4f3636/8e71784d-f13d-435a-8f64-bb3a457a24af"
+      ]
     },
     "run-03.gif": {
       "source": "D:/rivals-agent-evidence/idm-v2a-demo-20260930/idm-v2a-demo-a.gif",
       "sha256": "9694a0c1ac7ff696dfcb6ec1673a0d9653973ccf8625c2123e7dd3f5e98023df",
-      "bytes": 6547684
+      "bytes": 6547684,
+      "references": [
+        "https://uploads.linear.app/75f1d1f0-542b-4095-9967-fd7b27093472/d1993056-2e60-4019-b1bd-ec53d446c3d2/58888406-af0f-4ed5-be24-a75059415c8c"
+      ]
     },
     "run-07.png": {
       "source": "D:/rivals-expert-footage/metrics/corpus-progress-final.png",
       "sha256": "4f8ee0ec80d91d0e4399a80354b775de3d727f8a3ed833bf1c1464de73ad026c",
-      "bytes": 106221
+      "bytes": 106221,
+      "references": [
+        "https://uploads.linear.app/75f1d1f0-542b-4095-9967-fd7b27093472/423db99f-894e-44f3-8eeb-373b3283d62b/de307089-7878-40a4-a57a-967672a1a809"
+      ]
     },
     "run-08.gif": {
       "source": "D:/rivals-policy/replay/ng-nohist-s1-171533/overlay-10s.gif",
       "sha256": "1ebddf8173bafe124d1c5eed12df65215b5aaa4bb86aebf17d2b7f51d8d2f70a",
-      "bytes": 4924628
+      "bytes": 4924628,
+      "references": [
+        "https://uploads.linear.app/75f1d1f0-542b-4095-9967-fd7b27093472/78348cae-965a-487a-8e03-9c5edf2004f5/3660ff70-c5cc-42ad-990b-6f35a681d9b1"
+      ]
     },
     "run-09.gif": {
       "source": "D:/rivals-policy/replay/bc2-a-val212646/overlay-10s.gif",
       "sha256": "d1de9ff3129049053ae53e71ec7838dee2cc7cbf5f7d7058caa31cfff7b5d827",
-      "bytes": 5415850
+      "bytes": 5415850,
+      "references": [
+        "https://uploads.linear.app/75f1d1f0-542b-4095-9967-fd7b27093472/bdd1d79d-7b60-4d8b-b142-dccad196341c/1ce4c88b-2889-4b47-80aa-9ed5170f1b22"
+      ]
     },
     "run-16.png": {
       "source": "rl/out/reward_readers_20260930.png",
       "sha256": "1e29bb7ca97313f80fd1d4c7ec44954688df36872d6c90a98e670151b2a0d0fa",
-      "bytes": 529412
+      "bytes": 529412,
+      "references": [
+        "https://uploads.linear.app/75f1d1f0-542b-4095-9967-fd7b27093472/df009276-401b-44f8-884b-1ae14f3a1d0c/aac28fce-28da-44ad-8afe-2f984edd30e8"
+      ]
     },
     "run-18.gif": {
       "source": "rl/world_model/out/full-01_real_vs_imagined.gif",
       "sha256": "638b3f9a57b629edbee7ce824fb51fae430711fc1899e139af226851dbfee8a3",
-      "bytes": 5074530
+      "bytes": 5074530,
+      "references": [
+        "https://uploads.linear.app/75f1d1f0-542b-4095-9967-fd7b27093472/e32f4bc7-7353-4b4f-aa46-0e23a2554b0a/00cd24ec-6926-4732-83a4-8313e2cc2468"
+      ]
     },
     "wm-full-01.gif": {
       "source": "rl/world_model/out/full-01_real_vs_imagined.gif",
@@ -82,244 +103,6 @@
       "bytes": 5042021
     }
   },
-  "runs": [
-    {
-      "id": 1,
-      "date": "30 SEP 2026",
-      "name": "IDM v0 demo",
-      "cost": "$0 (local)",
-      "result": "Moving-yaw MAE 0.63 vs 2.12 zero-motion; press F1 0.44–0.56; pitch weak; holds not predicted",
-      "verdict": "Kept",
-      "decision": "Yes, as the baseline",
-      "image": "run-01.gif"
-    },
-    {
-      "id": 2,
-      "date": "30 SEP 2026",
-      "name": "IDM VOD-domain test",
-      "cost": "$0 (Mac)",
-      "result": "Compression costs only ~3% yaw and 1–3% pitch, so streamer VODs are a viable labelling target",
-      "verdict": "Kept",
-      "decision": "Yes (decision)"
-    },
-    {
-      "id": 3,
-      "date": "30 SEP 2026",
-      "name": "IDM v2-a fit",
-      "cost": "~$3",
-      "result": "Beats full03: moving yaw −17–19%, pitch −22–26%, press F1 up to 0.85, new held-key head",
-      "verdict": "Kept",
-      "decision": "Yes (labeller for batch 1)",
-      "image": "run-03.gif"
-    },
-    {
-      "id": 4,
-      "date": "30 SEP 2026",
-      "name": "IDM v2-b, v2-c, v2-d fits",
-      "cost": "~$22 (app rivals-idm-v2 total $25.54 incl. v2-a and the input volume)",
-      "result": "The v2-c+v2-d ensemble (\"v2-cd\") is the best labeller: yaw −22/−23%, pitch −32/−29% vs full03; swing-hold F1 0.88",
-      "verdict": "Kept",
-      "decision": "Yes (v2-cd labeller)"
-    },
-    {
-      "id": 5,
-      "date": "30 SEP 2026",
-      "name": "IDM zoom/camera-scale fit",
-      "cost": "~$1",
-      "result": "All 8 creators read at James's FOV (0.993–1.000), so camera_scale = 1.0",
-      "verdict": "Kept",
-      "decision": "Yes"
-    },
-    {
-      "id": 6,
-      "date": "30 SEP 2026",
-      "name": "IDM labelling of the expert corpus",
-      "cost": "~$5.56 (app rivals-idm-label)",
-      "result": "v2-a on ~27 h; v2-cd on 24+/40 videos so far, the rest resumes on the PC at $0",
-      "verdict": "Kept",
-      "decision": "Yes"
-    },
-    {
-      "id": 7,
-      "date": "30 SEP 2026",
-      "name": "Expert footage corpus",
-      "cost": "$26.62 (actual: $12.75 + $13.88)",
-      "result": "53.3 h of verified Spider-Man gameplay, 9,350 spans, 40 videos, 8 keyboard/mouse creators, from 218 h downloaded",
-      "verdict": "Kept",
-      "decision": "Yes (VUH-1466 Done)",
-      "image": "run-07.png"
-    },
-    {
-      "id": 8,
-      "date": "30 SEP 2026",
-      "name": "Policy v0 packaging",
-      "cost": "$0",
-      "result": "p95 31 ms; buttons OK (web_swing F1 0.83); yaw at chance (47%)",
-      "verdict": "Discarded",
-      "decision": "No for live (baseline only)",
-      "image": "run-08.gif"
-    },
-    {
-      "id": 9,
-      "date": "30 SEP 2026",
-      "name": "Policy bc2 yaw fit",
-      "cost": "part of $53.02 (app rivals-policy-bc2-20260930, all policy grids)",
-      "result": "Val yaw 0.825 vs zero 1.831; moving sign 89%; onset only 53% under median decode",
-      "verdict": "Kept",
-      "decision": "Yes (base)",
-      "image": "run-09.gif"
-    },
-    {
-      "id": 10,
-      "date": "30 SEP 2026",
-      "name": "Mean-decode fix plus frame-interval input",
-      "cost": "in $53.02",
-      "result": "Onset sign 49–54% → 75–77% with no retrain; moving sign 93.5%",
-      "verdict": "Kept",
-      "decision": "Yes"
-    },
-    {
-      "id": 11,
-      "date": "30 SEP 2026",
-      "name": "Architecture grid H",
-      "cost": "in $53.02",
-      "result": "2-layer 1536: val yaw 0.779, onset 79%, F1 0.295",
-      "verdict": "Kept",
-      "decision": "Yes (base for the expert runs)"
-    },
-    {
-      "id": 12,
-      "date": "30 SEP 2026",
-      "name": "Expert-mix scaling grid i3",
-      "cost": "in $53.02",
-      "result": "Yaw 0.786 → 0.746, onset 79 → 83%, false turns 10.2 → 7.9%, F1 0.314 → 0.363; every mix seed beats every own seed on yaw. Core VPT-style result",
-      "verdict": "Kept",
-      "decision": "Yes; bundle bc2-mix399-s0 is the live model"
-    },
-    {
-      "id": 13,
-      "date": "30 SEP 2026",
-      "name": "Grid i4",
-      "cost": "~$4",
-      "result": "Camera plateaued (val yaw 0.755 vs 0.746); only buttons still gained (F1 0.381)",
-      "verdict": "Discarded",
-      "decision": "No (confirmed a plateau; could have been 1 seed or local)"
-    },
-    {
-      "id": 14,
-      "date": "30 SEP 2026",
-      "name": "Grid j",
-      "cost": "~$9 (incl. 4 startup failures)",
-      "result": "No downstream gain from the better labels (val yaw 0.797 vs 0.776)",
-      "verdict": "Discarded",
-      "decision": "No (should have been a 1-seed probe first)"
-    },
-    {
-      "id": 15,
-      "date": "30 SEP 2026",
-      "name": "Motion-dropout retrain",
-      "cost": "~$2.60 · grid k total",
-      "result": "Both dropout settings fail live readiness: hold 0.041 / 0.038; turn 0.045 / 0.045. p=.3 val yaw 0.742 and F1 0.405.",
-      "verdict": "Discarded",
-      "decision": "FAIL: hold >= 0.30 and turn >= 0.20, plus val yaw <= 0.766 and F1 >= 0.33. Source: later policy lane verdict."
-    },
-    {
-      "id": 16,
-      "date": "30 SEP 2026",
-      "name": "RL reward readers",
-      "cost": "$0 (local)",
-      "result": "Reward readers: hit precision 1.00; recall 0.981 originally, 0.969 after the live false-hit fix. KO 142/142 real; HP 67/67. James 7.0 KOs/min vs scripted 4.2.",
-      "verdict": "Kept",
-      "decision": "Yes",
-      "image": "run-16.png"
-    },
-    {
-      "id": 17,
-      "date": "30 SEP 2026",
-      "name": "Offline AWR step 0",
-      "cost": "$4.24",
-      "result": "No measurable held-out shift over 3 seeds (every CI spans 0); BC metrics intact",
-      "verdict": "Discarded",
-      "decision": "No (a clean negative; kept only as the online-RL initialiser)"
-    },
-    {
-      "id": 18,
-      "date": "30 SEP 2026",
-      "name": "World model full-01",
-      "cost": "$5.00 (plus $0.65 probe)",
-      "result": "Beats copy-last (+4.3 dB at 0.1 s); actions matter (+3.2 dB vs shuffled); dissolves by ~1 s",
-      "verdict": "Kept",
-      "decision": "Yes as a prototype",
-      "image": "wm-full-01.gif"
-    },
-    {
-      "id": 19,
-      "date": "30 SEP 2026",
-      "name": "World model v2-noroll",
-      "cost": "$13.42",
-      "result": "Ties full-01 beyond one second; sampled frames hazy from step 1. Imagined KO AUC 0.71 (later RL lane correction).",
-      "verdict": "Discarded",
-      "decision": "No",
-      "image": "wm-v2-noroll.gif"
-    },
-    {
-      "id": 20,
-      "date": "30 SEP 2026",
-      "name": "World model v2-main",
-      "cost": "$16.11",
-      "result": "Same as v2-noroll within noise; the anti-drift trick didn't help",
-      "verdict": "Discarded",
-      "decision": "No",
-      "image": "wm-v2-main.gif"
-    },
-    {
-      "id": 21,
-      "date": "30 SEP 2026",
-      "name": "World model v3-expert",
-      "cost": "$17.52",
-      "result": "+0.2 dB at 2–3 s, −0.35 dB early; imagined KO AUC 0.65; 2–3 s target not met",
-      "verdict": "Discarded",
-      "decision": "No (pixel track stopped; latent track next, local)",
-      "image": "wm-v3-expert.gif"
-    },
-    {
-      "id": 22,
-      "date": "30 SEP 2026",
-      "name": "World model probes, diagnostics and sampler sweep",
-      "cost": "~$2.70",
-      "result": "The 2–3 s error is content, not camera (Spearman 0.13); more denoising steps don't help",
-      "verdict": "Kept",
-      "decision": "Yes (diagnosis)"
-    },
-    {
-      "id": 23,
-      "date": "30 SEP 2026",
-      "name": "Learned live runner plus bundle swaps",
-      "cost": "$0",
-      "result": "Built and safety-read SAFE; mocked replays p95 45–46 ms on a quiet GPU",
-      "verdict": "Kept",
-      "decision": "Yes"
-    },
-    {
-      "id": 24,
-      "date": "30 SEP 2026",
-      "name": "Static-input augmentation · grid l",
-      "cost": "~$1.30",
-      "result": "Hold 0.178 fails; turn 0.465 passes. Val yaw 0.754 and press F1 0.369 pass. Starting from still remains unresolved.",
-      "decision": "FAIL: same four keep conditions as grid k; policy lane later verdict.",
-      "verdict": "Discarded"
-    },
-    {
-      "id": 25,
-      "date": "30 SEP 2026",
-      "name": "Online RL · first bounded sitting",
-      "cost": "$0 · PC",
-      "result": "Corrected audit: six episodes; BC 0 hits / 0 KOs, RL 1 hit / 0 KOs and a fall. Three raw-log hits were false positives used by the live updates.",
-      "decision": "Plumbing run only; no learning gain established. Corrected RL lane verdict fe1d795 supersedes raw curve.jsonl.",
-      "verdict": "Unjudged",
-      "image": "rl-events.gif"
-    }
-  ],
   "policy": [
     {
       "name": "Own data",

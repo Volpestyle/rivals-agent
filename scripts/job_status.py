@@ -127,7 +127,7 @@ def matches_receipt(data, command, host):
     return len(stem) >= 4 and parent + '/' in cmd and re.search('/' + re.escape(stem) + r'(?=[._-])', cmd) is not None
 
 
-def pc_snapshot(root=None, compression_log=None, procs=None, locations=None):
+def pc_snapshot(root=None, compression_log=None, procs=None, locations=None, repo=None):
     """Read-only SSH probe: receipts, compression log tail, known compute PIDs.
 
     Never reads media or scripts. CLI prints metadata only, not process command
@@ -210,7 +210,11 @@ def pc_snapshot(root=None, compression_log=None, procs=None, locations=None):
         if time.time()-latest <= 1800 and not registered and not any(o['location'] == str(folder) for o in observations):
             observations.append({'name': 'unregistered: ' + str(folder), 'stage': 'unknown', 'location': str(folder),
                                  'updated': latest, 'pid': 'unknown', 'detail': 'Known transfer location changed in the last 30 minutes; no receipt.'})
-    return {'receipts': receipts, 'observations': observations, 'warnings': warnings, 'observed': time.time()}
+    snapshot = {'receipts': receipts, 'observations': observations, 'warnings': warnings, 'observed': time.time()}
+    if repo is not None:
+        # Fixed, bounded metadata only; carries new result rows on the existing poll.
+        snapshot['runs_ledger'] = _metadata(Path(repo) / 'docs/runs-ledger.md')
+    return snapshot
 
 
 if __name__ == '__main__':
@@ -218,4 +222,5 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--snapshot-pc', action='store_true', required=True)
     parser.parse_args()
-    print(json.dumps(pc_snapshot(), allow_nan=False))
+    snapshot = pc_snapshot(repo=Path(__file__).absolute().parent.parent)
+    print(json.dumps(snapshot, allow_nan=False))

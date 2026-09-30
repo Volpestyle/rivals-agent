@@ -1,0 +1,93 @@
+[
+  {
+    "name": "desktop",
+    "status": 200,
+    "viewport": 1440,
+    "width": 1440,
+    "height": 9679,
+    "rows": 27,
+    "source": "Source: docs/runs-ledger.md (PC checkout; observed 2026-09-30 23:06:29 UTC)",
+    "images": [
+      {
+        "src": "/lab-media/compat.png",
+        "ok": true
+      },
+      {
+        "src": "/lab-media/learned.jpg",
+        "ok": true
+      },
+      {
+        "src": "/lab-media/rl-curve.png",
+        "ok": true
+      },
+      {
+        "src": "/lab-media/wm-full-01.gif",
+        "ok": true
+      },
+      {
+        "src": "https://jamess-macbook-pro.tailb90f24.ts.net:9443/lab-media/wm-v2-noroll.gif?verification-reload=1",
+        "ok": true
+      },
+      {
+        "src": "/lab-media/wm-v2-main.gif",
+        "ok": true
+      },
+      {
+        "src": "/lab-media/wm-v3-expert.gif",
+        "ok": true
+      }
+    ],
+    "imageRetries": [
+      "/lab-media/wm-v2-noroll.gif"
+    ],
+    "httpErrors": [
+      {
+        "status": 502,
+        "url": "https://jamess-macbook-pro.tailb90f24.ts.net:9443/lab-media/wm-v2-noroll.gif"
+      }
+    ],
+    "errors": []
+  },
+  {
+    "name": "phone",
+    "status": 200,
+    "viewport": 390,
+    "width": 390,
+    "height": 20107,
+    "rows": 27,
+    "source": "Source: docs/runs-ledger.md (PC checkout; observed 2026-09-30 23:06:29 UTC)",
+    "images": [
+      {
+        "src": "/lab-media/compat.png",
+        "ok": true
+      },
+      {
+        "src": "/lab-media/learned.jpg",
+        "ok": true
+      },
+      {
+        "src": "/lab-media/rl-curve.png",
+        "ok": true
+      },
+      {
+        "src": "/lab-media/wm-full-01.gif",
+        "ok": true
+      },
+      {
+        "src": "/lab-media/wm-v2-noroll.gif",
+        "ok": true
+      },
+      {
+        "src": "/lab-media/wm-v2-main.gif",
+        "ok": true
+      },
+      {
+        "src": "/lab-media/wm-v3-expert.gif",
+        "ok": true
+      }
+    ],
+    "imageRetries": [],
+    "httpErrors": [],
+    "errors": []
+  }
+]

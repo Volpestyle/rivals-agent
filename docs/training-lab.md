@@ -2,20 +2,27 @@
 
 The private board is at <https://jamess-macbook-pro.tailb90f24.ts.net:9443/>.
 `scripts/job_board.py` owns job metadata and routing; `scripts/training_lab.py`
-renders achievements from `scripts/training_lab.json`. The results snapshot has
-its own observation time. Refresh reloads the page and job metadata; it does not
-recompute scores or refresh billing. Historical experiments remain in a fold.
+renders the timeline from `docs/runs-ledger.md` and other achievement snapshots
+from `scripts/training_lab.json`. Historical experiments remain in a fold.
+
+Add or correct timeline rows only in `docs/runs-ledger.md`, preserving its eight
+columns. `Keep?` starts with Yes, No or Pending. The existing background PC
+metadata poll carries the bounded ledger text to the Mac every 60 seconds;
+the board's 30-second snapshot cache picks it up on page refresh. No restart or
+JSON edit is needed for new rows. The page identifies the source observation;
+before the first PC fetch it uses the Mac checkout copy, and failed refreshes
+are labelled as cached. Missing/malformed rows produce a visible warning, never
+a fallback to the old hardcoded timeline. This does not recompute scores or billing.
 
 The achievement JSON is a curated projection of existing evidence, not a second
 result ledger. Its source pointers lead to the owners' lane verdicts, sitting
-records, recording ledger and the lead's September 30 runs ledger. Later policy
-verdicts replace pending entries in the projection. Missing measurements remain
+records and recording ledger. Missing measurements remain
 unknown. Three-seed averages and single candidates are separate rows; live
 readiness requires both hold >= 0.30 and turn >= 0.20. This is a screening check,
 not autonomous-play acceptance.
 
-For updates, read only named result documents or small reports, then edit the
-projection and its `as_of`. Do not enumerate recordings, labels, feature caches
+For non-timeline snapshot updates, read only named result documents or small
+reports, then edit the projection and its `as_of`. Do not enumerate recordings, labels, feature caches
 or held-back data. To refresh spend, use the read-only command
 `modal billing report --for "this month" --profile rivals --json` in workspace
 `volpestyle`, aggregate each row once by UTC date and app description, and record
@@ -25,7 +32,10 @@ from the complete billing total. Shared app totals must never be summed as
 individual run costs.
 
 Images are explicit copies in ignored `data/job-board-media/`. The JSON manifest
-records each original source, byte count and SHA-256. Only manifest-named PNG,
+records each original source, byte count, SHA-256 and optional reference URLs.
+Timeline references matching this manifest show the existing image copy;
+other Linear asset URLs are links, and unmatched paths remain text. The ledger
+never grants access to arbitrary files. Only manifest-named PNG,
 JPEG and GIF basenames can be served; traversal, symlinks, forbidden paths and
 files above 16 MiB are refused. Asset URLs are same-origin. Unsigned Linear
 downloads returned HTTP 401 during this delivery, so native local equivalents
