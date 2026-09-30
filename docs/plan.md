@@ -54,9 +54,19 @@ only once an outcome can be measured reliably.
 - **Policy interface.** *Superseded 2026-09-23 by the whole-session item above:* the policy outputs
   semantic actions plus camera degrees and the calibrated pad executes them. The earlier design (a learned
   policy choosing options at 5-10 Hz for the scripted reflex controller) survives only as the baseline.
-- **NitroGen and the IDM are parked (2026-09-28).** The full NitroGen actor missed its runtime cutoff
-  ([report](evidence/nitrogen-vl-cache-20260928/REPORT.md)); the inverse-dynamics data engine is parked on
-  VUH-1353. Neither is on the critical path.
+- **Lean push (2026-09-30, James; new lead).** "First make it work, then make it good": no new receipts, freezes or
+  review rounds; only live-input code gets a quick safety read (`AGENTS.md`, "Working here"). Four tracks run in
+  parallel, each with its own Linear issue:
+  - the IDM (VUH-1353, unparked): VOD-robust v2, then labels on expert footage;
+  - the expert footage corpus (VUH-1466): 20+ h of top Spider-Man VODs cut to gameplay spans;
+  - the policy (VUH-1346): an aiming model with an ego-motion input, then VPT-style training on IDM labels;
+  - RL (VUH-1321): pixel reward readers, offline-to-online AWR with a KL-to-BC anchor, and a world model of our paired
+    footage for practice in imagination ([lane](lanes/rl.md)).
+
+  No learned policy plays live until its held-out yaw beats "never turn" (James, 2026-09-30).
+- *Superseded 2026-09-30 by the lean push above:* **NitroGen and the IDM are parked (2026-09-28).** The full NitroGen
+  actor missed its runtime cutoff ([report](evidence/nitrogen-vl-cache-20260928/REPORT.md)); the inverse-dynamics data
+  engine is parked on VUH-1353.
 - **Two policies until perception names the same entities in both domains** (history, from the options design). The *range
   execution policy* runs on live `State`: green-outline detections with track ids, measured
   ranges, option status. The *VOD tactical policy* is learned from expert footage, where
