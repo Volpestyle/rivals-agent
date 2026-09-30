@@ -19,7 +19,7 @@ from pathlib import Path
 import time
 
 from . import loop as L
-from .controller import FRESH_S, NEUTRAL, RangeLost
+from .controller import FRESH_S, InputExpired, NEUTRAL, RangeLost
 from .learned_runner import LearnedRunner, ReplayIO, limit_cpu_threads
 
 
@@ -31,7 +31,7 @@ def eligible(detections, size):
             and .15 <= d.center[0] / w <= .85 and .1 <= d.center[1] / h <= .8]
 
 
-def open_bots(frame, boxes):
+def open_bots(frame, boxes, *, require_plate=True):
     """Reject door-glass marks; foliage elsewhere is not a spawn-room proof.
 
     Reuses arrival's measured .15 local lime-ring limit without its global lime
@@ -46,7 +46,7 @@ def open_bots(frame, boxes):
         bw, bh = x2 - x1, y2 - y1
         ring = mask[max(0, int(y1 - .25 * bh)):min(mask.shape[0], int(y2 + .25 * bh)),
                     max(0, int(x1 - .25 * bw)):min(mask.shape[1], int(x2 + .25 * bw))]
-        if d.plate is True and ring.size and ring.mean() < a.PLAZA_BOX_LIME:
+        if (not require_plate or d.plate is True) and ring.size and ring.mean() < a.PLAZA_BOX_LIME:
             result.append(d)
     return result
 
@@ -72,21 +72,43 @@ class ResetRunner(LearnedRunner):
     def visible(self, frame, boxes):
         return open_bots(frame, boxes)
 
+    def approach_targets(self, frame, detections):
+        # Small outlines may lack a readable plate. They permit bounded approach,
+        # never episode readiness. Reject glass locally, not unrelated foliage.
+        w, h = self.size
+        candidates = [d for d in detections if d.cls == 'enemy'
+                      and .03 <= d.height / h < .08
+                      and .15 <= d.center[0] / w <= .85 and .1 <= d.center[1] / h <= .8]
+        return open_bots(frame, candidates, require_plate=False)
+
     def pulse(self, pad, duration, validate=lambda f: True):
         end = min(self.now() + duration, self.deadline)
+        applied = False
         try:
             while self.now() < end:
                 frame, stamp = self.fresh()
                 if not validate(frame):
-                    return
+                    return applied
                 until = min(self.now() + .05, end)
                 if self.io.now() >= until or self.io.now() - stamp >= FRESH_S:
                     continue
-                self.send(pad, stamp, until)
+                try:
+                    self.send(pad, stamp, until)
+                except InputExpired as exc:
+                    # A short request can expire during actuator proof/lock wait.
+                    # Release, abandon this action, and let reset re-decide from
+                    # a new frame. Scope/proof failures remain fatal RangeLost.
+                    self.release()
+                    self.write({'event': 'reset_discard', 't': self.io.now(),
+                                'clause': 'input_expired', 'detail': str(exc),
+                                'frame_t': stamp, 'release_at': until}, frame)
+                    return applied
+                applied = True
                 self.write({'event': 'reset_send', 't': stamp, 'pad': pad, 'release_at': until}, frame)
                 self.sleep(max(0., until - self.io.now()))
+            return applied
         finally:
-            self.io.release()
+            self.release()
 
     def settle(self, seconds):
         self.io.release()
@@ -114,19 +136,21 @@ class ResetRunner(LearnedRunner):
                 doors = a.door_blobs(frame, a.SPAWN_DOOR_H)
                 detections = self.percept.wide(frame)
                 boxes = self.visible(frame, eligible(detections, self.size))
+                candidates = self.approach_targets(frame, detections)
                 # Finder processing must not freshen the capture timestamp.
                 if self.now() - stamp >= FRESH_S:
                     self.io.release()
                     count = 0
                     continue
                 if phase is None:
-                    phase = 'seek' if boxes or not doors else 'arrival'
-                    self.start_state = 'plaza' if boxes else 'spawn' if doors else 'other'
-                elif phase == 'seek' and self.start_state == 'other' and doors and not boxes:
+                    phase = 'seek' if boxes or candidates or not doors else 'arrival'
+                    self.start_state = 'plaza' if boxes or candidates else 'spawn' if doors else 'other'
+                elif phase == 'seek' and self.start_state == 'other' and doors and not boxes and not candidates:
                     phase = 'arrival'  # wall-facing respawn: a later turn found the door
                 count = count + 1 if boxes else 0
                 self.write({'event': 'reset_observation', 't': stamp, 'phase': phase,
-                            'eligible': len(boxes), 'ready_frames': count, 'door': bool(doors)}, frame)
+                            'eligible': len(boxes), 'approachable': len(candidates),
+                            'ready_frames': count, 'door': bool(doors)}, frame)
                 if count >= 3:
                     return {'result': 'ready', 'status': 'ready', 'reason': 'eligible_outlines',
                             'start_state': self.start_state, 'seconds': self.io.now() - started,
@@ -153,7 +177,11 @@ class ResetRunner(LearnedRunner):
                         def still_at_door(f):
                             blobs = a.door_blobs(f, a.SPAWN_DOOR_H)
                             return any(abs(x - a.HERO_X) <= a.DOOR_TOL for x, _ in blobs)
-                        self.pulse({**NEUTRAL, 'ly': 1.}, action[1], still_at_door)
+                        walked = self.pulse({**NEUTRAL, 'ly': 1.}, action[1], still_at_door)
+                        if not walked:
+                            memory.walked = False  # an expired request is not a failed physical walk
+                            if getattr(memory, 'walks', None):
+                                memory.walks.pop()
                     elif kind == 'strafe':
                         self.pulse({**NEUTRAL, 'lx': action[1]}, action[2])
                     else:
@@ -161,18 +189,12 @@ class ResetRunner(LearnedRunner):
                 else:
                     # Only approach a visible centered bot, never walk blind.
                     w, h = self.size
-                    candidates = [d for d in detections if d.cls == 'enemy'
-                                  and .03 <= d.height / h < .08
-                                  and .1 <= d.center[1] / h <= .8]
                     target = min(candidates, key=lambda d: abs(d.center[0] / w - .5), default=None)
-                    if target and abs(target.center[0] / w - .5) <= .05 and not doors:
+                    if target and abs(target.center[0] / w - .5) <= .05:
                         def still_small_centered(f):
-                            if a.door_blobs(f, a.SPAWN_DOOR_H):
-                                return False
                             ds = self.percept.wide(f)
-                            return any(d.cls == 'enemy' and .03 <= d.height / h < .08
-                                       and abs(d.center[0] / w - .5) <= .05
-                                       and .1 <= d.center[1] / h <= .8 for d in ds)
+                            return any(abs(d.center[0] / w - .5) <= .05
+                                       for d in self.approach_targets(f, ds))
                         self.pulse({**NEUTRAL, 'ly': .5}, .25, still_small_centered)
                     else:
                         error = target.center[0] / w - .5 if target else .5

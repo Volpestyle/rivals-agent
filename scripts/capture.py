@@ -2,6 +2,7 @@
 
 Usage: uv run --no-project --with dxcam --with opencv-python --with pillow python capture.py [dxcam|gdi] [secs]
        ... python capture.py preflight      # non-zero exit, loudly, when Desktop Duplication delivers no frames in 1 s
+       ... python capture.py preflight --min-fps 60 --attempts 3  # bounded learned/RL launch-rate check
   Benchmarks the backend for `secs` (default 5), prints measured fps, and writes
   one frame to capture-<backend>.jpg next to this file.
 
@@ -10,6 +11,7 @@ dxcam is the Desktop Duplication API; gdi is a plain GDI screen copy. Both are
 ordinary OS screen capture. If one is blocked, use the other; nothing here hooks
 the game.
 """
+import math
 import sys
 import time
 from pathlib import Path
@@ -72,19 +74,52 @@ def frames_in(secs=1.0, cam=None, clock=time.perf_counter):
     return frames, calls
 
 
-def preflight(secs=1.0, cam=None, clock=time.perf_counter):
-    frames, calls = frames_in(secs, cam, clock)
-    if frames == 0:
-        raise SystemExit(NO_FRAMES.format(secs=secs, calls=calls))   # exit status 1 with the message on stderr
-    print(f"capture preflight ok: {frames} dxcam frames in {secs:.0f} s")
-    return frames
+def preflight(secs=1.0, cam=None, clock=time.perf_counter, *, min_fps=0., attempts=1,
+              retry_s=.5, sleep=time.sleep):
+    """Optional launch-rate gate; three bounded measurement windows at most.
+
+    This reads pixels only. A passing count does not relax live frame-age checks.
+    Caller-supplied cameras stay caller-owned; our own duplicator is released.
+    """
+    if (not math.isfinite(secs) or secs <= 0 or not math.isfinite(min_fps) or min_fps < 0
+            or type(attempts) is not int or not 1 <= attempts <= 3
+            or not math.isfinite(retry_s) or not 0 <= retry_s <= 1):
+        raise ValueError('positive seconds, nonnegative min_fps, 1-3 attempts, retry_s in [0,1] required')
+    owned = cam is None
+    cam = Capture('dxcam') if owned else cam
+    try:
+        for attempt in range(1, attempts + 1):
+            started = clock()
+            frames, calls = frames_in(secs, cam, clock)
+            elapsed = clock() - started
+            fps = frames / elapsed if elapsed > 0 else 0.
+            if frames and fps >= min_fps:
+                print(f'capture preflight ok: {frames} dxcam frames in {elapsed:.3f} s '
+                      f'({fps:.1f} fps, attempt {attempt}/{attempts})')
+                return frames
+            print(f'capture preflight not ready: {frames} frames / {elapsed:.3f} s '
+                  f'= {fps:.1f} fps, need {min_fps:g}; attempt {attempt}/{attempts}')
+            if attempt < attempts:
+                sleep(retry_s)
+        if frames == 0:
+            raise SystemExit(NO_FRAMES.format(secs=elapsed, calls=calls))
+        raise SystemExit(f'capture preflight FAILED: {fps:.1f} fps < {min_fps:g} '
+                         f'after {attempts} attempts; do not start a run')
+    finally:
+        if owned and cam.backend == 'dxcam':
+            cam.cam.release()
 
 
 if __name__ == "__main__":
     import cv2
 
     if sys.argv[1:2] == ["preflight"]:
-        preflight()
+        import argparse
+        ap = argparse.ArgumentParser(description='Read-only dxcam launch preflight')
+        ap.add_argument('--min-fps', type=float, default=0.)
+        ap.add_argument('--attempts', type=int, default=1)
+        args = ap.parse_args(sys.argv[2:])
+        preflight(min_fps=args.min_fps, attempts=args.attempts)
         sys.exit(0)
     backend = sys.argv[1] if len(sys.argv) > 1 else "dxcam"
     secs = float(sys.argv[2]) if len(sys.argv) > 2 else 5.0

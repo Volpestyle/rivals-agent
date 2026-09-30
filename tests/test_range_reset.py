@@ -7,7 +7,7 @@ import pytest
 from agent import learned_runner as R
 from agent import loop as L
 from agent import range_reset as Q
-from agent.controller import NEUTRAL, RangeLost
+from agent.controller import InputExpired, NEUTRAL, RangeLost
 from agent.state import Detection
 
 
@@ -59,6 +59,7 @@ def setup(deadline=2.):
     runner = Q.ResetRunner(io, percept, guard, None, deadline, log=log,
                            sleep=lambda s: setattr(io, 't', io.t+s), arrival=arrival)
     runner.visible = lambda f, boxes: [] if f.door else boxes
+    runner.approach_targets = lambda f, ds: [] if f.door else [d for d in ds if .03 <= d.height / 720 < .08]
     return NS(io=io, flags=flags, safety=safety, runner=runner, rows=rows)
 
 
@@ -66,6 +67,7 @@ def factory(x):
     def make(*args, **kwargs):
         runner = Q.ResetRunner(*args, arrival=x.runner.arrival, **kwargs)
         runner.visible = x.runner.visible
+        runner.approach_targets = x.runner.approach_targets
         return runner
     return make
 
@@ -86,6 +88,60 @@ def test_spawn_door_prevents_ready_even_when_bot_visible_through_glass():
     assert result['start_state'] == 'spawn' and result['frames'] >= 4
     assert x.io.calls and all(p['ly'] == 1. for p, _ in x.io.calls)
     assert all(not p['buttons'] and p['rt'] == p['lt'] == p['rx'] == p['ry'] == 0 for p, _ in x.io.calls)
+
+
+def test_actuator_expiry_abandons_action_then_redecides_from_fresh_frame():
+    x = setup()
+    x.io.frame.door = True
+    send = x.io.send_guarded
+    attempts = []
+    def expire_first(pad, **limits):
+        attempts.append(x.io.t)
+        if len(attempts) == 1:
+            x.io.t = limits['not_after'] + .001
+            raise InputExpired('guarded input deadline expired at the actuator; input released')
+        send(pad, **limits)
+        x.io.frame.door = False
+    x.io.send_guarded = expire_first
+    result = x.runner.reset()
+    assert result['status'] == 'ready' and len(attempts) == 2
+    events = [r['event'] for r in x.rows]
+    dropped = events.index('reset_discard')
+    assert events[dropped + 1] == 'reset_observation'  # not a retry of expired command
+    assert x.rows[dropped + 1]['t'] > attempts[0]
+    assert len(x.io.calls) == 1 and x.io.releases >= 3
+
+
+def test_expired_walk_does_not_invent_arrival_stall_or_crossing_evidence():
+    x = setup(.4)
+    memory = NS(walked=False, walks=[])
+    x.runner.arrival.ArrivalMemory = lambda: memory
+    x.io.frame.door = True
+    def walk(*args, **kwargs):
+        assert not memory.walked and not memory.walks
+        memory.walked = True
+        memory.walks.append(20000)
+        return ('walk', .5, 'door')
+    x.runner.arrival.arrival_step = walk
+    def expire(pad, **limits):
+        x.io.t += .051
+        raise InputExpired('expired')
+    x.io.send_guarded = expire
+    with pytest.raises(RangeLost, match='deadline'):
+        x.runner.reset()
+    assert not x.io.calls
+
+
+@pytest.mark.parametrize('message', ['range proof stale at the actuator', 'hard scope deadline expired',
+                                   'Live is closed'])
+def test_actuator_scope_failures_are_not_retried(message):
+    x = setup()
+    def refuse(*args, **kwargs):
+        raise RangeLost(message)
+    x.io.send_guarded = refuse
+    with pytest.raises(RangeLost, match=message):
+        x.runner.pulse({**NEUTRAL, 'rx': .2}, .1)
+    assert not x.io.calls and not any(r['event'] == 'reset_discard' for r in x.rows)
 
 
 @pytest.mark.parametrize('fault', ['focus', 'takeover', 'range', 'idle'])
@@ -192,6 +248,26 @@ def test_native_spawn_glass_controls_and_plaza(name):
     size = frame.shape[1], frame.shape[0]
     boxes = Q.open_bots(frame, Q.eligible(find_enemies(frame, scale=size[0]/1280), size))
     assert bool(boxes) == (name == 'arrival-plaza-bot-ahead')
+    runner = Q.ResetRunner(None, None, None, None, 30.)
+    runner.size = size
+    assert not runner.approach_targets(frame, find_enemies(frame, scale=size[0]/1280))
+
+
+def test_sitting05_small_plaza_bot_is_approachable_not_ready_or_a_spawn_door():
+    cv2 = pytest.importorskip('cv2')
+    path = Path('data/calibration/rl-sitting-20260930-05/ep-000-bc/000002.jpg')
+    if not path.exists():
+        pytest.skip('authorized sitting05 frame is local')
+    frame = cv2.imread(str(path))
+    percept = L.default_perception()
+    runner = Q.ResetRunner(None, percept, None, None, 30.)
+    runner.size = percept.size(frame)
+    ds = percept.wide(frame)
+    assert runner.arrival.door_blobs(frame, runner.arrival.SPAWN_DOOR_H)  # foliage
+    assert not runner.visible(frame, Q.eligible(ds, runner.size))
+    targets = runner.approach_targets(frame, ds)
+    assert len(targets) == 1 and targets[0].plate is False
+    assert targets[0].center[0] > runner.size[0] / 2  # toward bot, not left foliage
 
 
 def test_native_galacta_plaza_foliage_does_not_count_as_spawn_door():
