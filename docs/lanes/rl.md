@@ -188,10 +188,24 @@ labels; then BC-policy rollouts in imagination with the KL anchor, checked again
 
 ## 6. Offline AWR step 0 on bc2 (2026-09-30, EXPLORATORY)
 
-**Result: the pipeline works and the shift points the right way, but it is tiny.** Advantage weighting raises the
-held-out likelihood of James's high-advantage steps relative to his low-advantage ones, on dev and on val, for both
-betas; the controls do not. BC metrics do not collapse. Effect size is ~0.01-0.04 nats with a rank correlation of
-~0.014 and no confidence interval yet, so this is a working step 0, not a better policy.
+**Result (corrected after 3 seeds with block-bootstrap intervals): no measurable held-out shift toward
+high-advantage behaviour. The pipeline works and BC metrics are preserved.** The single-seed run below first showed a
+small positive val shift (+0.011); seeds 0-2 with 95% intervals (10 s block bootstrap, `b4ec039`) show that was
+noise:
+
+| Arm | val gap, seeds 0 / 1 / 2 [95% CI] | dev gap, seeds 0 / 1 / 2 |
+|---|---|---|
+| awr | +0.007 [-0.023, +0.040] / -0.017 [-0.044, +0.011] / +0.007 [-0.021, +0.032] | +0.025 / +0.022 / +0.025 (one CI excludes 0) |
+| awr-hot | +0.009 / -0.017 / -0.001 (all CIs span 0) | +0.028 / +0.030 / +0.022 (all span 0) |
+| uniform | -0.002 / -0.007 / -0.001 | -0.001 / +0.012 / +0.017 |
+| shuffled | -0.009 / -0.009 / -0.005 | +0.003 / -0.020 / +0.005 |
+
+Dev leans positive for both AWR arms in all six runs, but dev is two sessions and the uniform control reaches +0.017
+there too. Across seeds, val press macro F1 stays 0.26-0.28 and yaw MAE 0.835-0.845 in every arm (bc2 0.267 / 0.845),
+and the value head's out-of-fold R² is 0.38-0.39 on train and 0.47 on val. Runs `step0-ci-s{0,1,2}` on
+`rivals-rl-awr-20260930`, ~$4.
+
+The first, single-seed run (kept for the record):
 
 Setup (`rl/awr.py`, `rl/awr_modal.py`, commit `3cb83f3`; run `step0-01` on one H100, ~17 min):
 - Base: policy's `bc2-dt-s1-hybrid` camera model, run `d-dt-bs8-s1` (sha256 `728dadbe…`, checked against the bundle).
@@ -227,7 +241,7 @@ his own better and worse actions; the value head explains under half of the retu
 offline, so AWR can only re-weight what James already did.
 
 Limits and next steps:
-1. **Uncertainty:** block bootstrap over runs, and 3 seeds. Neither is done yet.
+1. **Uncertainty:** done (above). The single-seed shift did not survive.
 2. **The live hybrid bundle takes its buttons from the incumbent NitroGen head, not bc2.** A button shift here only
    reaches play if policy adopts the Policy2 buttons, or if AWR is applied to the buttons head. Policy has a stronger
    base coming (hidden 1024, val yaw ~0.81, press F1 0.29-0.31); rerun on it.
