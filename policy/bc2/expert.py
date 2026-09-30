@@ -237,8 +237,19 @@ def pack(views_dir, *, batch=2000):
         np.save(views_dir / f"{name}.idx.npy", np.array(offsets, np.int64))
 
 
+def _decode_jpeg():
+    """bytes -> RGB uint8; OpenCV when installed, else Pillow (the Mac feature venv has no OpenCV)."""
+    try:
+        import cv2
+        return lambda b: cv2.imdecode(np.frombuffer(b, np.uint8), cv2.IMREAD_COLOR)[..., ::-1]
+    except ImportError:
+        import io
+        from PIL import Image
+        return lambda b: np.asarray(Image.open(io.BytesIO(b)).convert("RGB"))
+
+
 def unpack(views_dir, *, batch=2000):
-    import cv2
+    decode = _decode_jpeg()
     views_dir = Path(views_dir)
     for name, shape in (("global", GLOBAL), ("crop", CROP)):
         offsets = np.load(views_dir / f"{name}.idx.npy")
@@ -249,8 +260,7 @@ def unpack(views_dir, *, batch=2000):
                 e = min(n, s + batch)
                 src.seek(int(offsets[s]))
                 blob = src.read(int(offsets[e] - offsets[s]))
-                rows = [cv2.imdecode(np.frombuffer(blob[offsets[k] - offsets[s]:offsets[k + 1] - offsets[s]], np.uint8),
-                                     cv2.IMREAD_COLOR)[..., ::-1] for k in range(s, e)]
+                rows = [decode(blob[offsets[k] - offsets[s]:offsets[k + 1] - offsets[s]]) for k in range(s, e)]
                 out.write(s, np.stack(rows))
         out.close()
 
