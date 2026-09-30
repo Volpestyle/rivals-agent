@@ -65,14 +65,20 @@ def _rects(s):
 def run(ckpt, spans_path, work, *, video=None, shard=(0, 1), device="cuda", model=None, fast=False, workers=1):
     """Label each span not yet labelled. workers > 1 decodes that many spans at once in threads (ffmpeg
     subprocesses) while this process runs the model on the GPU: several processes sharing one GPU time-slice it
-    badly on Windows. At most workers + 2 decoded spans are held in memory."""
+    badly on Windows. At most workers + 2 decoded spans are held in memory.
+    Several label sets from one decode: ckpt 'a.pt,b.pt+c.pt' with model 'name-a,name-bc' (a '+' joins an
+    ensemble). Spans still missing the first set go first."""
     from collections import deque
     from concurrent.futures import ThreadPoolExecutor
     todo = [s for k, s in enumerate(spans(spans_path, video)) if k % shard[1] == shard[0]]
-    name = model or model_name(ckpt)
-    (Path(work) / name).mkdir(parents=True, exist_ok=True)
-    loaded = vod.load_any(ckpt, device)
-    todo = [s for s in todo if not span_file(work, name, s).exists()]
+    ckpts = str(ckpt).split(",")
+    names = model.split(",") if model else [model_name(c) for c in ckpts]
+    assert len(names) == len(ckpts), "one --model name per checkpoint"
+    sets = [(n, c, vod.load_any(c, device)) for n, c in zip(names, ckpts)]
+    for n, _, _ in sets:
+        (Path(work) / n).mkdir(parents=True, exist_ok=True)
+    todo = [s for s in todo if any(not span_file(work, n, s).exists() for n, _, _ in sets)]
+    todo.sort(key=lambda s: span_file(work, names[0], s).exists())
     done, checked, t_last = 0, 0.0, time.time()
 
     def prep(s):
@@ -96,15 +102,18 @@ def run(ckpt, spans_path, work, *, video=None, shard=(0, 1), device="cuda", mode
             if not queue:
                 break
             s, fut = queue.popleft()
-            out = span_file(work, name, s)
             prepared = fut.result()
             try:
                 if isinstance(prepared, Exception):
                     raise prepared
-                n = vod.label_file(ckpt, s["local_path"], str(out) + ".tmp.npz", start=s["start_s"],
-                                   end=s["end_s"], rects=_rects(s), device=device, span_id=s["span_id"],
-                                   loaded=loaded, fast=fast, prepared=prepared)
-                Path(str(out) + ".tmp.npz").replace(out)
+                for name, c, loaded in sets:
+                    out = span_file(work, name, s)
+                    if out.exists():
+                        continue
+                    n = vod.label_file(c, s["local_path"], str(out) + ".tmp.npz", start=s["start_s"],
+                                       end=s["end_s"], rects=_rects(s), device=device, span_id=s["span_id"],
+                                       loaded=loaded, fast=fast, prepared=prepared)
+                    Path(str(out) + ".tmp.npz").replace(out)
             except Exception as e:                                      # one bad span must not stop the batch
                 print(json.dumps({"event": "span_failed", "span": s["span_id"], "error": str(e)[:300]}),
                       flush=True)

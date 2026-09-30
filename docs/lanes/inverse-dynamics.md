@@ -77,6 +77,24 @@ Held-at-end F1 at 0.5 (-11 / -12):
 v2-a is the labeller, because camera matters most to `policy`. v2-b's gains on buttons and holds point at a longer
 window for the button heads next. Scores: `D:/rivals-agent-evidence/idm-vod-domain-20260930/v2a-vs-full03-scores.json`.
 
+**v2-c and v2-d, and ensembles.** Both use wider channels (64-128-192-256) and 16 epochs; v2-c has a +-8 window and
+v2-d +-12. Same data and val as v2-a, on Modal H100s (about 70 min each). Held-out originals, moving MAE in
+deg/interval, with press F1 (jump / combo / cluster) and held F1 (fwd / left / right / back / swing / fire):
+
+| Model | -11 yaw / pitch | -12 yaw / pitch | -11 press | -12 press | -12 held |
+|---|---|---|---|---|---|
+| full03 | 0.631 / 0.783 | 0.669 / 0.750 | .48 .56 .44 | .51 .43 .51 | none |
+| v2-a | 0.512 / 0.578 | 0.552 / 0.585 | .67 .85 .50 | .68 .52 .57 | .74 .53 .56 .14 .64 .36 |
+| v2-c | 0.518 / 0.550 | 0.528 / 0.549 | .71 .78 .66 | .70 .64 .68 | .77 .58 .60 .22 .87 .55 |
+| v2-d | 0.508 / 0.542 | 0.538 / 0.544 | .68 .76 .70 | .70 .59 .68 | .77 .60 .64 .28 .84 .48 |
+| **v2-cd** (mean of c, d) | **0.495 / 0.531** | **0.514 / 0.532** | .67 .74 .66 | .71 .62 .68 | .78 .59 .64 .23 .88 .52 |
+| a+c+d | 0.487 / 0.538 | 0.515 / 0.542 | .66 .74 .61 | .69 .54 .64 | |
+| a+b+c+d | 0.490 / 0.542 | 0.520 / 0.545 | .67 .81 .59 | .68 .54 .61 | |
+
+v2-cd is the labels-v2 model. It beats full03 by 22-23 % on moving yaw and 29-32 % on moving pitch; `policy.idm.vod`
+accepts `c.pt+d.pt` as an ensemble. Combo F1 on -11 rests on 22 presses. Scores:
+`D:/rivals-agent-evidence/idm-vod-domain-20260930/v2-variants-scores.json`.
+
 ### Expert-footage labels (agreed with `policy`, 2026-09-30)
 
 Format: policy's REPLAY step table (`policy/range_bc/steps.py`, `source_kind: "replay"`, split `"replay"`), written by
