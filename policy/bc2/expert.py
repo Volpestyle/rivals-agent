@@ -37,7 +37,10 @@ def load_labels(path):
     return steps.Session(str(path), steps.sha256(path), header, rows)
 
 
-def decode_rows(video, rows, threads=4):
+DECODE_THREADS = int(__import__("os").environ.get("POLICY_DECODE_THREADS", "4"))   # per decoder; cap on shared hosts
+
+
+def decode_rows(video, rows, threads=DECODE_THREADS):
     """Yield (row index, BGR ndarray) for each row's frame, matched by pts, one seek per run."""
     import av
     runs = {}
@@ -63,7 +66,7 @@ def decode_rows(video, rows, threads=4):
                 raise ValueError(f"{len(want)} row frames not found in {video} (run {rows[ks[0]]['run']})")
 
 
-def decode_rows_from_clips(clip_root, rows, threads=4):
+def decode_rows_from_clips(clip_root, rows, threads=DECODE_THREADS):
     """Like decode_rows, from the idm lane's per-span clips (<clip_root>/<video>/<video>_<start>-<end>.mkv, stream
     copies with the original timestamps). A row matches the clip frame within 1 ms of its frame time."""
     import av
