@@ -99,6 +99,28 @@ Live caveat: the motion input assumes about 33 ms between consecutive frames. A 
 motion per step, which a closed loop could amplify. Callers reset() after gaps. The next fit trains with
 frame-interval jitter and an interval input.
 
+### Onset is a decode problem; frame-interval input (2026-09-30)
+
+At turn onsets the camera distribution leans the right way, but its median sits on zero. The expectation (mean)
+decode commits to the likelier side. On clean val, same checkpoints and 1,166 onsets:
+
+| Decode | Onset sign | Yaw MAE | Moving sign | Still false turn |
+|---|---:|---:|---:|---:|
+| median (bs8 control `d-bs8-s0`) | 53.5% | 0.825 | 89.3% | 8.3% |
+| mean (same checkpoint) | 77.1% | 0.818 | 93.5% | 11.2% |
+| mean, frame-interval models, seeds 0-2 | 75.2-76.5% | 0.828-0.836 | 93.5-93.7% | 8.9-10.0% |
+| mean, incumbent | 63.2% | 1.883 | 69.1% | 39.6% |
+
+On dev the mean decode gives 70% onset sign. The incumbent's 63% shows this decode's chance line is above 50%;
+bc2 is 14 points over it with a quarter of the false turns. Under the median, the steps where the model nudges at
+all (|pred| >= 0.05, about 60% of onsets) have the right sign 81-85% of the time.
+
+Frame-interval input (`Config.use_dt`): a training window samples every k-th step (k = 1, 2, 3 with probability
+.6/.25/.15, i.e. 30/15/10 Hz) and k is an input next to the phase-correlation shifts. `LivePolicy.step(frame, t)`
+passes the measured interval, clamped to 1-3 steps; after 0.5 s it passes no motion. Val cost: yaw 0.845 vs 0.825,
+press F1 0.25-0.27. Bundles `bc2-dt-s1` and `bc2-dt-s1-hybrid` (checkpoint `d-dt-bs8-s1`) set
+`camera_decode: mean` in bundle.json. They run p50 34-35 ms / p95 38-41 ms.
+
 # Policy: the learned chooser (steps 1-3)
 
 **Status (2026-09-29): HISTORY.** The MLX chooser and the VUH-1311 offline consumer (`policy/behaviour.py`); this part stays their record.
