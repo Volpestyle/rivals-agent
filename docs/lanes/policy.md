@@ -273,6 +273,14 @@ the retained live frames. At p = 0.3 hold is 0.041, turn 0.045 and max press 0.3
 F1 to 0.405 (mix399 0.346). The likely limit is that the scene around a blanked span still shows James in
 action, whereas live the whole scene is idle standing, a state absent from the data.
 
+Static-input augmentation (`train.batch(static_aug=)`: over a random span, freeze the whole input to the span's
+first frame, with zero motion, while the targets stay James's real actions; grid l, i3 cohort, seed 0, DayMR camera
+and swapped-slot presses masked, about $1.3) also fails its keep criterion, on one of four conditions. On the
+retained live frames hold rises to 0.178 (needs 0.3) and turn to 0.465 (needs 0.2, passes). Val yaw is 0.754 and
+press F1 0.369 (both pass); dev yaw 0.772, F1 0.342. The run is discarded. Freezing the whole input moves the camera
+side from a static start; hold probabilities stay below the per-action thresholds. James's start-from-still
+recordings (recipe with the lead) target the missing state directly.
+
 Latency (`LivePolicy` CUDA graph, `74ebd74`): the whole bc2 step replays as one graph, with outputs identical to
 eager. Under idm's ~60% GPU load, p50/p95 fall from 54.7/63.2 ms to 21.6/33.9 ms; with a saturating matmul
 load as well, from 75.9/89.1 to 41.0/45.2 ms.
