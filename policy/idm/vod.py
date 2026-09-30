@@ -372,13 +372,18 @@ def label_span(model, video, start, end, *, rects=(), device="cuda", batch=32, c
     W = model.config.window
     ks = list(range(W, len(pts) - W))
     probs, cams, helds, answers = [], [], [], []
+    # windows are gathered on the CPU as uint8 and converted to float on the device (building float32 windows on the
+    # CPU was the labeller's bottleneck; keeping whole spans on the GPU filled it when several labellers shared it)
+    offs = np.arange(-W, W + 1)
     for s in range(0, len(ks), batch):
-        idx = ks[s:s + batch]
-        w = np.stack([grey[k - W:k + W + 1] for k in idx]).astype(np.float32) / 255.0
-        m = w if raw else np.diff(w, axis=1)
-        h = np.stack([np.concatenate([hud[k - 1], hud[k]], axis=2).transpose(2, 0, 1) for k in idx])
-        with torch.no_grad():
-            out = model(torch.from_numpy(m).to(device), torch.from_numpy(h.astype(np.float32) / 255.0).to(device))
+        idx = np.asarray(ks[s:s + batch])
+        w = torch.from_numpy(grey[idx[:, None] + offs[None]]).to(device).float().div_(255.0)
+        m = w if raw else w[:, 1:] - w[:, :-1]
+        h = torch.from_numpy(np.concatenate([hud[idx - 1], hud[idx]], axis=-1)).to(device)
+        h = h.permute(0, 3, 1, 2).float().div_(255.0)
+        with torch.no_grad(), torch.autocast(device_type="cuda", dtype=torch.bfloat16,
+                                             enabled=str(device).startswith("cuda")):   # v2 trained under bf16
+            out = model(m, h)
         probs.append(torch.sigmoid(out[0]).float().cpu().numpy())
         cams.append(out[1].float().cpu().numpy())
         if len(out) > 2:
