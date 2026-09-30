@@ -17,11 +17,14 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     ap.add_argument("--explore-temp", type=float, default=0.0)
     ap.add_argument("--explore-seed", type=int, default=0)
+    ap.add_argument("--option-rate", type=float, default=0.0, help="exploration options started per second [0, 2]")
     ap.add_argument("runner_args", nargs=argparse.REMAINDER)
     a = ap.parse_args(argv)
     rest = a.runner_args[1:] if a.runner_args[:1] == ["--"] else a.runner_args
     if not math.isfinite(a.explore_temp) or not 0 <= a.explore_temp <= 2:
         ap.error("explore-temp must be in [0, 2]")
+    if not math.isfinite(a.option_rate) or not 0 <= a.option_rate <= 2:
+        ap.error("option-rate must be in [0, 2]")
     if "--out" not in rest:
         ap.error("the learned runner's --out is required")
     log_path = Path(rest[rest.index("--out") + 1] + ".explore.jsonl")
@@ -34,7 +37,7 @@ def main(argv=None):
 
     def exploring(*args, **kwargs):
         return ExploringPolicy(base_cls(*args, **kwargs), temperature=a.explore_temp, seed=a.explore_seed,
-                               log_path=log_path)
+                               log_path=log_path, option_rate_hz=a.option_rate)
 
     live_policy.LivePolicy = exploring        # learned_runner imports LivePolicy inside main(); nothing else changes
     try:

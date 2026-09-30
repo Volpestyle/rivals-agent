@@ -164,3 +164,33 @@ def test_curve_plot_falls_back_to_cv2(tmp_path):
     curve = [{"episode": 0, "arm": "bc", "kos_per_min": 2.}, {"episode": 1, "arm": "rl", "kos_per_min": 3.}]
     sitting._plot_cv2(curve, tmp_path / "c.png")
     assert (tmp_path / "c.png").stat().st_size > 1000
+
+
+def test_options_hold_one_live_action_for_a_bounded_time():
+    base = FakeBase(.01)                    # an idle policy: nothing fires on its own
+    base.reset()
+    pol = explore.ExploringPolicy(base, temperature=0., seed=4, option_rate_hz=1.0)
+    pol.reset()
+    runs, current, length, masked = [], None, 0, 0
+    for k in range(3000):                   # 100 s at 30 Hz
+        s = pol.step(None, t=k / 30)
+        on = [n for n, v in s.held.items() if v]
+        assert len(on) <= 1
+        masked += s.held["ultimate"] or s.held["team_up"]
+        name = on[0] if on else None
+        if name == current and name is not None:
+            length += 1
+        else:
+            if current is not None:
+                runs.append(length)
+            current, length = name, 1 if name else 0
+    assert masked == 0
+    assert 40 <= len(runs) <= 110           # ~1 option/s, each lasting 0.2-0.8 s, over 100 s
+    assert max(runs) <= .8 * 30 + 1 and min(runs) >= 1
+
+
+def test_no_options_and_zero_temperature_is_still_the_plain_decode():
+    base = FakeBase(.8)
+    pol = explore.ExploringPolicy(base, temperature=0., option_rate_hz=0.)
+    pol.reset()
+    assert pol.step(None, t=0.).held == base.step(None).held

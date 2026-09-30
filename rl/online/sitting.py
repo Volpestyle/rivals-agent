@@ -32,9 +32,9 @@ def episode_command(a, index, arm, bundle, out):
         runner = ["--live", "--game-pid", str(a.game_pid), "--camera-settings-match", a.camera_settings_match] + runner
     else:
         runner = ["--dry", str(a.dry), "--async-policy"] + runner
-    temp = a.explore_temp if arm == "rl" else 0.
-    return [sys.executable, "-m", "rl.online.episode", "--explore-temp", str(temp), "--explore-seed", str(index),
-            "--"] + runner
+    temp, rate = (a.explore_temp, a.option_rate) if arm == "rl" else (0., 0.)
+    return [sys.executable, "-m", "rl.online.episode", "--explore-temp", str(temp), "--option-rate", str(rate),
+            "--explore-seed", str(index), "--"] + runner
 
 
 def plot(curve, path):
@@ -92,7 +92,8 @@ def main(argv=None):
     ap.add_argument("--camera-settings-match")
     ap.add_argument("--yaw-scale", type=float, default=0.)
     ap.add_argument("--decision-hz", type=float, default=15.)
-    ap.add_argument("--explore-temp", type=float, default=.5)
+    ap.add_argument("--explore-temp", type=float, default=1.)
+    ap.add_argument("--option-rate", type=float, default=.5, help="RL arm only: exploration options per second")
     ap.add_argument("--beta", type=float, default=1.)
     ap.add_argument("--kl", type=float, default=1.)
     ap.add_argument("--update-steps", type=int, default=40)
