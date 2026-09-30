@@ -345,3 +345,43 @@ Code `rl/online/` (tests `tests/test_rl_online.py`, 9 passing). Launch: `rl/onli
   convergence.
 - Hit-count shaping is uncapped per episode here; the §3 cap of 20 per 20 s encounter is rarely reached at the
   agent's current rates.
+
+### 7b. First live RL sitting, rl-sitting-20260930-01 (2026-09-30, plumbing run)
+
+Six 20 s episodes, BC and RL alternating, on `bc2-mix399-s0` (launched by the operator at ~15:08 CDT; OBS
+`2026-09-30 14-59-59.mkv`). It stopped at episode 5 on `range_lost`: a fall into the water. James walked Spider-Man
+back from the spawn room by hand between episodes. No takeover landed inside an attached episode: every stop was
+deadline or range_lost.
+
+Corrected per-episode record (`rl/out/rl-sitting-20260930-01/episodes.json`, chart `hits_by_episode.png`, clip
+`rl_sitting01_events.mp4` / `.gif` of the real hit and the fall):
+
+| Episode | Arm | Bundle | Hits | KOs | Death | Update KL to BC after |
+|---|---|---|---|---|---|---|
+| 0 | BC | base | 0 | 0 | – | – |
+| 1 | RL | base | 1 | 0 | – | 0.37 |
+| 2 | BC | base | 0 | 0 | – | – |
+| 3 | RL | rl-001 | 0 | 0 | – | 0.42 |
+| 4 | BC | base | 0 | 0 | – | – |
+| 5 | RL | rl-003 | 0 | 0 | fall (hp 0 on pixels) | 0.46 |
+
+Three reward-reading faults, found in this sitting and fixed:
+1. **Guard frames were never read** (`a5376d2`). The runner also retains frames on guard rows, about a third of all
+   retained frames. Episode 1's hit was only on guard frame 000086, so it originally scored 0.
+2. **The fall was never scored** (`719ed47`). The death screen drops the HUD, and the only HP-0 reads are the last
+   retained frame and `stop.png`, which was not read. Both are read now: hp 0 on 000053.jpg and stop.png.
+3. **Three false hits** (`e52784f`): water foam in the fall and web-cluster impact splashes at the crosshair, frames
+   James's footage never had. The rule is now 10 px strokes, not 6. On the 900 labelled frames precision stays 1.00
+   and recall goes 0.981 to 0.969 (faded tails only). The live updates in this sitting learned from those false hits,
+   so this sitting is a plumbing run only.
+
+Changes for the next sitting:
+- **Resets.** Live-loop's integrated `--reset-before --settle-s 1.5` (`c45aa3e`) is wired in `sitting.py --reset`:
+  a guarded walk out of the spawn room and approach until eligible outlines are in view, then a neutral settle, inside
+  the runner's 60 s cap. A `range_lost` continues the sitting only with a pixel-confirmed death. A reset that is not
+  ready, and every other stop, end it. Dry-tested end to end on ReplayIO (reset ready on 3 frames, policy-phase
+  frames only).
+- **Camera exploration** (`719ed47`, `a2fda38`). Camera classes are sampled from the policy's distribution
+  (`--cam-temp`), and turn options yaw toward the nearest enemy outline (`--turn-rate`); the safety read passed
+  after one fix. The base policy's camera distribution is peaked near zero (executed |yaw| 0.008 deg in a dry run at
+  T = 1), so aiming exploration rests mainly on the turn options.

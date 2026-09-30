@@ -1,0 +1,68 @@
+[
+ {
+  "episode": 0,
+  "arm": "bc",
+  "hits": 0,
+  "kos": 0,
+  "death": 0,
+  "seconds": 19.58,
+  "result": "deadline",
+  "kl_after_update": null,
+  "bundle": "bc2-mix399-s0"
+ },
+ {
+  "episode": 1,
+  "arm": "rl",
+  "hits": 1,
+  "kos": 0,
+  "death": 0,
+  "seconds": 19.63,
+  "result": "deadline",
+  "kl_after_update": 0.3694557845592499,
+  "bundle": "bc2-mix399-s0"
+ },
+ {
+  "episode": 2,
+  "arm": "bc",
+  "hits": 0,
+  "kos": 0,
+  "death": 0,
+  "seconds": 19.63,
+  "result": "deadline",
+  "kl_after_update": null,
+  "bundle": "bc2-mix399-s0"
+ },
+ {
+  "episode": 3,
+  "arm": "rl",
+  "hits": 0,
+  "kos": 0,
+  "death": 0,
+  "seconds": 19.53,
+  "result": "deadline",
+  "kl_after_update": 0.4153198003768921,
+  "bundle": "rl-001"
+ },
+ {
+  "episode": 4,
+  "arm": "bc",
+  "hits": 0,
+  "kos": 0,
+  "death": 0,
+  "seconds": 19.68,
+  "result": "deadline",
+  "kl_after_update": null,
+  "bundle": "bc2-mix399-s0"
+ },
+ {
+  "episode": 5,
+  "arm": "rl",
+  "hits": 0,
+  "kos": 0,
+  "death": 1,
+  "seconds": 8.25,
+  "result": "range_lost",
+  "kl_after_update": 0.456802636384964,
+  "bundle": "rl-003"
+ }
+]
