@@ -52,6 +52,8 @@ def catalogue(root):
         review = json.loads(review_path.read_text()) if review_path.exists() else {}
         if review.get("media_path_override"):
             media = Path(review["media_path_override"])
+            if sid not in media.name:
+                raise ValueError("review media override names a different source")
         complete = media.exists() and not media.with_name(media.stem + ".temp" + media.suffix).exists() \
             and not media.with_suffix(media.suffix + ".part").exists()
         probe = {}
@@ -357,7 +359,9 @@ def refresh(root):
         if not meta or not meta["download_complete"]:
             continue
         review = meta["review"]
-        if not review.get("spot_check_pass"):
+        version = result.get("classifier_version", "v2_or_sparse")
+        if (not review.get("spot_check_pass")
+                or review.get("approved_classifier_version", version) != version):
             (root / "manifests" / f"{result['source_id']}.manifest.jsonl").unlink(missing_ok=True)
             continue
         spans = exclude_review_intervals(result["spans"], review.get("exclude_intervals", []))

@@ -48,9 +48,9 @@ balance patch. Do not silently promote that estimate into manifest provenance.
 | ReqMR | James's pick; longstanding Spider-Man main with rank-1 upload claims | [Rank-1 upload](https://www.youtube.com/watch?v=ruW9Dr_1waQ); not independent leaderboard verification |
 | Necros | Well-known Spider-Man main; own channel claims rank 1 and documents tournament gameplay | [Tournament upload](https://www.youtube.com/watch?v=Wx-ncoUWmXg) and [broadcast channel](https://www.twitch.tv/necros); current rank unverified |
 | Simii_exe | Well-known Spider-Man main; current broadcast titles claim rank 1 Spider-Man | [Creator archives](https://www.twitch.tv/simii_exe/videos); leaderboard claim unverified |
-| Jit (jitnoward) | Spider-Man main; titles claim rank 1 world and two MRC championships | [Creator archives](https://www.twitch.tv/jitnoward/videos); claims unverified independently, rerun-titled sources excluded |
+| Jit (jitnoward) | Candidate elite flex player; titles claim rank 1 world and two MRC championships | [Creator archives](https://www.twitch.tv/jitnoward/videos); claims unverified independently. Inspected sources mostly contain other heroes/watchparty footage; none admitted |
 
-Twitch exposes 1080p60 for all three selected sources. YouTube metadata discovery
+Twitch exposes 1080p60 for the admitted creators. YouTube metadata discovery
 works, but the first media probe returned a sign-in/bot check; Twitch supplied
 full broadcasts without browser or account changes. No bypass was attempted.
 
@@ -254,3 +254,37 @@ empty fragment. Subsequent reference extraction uses a full temporary public
 download and local seek, the same path that already decoded successfully. The
 completed v3 sources remain usable while v4 is checked; a rescreen is not
 automatically promoted over an inspected result.
+
+### Consumer delivery and admission safeguards
+
+The completed 20-hour target is recorded in
+`D:/rivals-expert-footage/README.md` and `totals.json`; the consumer reads
+`idm-spans.jsonl` through the existing junction. Source grouping remains by
+whole video. The retained source mix includes Day, Req, Necros and Simii;
+Jit's inspected mixed-hero/watchparty sources remain withheld. The only
+publishable visual is the counts-only `metrics/corpus-progress.png`; private
+native review sheets and all third-party clips stay local.
+
+Each classifier generation needs its own approval. Refresh withholds a
+rescreen whose version differs from `approved_classifier_version`, and removes
+its generated manifest to prevent a stale consumer bypass. An integration test
+exercises that path without opening the corpus. A media-path override must name
+its own video ID, preventing copied review fields from pointing at another
+broadcast. Mask fields are copied explicitly, never the entire review.
+
+Native checks found brief scoreboard taps in three new sources. Their whole
+touching spans are removed by review intervals; twelve additional retained
+midpoints per affected source then showed Spider-Man player POV with HUD.
+Simii `2887257689` also admitted a Phoenix killcam: its portrait and ability
+checks produced a false positive, and the existing banner reader did not
+recognize the current banner placement. That entire source remains withheld,
+rather than treating its candidate hours as delivered. This is a demonstrated
+limitation of v4, alongside the known sub-500ms sampling limit. Spot checks do
+not establish every-frame purity; downstream IDM should preserve these
+limitations and treat uncertain transitions conservatively.
+
+All footage Modal apps were observed stopped with zero tasks after the final
+cohorts completed. They used ephemeral CPU containers only, with bounded
+timeouts and no persistent volume. A local `metrics/cloud-usage.json` records
+the app IDs and resource estimates for the lead's spend ledger; exact billed
+usage is not exposed by the CLI used here. No PC GPU was used for this corpus.

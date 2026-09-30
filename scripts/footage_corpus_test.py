@@ -1,11 +1,29 @@
 """Offline regression checks for expert span boundaries; no corpus is opened."""
 import unittest
 from io import BytesIO
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from unittest.mock import patch
 
-from scripts.footage_corpus import exclude_review_intervals, jpeg_frames, spans_from_reads
+from scripts.footage_corpus import exclude_review_intervals, jpeg_frames, refresh, spans_from_reads, write_json
 
 
 class SpanTests(unittest.TestCase):
+    def test_unreviewed_rescan_cannot_publish_or_leave_stale_manifest(self):
+        with TemporaryDirectory() as folder:
+            root = Path(folder)
+            write_json(root / "spans/source.json", dict(source_id="source", classifier_version="v3"))
+            (root / "manifests").mkdir()
+            stale = root / "manifests/source.manifest.jsonl"
+            stale.write_text("previous generation")
+            meta = dict(source_id="source", download_complete=True, duration_s=10,
+                        review=dict(spot_check_pass=True, approved_classifier_version="v4"))
+            with patch("scripts.footage_corpus.catalogue", return_value=[meta]):
+                totals = refresh(root)
+            self.assertEqual(totals["usable_spans"], 0)
+            self.assertEqual((root / "idm-spans.jsonl").read_text(), "")
+            self.assertFalse(stale.exists())
+
     def test_non_player_watchparty_interval_withholds_touching_spans(self):
         spans = [dict(start_s=a, end_s=b) for a, b in [(0, 10), (10, 20), (21, 30)]]
         kept = exclude_review_intervals(spans, [dict(start_s=10, end_s=25)])
