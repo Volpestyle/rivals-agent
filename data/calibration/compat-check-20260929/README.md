@@ -57,6 +57,8 @@ record and VUH-1319, linking the retained run evidence.
    Confirm controller sensitivity H/V **247/124**, with the measured profile's
    other settings unchanged. Tell the lead if any settings changed; do not
    silently declare a match. This tool neither navigates menus nor changes settings.
+   **For learned-policy and online-RL runs, cap the game at 120 FPS** (James, 2026-09-30). The cap frees GPU
+   headroom for inference with no visual change; resolution stays 2560x1440.
 2. Put bots in view. The actual sequence needs a visible bot left of the
    crosshair, then a visible bot to the right after the first alignment.
    The LEFT target must sit outside the measured hero-region exclusion:
