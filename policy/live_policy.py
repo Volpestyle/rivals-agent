@@ -1,0 +1,245 @@
+"""Live learned policy: native BGR frames in, semantic actions plus camera degrees out.
+
+One call per decision. The model is recurrent and was trained at 30 Hz (one step = 1/30 s), so call `step` once per
+captured frame at about that rate and `reset()` whenever the episode restarts. No capture, pad or game IO happens
+here: the caller owns every live guard and turns `Step` into pad input (camera degrees through the camera map).
+
+A bundle is a directory with `bundle.json` naming its files (see `write_bundle`). The first bundle is the confirmed
+NitroGen-tower no-history policy (docs/lanes/policy.md): offline press F1 0.30, yaw worse than zero motion.
+Decision latency on the RTX 4080 SUPER with torch preprocessing: p50 25 ms, p95 31 ms.
+
+    from policy.live_policy import LivePolicy
+    policy = LivePolicy("D:/rivals-policy/bundles/ng-nohist-s1", device="cuda")
+    step = policy.step(frame_bgr)          # uint8 HxWx3 BGR, the desktop capture
+    step.held["jump"], step.yaw_deg, step.pitch_deg, step.yaw_deg_s
+"""
+from dataclasses import asdict, dataclass
+import hashlib
+import json
+from pathlib import Path
+import time
+
+STEP_S = 1 / 30
+TRAIN_SIZE = (2560, 1440)       # every admitted recording; the crop view is 256x256 native pixels at this size
+
+
+@dataclass
+class Step:
+    """One decision. Actions are semantic (policy.range_bc.vocab.NAMES); only `live` actions are ever set.
+
+    held: the action should be held down during this step. press/release: edges this step (a tap is press and
+    release in one step, with held False; hold it for one step). yaw_deg/pitch_deg: requested rotation over this
+    step, yaw positive right, pitch positive DOWN; *_deg_s is the same as a rate. probs: raw (hold, press, release)
+    probabilities. latency_ms: preprocessing + model on this call."""
+    held: dict
+    press: dict
+    release: dict
+    yaw_deg: float
+    pitch_deg: float
+    yaw_deg_s: float
+    pitch_deg_s: float
+    probs: dict
+    latency_ms: float
+    index: int
+
+    def as_dict(self):
+        return asdict(self)
+
+
+def _sha256(path):
+    h = hashlib.sha256()
+    with Path(path).open("rb") as stream:
+        for block in iter(lambda: stream.read(1 << 20), b""):
+            h.update(block)
+    return h.hexdigest()
+
+
+def write_bundle(directory, *, checkpoint, vision, vision_config, evaluation, name, notes=""):
+    """Record a bundle's files, hashes, TRAIN-chosen thresholds and live action mask in bundle.json."""
+    from policy.range_bc import vocab
+    directory = Path(directory)
+    evaluation_data = json.loads((directory / evaluation).read_text())
+    calibration = evaluation_data["threshold_calibration"]["actions"]
+    bundle = {"format": "rivals-live-policy-bundle-v1", "name": name, "kind": "encoder_h1", "notes": notes,
+              "step_s": STEP_S, "train_size": list(TRAIN_SIZE), "actions": list(vocab.NAMES),
+              "files": {}, "thresholds": {n: calibration[n]["threshold"] for n in vocab.NAMES},
+              "live": {n: bool(calibration[n]["live"]) for n in vocab.NAMES}}
+    for key, file in (("checkpoint", checkpoint), ("vision", vision), ("vision_config", vision_config),
+                      ("evaluation", evaluation)):
+        bundle["files"][key] = {"path": file, "sha256": _sha256(directory / file)}
+    (directory / "bundle.json").write_text(json.dumps(bundle, indent=2) + "\n")
+    return bundle
+
+
+def load_encoder_checkpoint(path, sha256):
+    """An H1 encoder-head checkpoint (EXPLORATORY or CONFIRM tag) from the chunk trainer."""
+    import torch
+    from policy.range_bc.explore_chunks_train import FORMAT
+    from policy.range_bc.explore_encoder import EncoderPolicy
+    from policy.range_bc.model import Config
+    if _sha256(path) != sha256:
+        raise ValueError(f"{path}: checkpoint hash differs from bundle.json")
+    payload = torch.load(path, map_location="cpu", weights_only=True, mmap=True)
+    recipe = payload["recipe"]
+    if payload["format"] != FORMAT or recipe["horizon"] != 1:
+        raise ValueError("expected an H1 range-chunks checkpoint")
+    model = EncoderPolicy(Config.from_dict(recipe["config"]), horizon=1)
+    model.load_state_dict(payload["model"], strict=True)
+    return model.eval(), recipe
+
+
+class LivePolicy:
+    def __init__(self, bundle_dir, *, device="cuda", thresholds="train", resize=True, preprocess="torch"):
+        """thresholds: "train" (per-action, TRAIN-calibrated to human press counts) or a float for all actions.
+        resize: scale frames that are not 2560x1440 to it (area) first, so the crop view keeps its training field
+        of view. Otherwise a different size is refused.
+        preprocess: "torch" computes the cache views on the model's device (area scaling is exact average pooling
+        at 2560x1440, so it stays off the CPU the game needs); "ffmpeg" runs the exact cache graph on the CPU."""
+        from policy.range_bc import vocab
+        from policy.range_bc.live_inference import EncoderPredictor, InProcessCachePreprocessor
+        root = Path(bundle_dir)
+        self.bundle = json.loads((root / "bundle.json").read_text())
+        files = {k: (root / v["path"], v["sha256"]) for k, v in self.bundle["files"].items()}
+        model, self.recipe = load_encoder_checkpoint(*files["checkpoint"])
+        # Training cache frames were full-range RGB decoded from YUV; the capture is already full-range BGR.
+        if preprocess not in ("torch", "ffmpeg"):
+            raise ValueError("preprocess is torch or ffmpeg")
+        self.preprocess = preprocess
+        self.predict = EncoderPredictor(model, InProcessCachePreprocessor(compact_bgr=True) if preprocess == "ffmpeg"
+                                        else None, vision_path=files["vision"][0],
+                                        vision_sha256=files["vision"][1], config_path=files["vision_config"][0],
+                                        config_sha256=files["vision_config"][1], device=device)
+        self.names = vocab.NAMES
+        self.mask = tuple(bool(self.bundle["live"][n]) for n in self.names)
+        self.levels = tuple(float(self.bundle["thresholds"][n]) if thresholds == "train" else float(thresholds)
+                            for n in self.names)
+        self.resize, self.device = resize, device
+        self.reset()
+
+    def reset(self):
+        """Start a new episode: clear the recurrent state and the held-action memory."""
+        from policy.range_bc import vocab
+        self.predict.state = None
+        self.prev = {"held": [0] * vocab.N, "press": [0] * vocab.N, "release": [0] * vocab.N,
+                     "known": [True] * vocab.N, "cy": vocab.ZERO_CLASS, "cp": vocab.ZERO_CLASS}
+        self.index = 0
+
+    def _frame(self, frame):
+        import numpy as np
+        if frame.dtype != np.uint8 or frame.ndim != 3 or frame.shape[2] != 3:
+            raise ValueError("uint8 HxWx3 BGR frame required")
+        h, w = frame.shape[:2]
+        if (w, h) == TRAIN_SIZE:
+            return frame
+        if not self.resize:
+            raise ValueError(f"frame {w}x{h} differs from training {TRAIN_SIZE}; pass resize=True")
+        import cv2
+        return cv2.resize(frame, TRAIN_SIZE, interpolation=cv2.INTER_AREA if w > TRAIN_SIZE[0] else cv2.INTER_LINEAR)
+
+    def _torch_predict(self, frame):
+        """EncoderPredictor.__call__ with the cache views computed on the device."""
+        import torch
+        from torch.nn import functional as F
+        from policy.range_bc import steps
+        from policy.range_bc.explore_encoder import pool_tokens
+        p = self.predict
+        with torch.inference_mode():
+            x = torch.from_numpy(frame).to(p.device, non_blocking=True).permute(2, 0, 1)[None].flip(1).float()
+            h, w = x.shape[-2:]
+            views = [F.interpolate(x, (144, 256), mode="area"),
+                     F.interpolate(x[..., (h - 256) // 2:(h - 256) // 2 + 256, (w - 256) // 2:(w - 256) // 2 + 256],
+                                   (128, 128), mode="area")]
+            pixels = []
+            for v in views:
+                v = v.round().clamp(0, 255)
+                v = F.interpolate(v, (256, 256), mode="bilinear", align_corners=False, antialias=True)
+                pixels.append((v / 127.5 - 1).to(p.tower_dtype))
+            tokens = p.tower(pixel_values=torch.cat(pixels)).last_hidden_state
+            features = pool_tokens(tokens).to(torch.float16)
+            feats = features[0:1, None], features[1:2, None], torch.zeros(1, 1, 1, device=p.device)
+            prev = torch.tensor(steps.prev_vector(self.prev), dtype=torch.float32, device=p.device)[None, None]
+            acts, cams, p.state = p.model(*feats, prev, p.state, regime=p.regime)
+            if not (bool(torch.isfinite(acts).all()) and bool(torch.isfinite(cams).all())):
+                raise ValueError("nonfinite model outputs")
+            return torch.sigmoid(acts[0, 0]).tolist(), torch.softmax(cams[0, 0], -1).tolist()
+
+    def step(self, frame_bgr):
+        from policy.range_bc import executor, vocab
+        started = time.perf_counter()
+        frame = self._frame(frame_bgr)
+        if self.preprocess == "torch":
+            probs, cameras = self._torch_predict(frame)
+        else:
+            probs, cameras = self.predict(frame, self.prev)
+        held_p, press_p, release_p = (probs[i * vocab.N:(i + 1) * vocab.N] for i in range(3)) \
+            if len(probs) == 3 * vocab.N else probs
+        held, press, release = [], [], []
+        for i, level in enumerate(self.levels):
+            h, p, r = executor.decode_step(held_p, press_p, release_p, self.prev["held"], self.mask, threshold=level)
+            held.append(h[i]), press.append(p[i]), release.append(r[i])
+        yaw_p, pitch_p = cameras if len(cameras) == 2 else (cameras[:vocab.CAMERA_CLASSES], cameras[vocab.CAMERA_CLASSES:])
+        cy, cp = vocab.median_class(yaw_p), vocab.median_class(pitch_p)
+        yaw, pitch = vocab.class_degrees(cy), vocab.class_degrees(cp)
+        self.prev = {"held": held, "press": press, "release": release, "known": [True] * vocab.N, "cy": cy, "cp": cp}
+        self.index += 1
+        named = lambda bits: {n: bool(b) for n, b in zip(self.names, bits)}
+        return Step(held=named(held), press=named(press), release=named(release), yaw_deg=yaw, pitch_deg=pitch,
+                    yaw_deg_s=yaw / STEP_S, pitch_deg_s=pitch / STEP_S,
+                    probs={n: (held_p[i], press_p[i], release_p[i]) for i, n in enumerate(self.names)},
+                    latency_ms=(time.perf_counter() - started) * 1000, index=self.index - 1)
+
+    def close(self):
+        if self.predict.preprocess is not None:
+            self.predict.close()
+
+
+def main(argv=None):
+    """Bundle writing and a latency benchmark on recorded or synthetic frames."""
+    import argparse
+    p = argparse.ArgumentParser(description=main.__doc__)
+    sub = p.add_subparsers(dest="cmd", required=True)
+    w = sub.add_parser("bundle")
+    w.add_argument("dir")
+    w.add_argument("--name", required=True)
+    w.add_argument("--notes", default="")
+    b = sub.add_parser("bench")
+    b.add_argument("dir")
+    b.add_argument("--device", default="cuda")
+    b.add_argument("--frames", nargs="*", help="image files; default synthetic noise")
+    b.add_argument("--n", type=int, default=100)
+    b.add_argument("--out")
+    a = p.parse_args(argv)
+    if a.cmd == "bundle":
+        print(json.dumps(write_bundle(a.dir, checkpoint="epoch-26.pt", vision="vision.safetensors",
+                                      vision_config="siglip2-large-config.json", evaluation="evaluation.json",
+                                      name=a.name, notes=a.notes), indent=2))
+        return 0
+    import numpy as np
+    policy = LivePolicy(a.dir, device=a.device)
+    if a.frames:
+        import cv2
+        frames = [cv2.imread(f) for f in a.frames]
+    else:
+        rng = np.random.default_rng(0)
+        frames = [rng.integers(0, 256, (1440, 2560, 3), dtype=np.uint8) for _ in range(4)]
+    for i in range(5):
+        policy.step(frames[i % len(frames)])
+    policy.reset()
+    times, steps = [], []
+    for i in range(a.n):
+        s = policy.step(frames[i % len(frames)])
+        times.append(s.latency_ms)
+        steps.append(s)
+    q = lambda x: float(np.percentile(times, x))
+    result = {"device": a.device, "n": a.n, "p50_ms": q(50), "p95_ms": q(95), "max_ms": max(times),
+              "gpu": __import__("torch").cuda.get_device_name() if a.device == "cuda" else None,
+              "last": steps[-1].as_dict()}
+    print(json.dumps(result, indent=2))
+    if a.out:
+        Path(a.out).write_text(json.dumps(result, indent=2) + "\n")
+    policy.close()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
