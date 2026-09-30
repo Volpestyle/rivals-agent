@@ -3,6 +3,10 @@
     python -m policy.idm.labels run CKPT SPANS.jsonl WORK_DIR [--video ID] [--shard K/N] [--device cuda]
     python -m policy.idm.labels export CKPT SPANS.jsonl WORK_DIR OUT_DIR [--video ID]
 
+For cached features, add --anchor-dir OLD_MODEL_LABEL_DIR and a fresh OUT_DIR. This preserves the old anchors,
+run and exact frame identity while summing the new model's interval answers. Unsupported boundary/gap rows are
+omitted, i is compact, and existing aligned outputs are refused. Neither old labels nor features are modified.
+
 `run` labels every span of the footage worker's export (one npz per span under WORK_DIR/<model>/, skipped when
 present) with policy.idm.vod.label_span, masking the span's overlay rects. On the PC it pauses while Marvel Rivals
 is running (the GPU and CPU belong to the game). `export` writes one rivals-range-steps-v1 table per video with
@@ -152,7 +156,7 @@ def _video_index(video, cache_dir):
     return pts, [num, den]
 
 
-def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0):
+def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0, anchor_rows=None):
     """The span's 30 Hz replay rows, numbered from i0."""
     t, cam = z["t"], z["cam"]
     prob = z["prob"]
@@ -168,8 +172,10 @@ def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0):
     step_s = STEP_NS / 1e9
     base_ns = int(round(float(t[0]) * 1e9))
     prev = None                                                    # (grid step, held_end) of the last row written
-    for k in range(int((t[-1] - t[0]) / step_s)):
-        anchor_ns = base_ns + k * STEP_NS                          # the nominal 30 Hz grid (steps.check_sequence)
+    grid = ((base_ns + k * STEP_NS, None) for k in range(int((t[-1] - t[0]) / step_s)))
+    if anchor_rows is not None:
+        grid = ((r["anchor_ns"], r["frame"]) for r in anchor_rows)
+    for anchor_ns, expected_frame in grid:
         anchor = anchor_ns / 1e9
         a = int(np.searchsorted(t, anchor + 1e-9, side="right")) - 1   # last decoded frame at or before the anchor
         js = []
@@ -177,12 +183,17 @@ def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0):
         while b < len(t) and t[b] <= anchor + step_s + 1e-9:
             js.append(b)
             b += 1
-        if a < 0 or not js or np.any(np.diff(t[a:js[-1] + 1]) > 0.025):   # no interval, or a hole in the span
+        if (a < 0 or not js or anchor + step_s > t[-1] + 1e-9
+                or np.any(np.diff(t[a:js[-1] + 1]) > 0.025)):   # no complete step, or a hole in the span
             continue
         if anchor - t[a] > 2 * FRAME_PERIOD_NS / 1e9:
             continue
         frame_s = float(t[a])
         ordinal = int(np.searchsorted(index_pts, frame_s - 1e-6))
+        pts = int(round(frame_s * tb[1] / tb[0]))
+        if expected_frame is not None and (expected_frame["frame_index"] != ordinal
+                or expected_frame["pts"] != pts or expected_frame["timebase"] != tb):
+            raise ValueError(f"anchor source-frame mismatch: {run_id} at {anchor_ns}")
         y = None if np.isnan(yaw[js]).any() else float(yaw[js].sum())
         p = None if np.isnan(pitch[js]).any() else float(pitch[js].sum())
         press = [None] * len(actions)
@@ -197,15 +208,15 @@ def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0):
             for name in HELD_ACTIONS:
                 c = actions.index(name)
                 hs[c], he[c] = int(held[a, c] >= 0.5), int(held[js[-1], c] >= 0.5)
-            if prev is not None and prev[0] == k - 1:              # holds continue across consecutive steps
+            if prev is not None and prev[0] + STEP_NS == anchor_ns:  # holds continue across consecutive steps
                 hs = list(prev[1])
-            prev = (k, he)
+            prev = (anchor_ns, he)
         std = (None if np.isnan(ystd[js]).any() else
                [round(float(np.sqrt((ystd[js] ** 2).sum())), 4), round(float(np.sqrt((pstd[js] ** 2).sum())), 4)])
         rows.append({
             "i": i0 + len(rows), "run": run_id, "anchor_ns": anchor_ns,
             "frame": {"video_path": str(video_path), "frame_index": ordinal,
-                      "pts": int(round(frame_s * tb[1] / tb[0])), "timebase": tb,
+                      "pts": pts, "timebase": tb,
                       "composition_ns": min(int(round(frame_s * 1e9)), anchor_ns)},
             "gap_free": True, "segment": run_id, "suitability": "accepted", "regime": "normal", "tags": [],
             "tag_source": "untagged", "held_start": hs, "held_end": he,
@@ -219,7 +230,7 @@ def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0):
     return rows
 
 
-def export(ckpt, spans_path, work, out_dir, *, video=None, model=None):
+def export(ckpt, spans_path, work, out_dir, *, video=None, model=None, anchor_dir=None):
     from policy.range_bc import vocab
     _, supported, thresholds = vod.load_any(ckpt, "cpu")
     thresholds = {a: t for a, t in (thresholds or vod.FULL03_THRESHOLDS).items() if t < 1.0}
@@ -238,6 +249,30 @@ def export(ckpt, spans_path, work, out_dir, *, video=None, model=None):
         if not any(span_file(work, name, s).exists() for s in ss):
             continue
         index_pts, tb = _video_index(path, Path(work))
+        anchors = None
+        reference = None
+        if anchor_dir is not None:
+            from policy.range_bc import steps
+            reference = Path(anchor_dir) / f"expert-{vid}.steps.jsonl"
+            anchors = {}
+            with reference.open(encoding="utf-8") as fh:
+                old_header = json.loads(next(fh))
+                steps.check_header(old_header)
+                if (old_header["session_id"] != f"expert-{vid}"
+                        or old_header["media_sha256"] != _sha(path, shas)
+                        or old_header["step_ns"] != STEP_NS):
+                    raise ValueError("anchor reference is from a different source or step size")
+                for i, line in enumerate(line for line in fh if line.strip()):
+                    r = json.loads(line)
+                    steps.check_row(r, old_header, i)
+                    group = anchors.setdefault(r["run"], [])
+                    if group and r["anchor_ns"] <= group[-1]["anchor_ns"]:
+                        raise ValueError("anchor reference is not strictly increasing within run")
+                    group.append(r)
+            if set(anchors) - {s["span_id"] for s in ss}:
+                raise ValueError("anchor reference contains unknown spans")
+            if (out_dir / reference.name).exists():
+                raise FileExistsError("aligned export must use a new output file")
         rows, has_held = [], False
         for s in ss:
             f = span_file(work, name, s)
@@ -246,11 +281,13 @@ def export(ckpt, spans_path, work, out_dir, *, video=None, model=None):
                     z = {k: z[k] for k in z.files}
                 has_held = has_held or "held" in z
                 rows += step_rows(z, thresholds, video_path=path, index_pts=index_pts, tb=tb,
-                                  run_id=s["span_id"], i0=len(rows))
+                                  run_id=s["span_id"], i0=len(rows),
+                                  anchor_rows=None if anchors is None else anchors.get(s["span_id"], []))
         if not rows:
             continue
         sha = _sha(path, shas)
-        shas_path.write_text(json.dumps(shas, indent=1))
+        if anchor_dir is None:
+            shas_path.write_text(json.dumps(shas, indent=1))
         player = Path(path).parent.name
         header = {
             "format": "rivals-range-steps-v1", "source_kind": "replay", "session_id": f"expert-{vid}",
@@ -268,7 +305,10 @@ def export(ckpt, spans_path, work, out_dir, *, video=None, model=None):
             "idm": {"checkpoint": str(ckpt), "thresholds": thresholds, "spans": len(ss),
                     "labelled_spans": sum(span_file(work, name, s).exists() for s in ss)}}
         out = out_dir / f"expert-{vid}.steps.jsonl"
-        with open(out, "w", encoding="utf-8", newline="\n") as fh:
+        if reference is not None:
+            header["idm"]["anchor_reference"] = str(reference)
+            header["idm"]["anchor_contract"] = "original anchors and exact source frames; new interval answers"
+        with open(out, "x" if reference is not None else "w", encoding="utf-8", newline="\n") as fh:
             fh.write(json.dumps(header) + "\n")
             for r in rows:
                 fh.write(json.dumps(r) + "\n")
@@ -318,6 +358,7 @@ def main(argv=None):
     e.add_argument("out")
     e.add_argument("--video")
     e.add_argument("--model")
+    e.add_argument("--anchor-dir", help="reuse this label directory's anchors; requires new output files")
     c = sub.add_parser("clips")
     c.add_argument("spans")
     c.add_argument("out")
@@ -331,7 +372,8 @@ def main(argv=None):
         run(a.ckpt, a.spans, a.work, video=a.video, shard=(k, n), device=a.device, model=a.model, fast=a.fast,
             workers=a.workers)
     else:
-        print(json.dumps(export(a.ckpt, a.spans, a.work, a.out, video=a.video, model=a.model), indent=1))
+        print(json.dumps(export(a.ckpt, a.spans, a.work, a.out, video=a.video, model=a.model,
+                                anchor_dir=a.anchor_dir), indent=1))
     return 0
 
 

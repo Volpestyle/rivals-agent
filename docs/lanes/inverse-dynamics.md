@@ -132,6 +132,68 @@ Linear). Input spans: the `footage` lane's `D:/rivals-expert-footage/idm-spans.j
   originals have no seek index; mp4 VODs and the clips seek by timestamp, and a clip's `-ss` counts from its own
   start_time.
 
+### Zoom estimator validation (IDM relief, 2026-09-30)
+
+The completed `zoom-a.pt` fit was tested on the prior owner's accepted m11/m12 windows, which are absent from
+both its training and validation rosters. Results and executed scripts live at
+`D:/rivals-agent-evidence/idm-vod-domain-20260930/zoom-a-validation/` and
+`/Users/james/dev/idm-data/zoom-a-validation-20260930/` on the Mac; no sealed sources were opened.
+`result.json` tests 20 windows/session (600/591 sampled frames), at crop-stage zooms .8/.9/1/1.1/1.25:
+mean absolute relative error is 0.50-1.17%. `native-control.json` applies a centre crop to native 1080p frames
+**before** fixed motion/estimator preprocessing, on three accepted windows/session (90 frames each):
+
+| Native zoom | m11 median estimate / mean abs relative error | m12 median estimate / mean abs relative error |
+|---|---|---|
+| 1.00 | 1.0043 / 0.43% | 1.0042 / 0.42% |
+| 1.10 | 1.1108 / 0.98% | 1.1109 / 0.94% |
+| 1.25 | 1.2576 / 0.61% | 1.2573 / 0.60% |
+
+A 32-frame random-noise control does not recover the requested .8-1.25 zoom sequence (median predictions
+.840-.871); this checks one shortcut, not general domain validity. `creator-sample.json` samples six 3-second
+windows from each of 12 already-local creator videos (2,160 frames):
+
+| Creator | Videos | Median candidate 1/z |
+|---|---:|---:|
+| DayMR | 6 | .9961 |
+| LuckyZeal | 3 | .9985 |
+| Simii_exe | 1 | .9957 |
+| 6fthumblearab | 1 | 1.0028 |
+| Necros | 1 | .9967 |
+
+**Keep camera scale 1.** These median deviations are comparable to the known-answer baseline bias; they do not
+justify a creator correction. Absolute creator FOV has no known answer here, no independently measured creator
+rotation was tested, and ReqMR/Rdpaco/Rekriot were not sampled. Necros has a wider lower tail (z p10 .963),
+so the pooled median must not be interpreted as stable calibration for every frame. No existing labels changed.
+`fov.sources` now samples the full available span roster without repeats on short rosters, opens the correct
+per-span clip, keeps creator identity from source_path, and records each sampled window's frame count.
+All three Mac validation jobs completed with two CPU/ffmpeg threads; existing labelling and Modal jobs continued.
+
+### Cached-feature anchor alignment (IDM relief, 2026-09-30)
+
+Changing the IDM context window moved the first labelled timestamp and therefore the exporter's nominal 30 Hz
+grid. The policy owner measured zero `(run, anchor_ns)` overlap for DayMR 2871149954 and 2872282230; matching
+exact frames alone left only two-row contiguous runs. `labels export --anchor-dir OLD_MODEL_LABEL_DIR` now
+reuses those original anchors, verifies the unchanged media identity and exact frame ordinal/PTS/timebase,
+and sums **new model interval answers** over each original step. Unsupported boundary/gap rows are omitted;
+new `i` is compact, runs and source media identity are preserved, and existing aligned outputs are refused.
+The original label directories and feature caches are untouched. Only the aligned mode reads the reference tables.
+
+Separate outputs: `D:/rivals-agent-local/idm-labels-aligned-20260930/v2-cd/`, files
+`expert-2871149954.steps.jsonl` and `expert-2872282230.steps.jsonl`. Consumer: the policy owner's exact-frame,
+targets-only relabel path; acceptance of cached-feature continuity belongs to that lane. The exporter audit
+(`aligned-export-check.json` beside the zoom results) checked every output row against the old anchor and full
+frame object, and every header/row against the replay schema:
+
+| Video | Original rows | Aligned rows, all exact matches | Omitted rows | Runs >=32 rows | Longest run |
+|---|---:|---:|---:|---:|---:|
+| 2871149954 | 116,847 | 115,187 | 1,660 | 332 | 1,771 |
+| 2872282230 | 80,154 | 79,084 | 1,070 | 214 | 1,606 |
+
+Both use the existing
+`v2-c-w8-wide.pt+v2-d-w12-wide.pt` ensemble outputs and original `idm-labels/v2-a` grid. Synthetic tests cover
+new answers on old frames, all three frame identity mismatches, partial steps and internal gaps, unknown camera
+answers, no invented anchors, source-media mismatch and refusal to overwrite. This does not admit another source.
+
 ## Why
 
 The in-client replay of a selected expert (`data/demos/replays/daymr-20260923-004325/`, VUH-1328) shows his own camera
