@@ -122,12 +122,15 @@ to it instead of adding a third statement.
 
 ## Agent delivery protocol
 
-Use `herdr-lead` for swarm coordination and `herdr` for pane operations. An idle Codex worker receives nothing
-through Swarm, and `codex queue` does not wake the `--no-daemon` panes (tested 2026-09-28). An idle Claude worker
-missed a Swarm message too (2026-09-30), so the lead prompts any idle worker through Herdr. So the lead sends a
-message to a Codex worker as one Herdr prompt carrying the whole message, confirms it was submitted, and sends no
-Swarm copy. Workers reply to the lead with `swarm_send`, which reaches a Claude lead on its own. Nobody polls an idle
-model in a loop (`~/dotfiles/docs/agents/swarm-launch.md`). Keep one
+Use `herdr-lead` for swarm coordination and `herdr` for pane operations. Send the content of every assignment, answer
+and decision with `swarm_send` to the worker's actor UUID: it arrives whole, from a verified sender, and stays on record.
+Then wake the worker with the fixed Herdr prompt `Check your Swarm inbox.` and nothing more. An idle worker, Claude or
+Codex, never picks up a Swarm message on its own; a busy Claude worker gets it at its next tool call, and a busy Codex
+worker only when it fetches. A message counts as delivered when the worker acks it, not when Herdr reports the prompt
+submitted; if no ack arrives once the worker's turn ends, wake it again. Only the lead types into worker panes, and it
+reads the composer before each wake: whatever lands in a pane runs with James's authority, and a prompt sent over a
+half-typed draft submits the draft with it (tested 2026-09-30). Workers reply with `swarm_send`, which reaches a Claude
+lead on its own. Nobody polls an idle model in a loop (`~/dotfiles/docs/agents/swarm-launch.md`). Keep one
 lead responsible for dispatch, shared integration and Linear status transitions;
 co-leads route scope decisions through that lead. A status request alone creates no work.
 
