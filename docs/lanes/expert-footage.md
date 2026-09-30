@@ -428,3 +428,39 @@ separate press spot-check precision. Throughput/ETA remain owner-reported.
 The metadata sidecar refreshes roughly every two minutes; the page/fetch refresh
 is 30 seconds. Thirty-two synthetic tests and Ruff passed, and live Mac HTTP
 checks confirmed both sets, forty videos per set and eight creator/check rows.
+
+## Private span and actual-label review (2026-09-30)
+
+James authorized bounded action-row reads and third-party review clips on the
+private tailnet board. The metadata collector above retains its header-only
+contract; `/idm-review/` adds video timelines, per-span label availability,
+actual yaw/pitch traces and separate held/press strips. Per-step camera deltas
+are divided by the header step duration for deg/s; positive pitch points down.
+Unknown action labels stay unknown. Availability comes from exported segment
+rows, so refused spans are not presented as labelled.
+
+`scripts/idm_clip_renderer.py` owns the PC queue under
+`D:/rivals-expert-footage/private-review`; `worker --sync` serves requests and
+copies explicit projections and clips to `/Users/james/dev/idm-review` on the
+Mac. Indexing streams at most 1 GiB/120 seconds per changed label file; a selected
+span reads at most 32 MiB/10,000 rows. Video availability refreshes every ten
+minutes. Requests show queued/rendering/paused status and refresh every five
+seconds; ready playback is uninterrupted. Rendering uses software decode,
+two FFmpeg threads, BelowNormal priority, and a 180-second deadline. A process
+check before and throughout rendering yields to Marvel-Win64 or obs64, including
+tray OBS. Sealed paths, symlinks and Windows reparse points are refused.
+
+Sixteen 10-second, 960x540 samples cover all eight creators. A seventeenth clip
+verified the complete tailnet POST-to-PC-queue-to-Mac-playback path for v2-a;
+v2-cd playback and the 358-span ReqMR timeline also passed browser checks.
+The focused board/viewer suite passes 51 tests and Ruff passes. The Mac helper
+backup is `scripts/idm_board.py.pre-span.bak`; explore-policy performed the single
+coordinated service restart. Local/cloud spend for this viewer is $0.
+
+Playing-clip/strip screenshots are private at
+`D:/rivals-expert-footage/private-review/span-view-private.png` and
+`on-demand-private.png`, mirrored under the Mac review directory. They contain
+third-party footage and must not be attached to Linear or the blog. No media or
+label projections enter git. Restart the persistent PC queue worker with
+`uv run python scripts/idm_clip_renderer.py worker --sync` if it exits; its
+singleton lock prevents two workers from rendering concurrently.

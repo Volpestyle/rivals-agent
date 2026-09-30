@@ -1,4 +1,4 @@
-"""Read-only IDM labelling metadata. Never open label steps beyond their header."""
+"""IDM progress metadata and private span/label/clip review on the tailnet board."""
 from __future__ import annotations
 
 from collections import defaultdict
@@ -6,9 +6,17 @@ from datetime import datetime, timezone
 from html import escape
 import json
 from pathlib import Path
+import re
+import secrets
 import subprocess
 import threading
 import time
+from urllib.parse import urlsplit
+
+if __package__:
+    from . import idm_clip_renderer as review
+else:
+    import idm_clip_renderer as review
 
 SETS = ('v2-a', 'v2-cd')
 STATES = {'queued', 'labelling', 'done', 'paused-for-game', 'held'}
@@ -182,6 +190,8 @@ class LabellingCache:
 
 def render(data, warning, css):
     def text(value):
+        if isinstance(value, VideoLink):
+            return f'<a href="/idm-review/video/{escape(value.sid)}">{escape(value.sid)}</a>'
         return escape(str(value)) if value is not None else 'Unknown'
 
     def number(value, digits=0):
@@ -209,7 +219,7 @@ def render(data, warning, css):
                       f'<p class="muted">Last receipt: {text(label.get("updated"))}</p></div></section>')
         panels.append(f'<section class="panel"><div class="panel-body"><h2>{name} · Videos</h2></div>'
                       + table(['Video', 'Creator', 'Admitted duration', 'State', 'Label set', 'Spans done', 'Last update'],
-                              [(v['source_id'], v['creator'], number(v['duration_hours'], 2) + ' h',
+                              [(VideoLink(v['source_id']), v['creator'], number(v['duration_hours'], 2) + ' h',
                                 v['state'], name, number(v['spans_done']) + ' / ' + number(v['spans_total']),
                                 v['updated']) for v in label.get('videos', [])])
                       + '<div class="panel-body"><h3>Totals per creator</h3></div>'
@@ -244,7 +254,240 @@ def render(data, warning, css):
             + ''.join(panels) + '<section class="panel"><div class="panel-body"><h2>Expert label accuracy</h2>'
             + accuracy + '</div></section><footer class="page-footer">Snapshot: '
             + text(data.get('updated')) + ' · Missing fields stay unknown. Done is the published processing state; refused spans can remain unlabelled. '
-            'No frames or label payloads are served.</footer></div></body></html>')
+            'Private span reviews are available from each video link.</footer></div></body></html>')
+
+
+class VideoLink:
+    def __init__(self, sid):
+        self.sid = sid
+
+
+REVIEW_ROOT = Path('/Users/james/dev/idm-review')
+_queue_slots = threading.BoundedSemaphore(2)
+
+
+def review_url(sid, ordinal, label_set):
+    review.key(sid, ordinal, label_set)
+    return f'/idm-review/span/{sid}/{ordinal}/{label_set}'
+
+
+def timeline(video):
+    duration = max(1, video['duration_s'])
+    pieces = []
+    for span in video['spans']:
+        name = 'v2-cd' if 'v2-cd' in span['labels'] else 'v2-a'
+        url = review_url(video['source_id'], span['ordinal'], name)
+        color = '#91d9bd' if span['labels'] else '#606a70'
+        pieces.append(f'<a href="{url}"><rect x="{span["start_s"] / duration * 1000:.3f}" '
+                      f'y="4" width="{max(.6, (span["end_s"] - span["start_s"]) / duration * 1000):.3f}" '
+                      f'height="24" fill="{color}"><title>{span["start_s"]:.1f}–{span["end_s"]:.1f}s</title></rect></a>')
+    return ('<svg class="timeline" role="img" aria-label="Admitted spans within the full video" viewBox="0 0 1000 32">'
+            '<rect width="1000" height="32" fill="#253039"/>' + ''.join(pieces) + '</svg>')
+
+
+def label_strip(detail):
+    """SVG uses actual points; unknown labels remain gray, never converted to zero."""
+    rows = detail.get('rows', [])
+    if not rows:
+        return '<p>Labels have not been loaded for this span yet.</p>'
+    start, end = detail['start_s'], detail['end_s']
+    width, left = 1000, 145
+    scale = width / max(.001, end - start)
+    actions = detail['actions']
+    height = 265 + len(actions) * 23
+    parts = [f'<svg id="label-strip" role="img" aria-label="Actual IDM camera and action labels" viewBox="0 0 1160 {height}">',
+             '<rect width="1160" height="100%" fill="#101619"/>']
+    for j, field in enumerate(('yaw', 'pitch')):
+        mid = 60 + j * 90
+        bound = max(1, max((abs(r[field]) for r in rows if r[field] is not None), default=1))
+        parts.append(f'<text x="8" y="{mid - 10}" fill="#dbe9e5">{field} deg/s</text>'
+                     f'<text x="8" y="{mid + 10}" fill="#93a7ab">±{bound:.1f}</text>'
+                     f'<line x1="{left}" y1="{mid}" x2="1145" y2="{mid}" stroke="#405055"/>')
+        points = []
+        for row in rows + [{field: None}]:
+            if row[field] is None:
+                if points:
+                    parts.append(f'<polyline points="{" ".join(points)}" fill="none" stroke="{"#91d9bd" if j == 0 else "#edba76"}" stroke-width="1.4"/>')
+                    points = []
+            else:
+                points.append(f'{left + (row["t"] - start) * scale:.2f},{mid - row[field] / bound * 35:.2f}')
+    parts.append('<text x="8" y="216" fill="#b9c8cc">H / P</text>')
+    for i, action in enumerate(actions):
+        y = 230 + i * 23
+        parts.append(f'<text x="8" y="{y + 11}" fill="#dbe9e5">{escape(action)}</text>')
+        for lane, field in enumerate(('held', 'press')):
+            parts.append(f'<rect x="{left}" y="{y + lane * 8}" width="1000" height="7" fill="#26343a"/>')
+            runs = []
+            for row in rows:
+                value = row[field][i] if i < len(row[field]) else None
+                a, b = row['t'], min(end, row['t'] + row['dt'])
+                if runs and runs[-1][2] == value and abs(runs[-1][1] - a) < .002:
+                    runs[-1][1] = b
+                else:
+                    runs.append([a, b, value])
+            for a, b, value in runs:
+                if value == 0:
+                    continue
+                color = '#59666b' if value is None else '#edba76' if lane else '#91d9bd'
+                parts.append(f'<rect x="{left + (a - start) * scale:.2f}" y="{y + lane * 8}" '
+                             f'width="{max(.4, (b - a) * scale):.2f}" height="7" fill="{color}"/>')
+    for tick in range(6):
+        t = (end - start) * tick / 5
+        parts.append(f'<text x="{left + width * tick / 5:.1f}" y="{height - 5}" fill="#b9c8cc" text-anchor="middle">{t:.1f}s</text>')
+    parts.append(f'<line id="playhead" x1="{left}" x2="{left}" y1="4" y2="{height - 20}" stroke="#fff" opacity=".7"/>')
+    return ''.join(parts) + '</svg>'
+
+
+def review_page(title, content, css, nonce, refresh=False):
+    return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
+            '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            + ('<meta http-equiv="refresh" content="5">' if refresh else '')
+            + f'<title>{escape(title)} · IDM review</title><style>{css}'
+            '.review{max-width:1280px;margin:auto;padding:24px}.review p{margin:12px 0}'
+            '.timeline{width:100%;height:52px}.review table{width:100%;border-collapse:collapse}'
+            '.review td,.review th{padding:10px;text-align:left;border-bottom:1px solid #344247}'
+            '.review video{display:block;width:100%;max-width:960px;background:#000;border-radius:8px}'
+            '.review button{background:#91d9bd;color:#13231e;border:0;border-radius:5px;padding:10px;cursor:pointer}'
+            '.review form{display:inline-block;margin:3px}.review svg text{font:12px monospace}'
+            '.strip{overflow-x:auto}.strip svg{width:100%;min-width:760px}.review nav{margin-bottom:24px}'
+            '</style></head><body><main class="review"><nav><a href="/idm-labelling">IDM labelling</a> · '
+            '<a href="/idm-review/">All videos</a></nav>'
+            f'<h1>{escape(title)}</h1>{content}<p class="muted">Private tailnet review. Third-party footage must not be posted to Linear or the blog.</p></main></body></html>')
+
+
+def queue_remote(sid, ordinal, name, root):
+    token = review.key(sid, ordinal, name)
+    try:
+        subprocess.run(['ssh', '-n', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=4',
+                        '-o', 'StrictHostKeyChecking=yes', 'volpe@supedupsilly',
+                        'C:/Users/volpe/AppData/Local/Programs/Python/Python311/python.exe',
+                        'C:/Users/volpe/repos/rivals-agent/scripts/idm_clip_renderer.py',
+                        'enqueue', '--source', sid, '--span', str(ordinal), '--label-set', name],
+                       capture_output=True, timeout=20, check=True)
+    except (OSError, subprocess.SubprocessError):
+        review.write_json(root / 'status' / f'{token}.json', {'state': 'error', 'reason': 'PC queue unavailable; retry when connected.'})
+    finally:
+        _queue_slots.release()
+
+
+def handle_review_request(handler, css, root=REVIEW_ROOT):
+    """Minimal job-board GET/POST hook. All private review routes end here."""
+    path = urlsplit(handler.path).path
+    if not path.startswith('/idm-review/'):
+        return False
+    nonce = secrets.token_urlsafe(18)
+    def respond(body, mime='text/html; charset=utf-8', status=200, extra=()):
+        if isinstance(body, str):
+            body = body.encode('utf-8')
+        handler.send_response(status)
+        handler.send_header('Content-Type', mime)
+        handler.send_header('Content-Length', str(len(body)))
+        handler.send_header('Cache-Control', 'no-store')
+        handler.send_header('X-Content-Type-Options', 'nosniff')
+        handler.send_header('Content-Security-Policy', f"default-src 'none'; style-src 'unsafe-inline'; script-src 'nonce-{nonce}'; media-src 'self'; form-action 'self'; frame-ancestors 'none'")
+        for name, value in extra:
+            handler.send_header(name, value)
+        handler.end_headers()
+        handler.wfile.write(body)
+    try:
+        media = re.fullmatch(r'/idm-review/media/([a-f0-9]{24})\.mp4', path)
+        if media and handler.command == 'GET':
+            clip = review.safe(root / 'clips' / (media[1] + '.mp4'))
+            if not clip.is_file() or clip.stat().st_size > 25 * 1024 * 1024:
+                raise FileNotFoundError('clip not ready')
+            size = clip.stat().st_size
+            a, b = 0, size - 1
+            requested = handler.headers.get('Range')
+            if requested:
+                match = re.fullmatch(r'bytes=(\d+)-(\d*)', requested)
+                if not match or int(match[1]) >= size:
+                    respond(b'', 'video/mp4', 416, [('Content-Range', f'bytes */{size}')])
+                    return True
+                a = int(match[1])
+                b = min(size - 1, int(match[2])) if match[2] else size - 1
+                if b < a:
+                    raise ValueError('invalid byte range')
+            with clip.open('rb') as stream:
+                stream.seek(a)
+                payload = stream.read(b - a + 1)
+            headers = [('Accept-Ranges', 'bytes')]
+            if requested:
+                headers.append(('Content-Range', f'bytes {a}-{b}/{size}'))
+            respond(payload, 'video/mp4', 206 if requested else 200, headers)
+            return True
+        match = re.fullmatch(r'/idm-review/(span|render)/([A-Za-z0-9_-]{1,64})/(\d{1,4})/(v2-a|v2-cd)', path)
+        if match:
+            kind, sid, ordinal, name = match[1], match[2], int(match[3]), match[4]
+            token = review.key(sid, ordinal, name)
+            video = review.read_json(root / 'videos' / (sid + '.json'))
+            span = video['spans'][ordinal]
+            status = review.read_json(root / 'status' / (token + '.json'))
+            if kind == 'render' and handler.command == 'POST':
+                host, origin = handler.headers.get('Host', ''), handler.headers.get('Origin', '')
+                if origin not in ('https://' + host, 'http://' + host) or int(handler.headers.get('Content-Length', '0')) > 1024:
+                    respond('Request origin refused.', status=403)
+                    return True
+                if name not in span['labels']:
+                    respond('No exported labels for this span yet.', status=409)
+                    return True
+                if status.get('state') != 'ready':
+                    if not _queue_slots.acquire(blocking=False):
+                        respond('Queue connection busy; retry shortly.', status=503)
+                        return True
+                    review.write_json(root / 'status' / (token + '.json'), {'state': 'queued', 'updated': review.stamp()})
+                    threading.Thread(target=queue_remote, args=(sid, ordinal, name, root), daemon=True).start()
+                respond(b'', status=303, extra=[('Location', review_url(sid, ordinal, name))])
+                return True
+            if kind != 'span' or handler.command != 'GET':
+                respond('Method not allowed', status=405)
+                return True
+            detail = review.read_json(root / 'details' / (token + '.json'))
+            state = status.get('state', 'not rendered')
+            title = f'{video["creator"]} · {sid} · span {ordinal + 1}'
+            content = f'<p><a href="/idm-review/video/{sid}">Back to video timeline</a> · {span["start_s"]:.3f}–{span["end_s"]:.3f}s · {name}</p>'
+            for other in span['labels']:
+                content += f'<a style="margin-right:14px" href="{review_url(sid, ordinal, other)}">{other} labels</a>'
+            content += f'<p><strong>{escape(state)}</strong> {escape(status.get("reason", ""))}</p>'
+            if state == 'ready':
+                content += f'<video id="review-video" controls autoplay muted loop playsinline src="/idm-review/media/{token}.mp4"></video>'
+                content += f'<p>First {status["clip_duration_s"]:.1f}s of the span · 540p · actual IDM overlay. Camera arrow: +yaw right, +pitch down.</p>'
+            else:
+                content += f'<form method="post" action="/idm-review/render/{sid}/{ordinal}/{name}"><button>Load labels &amp; render 10s review</button></form>'
+                content += '<p>Rendering waits until both the game and OBS have exited, including OBS in the tray.</p>'
+            content += '<h2>Label strip</h2><p>Yaw/pitch in deg/s. Each action: held in green (upper), presses in amber (lower), unknown in gray.</p>'
+            content += '<div class="strip">' + label_strip(detail) + '</div>'
+            if detail:
+                content += f'<p class="muted">Camera basis: {escape(detail.get("camera_basis", "unknown"))}</p>'
+            if state == 'ready':
+                duration = span['end_s'] - span['start_s']
+                content += f'<script nonce="{nonce}">const v=document.getElementById("review-video"),p=document.getElementById("playhead");function tick(){{if(p){{let x=145+1000*v.currentTime/{duration};p.setAttribute("x1",x);p.setAttribute("x2",x);}}requestAnimationFrame(tick)}}tick();</script>'
+            respond(review_page(title, content, css, nonce, state in ('queued', 'rendering', 'paused-for-game')))
+            return True
+        video_match = re.fullmatch(r'/idm-review/video/([A-Za-z0-9_-]{1,64})', path)
+        if video_match and handler.command == 'GET':
+            sid = video_match[1]
+            video = review.read_json(root / 'videos' / (sid + '.json'))
+            content = f'<p>{escape(video["title"])} · full video {video["duration_s"] / 3600:.2f}h</p>' + timeline(video)
+            content += '<p>Green: exported labels exist · gray: not yet. Timeline covers the full source video.</p><div style="overflow-x:auto"><table><tr><th>Span</th><th>Start–end</th><th>Duration</th><th>Labels / review</th></tr>'
+            for span in video['spans']:
+                controls = 'not yet'
+                if span['labels']:
+                    controls = ''.join(f'<form method="post" action="/idm-review/render/{sid}/{span["ordinal"]}/{name}"><button>Review {name}</button></form>' for name in span['labels'])
+                content += f'<tr><td>{span["ordinal"] + 1}</td><td>{span["start_s"]:.3f}–{span["end_s"]:.3f}s</td><td>{span["end_s"] - span["start_s"]:.1f}s</td><td>{controls}</td></tr>'
+            content += '</table></div>'
+            respond(review_page(video['creator'] + ' · ' + sid, content, css, nonce))
+            return True
+        if path == '/idm-review/' and handler.command == 'GET':
+            catalogue = review.read_json(root / 'catalogue.json')
+            content = '<p>Choose a source to inspect its admitted spans and the actual IDM output.</p><ul>'
+            for video in catalogue.get('videos', []):
+                content += f'<li><a href="/idm-review/video/{video["source_id"]}">{escape(video["creator"])} · {video["source_id"]}</a> · {video["spans"]} spans</li>'
+            respond(review_page('Span reviews', content + '</ul>', css, nonce))
+            return True
+        respond('Not found', status=404)
+    except (OSError, ValueError, KeyError, IndexError) as error:
+        respond('Review unavailable: ' + escape(str(error)), status=404)
+    return True
 
 
 if __name__ == '__main__':
