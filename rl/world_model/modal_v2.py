@@ -62,3 +62,21 @@ def imagine(run: str, args: list[str]):
 def rl(run: str, minutes: int = 120, extra: str = ""):
     """modal run --detach rl/world_model/modal_v2.py::rl --run irl-01 --extra "--wm /out/v2-main/model.pt ..." """
     imagine.with_options(timeout=minutes * 60).remote(run, extra.split())
+
+
+@app.function(image=image, gpu="H100", cpu=8, memory=32768, timeout=60 * 60,
+              volumes={"/src": src.read_only(), "/out": out})
+def sweep(run: str, args: list[str]):
+    """rl.world_model.sampler_sweep on a trained model in the output volume."""
+    import sys
+    sys.path.insert(0, "/root")
+    from rl.world_model import sampler_sweep
+    sampler_sweep.main(["--steps-root", "/src/steps", "--cache-root", "/src/caches",
+                        "--denylist", "/root/sealed-denylist.v2.json", "--out", f"/out/{run}", *args], commit=out.commit)
+    out.commit()
+
+
+@app.local_entrypoint()
+def sampler(run: str, wm: str, minutes: int = 45):
+    """modal run --detach rl/world_model/modal_v2.py::sampler --run sweep-noroll --wm /out/v2-noroll/model.pt"""
+    sweep.with_options(timeout=minutes * 60).remote(run, ["--wm", wm])
