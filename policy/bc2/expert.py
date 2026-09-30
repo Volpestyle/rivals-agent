@@ -81,15 +81,26 @@ def views(labels, out_root, *, log=print):
     rows, n = session.rows, len(session.rows)
     out = Path(out_root) / session.session_id
     out.mkdir(parents=True, exist_ok=True)
-    g = np.lib.format.open_memmap(out / "global.npy", "w+", np.uint8, (n, *GLOBAL))
-    c = np.lib.format.open_memmap(out / "crop.npy", "w+", np.uint8, (n, *CROP))
+    # Positioned writes into .npy files, not memmaps: a written memmap stays in the process working set, which
+    # broke the PC's per-process memory cap on long shards.
+    files = []
+    for name, shape in (("global.npy", GLOBAL), ("crop.npy", CROP)):
+        m = np.lib.format.open_memmap(out / name, "w+", np.uint8, (n, *shape))
+        offset, size = m.offset, int(np.prod(shape))
+        del m
+        files.append(((out / name).open("r+b"), offset, size))
     started, done = time.monotonic(), 0
-    for k, bgr in decode_rows(rows[0]["frame"]["video_path"], rows):
-        g[k], c[k] = views_of(bgr)
-        done += 1
-        if done % 5000 == 0:
-            log(f"{session.session_id}: {done}/{n} rows, {time.monotonic() - started:.0f} s")
-    g.flush(), c.flush()
+    try:
+        for k, bgr in decode_rows(rows[0]["frame"]["video_path"], rows):
+            for (f, offset, size), view in zip(files, views_of(bgr)):
+                f.seek(offset + k * size)
+                f.write(np.ascontiguousarray(view).tobytes())
+            done += 1
+            if done % 5000 == 0:
+                log(f"{session.session_id}: {done}/{n} rows, {time.monotonic() - started:.0f} s")
+    finally:
+        for f, _, _ in files:
+            f.close()
     meta = {"session": session.session_id, "steps_sha256": session.sha256, "rows": n, "decoded": done,
             "seconds": time.monotonic() - started, "labels": str(labels)}
     (out / "views.json").write_text(json.dumps(meta, indent=2) + "\n")
