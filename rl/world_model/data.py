@@ -106,3 +106,13 @@ def check_not_sealed(session_ids, denylist_path):
     hit = sorted(set(session_ids) & sealed)
     if hit:
         raise ValueError(f"sealed sessions refused: {hit}")
+
+
+EVENT_KINDS = ("hit", "ko", "death")
+VALIDATION = ("20260925T212646-322Z-49728-6",)   # the registry val take: never trained or selected on
+
+
+def step_events(flags, stride=STRIDE):
+    """Per row r, the max over rows r..r+stride-1: events in the 10 Hz step that starts at r."""
+    n = len(flags)
+    return [[max(flags[j][c] for j in range(r, min(r + stride, n))) for c in range(len(flags[r]))] for r in range(n)]

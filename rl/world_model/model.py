@@ -74,15 +74,16 @@ class SelfAttention(nn.Module):
 
 
 class UNet(nn.Module):
-    def __init__(self, cin, cout=3, chs=(64, 128, 256, 256), cond=256, blocks=2):
+    def __init__(self, cin, cout=3, chs=(64, 128, 256, 256), cond=256, blocks=2, attn_levels=1):
         super().__init__()
+        attn = set(range(len(chs) - attn_levels, len(chs)))
         self.inp = nn.Conv2d(cin, chs[0], 3, padding=1)
         self.down, self.samp_down = nn.ModuleList(), nn.ModuleList()
         skips, ch = [chs[0]], chs[0]
         for i, c in enumerate(chs):
             level = nn.ModuleList()
             for _ in range(blocks):
-                level.append(ResBlock(ch, c, cond, attn=i == len(chs) - 1))
+                level.append(ResBlock(ch, c, cond, attn=i in attn))
                 ch = c
                 skips.append(ch)
             self.down.append(level)
@@ -94,7 +95,7 @@ class UNet(nn.Module):
         for i, c in reversed(list(enumerate(chs))):
             level = nn.ModuleList()
             for _ in range(blocks + 1):
-                level.append(ResBlock(ch + skips.pop(), c, cond, attn=i == len(chs) - 1))
+                level.append(ResBlock(ch + skips.pop(), c, cond, attn=i in attn))
                 ch = c
             self.up.append(level)
             if i > 0:
@@ -136,13 +137,13 @@ class FourierEmbedding(nn.Module):
 
 
 class Denoiser(nn.Module):
-    def __init__(self, ctx=4, action_dim=32, chs=(64, 128, 256, 256), cond=256):
+    def __init__(self, ctx=4, action_dim=32, chs=(64, 128, 256, 256), cond=256, attn_levels=1):
         super().__init__()
         self.ctx, self.action_dim = ctx, action_dim
         self.noise = nn.Sequential(FourierEmbedding(cond), nn.Linear(cond, cond), nn.SiLU(), nn.Linear(cond, cond))
         self.act = nn.Sequential(nn.Linear(ctx * action_dim, cond), nn.SiLU(), nn.Linear(cond, cond))
         self.aug = nn.Sequential(FourierEmbedding(cond), nn.Linear(cond, cond), nn.SiLU(), nn.Linear(cond, cond))
-        self.net = UNet(3 + 3 * ctx, 3, chs, cond)
+        self.net = UNet(3 + 3 * ctx, 3, chs, cond, attn_levels=attn_levels)
 
     def forward(self, x_noisy, sigma, frames, actions, level=None):
         """x_noisy B,3,H,W; sigma B; frames B,ctx,3,H,W in [-1,1] (already corrupted at `level`, B);
@@ -199,15 +200,39 @@ class Denoiser(nn.Module):
         return x.clamp(-1, 1)
 
 
+class RewardHead(nn.Module):
+    """Per-step event logits (hit, ko, fall) from the last FRAMES frames up to the next frame and the step's action.
+
+    Frames B,FRAMES,3,H,W in [-1,1], where frames[:, -1] is the frame after the step; action B,action_dim.
+    """
+    FRAMES = 4
+    KINDS = ("hit", "ko", "death")
+
+    def __init__(self, action_dim=32, width=64):
+        super().__init__()
+        c = 3 * self.FRAMES
+        layers, cin = [], c
+        for cout in (width, width, 2 * width, 2 * width, 4 * width):
+            layers += [nn.Conv2d(cin, cout, 3, stride=2, padding=1), nn.GroupNorm(_groups(cout), cout), nn.SiLU()]
+            cin = cout
+        self.conv = nn.Sequential(*layers)
+        self.mlp = nn.Sequential(nn.Linear(2 * cin + action_dim, 256), nn.SiLU(), nn.Linear(256, len(self.KINDS)))
+
+    def forward(self, frames, action):
+        h = self.conv(frames.flatten(1, 2))
+        pooled = torch.cat([h.mean(dim=(2, 3)), h.amax(dim=(2, 3))], dim=1)
+        return self.mlp(torch.cat([pooled, action], dim=1))
+
+
 @torch.no_grad()
-def rollout(model, frames, actions, horizon, mode="mean"):
+def rollout(model, frames, actions, horizon, mode="mean", steps=3):
     """Autoregressive imagination. frames B,ctx,3,H,W (real context); actions B,ctx+horizon-1,A (logged or ablated).
 
     Step k predicts frame ctx+k from the last ctx frames (real or imagined) and their aligned actions.
     """
     ctx = model.ctx
     seq = list(frames.unbind(1))
-    step = model.predict_mean if mode == "mean" else model.sample
     for k in range(horizon):
-        seq.append(step(torch.stack(seq[-ctx:], 1), actions[:, k:k + ctx]))
+        c, a = torch.stack(seq[-ctx:], 1), actions[:, k:k + ctx]
+        seq.append(model.predict_mean(c, a) if mode == "mean" else model.sample(c, a, steps=steps))
     return torch.stack(seq[ctx:], 1)
