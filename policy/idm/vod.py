@@ -110,15 +110,17 @@ def stream_predict(model, video, planned, *, device="cuda", batch=64, ffmpeg="ff
     def flush():
         if not pending:
             return
-        motion = np.stack([np.diff(np.stack([buf[o][0] for o in w]).astype(np.float32) / 255.0, axis=0)
-                           for _, _, w, _ in pending])
+        raw = getattr(model, "raw_window", False)             # v2 takes the frames, v1 their differences
+        motion = np.stack([(lambda x: x if raw else np.diff(x, axis=0))(
+            np.stack([buf[o][0] for o in w]).astype(np.float32) / 255.0) for _, _, w, _ in pending])
         hud = np.stack([np.concatenate([buf[o][1] for o in h], axis=2).transpose(2, 0, 1).astype(np.float32) / 255.0
                         for _, _, _, h in pending])
         with torch.no_grad():
-            logits, cam = model(torch.from_numpy(motion).to(device), torch.from_numpy(hud).to(device))
-        prob, cam = torch.sigmoid(logits).cpu().numpy(), cam.cpu().numpy()
+            out = model(torch.from_numpy(motion).to(device), torch.from_numpy(hud).to(device))
+        prob, cam = torch.sigmoid(out[0]).float().cpu().numpy(), out[1].float().cpu().numpy()
+        held = torch.sigmoid(out[2]).float().cpu().numpy() if len(out) > 2 else None
         for j, (r, *_ ) in enumerate(pending):
-            results[r["i"]] = (prob[j], cam[j])
+            results[r["i"]] = (prob[j], cam[j], None if held is None else held[j])
         pending.clear()
 
     def sink(pos, motion_rgb, hud_rgb):
@@ -145,10 +147,22 @@ def camera_answers(r, cam, cal):
     return train._camera(float(cam[0]), float(cam[1]), cam[2:], r, cal)
 
 
-def predict_file(ckpt, targets_path, video, out, *, pts=None, start=None, end=None, device="cuda"):
+def load_any(ckpt, device):
+    """(model, supported, thresholds or None) for a v1 (full03) or v2 checkpoint."""
+    import torch
+    fmt = torch.load(ckpt, map_location="cpu", weights_only=False).get("format")
+    if fmt == "rivals-idm-v2":
+        from policy.idm import v2
+        model, payload = v2.load(ckpt, device=device)
+        return model, payload["meta"]["supported"], payload["meta"].get("thresholds")
     from policy.idm import train
-    from policy.range_bc import vocab
     model, payload = train.load_checkpoint(ckpt, device=device)
+    return model, payload["meta"]["supported"], None
+
+
+def predict_file(ckpt, targets_path, video, out, *, pts=None, start=None, end=None, device="cuda"):
+    from policy.range_bc import vocab
+    model, supported, thresholds = load_any(ckpt, device)
     header, rows = load_targets(targets_path)
     pts = demo_pts(pts) if pts else probe_pts(video)
     planned, step = plan(rows, pts, start_ms=None if start is None else start * 1000,
@@ -159,12 +173,14 @@ def predict_file(ckpt, targets_path, video, out, *, pts=None, start=None, end=No
     by_i = {r["i"]: r for r in rows}
     cal = header["calibration"]
     ans = [camera_answers(by_i[i], res[i][1], cal) for i in ids]
+    extra = {} if res[ids[0]][2] is None else {"held": np.stack([res[i][2] for i in ids])}
     np.savez_compressed(
         out, i=np.array(ids), prob=np.stack([res[i][0] for i in ids]), cam=np.stack([res[i][1] for i in ids]),
+        **extra,
         yaw_ans=np.array([np.nan if a["yaw_deg"] is None else a["yaw_deg"] for a in ans]),
         pitch_ans=np.array([np.nan if a["pitch_deg"] is None else a["pitch_deg"] for a in ans]),
         meta=json.dumps({"ckpt": str(ckpt), "targets": str(targets_path), "video": str(video), "step": step,
-                         "actions": list(vocab.NAMES), "supported": payload["meta"]["supported"],
+                         "actions": list(vocab.NAMES), "supported": supported, "thresholds": thresholds,
                          "session_id": header["session_id"], "planned": len(planned), "rows": len(rows)}))
     return len(ids)
 
@@ -227,7 +243,8 @@ def score(npz, targets_path=None, thresholds=None, rows_filter=None):
             "answered": float(np.mean(~np.isnan(ans[ok]))),
         }
     actions = meta["actions"]
-    thresholds = thresholds or FULL03_THRESHOLDS
+    thresholds = thresholds or {a: t for a, t in (meta.get("thresholds") or FULL03_THRESHOLDS).items()
+                                if a in FULL03_THRESHOLDS}
     # rows are consecutive 60 Hz intervals; positions in `ids` stand in for time, broken at gaps by index jumps
     for a, thr in thresholds.items():
         c = actions.index(a)
@@ -238,6 +255,16 @@ def score(npz, targets_path=None, thresholds=None, rows_filter=None):
         rc = tp / (tp + fn) if tp + fn else float("nan")
         out["press"][a] = {"threshold": thr, "tp": tp, "fp": fp, "fn": fn, "precision": p, "recall": rc,
                            "f1": 2 * p * rc / (p + rc) if tp else 0.0}
+    if "held" in z:                                    # held-at-end keys, threshold 0.5, per-row F1 and accuracy
+        out["held"] = {}
+        for a in ("move_forward", "move_left", "move_back", "move_right", "web_swing", "spider_power"):
+            c = actions.index(a)
+            rows_ = [(k, by_i[i]) for k, i in zip(keep, ids) if by_i[i]["held_known"][c]]
+            pred = np.array([z["held"][k, c] >= 0.5 for k, _ in rows_])
+            tru = np.array([bool(r["held_end"][c]) for _, r in rows_])
+            tp = int((pred & tru).sum())
+            out["held"][a] = {"f1": 2 * tp / max(int(pred.sum() + tru.sum()), 1), "acc": float((pred == tru).mean()),
+                              "base_rate": float(tru.mean())}
     return out
 
 
