@@ -64,10 +64,13 @@ number; before planning a PC fit, check that it fits in the card's 16 GB (round 
   directory per experiment (`countermeasures2/`, `explore/`…) and `runs/`. Never write into another experiment's
   directory. Code runs from a pinned `git archive` (`code-<sha>/`) with its own venv, not from a live checkout.
 - Training on the Mac is fine while the game runs on the PC; the two don't share hardware.
-- **Spend defaults (lead, 2026-09-30).** Use 1 seed to explore and 3 seeds to adopt a bundle. Run on the PC 4080 or
-  the Mac first. Modal parallel-GPU shares: policy 3, rl 2, idm 2 (James's account caps concurrent GPUs). Before any
-  single experiment expected to cost more than about $50, the owner sends the lead the estimate and the question it
-  answers. Milestone posts on Linear state their cost.
+- **Project budget: $500 total cloud spend (James, 2026-09-30).** $261 was spent by 13:30 CDT that day, leaving about
+  $239. Be economical: local hardware (the PC 4080 when the game is closed, the Mac under its caps) is the default, and
+  Modal is only for work local hardware can't do in reasonable time. Before any Modal job expected to cost more than
+  **$10**, the owner sends the lead the estimate and the question it answers; the lead tracks the running total in the
+  spend ledger. Use 1 seed to explore and 3 seeds to adopt a bundle. Modal parallel-GPU shares: policy 3, rl 2, idm 2
+  (James's account caps concurrent GPUs). Milestone posts on Linear state their cost. Live inference and live RL
+  episodes run on the PC.
 - **Keep the Mac usable for James.** Every Mac process runs at `nice -n 10` (plus `taskpolicy -b` for background
   work), with decoders at `-threads 2` and torch/OMP at 2 threads. All lanes together stay within about 4–6 cores.
   On 2026-09-30, ten uncapped labellers and an 8-thread decode maxed the fans; slower is fine.
