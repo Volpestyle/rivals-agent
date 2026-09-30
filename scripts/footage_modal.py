@@ -33,7 +33,7 @@ def _screen_source(sid: str, pilot_seconds: int = 0):
     url = f"https://www.twitch.tv/videos/{sid}"
     with tempfile.TemporaryDirectory() as directory:
         base = Path(directory)
-        args = ["yt-dlp", "--no-progress", "--concurrent-fragments", "8", "-f", "best",
+        args = ["yt-dlp", "--no-progress", "--match-filter", "!is_live", "--concurrent-fragments", "8", "-f", "best",
                 "--write-info-json", "--fixup", "never", "--hls-use-mpegts",
                 "-o", str(base / "source.%(ext)s"), url]
         if pilot_seconds:
@@ -45,6 +45,8 @@ def _screen_source(sid: str, pilot_seconds: int = 0):
             download = subprocess.run(args, capture_output=True, text=True, timeout=3600)
         if download.returncode:
             raise RuntimeError(download.stderr[-2000:])
+        if not (base / "source.info.json").exists():
+            raise ValueError("source skipped: live or unfinished archive")
         info = json.loads((base / "source.info.json").read_text())
         media = base / ("source." + info["ext"])
         expected = pilot_seconds or info["duration"]
@@ -86,7 +88,8 @@ def _screen_source(sid: str, pilot_seconds: int = 0):
 
 
 @app.function(image=image, cpu=8, memory=4096,
-              timeout=7200, max_containers=4, retries=0, scaledown_window=2)
+              timeout=7200, max_containers=4, retries=0, scaledown_window=2,
+              nonpreemptible=True)
 def screen_source(sid: str, pilot_seconds: int = 0):
     try:
         return _screen_source(sid, pilot_seconds)

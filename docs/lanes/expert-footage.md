@@ -194,3 +194,29 @@ the rest of the batch. No authentication or access-control workaround is used.
 The failed batch was confirmed stopped with zero containers. V3 Day and
 diversity runs remain bounded by 7,200-second function timeouts and ephemeral
 CLI lifetimes. No PC GPU or game input is used.
+
+Further distributed samples show that Day `2882124665` changes to Fortnite and
+a bomb-defusal game, and `2879354299` ends with Fortnite and an esports
+watchparty. The latter's tail from 25,000 seconds is conservatively withheld by
+the review's `exclude_intervals`, even if a broadcast hero HUD passes a reader.
+Refresh applies these exclusions to both consumer formats and computes hours
+from the exported intervals. Withholding a source also removes its own generated
+manifest, preventing a stale manifest from bypassing the current review.
+
+Simii `2879380353` has an upper-left facecam and chat beneath it; distributed
+samples show multiple heroes and menus. Its indexed, lossless remux is used for
+local seeking. Retained-span checks are still required before that source is
+exported. The catalogue deduplicates retry metadata by video ID while retaining
+failed downloader files for diagnosis. A Windows FFmpeg process created at
+BelowNormal stalled; the identical single-thread native-frame command at normal
+priority completed in 0.36 seconds. Normal-priority local work is limited to
+brief frame checks and stream copies while the game is confirmed closed.
+
+Two cloud preemptions restarted longer scans. Subsequent targeted CPU calls use
+`nonpreemptible=True` (client 1.5.5), retaining the 7,200-second timeout and
+ephemeral lifetime. [Modal documents the 3x CPU/memory multiplier](https://modal.com/docs/guide/preemption).
+This avoids another full-video restart; no persistent volume was added.
+Jit `2887910767` proved to be an ongoing live stream (`is_live=true`), despite
+appearing in the archive listing. Its partial download is withheld and the owner
+stopped that download. New cloud code skips live/unfinished sources before media
+acquisition; the older running image does not yet contain that correction.

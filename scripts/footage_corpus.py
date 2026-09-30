@@ -84,6 +84,14 @@ def catalogue(root):
                          rect_coordinates="normalized xyxy; null means unreviewed, [] means reviewed absent",
                          expert_basis=experts.get(channel), media_path=str(media.resolve()),
                          download_complete=complete, review=review))
+    # Failed and successful downloader attempts can leave two metadata files.
+    # Keep one source row, preferring finalized media, without deleting attempts.
+    unique = {}
+    for row in rows:
+        old = unique.get(row["source_id"])
+        if old is None or (row["download_complete"] and not old["download_complete"]):
+            unique[row["source_id"]] = row
+    rows = [unique[sid] for sid in sorted(unique)]
     jsonl(root / "catalogue.jsonl", rows)
     return rows
 
@@ -320,10 +328,16 @@ def dense(root, sid, start=0, duration=None, cuda=False):
     return result
 
 
+def exclude_review_intervals(spans, intervals):
+    """Withhold any span touching a human-identified non-player interval."""
+    return [s for s in spans if not any(s["start_s"] < i["end_s"] and s["end_s"] > i["start_s"]
+                                       for i in intervals)]
+
+
 def refresh(root):
     rows = catalogue(root)
     by_id = {r["source_id"]: r for r in rows}
-    sources, exports = [], []
+    exports = []
     for path in sorted((root / "spans").glob("*.json")):
         result = json.loads(path.read_text())
         meta = by_id.get(result["source_id"])
@@ -331,9 +345,10 @@ def refresh(root):
             continue
         review = meta["review"]
         if not review.get("spot_check_pass"):
+            (root / "manifests" / f"{result['source_id']}.manifest.jsonl").unlink(missing_ok=True)
             continue
-        sources.append(result)
-        for n, span in enumerate(result["spans"]):
+        spans = exclude_review_intervals(result["spans"], review.get("exclude_intervals", []))
+        for span in spans:
             exports.append(dict(source_id=result["source_id"], span_id=f"{result['source_id']}:{span['start_s']:.3f}-{span['end_s']:.3f}",
                                 video_id=result["source_id"], local_path=meta["media_path"],
                                 sha256=review.get("sha256"), width=meta["resolution"][0], height=meta["resolution"][1],
@@ -345,6 +360,7 @@ def refresh(root):
                                 input_device=meta["input_device"], overlay_rects=meta["overlay_rects"],
                                 facecam_rects=meta["facecam_rects"], **{k: v for k, v in span.items() if k != "confidence"},
                                 confidence="hud_screened_human_spot_checked", dense_validated=result.get("dense_validated", False),
+                                classifier_version=result.get("classifier_version", "v2_or_sparse"),
                                 notes=result["limitation"]))
         from agent.demos import write_manifest
         header = dict(id=f"expert:{result['source_id']}", kind="vod", source_url=meta["url"],
@@ -360,10 +376,10 @@ def refresh(root):
                       notes=result["limitation"])
         write_manifest(root / "manifests" / f"{result['source_id']}.manifest.jsonl", header,
                        [dict(start_t=s["start_s"], end_t=s["end_s"], started_by="hud_returned", ended_by="no_hud")
-                        for s in result["spans"]])
+                        for s in spans])
     jsonl(root / "idm-spans.jsonl", exports)
     totals = dict(downloaded_hours=sum(r["duration_s"] or 0 for r in rows if r["download_complete"]) / 3600,
-                  screened_candidate_hours=sum(s["gameplay_candidate_s"] for s in sources) / 3600,
+                  screened_candidate_hours=sum(s["end_s"]-s["start_s"] for s in exports) / 3600,
                   usable_spans=len(exports), completed_sources=sum(r["download_complete"] for r in rows),
                   updated=datetime.now(timezone.utc).isoformat())
     write_json(root / "totals.json", totals)

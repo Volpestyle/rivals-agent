@@ -2,10 +2,15 @@
 import unittest
 from io import BytesIO
 
-from scripts.footage_corpus import jpeg_frames, spans_from_reads
+from scripts.footage_corpus import exclude_review_intervals, jpeg_frames, spans_from_reads
 
 
 class SpanTests(unittest.TestCase):
+    def test_non_player_watchparty_interval_withholds_touching_spans(self):
+        spans = [dict(start_s=a, end_s=b) for a, b in [(0, 10), (10, 20), (21, 30)]]
+        kept = exclude_review_intervals(spans, [dict(start_s=10, end_s=25)])
+        self.assertEqual(kept, spans[:1])
+
     def test_unknown_and_rejected_samples_split_spans(self):
         reads = [dict(t=t, accepted=t not in (10, 20)) for t in range(32)]
         spans = spans_from_reads(reads, max_gap=1.1, trim_s=0.5, min_s=4)
