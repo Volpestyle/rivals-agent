@@ -359,7 +359,9 @@ def warm_perception(percept, focus, takeover, *, capture=None):
             while frame is None:
                 if focus() is not True or takeover():
                     raise ValueError("focus/takeover during warmup refused")
-                if time.perf_counter() - started >= 3.:
+                # Pre-attach only (no pad exists yet): a cold first pass took 3.0 s on 2026-09-30,
+                # so the budget is generous. Focus and takeover are still checked every loop.
+                if time.perf_counter() - started >= 15.:
                     raise ValueError("real-frame warmup capture timed out")
                 frame = capture.grab()
                 if frame is None:
