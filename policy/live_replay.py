@@ -187,7 +187,7 @@ def main(argv=None):
     named = lambda bits: {n: bool(bits[vocab.INDEX[n]]) for n in SHOWN}
     with (out / "steps.jsonl").open("w") as log:
         for row, frame in frames_for(video, rows):
-            s = policy.step(frame)
+            s = policy.step(frame, t=row["anchor_ns"] / 1e9)      # video time, not replay wall time
             t = steps.target(row, session.calibration)
             r = {"index": s.index, "row": row["i"], "latency_ms": s.latency_ms,
                  "pred_held": {n: s.held[n] for n in SHOWN}, "pred_press": {n: s.press[n] for n in SHOWN},

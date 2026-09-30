@@ -196,17 +196,10 @@ class LivePolicy:
     def _views(self, frame):
         """The cache's global (144x256) and crop (128x128) views: RGB float [1, 3, H, W] holding uint8 values."""
         import torch
-        from torch.nn import functional as F
-        x = torch.from_numpy(frame).to(self.device, non_blocking=True).permute(2, 0, 1)[None].flip(1).float()
-        if tuple(x.shape[-2:]) != TRAIN_SIZE[::-1]:
-            if not self.resize:
-                raise ValueError(f"frame {tuple(x.shape[-2:])} differs from training {TRAIN_SIZE[::-1]}")
-            x = F.interpolate(x, TRAIN_SIZE[::-1], mode="area" if x.shape[-1] > TRAIN_SIZE[0] else "bilinear")
-        h, w = x.shape[-2:]
-        views = [F.interpolate(x, (144, 256), mode="area"),
-                 F.interpolate(x[..., (h - 256) // 2:(h - 256) // 2 + 256, (w - 256) // 2:(w - 256) // 2 + 256],
-                               (128, 128), mode="area")]
-        return [v.round().clamp(0, 255) for v in views]
+        from policy.bc2.features import views_from_bgr
+        if frame.shape[:2] != TRAIN_SIZE[::-1] and not self.resize:
+            raise ValueError(f"frame {frame.shape[:2]} differs from training {TRAIN_SIZE[::-1]}")
+        return views_from_bgr(torch.from_numpy(frame).to(self.device, non_blocking=True))
 
     def _bc2_predict(self, frame, t=None):
         """policy.bc2: tower features of both views plus motion observed since the previous step's frame."""

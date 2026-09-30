@@ -31,6 +31,23 @@ def load_tower(vision_path, config_path, device):
     return tower.to(device=device, dtype=torch.bfloat16).eval().requires_grad_(False)
 
 
+NATIVE = (1440, 2560)     # every human recording; views are defined at this geometry
+
+
+def views_from_bgr(frame_bgr):
+    """uint8 [H, W, 3] BGR tensor (any size; on the compute device) -> the cache's global (144x256) and crop
+    (128x128) views as RGB float [1, 3, h, w] holding uint8 values. Other sizes are first resized to 2560x1440 so
+    the crop keeps its field of view. Used identically live (policy.live_policy) and on expert footage."""
+    x = frame_bgr.permute(2, 0, 1)[None].flip(1).float()
+    if tuple(x.shape[-2:]) != NATIVE:
+        x = F.interpolate(x, NATIVE, mode="area" if x.shape[-1] > NATIVE[1] else "bilinear")
+    h, w = x.shape[-2:]
+    views = [F.interpolate(x, (144, 256), mode="area"),
+             F.interpolate(x[..., (h - 256) // 2:(h - 256) // 2 + 256, (w - 256) // 2:(w - 256) // 2 + 256],
+                           (128, 128), mode="area")]
+    return [v.round().clamp(0, 255) for v in views]
+
+
 def tower_features(tower, rgb_u8):
     """[B, H, W, 3] uint8 RGB view (or a list of such views of any sizes, batched into one tower call)
     -> [B, FEAT] float16, the training/live graph."""
