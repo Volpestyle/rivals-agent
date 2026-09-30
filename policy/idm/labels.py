@@ -25,6 +25,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import time
@@ -40,12 +41,29 @@ PAD_ENVELOPE = {"yaw_deg_per_s": 415.0, "pitch_deg_per_s": 99.0}      # the targ
 HELD_ACTIONS = ("move_forward", "move_left", "move_back", "move_right", "web_swing", "spider_power")
 
 
+GAME = os.environ.get("IDM_GAME_PROCESS", "Marvel-Win64-Shipping.exe")    # overridable for testing only
+EXIT_FOR_GAME = 75                                                          # EX_TEMPFAIL: rerun after the game
+
+
 def game_running():
     if sys.platform != "win32":
         return False
-    out = subprocess.run(["tasklist", "/FI", "IMAGENAME eq Marvel-Win64-Shipping.exe"], capture_output=True,
-                         text=True).stdout
-    return "Marvel-Win64-Shipping" in out
+    out = subprocess.run(["tasklist", "/FI", f"IMAGENAME eq {GAME}"], capture_output=True, text=True).stdout
+    return GAME.lower() in out.lower()
+
+
+def exit_when_game_starts(period=5.0):
+    """The GPU (VRAM included) belongs to the game: exit the whole process as soon as it starts. Finished spans are
+    already saved one file each, so a rerun resumes from them; the in-flight span's .tmp file is discarded."""
+    import threading
+
+    def watch():
+        while True:
+            if game_running():
+                print(json.dumps({"event": "exit_for_game", "process": GAME}), flush=True)
+                os._exit(EXIT_FOR_GAME)
+            time.sleep(period)
+    threading.Thread(target=watch, daemon=True).start()
 
 
 def spans(path, video=None):
@@ -82,8 +100,9 @@ def run(ckpt, spans_path, work, *, video=None, shard=(0, 1), device="cuda", mode
     for n, _, _ in sets:
         (Path(work) / n).mkdir(parents=True, exist_ok=True)
     todo = [s for s in todo if any(not span_file(work, n, s).exists() for n, _, _ in sets)]
+    exit_when_game_starts()
     todo.sort(key=lambda s: span_file(work, names[0], s).exists())
-    done, checked, t_last = 0, 0.0, time.time()
+    done, t_last = 0, time.time()
 
     def prep(s):
         try:
@@ -97,11 +116,6 @@ def run(ckpt, spans_path, work, *, video=None, shard=(0, 1), device="cuda", mode
                 s = next(it, None)
                 if s is None:
                     break
-                if time.time() - checked > 30:                     # tasklist costs ~0.7 s; look every 30 s
-                    while game_running():
-                        print(json.dumps({"event": "paused_for_game"}), flush=True)
-                        time.sleep(60)
-                    checked = time.time()
                 queue.append((s, pool.submit(prep, s)))
             if not queue:
                 break
@@ -127,6 +141,7 @@ def run(ckpt, spans_path, work, *, video=None, shard=(0, 1), device="cuda", mode
             print(json.dumps({"event": "span", "span": s["span_id"], "rows": n, "s": round(now - t_last, 1),
                               "done": done, "of": len(todo)}), flush=True)
             t_last = now
+    print(json.dumps({"event": "all_done", "labelled": done, "of": len(todo)}), flush=True)
 
 
 def _sha(path, cache):
