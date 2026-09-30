@@ -100,6 +100,7 @@ class CompatibilityCheck:
         return now
 
     def observe(self):
+        first_observation = self.last_t is None
         self.stage = "capture"
         self.check_time()
         frame, stamp = self.io.next()
@@ -140,6 +141,12 @@ class CompatibilityCheck:
         self.stage = "post_perception_freshness"
         self.observation["post_perception_age_s"] = self.check_time() - stamp
         if self.observation["post_perception_age_s"] > LIMITS.frame_age_s:
+            if first_observation and self.pulses == 0:
+                # One startup-only retry, never an age exemption for input.
+                self.events.append({"event": "discard", "clause": "stale_after_perception",
+                                    "t": stamp, "observation": dict(self.observation)})
+                self.tracker = Tracker()
+                return self.observe()
             raise CompatStop("stale_after_perception")
         self.stage = "post_perception_scope"
         if not self.guard(frame):
@@ -339,20 +346,37 @@ class ResponseWatch:
             self.timer = None
 
 
-def warm_perception(percept):
-    """Prime native-resolution CPU readers before scope/attach, without game IO.
-
-    Synthetic pixels are never a range proof or an observation authorizing input.
-    """
-    import numpy as np
-    frame = np.zeros((1440, 2560, 3), dtype=np.uint8)
+def warm_perception(percept, focus, takeover, *, capture=None):
+    """Discard three real captures through readers/finder/tracker before pad attach."""
+    if capture is None:
+        from scripts.capture import Capture
+        capture = Capture("dxcam")
     started = time.perf_counter()
-    for i in range(3):
-        percept.idle(frame)
-        percept.in_range(frame)
-        size = percept.size(frame)
-        Tracker().update(percept.wide(frame), float(i), frame=size, cam=None)
-    return {"kind": "synthetic_cpu_readers_no_input", "size": [2560, 1440],
+    tracker = Tracker()
+    try:
+        for _ in range(3):
+            frame = None
+            while frame is None:
+                if focus() is not True or takeover():
+                    raise ValueError("focus/takeover during warmup refused")
+                if time.perf_counter() - started >= 3.:
+                    raise ValueError("real-frame warmup capture timed out")
+                frame = capture.grab()
+                if frame is None:
+                    time.sleep(.005)
+            stamp = time.perf_counter()
+            idle = percept.idle(frame)
+            in_range = percept.in_range(frame)
+            if idle is not False or in_range is not True:
+                raise ValueError("range/idle during warmup refused")
+            size = percept.size(frame)
+            tracker.update(percept.wide(frame), stamp, frame=size, cam=None)
+            if focus() is not True or takeover():
+                raise ValueError("focus/takeover after warmup frame refused")
+    finally:
+        if capture.backend == "dxcam":
+            capture.cam.release()
+    return {"kind": "real_capture_readers_finder_tracker_no_input", "size": list(size),
             "iterations": 3, "elapsed_s": time.perf_counter() - started}
 
 
@@ -377,7 +401,7 @@ def main(argv):
         if focus() is not True or takeover():
             raise ValueError("focus/takeover preflight refused")
         percept = L.default_perception()
-        warmup = warm_perception(percept)
+        warmup = warm_perception(percept, focus, takeover)
         if focus() is not True or takeover():
             raise ValueError("focus/takeover after preload refused")
         a.out.mkdir(parents=True, exist_ok=False)

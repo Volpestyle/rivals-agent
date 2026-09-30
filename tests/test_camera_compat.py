@@ -135,6 +135,39 @@ def test_slow_detector_refuses_before_input():
     check.percept.wide = slow
     assert 'stale' in check.run()['result']
     assert io.calls == []
+    assert len([e for e in check.events if e['event'] == 'discard']) == 1
+
+
+def test_first_slow_observation_is_discarded_and_freshly_reobserved_before_input():
+    check, io = setup()
+    original = check.percept.wide
+    frames = []
+    def finder(frame):
+        frames.append(frame)
+        if len(frames) == 1:
+            io.advance(.114)  # run-03's first-observation age, above the unchanged bound
+        return original(frame)
+    check.percept.wide = finder
+    assert check.run()['result'] == 'passed'
+    discard = next(e for e in check.events if e['event'] == 'discard')
+    assert discard['clause'] == 'stale_after_perception'
+    assert discard['observation']['post_perception_age_s'] > C.LIMITS.frame_age_s == .1
+    observed = [e for e in check.events if e['event'] == 'observe']
+    assert observed[0]['t'] > discard['t'] + .1
+    assert all(e['t'] != discard['t'] for e in observed)
+    assert frames[0] is not frames[1] and io.calls[0][0] > observed[0]['t']
+
+
+def test_later_slow_observation_still_stops_without_startup_retry():
+    check, io = setup()
+    check.observe()
+    original = check.percept.wide
+    def slow(frame):
+        io.advance(.114)
+        return original(frame)
+    check.percept.wide = slow
+    assert check.run()['result'] == 'stale_after_perception'
+    assert not io.calls and not any(e['event'] == 'discard' for e in check.events)
 
 
 @pytest.mark.parametrize('failure', ['age', 'scope', 'reader', 'save'])
@@ -170,7 +203,7 @@ def test_stop_retains_failing_frame_after_release_and_names_clause(failure):
     if failure in ('age', 'save'):
         assert stop['clause'] == 'stale_after_perception'
         assert stop['observation']['post_perception_age_s'] > .1
-        assert len(calls) == 1  # preserve original short-circuit order
+        assert len(calls) == 2  # initial proof for the discarded frame and the retry
     elif failure == 'scope':
         assert stop['clause'] == 'scope_lost_after_perception'
     else:
@@ -183,25 +216,46 @@ def test_stop_retains_failing_frame_after_release_and_names_clause(failure):
         assert saved[0][1] is check.last_frame
 
 
-def test_warmup_uses_only_synthetic_readers(monkeypatch):
-    import sys
-    frame = object()
+@pytest.mark.parametrize('failure', [None, 'scope', 'reader', 'takeover'])
+def test_warmup_uses_three_real_fresh_frames_and_closes_capture(failure):
+    frames = [object() for _ in range(3)]
+    pending = iter([None, *frames])
     calls = []
-    def zeros(shape, dtype):
-        assert shape == (1440, 2560, 3) and dtype == 'uint8'
-        return frame
-    monkeypatch.setitem(sys.modules, 'numpy', SimpleNamespace(zeros=zeros, uint8='uint8'))
+    closed = []
+    capture = SimpleNamespace(backend='dxcam', grab=lambda: next(pending),
+                              cam=SimpleNamespace(release=lambda: closed.append(True)))
     def read(name, value):
         def reader(f):
-            assert f is frame
-            calls.append(name)
+            assert f in frames
+            calls.append((name, f))
+            if failure == 'reader' and name == 'finder':
+                raise OSError('finder')
             return value
         return reader
-    percept = SimpleNamespace(idle=read('idle',False), in_range=read('range',False),
+    percept = SimpleNamespace(idle=read('idle',False), in_range=read('range',failure != 'scope'),
                               size=read('size',(2560,1440)), wide=read('finder',[]))
-    result = C.warm_perception(percept)
-    assert calls == ['idle','range','size','finder'] * 3
+    warm = lambda: C.warm_perception(percept, lambda: True, lambda: failure == 'takeover', capture=capture)
+    if failure:
+        with pytest.raises(OSError if failure == 'reader' else ValueError):
+            warm()
+        assert closed == [True]
+        return
+    result = warm()
+    assert calls == [(name, frame) for frame in frames for name in ('idle','range','size','finder')]
     assert result['iterations'] == 3
+    assert result['kind'] == 'real_capture_readers_finder_tracker_no_input'
+    assert closed == [True]
+
+
+def test_real_warmup_capture_timeout_closes_before_attach(monkeypatch):
+    ticks = iter([0., 3.])
+    monkeypatch.setattr(C.time, 'perf_counter', lambda: next(ticks))
+    closed = []
+    capture = SimpleNamespace(backend='dxcam', grab=lambda: pytest.fail('capture after timeout'),
+                              cam=SimpleNamespace(release=lambda: closed.append(True)))
+    with pytest.raises(ValueError, match='warmup capture timed out'):
+        C.warm_perception(None, lambda: True, lambda: False, capture=capture)
+    assert closed == [True]
 
 
 def test_screenshot_preflight_requires_detected_targets_outside_left_hero_zone():
@@ -554,7 +608,7 @@ def compat_cli(tmp_path,monkeypatch):
     monkeypatch.setattr(L,'foreground_pid_guard',lambda p: lambda: flags.focus)
     monkeypatch.setattr(L,'human_takeover_guard',lambda: lambda: flags.takeover)
     monkeypatch.setattr(L,'default_perception',lambda: SimpleNamespace(in_range=lambda f: True,idle=lambda f: False))
-    def warmup(p):
+    def warmup(p, focus, takeover):
         assert flags.device is None and flags.scope is None
         return {"kind": "test_no_input"}
     monkeypatch.setattr(C,'warm_perception',warmup)
