@@ -14,6 +14,7 @@ import time
 
 import numpy as np
 import torch
+from torch.nn import functional as F
 
 from policy.bc2.model import Config, Policy2
 from policy.range_bc import train as rtrain, vocab
@@ -42,6 +43,14 @@ class Session:
         prev = np.arange(n) - 1
         prev[self.t["run_start"]] = np.flatnonzero(self.t["run_start"])
         self.prev = torch.from_numpy(np.maximum(prev, 0)).to(dev)
+        yaw = np.nan_to_num(self.t["yaw"], nan=9.)
+        run_id = np.cumsum(self.t["run_start"])
+        onset = (np.abs(yaw) >= .5) & (np.abs(yaw) < 9.)
+        for k in range(1, ONSET_STILL + 1):
+            back = np.zeros(n, bool)
+            back[k:] = (run_id[k:] == run_id[:-k]) & (np.abs(yaw[:-k]) < .5)
+            onset &= back
+        self.onset = torch.from_numpy(onset).to(dev)
         self.run_first = torch.from_numpy(np.maximum.accumulate(np.where(self.t["run_start"], np.arange(n), 0))).to(dev)
         starts = np.flatnonzero(self.t["run_start"]).tolist()
         self.runs = list(zip(starts, starts[1:] + [n]))
@@ -77,13 +86,14 @@ def windows(sessions, generator, jitter=False):
     return out
 
 
-def batch(sessions, items, device):
+def batch(sessions, items, device, chunk=0):
     t = max(item[2] for item in items)
-    parts = {k: [] for k in ("feats", "gp", "gc", "cp", "cc", "green", "dt", "act", "act_mask", "camera", "camera_mask")}
-    for si, st, n, at_start, k in items:
+    parts = {k: [] for k in ("feats", "gp", "gc", "cp", "cc", "green", "dt", "onset", "fcam", "fcam_mask", "act",
+                             "act_mask", "camera", "camera_mask")}
+    for si, st, n, at_start, stride in items:
         s = sessions[si]
-        idx = (st + k * torch.arange(t, device=device)).clamp_max(s.n - 1)
-        inputs = s.inputs(idx[None], k)
+        idx = (st + stride * torch.arange(t, device=device)).clamp_max(s.n - 1)
+        inputs = s.inputs(idx[None], stride)
         parts["dt"].append(inputs[7][0])
         for k, v in zip(("feats", "gp", "gc", "cp", "cc"), inputs[:5]):
             parts[k].append(v[0])
@@ -91,6 +101,14 @@ def batch(sessions, items, device):
             parts["green"].append(inputs[6][0])
         keep = torch.zeros(t, dtype=torch.bool, device=device)
         keep[(0 if at_start else BURN_IN):n] = True
+        parts["onset"].append(s.onset[idx])
+        if chunk:
+            fut = idx[:, None] + stride * torch.arange(1, chunk + 1, device=device)[None]
+            ok = fut < s.n
+            fut = fut.clamp_max(s.n - 1)
+            ok &= s.run_first[fut] == s.run_first[idx][:, None]
+            parts["fcam"].append(s.cam[fut])
+            parts["fcam_mask"].append(s.cam_mask[fut] & ok[..., None] & keep[:, None, None])
         parts["act"].append(s.act[idx])
         parts["act_mask"].append(s.act_mask[idx] & keep[:, None, None])
         parts["camera"].append(s.cam[idx])
@@ -160,13 +178,50 @@ def calibrate(preds, sessions, live):
     return out
 
 
+def side_degrees(cams, theta):
+    """Lopsided decode: where one side's turning mass (|deg| >= .35) reaches theta[axis], take the median of that
+    side alone; otherwise the ordinary median. theta: per axis, or None for the plain median."""
+    deg = camera_degrees(cams)
+    if theta is None:
+        return deg
+    reps = REPS.to(cams.device)
+    for axis in (0, 1):
+        p = cams[:, axis]
+        for side in (reps <= -.35, reps >= .35):
+            mass = (p * side).sum(-1)
+            q = p * side / mass.clamp_min(1e-9)[:, None]
+            med = reps[(q.cumsum(-1) < .5).sum(-1).clamp_max(vocab.CAMERA_CLASSES - 1)]
+            pick = mass >= theta[axis]
+            deg[pick, axis] = med[pick]
+    return deg
+
+
+def calibrate_side(preds, sessions):
+    """Per-axis theta whose TRAIN share of turning steps (|deg| >= .5) matches James's."""
+    out = []
+    for axis, key in ((0, "yaw"), (1, "pitch")):
+        human = 0
+        for s in sessions:
+            y = torch.from_numpy(np.nan_to_num(s.t[key], nan=0.)).to(s.cam_mask.device)
+            human += int(((y.abs() >= .5) & s.cam_mask[:, axis]).sum())
+        best = (math.inf, .5)
+        for th in torch.linspace(.2, .9, 36).tolist():
+            theta = [2., 2.]
+            theta[axis] = th
+            n = sum(int(((side_degrees(c, theta)[:, axis].abs() >= .5) & s.cam_mask[:, axis]).sum())
+                    for (_, c), s in zip(preds, sessions))
+            best = min(best, (abs(n - human), th))
+        out.append(best[1])
+    return out
+
+
 def camera_degrees(cams):
     cum = cams.cumsum(-1)
     median = (cum < .5).sum(-1).clamp_max(vocab.CAMERA_CLASSES - 1)
     return REPS.to(cams.device)[median]
 
 
-def evaluate(acts, cams, s, thresholds, live):
+def evaluate(acts, cams, s, thresholds, live, deg=None):
     held, press = decode(acts, s, thresholds, live)
     t, dev = s.t, acts.device
     valid = torch.from_numpy(t["valid"]).to(dev)
@@ -190,7 +245,7 @@ def evaluate(acts, cams, s, thresholds, live):
                                 "press_f1": 2 * tp / max(1, 2 * tp + fp + fn),
                                 "held_f1": 2 * htp / max(1, hden), "pred_presses": tp + fp, "human_presses": tp + fn}
     out["press_macro_f1"] = float(np.mean([out["actions"][n]["press_f1"] for n in vocab.EDGE_ACTIONS]))
-    deg = camera_degrees(cams)
+    deg = camera_degrees(cams) if deg is None else deg
     mean_deg = (cams * REPS.to(cams.device)).sum(-1)          # expectation decode, for comparison
     for axis, key in ((0, "yaw"), (1, "pitch")):
         y = torch.from_numpy(t[key]).to(dev)
@@ -287,7 +342,7 @@ def dev_loss(model, sessions, pw):
 
 
 def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batch_size=32, lr=3e-4, wd=.05,
-        device="cuda", incumbent=None, log=print):
+        device="cuda", incumbent=None, log=print, onset_weight=1., chunk_weight=.5):
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     torch.manual_seed(seed)
@@ -308,10 +363,20 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
         order = torch.randperm(len(items), generator=gen).tolist()
         started, running = time.monotonic(), 0.
         for k in range(per_epoch):
-            b = batch(train_s, [items[i] for i in order[k * batch_size:(k + 1) * batch_size]], device)
+            b = batch(train_s, [items[i] for i in order[k * batch_size:(k + 1) * batch_size]], device, config.chunk)
             with torch.autocast("cuda", dtype=torch.bfloat16, enabled=device == "cuda"):
-                x, y, _ = model(b["feats"], b["gp"], b["gc"], b["cp"], b["cc"], green=b.get("green"), dt=b["dt"])
+                x, y, _, fut = model(b["feats"], b["gp"], b["gc"], b["cp"], b["cc"], green=b.get("green"), dt=b["dt"],
+                                     future=True)
             terms = rtrain.loss_terms(x.float(), y.float(), b, pw)
+            if onset_weight != 1:           # camera CE with onset steps up-weighted
+                ce = F.cross_entropy(y.float().reshape(-1, vocab.CAMERA_CLASSES), b["camera"].reshape(-1),
+                                     reduction="none").reshape(b["camera_mask"].shape)
+                w = b["camera_mask"].float() * (1 + (onset_weight - 1) * b["onset"].float())[..., None]
+                terms["camera"] = (ce * w).sum() / w.sum().clamp_min(1)
+            if fut is not None:
+                fce = F.cross_entropy(fut.float().reshape(-1, vocab.CAMERA_CLASSES), b["fcam"].reshape(-1),
+                                      reduction="none").reshape(b["fcam_mask"].shape)
+                terms["future_camera"] = chunk_weight * (fce * b["fcam_mask"]).sum() / b["fcam_mask"].sum().clamp_min(1)
             loss = sum(terms.values())
             opt.zero_grad(set_to_none=True)
             loss.backward()
@@ -337,11 +402,14 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
         model.eval()
         preds = [predict(model, s) for s in train_s]
         th = calibrate(preds, train_s, live)
+        theta = calibrate_side(preds, train_s)
         del preds
-        report[tag] = {"epoch": ep, "thresholds": dict(zip(vocab.NAMES, th)),
-                       "dev": [evaluate(*predict(model, s), s, th, live) for s in dev_s],
-                       "eval": [evaluate(*predict(model, s), s, th, live) for s in eval_s]}
-        for part in ("dev", "eval"):
+        report[tag] = {"epoch": ep, "thresholds": dict(zip(vocab.NAMES, th)), "side_theta": theta}
+        for part, group in (("dev", dev_s), ("eval", eval_s)):
+            outs = [(predict(model, s), s) for s in group]
+            report[tag][part] = [evaluate(a, c, s, th, live) for (a, c), s in outs]
+            report[tag][part + "_side"] = [evaluate(a, c, s, th, live, side_degrees(c, theta)) for (a, c), s in outs]
+        for part in ("dev", "eval", "dev_side", "eval_side"):
             if report[tag][part]:
                 report[tag][part + "_pooled"] = pooled(report[tag][part])
     if incumbent is not None:

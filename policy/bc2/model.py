@@ -126,6 +126,7 @@ class Config:
     use_motion: bool = True
     use_green: bool = False
     use_dt: bool = False       # frame interval input, in 30 Hz steps (1 = 33 ms)
+    chunk: int = 0             # auxiliary camera heads for the next `chunk` steps (training signal only)
 
     def as_dict(self):
         return asdict(self)
@@ -151,6 +152,8 @@ class Policy2(nn.Module):
         self.core = nn.LSTM(width, c.hidden, num_layers=c.layers, batch_first=True)
         self.actions = nn.Linear(c.hidden, 3 * vocab.N)
         self.camera = nn.Linear(c.hidden, 2 * vocab.CAMERA_CLASSES)
+        if c.chunk:
+            self.future_camera = nn.Linear(c.hidden, c.chunk * 2 * vocab.CAMERA_CLASSES)
 
     def step_inputs(self, feats, gp, gc, cp, cc, green=None, dt=None):
         """Per-step features [B, T, D]. feats [B, T, 2, FEAT]; gray pairs uint8 [B, T, H, W]."""
@@ -173,9 +176,14 @@ class Policy2(nn.Module):
             parts.append(self.green(green.float()))
         return self.norm(torch.cat(parts, -1))
 
-    def forward(self, feats, gp, gc, cp, cc, state=None, green=None, dt=None):
+    def forward(self, feats, gp, gc, cp, cc, state=None, green=None, dt=None, future=False):
         x = self.step_inputs(feats, gp, gc, cp, cc, green, dt)
         out, state = self.core(x, state)
         b, t = out.shape[:2]
-        return (self.actions(out).reshape(b, t, 3, vocab.N),
-                self.camera(out).reshape(b, t, 2, vocab.CAMERA_CLASSES), state)
+        result = (self.actions(out).reshape(b, t, 3, vocab.N),
+                  self.camera(out).reshape(b, t, 2, vocab.CAMERA_CLASSES), state)
+        if future:
+            c = self.config.chunk
+            fut = self.future_camera(out).reshape(b, t, c, 2, vocab.CAMERA_CLASSES) if c else None
+            return (*result, fut)
+        return result
