@@ -230,7 +230,7 @@ def free_ram_gb():
     return status.ullAvailPhys / 2 ** 30
 
 
-def pipeline(labels, views_root, features_root, *, floor_gb=6., poll=60, log=print):
+def pipeline(labels, views_root, features_root, *, floor_gb=6., poll=60, log=print, features=True):
     """Shared-PC supervisor: at most one views worker and one feature process; every `poll` seconds, if free RAM
     is under floor_gb or the game is running, stop both (a stopped session simply reruns later). Returns when
     every session has features."""
@@ -251,7 +251,8 @@ def pipeline(labels, views_root, features_root, *, floor_gb=6., poll=60, log=pri
                 log(f"stopped {name}: {reason}")
         running.clear()
 
-    while not all(feats_done(p) for p in labels):
+    finished = (lambda p: feats_done(p)) if features else (lambda p: views_done(p))
+    while not all(finished(p) for p in labels):
         for name in [k for k, proc in running.items() if proc.poll() is not None]:
             log(f"{name} exited {running.pop(name).returncode}")
         free = free_ram_gb()
@@ -265,7 +266,7 @@ def pipeline(labels, views_root, features_root, *, floor_gb=6., poll=60, log=pri
                                                         "--jobs", "1"])
             log(f"views {ids[pending_views[0]]} (free {free:.1f} GB)")
         ready = [p for p in labels if views_done(p) and not feats_done(p)]
-        if "features" not in running and ready:
+        if features and "features" not in running and ready:
             running["features"] = subprocess.Popen(base + ["features", *ready, "--views", str(views_root),
                                                            "--out", str(features_root)])
             log(f"features for {len(ready)} sessions (free {free:.1f} GB)")
@@ -276,6 +277,9 @@ def pipeline(labels, views_root, features_root, *, floor_gb=6., poll=60, log=pri
 
 def game_running():
     import subprocess
+    import sys
+    if sys.platform != "win32":
+        return False            # the game only runs on the PC
     out = subprocess.run(["tasklist", "/FI", "IMAGENAME eq Marvel-Win64-Shipping.exe", "/NH"], capture_output=True,
                          text=True).stdout
     return "Marvel-Win64-Shipping" in out
@@ -296,6 +300,8 @@ def main(argv=None):
     p.add_argument("stage", choices=("shard", "views", "features", "pipeline"))
     p.add_argument("--features-out", help="features root (pipeline stage)")
     p.add_argument("--floor-gb", type=float, default=6.)
+    p.add_argument("--views-only", action="store_true", help="pipeline: views here, features elsewhere")
+    p.add_argument("--device", default="cuda", help="features: cuda or mps")
     p.add_argument("labels", nargs="+")
     p.add_argument("--out", required=True)
     p.add_argument("--views", help="views root (features stage)")
@@ -304,7 +310,8 @@ def main(argv=None):
     p.add_argument("--vision-config", default="D:/rivals-policy/bundles/ng-nohist-s1/siglip2-large-config.json")
     a = p.parse_args(argv)
     if a.stage == "pipeline":
-        pipeline(a.labels, a.out, a.features_out, floor_gb=a.floor_gb, log=lambda m: print(time.strftime("%H:%M:%S"), m, flush=True))
+        pipeline(a.labels, a.out, a.features_out, floor_gb=a.floor_gb, features=not a.views_only,
+                 log=lambda m: print(time.strftime("%H:%M:%S"), m, flush=True))
         return 0
     if a.stage == "shard":
         for labels in a.labels:
@@ -322,14 +329,14 @@ def main(argv=None):
     import torch
     from policy.bc2.features import load_tower
     torch.set_num_threads(2)
-    tower = load_tower(a.vision, a.vision_config, "cuda")
+    tower = load_tower(a.vision, a.vision_config, a.device)
     for labels in a.labels:
         sid = json.loads(open(labels, encoding="utf-8").readline())["session_id"]
         if (Path(a.out) / sid / "meta.json").exists() or not (Path(a.views) / sid / "views.json").exists():
             continue                       # done, or its views are not finished yet
         if game_running():
             raise SystemExit("the game started; stopping between videos")
-        features(labels, a.views, a.out, tower, log=lambda m: print(m, flush=True))
+        features(labels, a.views, a.out, tower, device=a.device, log=lambda m: print(m, flush=True))
     return 0
 
 
