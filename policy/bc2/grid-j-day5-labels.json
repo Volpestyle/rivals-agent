@@ -1,0 +1,113 @@
+[
+ {
+  "name": "j-day5-v2a-s0",
+  "seed": 0,
+  "expert_label_source": "idm v2-a (v2-a.pt)",
+  "epochs": 30,
+  "batch_size": 8,
+  "use_dt": true,
+  "hidden": 1536,
+  "layers": 2,
+  "expert": true,
+  "expert_sessions": [
+   "expert-2871149954-s0",
+   "expert-2871149954-s1",
+   "expert-2871149954-s2",
+   "expert-2871149954-s3",
+   "expert-2872282230-s0"
+  ]
+ },
+ {
+  "name": "j-day5-v2cd-s0",
+  "seed": 0,
+  "expert_label_source": "idm v2-cd (v2-d-w12-wide.pt)",
+  "expert_targets": "/out/expert-targets-v2cd",
+  "epochs": 30,
+  "batch_size": 8,
+  "use_dt": true,
+  "hidden": 1536,
+  "layers": 2,
+  "expert": true,
+  "expert_sessions": [
+   "expert-2871149954-s0",
+   "expert-2871149954-s1",
+   "expert-2871149954-s2",
+   "expert-2871149954-s3",
+   "expert-2872282230-s0"
+  ]
+ },
+ {
+  "name": "j-day5-v2a-s1",
+  "seed": 1,
+  "expert_label_source": "idm v2-a (v2-a.pt)",
+  "epochs": 30,
+  "batch_size": 8,
+  "use_dt": true,
+  "hidden": 1536,
+  "layers": 2,
+  "expert": true,
+  "expert_sessions": [
+   "expert-2871149954-s0",
+   "expert-2871149954-s1",
+   "expert-2871149954-s2",
+   "expert-2871149954-s3",
+   "expert-2872282230-s0"
+  ]
+ },
+ {
+  "name": "j-day5-v2cd-s1",
+  "seed": 1,
+  "expert_label_source": "idm v2-cd (v2-d-w12-wide.pt)",
+  "expert_targets": "/out/expert-targets-v2cd",
+  "epochs": 30,
+  "batch_size": 8,
+  "use_dt": true,
+  "hidden": 1536,
+  "layers": 2,
+  "expert": true,
+  "expert_sessions": [
+   "expert-2871149954-s0",
+   "expert-2871149954-s1",
+   "expert-2871149954-s2",
+   "expert-2871149954-s3",
+   "expert-2872282230-s0"
+  ]
+ },
+ {
+  "name": "j-day5-v2a-s2",
+  "seed": 2,
+  "expert_label_source": "idm v2-a (v2-a.pt)",
+  "epochs": 30,
+  "batch_size": 8,
+  "use_dt": true,
+  "hidden": 1536,
+  "layers": 2,
+  "expert": true,
+  "expert_sessions": [
+   "expert-2871149954-s0",
+   "expert-2871149954-s1",
+   "expert-2871149954-s2",
+   "expert-2871149954-s3",
+   "expert-2872282230-s0"
+  ]
+ },
+ {
+  "name": "j-day5-v2cd-s2",
+  "seed": 2,
+  "expert_label_source": "idm v2-cd (v2-d-w12-wide.pt)",
+  "expert_targets": "/out/expert-targets-v2cd",
+  "epochs": 30,
+  "batch_size": 8,
+  "use_dt": true,
+  "hidden": 1536,
+  "layers": 2,
+  "expert": true,
+  "expert_sessions": [
+   "expert-2871149954-s0",
+   "expert-2871149954-s1",
+   "expert-2871149954-s2",
+   "expert-2871149954-s3",
+   "expert-2872282230-s0"
+  ]
+ }
+]
