@@ -103,10 +103,13 @@ def windows(sessions, generator, jitter=False):
     return out
 
 
-def batch(sessions, items, device, chunk=0, motion_dropout=0.):
+def batch(sessions, items, device, chunk=0, motion_dropout=0., static_aug=0.):
     """motion_dropout: per window, the probability of blanking the observed motion (previous frame = current
     frame) over a random span of 25-100% of the window, so the policy also learns to act from a static view
-    (live, a still start otherwise stays still: docs/lanes/policy.md, learned-01 idle)."""
+    (live, a still start otherwise stays still: docs/lanes/policy.md, learned-01 idle).
+    static_aug: per window, the probability of freezing the WHOLE input (tower features, both gray views with zero
+    motion, green profile) to the first frame of a random 25-100% span, while the targets stay James's real
+    actions: from a frozen scene, the policy still has to start the typical action."""
     t = max(item[2] for item in items)
     parts = {k: [] for k in ("feats", "gp", "gc", "cp", "cc", "green", "dt", "onset", "fcam", "fcam_mask", "act",
                              "act_mask", "camera", "camera_mask")}
@@ -123,6 +126,18 @@ def batch(sessions, items, device, chunk=0, motion_dropout=0.):
             blank[s0:s0 + span] = True
             inputs[1] = torch.where(blank[None, :, None, None], inputs[2], inputs[1])     # gray global prev := cur
             inputs[3] = torch.where(blank[None, :, None, None], inputs[4], inputs[3])     # gray crop prev := cur
+        if static_aug and float(torch.rand(1)) < static_aug:
+            span = int(n * (.25 + .75 * float(torch.rand(1))))
+            s0 = int(torch.randint(0, max(1, n - span + 1), (1,)))
+            frozen = torch.zeros(t, dtype=torch.bool, device=device)
+            frozen[s0:s0 + span] = True
+            for j in (0, 2, 4, 6):                                  # feats, current gray views, green
+                if inputs[j] is not None:
+                    x = inputs[j]
+                    shape = (1, t) + (1,) * (x.dim() - 2)
+                    inputs[j] = torch.where(frozen.view(shape), x[:, s0:s0 + 1], x)
+            inputs[1] = torch.where(frozen[None, :, None, None], inputs[2], inputs[1])     # zero motion
+            inputs[3] = torch.where(frozen[None, :, None, None], inputs[4], inputs[3])
         for k, v in zip(("feats", "gp", "gc", "cp", "cc"), inputs[:5]):
             parts[k].append(v[0])
         if inputs[6] is not None:
@@ -375,7 +390,8 @@ def dev_loss(model, sessions, pw, chunk=512):
 
 def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batch_size=32, lr=3e-4, wd=.05,
         device="cuda", incumbent=None, log=print, onset_weight=1., chunk_weight=.5, expert_dirs=(),
-        expert_epochs=None, expert_share=None, expert_actions=True, motion_dropout=0.):
+        expert_epochs=None, expert_share=None, expert_actions=True, motion_dropout=0., static_aug=0.,
+        expert_mask=None):
     """expert_dirs: IDM-labelled expert sessions (policy.bc2.expert), used as extra training windows for the first
     expert_epochs epochs (default: all; VPT-style pretrain-then-finetune when fewer). expert_share caps the
     expert fraction of an epoch's windows. Selection, thresholds and pos_weight stay on James's data."""
@@ -392,6 +408,19 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
     if not expert_actions:                 # camera-only expert labels
         for s in expert_s:
             s.act_mask[:] = False
+    # Per-creator label masks from label audits, e.g. {"daymr": {"camera": true, "actions": ["web_cluster"]}}:
+    # masked channels become unknown (no loss) for that creator's shards.
+    masked = {}
+    for s in expert_s:
+        player = (s.meta.get("expert_context") or {}).get("player")
+        rule = (expert_mask or {}).get(player)
+        if not rule:
+            continue
+        if rule.get("camera"):
+            s.cam_mask[:] = False
+        for name in rule.get("actions", ()):
+            s.act_mask[:, :, vocab.INDEX[name]] = False
+        masked[s.id] = {"player": player, **rule}
     all_s = train_s + expert_s
     expert_epochs = epochs if expert_epochs is None else expert_epochs
     log(f"loaded {sum(s.n for s in train_s)} train steps, {sum(s.n for s in expert_s)} expert, "
@@ -421,7 +450,7 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
         started, running = time.monotonic(), 0.
         for k in range(per_epoch):
             b = batch(all_s, [items[i] for i in order[k * batch_size:(k + 1) * batch_size]], device, config.chunk,
-                      motion_dropout)
+                      motion_dropout, static_aug)
             with torch.autocast("cuda", dtype=torch.bfloat16, enabled=device == "cuda"):
                 x, y, _, fut = model(b["feats"], b["gp"], b["gc"], b["cp"], b["cc"], green=b.get("green"), dt=b["dt"],
                                      future=True)
@@ -455,7 +484,7 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
     report = {"config": config.as_dict(), "seed": seed, "epochs": epochs, "history": history, "selected_epoch": best[1],
               "expert": {"sessions": [s.id for s in expert_s], "steps": sum(s.n for s in expert_s),
                          "epochs": expert_epochs if expert_s else 0, "share": expert_share,
-                         "actions": expert_actions},
+                         "actions": expert_actions, "masked": masked},
               "selection": "lowest dev loss (dev sessions only); eval sessions never used for selection"}
     live = [bool(x) for x in vocab.live_mask([10 ** 6] * vocab.N)]
     for tag, ep in (("selected", best[1]), ("final", epochs)):

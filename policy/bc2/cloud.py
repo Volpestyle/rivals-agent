@@ -70,7 +70,7 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
         chunk: int = 0, onset_weight: float = 1., chunk_weight: float = .5, expert: bool = False,
         expert_epochs: int = None, expert_share: float = None, hires: bool = False, layers: int = 1,
         expert_actions: bool = True, expert_sessions: list = None, expert_label_source: str = None,
-        expert_targets: str = None, motion_dropout: float = 0.):
+        expert_targets: str = None, motion_dropout: float = 0., static_aug: float = 0., expert_mask: dict = None):
     """expert_targets: a volume directory of target-only overlays (<shard>/{targets.npz, meta.json}, from
     expert.relabel) that replace each staged expert shard's targets; the original features are unchanged."""
     _setup()
@@ -115,7 +115,7 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
                        config=config, seed=seed, epochs=epochs, batch_size=batch_size, lr=lr, wd=wd,
                        onset_weight=onset_weight, chunk_weight=chunk_weight, expert_dirs=experts,
                        expert_epochs=expert_epochs, expert_share=expert_share, expert_actions=expert_actions,
-                       motion_dropout=motion_dropout,
+                       motion_dropout=motion_dropout, static_aug=static_aug, expert_mask=expert_mask,
                        incumbent=train.load_incumbent("/out/assets/incumbent/epoch-26.pt",
                                                       "/out/assets/incumbent/evaluation.json"),
                        log=lambda m: print(m, flush=True))
