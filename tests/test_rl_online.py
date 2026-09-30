@@ -306,3 +306,25 @@ def test_a_fall_seen_only_on_stop_png_is_a_death():
     assert e["events"]["death"] == 1 and e["reward"][-1] <= -10
     from rl.online.sitting import after_episode
     assert after_episode(e["result"], bool(e["events"]["death"]), "ready") == (True, None)
+
+
+@pytest.mark.skipif(not Path("data/calibration/rl-sitting-20260930-04/ep-000-bc/000000.jpg").exists(),
+                    reason="sitting 04 not present")
+def test_turn_options_fire_toward_bots_on_real_sitting_frames():
+    cv2 = pytest.importorskip("cv2")
+    import glob
+    frames = [cv2.imread(f) for f in sorted(glob.glob("data/calibration/rl-sitting-20260930-04/ep-000-bc/*.jpg"))[:60]]
+    base = FakeBase(.01)
+    base.reset()
+    pol = explore.ExploringPolicy(base, seed=5, turn_rate_hz=2.)
+    pol.reset()
+    turned = []
+    for k, frame in enumerate(frames):
+        s = pol.step(frame, t=k / 10)
+        if s.yaw_deg != .1:
+            visible, bearing = explore.outline_bearing(frame)
+            turned.append((s.yaw_deg, visible, bearing))
+    assert turned, "no turn option fired on frames with bots in view"
+    assert all(v for _, v, _ in turned)                 # no turn without an outline in view
+    agree = [y * b > 0 for y, v, b in turned if abs(b) >= explore.CENTRED]
+    assert agree and sum(agree) / len(agree) >= .8    # toward the outline (the bearing refreshes at 5 Hz)

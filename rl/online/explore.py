@@ -19,8 +19,8 @@ Camera (off unless cam_temperature > 0 or turn_rate_hz > 0). Without it the RL a
 cannot discover aiming (first live sitting: mean |yaw| 0.05-0.22 deg per step).
   - cam_temperature: yaw and pitch classes are sampled from the policy's own camera distribution sharpened or flattened
     by the temperature (p ** (1/T)), instead of its mean/median decode.
-  - Turn options: at turn_rate_hz, when an enemy-colour outline is visible (policy.bc2.model.green_profile on the
-    144x256 global view: the nearest marked column's bearing, the HUD and hero regions masked), yaw toward it at a random
+  - Turn options: at turn_rate_hz, when an eligible enemy outline is visible (outline_bearing: the runner's own finder
+    and the reset's eligibility rule; the nearest outline to the crosshair column), yaw toward it at a random
     0.6-2.5 deg per step for up to 0.15-0.5 s, ending early once it is centred or lost. Pitch stays the policy's.
 Every camera request stays a finite number of degrees within the policy's own class range (|deg| <= vocab.CLAMP_DEG);
 the runner's CameraPulses turns it into measured stick knots with their caps, exactly as for the BC decode.
@@ -63,7 +63,8 @@ def sample_class(probs, temperature, u):
 
 
 def green_bearing(frame_bgr):
-    """(visible, bearing in [-1, 1] of half-width) of the nearest enemy-colour column in the global view."""
+    """(visible, bearing) from green_profile on the 256x144 view. NOT the turn default: thin Galacta outlines blur
+    below the colour band at that size (rl-sitting-20260930-04: 0 of 51 frames with bots in view), kept for reference."""
     import cv2
     import torch
     from policy.bc2.model import green_profile
@@ -73,12 +74,35 @@ def green_bearing(frame_bgr):
     return mass > 0, float(g[-1])
 
 
+_PERCEPT = []
+
+
+def outline_bearing(frame_bgr):
+    """(visible, bearing in [-1, 1] of half-width) of the eligible enemy outline nearest the crosshair column.
+
+    The live runner's own finder (agent.loop.default_perception().wide: perception.outline at the processing size, its
+    hero-zone exclusion and dead zones) filtered by agent.range_reset.eligible, the same rule the reset uses before an
+    episode. ~18 ms per call on the PC CPU (sitting 04 frames), so ExploringPolicy calls it only when a turn starts
+    and at most every BEARING_REFRESH_S while one runs. Sitting 04: bots seen on 43 of 51 BC-episode frames."""
+    from agent import loop as L
+    from agent.range_reset import eligible
+    if not _PERCEPT:
+        _PERCEPT.append(L.default_perception())
+    h, w = frame_bgr.shape[:2]
+    boxes = eligible(_PERCEPT[0].wide(frame_bgr), (w, h))
+    if not boxes:
+        return False, 0.
+    cx = min((d.center[0] for d in boxes), key=lambda x: abs(x - w / 2))
+    return True, max(-1., min(1., (cx - w / 2) / (w / 2)))
+
+
 OPTION_WEIGHTS = {"spider_power": .22, "web_cluster": .14, "amazing_combo": .08, "get_over_here": .08, "jump": .12,
                   "web_swing": .06, "move_forward": .10, "move_left": .07, "move_right": .07, "move_back": .06}
 OPTION_S = (.2, .8)
 TURN_S = (.15, .5)
 TURN_DEG = (.6, 2.5)             # per 1/30 s step: well inside vocab.REPS; the runner's measured knots cap the stick
 CENTRED = .03                    # of half-width
+BEARING_REFRESH_S = .2           # outline_bearing costs ~18 ms: refresh at most 5 Hz during a turn
 
 
 def _rate(x, name):
@@ -91,7 +115,7 @@ class ExploringPolicy:
     """Wraps a LivePolicy: same reset/step/close, same Step type, sampled action gates and camera."""
 
     def __init__(self, base, *, temperature=0.0, seed=0, log_path=None, option_rate_hz=0.0, cam_temperature=0.0,
-                 turn_rate_hz=0.0, bearing=green_bearing):
+                 turn_rate_hz=0.0, bearing=outline_bearing):
         self.temperature = _rate(temperature, "temperature")
         self.option_rate_hz = _rate(option_rate_hz, "option_rate_hz")
         self.cam_temperature = _rate(cam_temperature, "cam_temperature")
@@ -104,6 +128,7 @@ class ExploringPolicy:
         self.prev_exec = [0] * len(base.names)
         self.option, self.option_until, self.t_prev = None, -math.inf, None
         self.turn = None                        # (speed deg/step, until)
+        self._bearing, self._bearing_t = (False, 0.), -math.inf
         self._cams = None
         if self.cam_temperature > 0 and hasattr(base, "_bc2_predict"):
             original = base._bc2_predict
@@ -122,6 +147,7 @@ class ExploringPolicy:
         self.prev_exec = [0] * len(self.base.names)
         self.option, self.option_until, self.t_prev = None, -math.inf, None
         self.turn, self._cams = None, None
+        self._bearing, self._bearing_t = (False, 0.), -math.inf
         self.episode += 1
         if self.log:
             self.log.write(json.dumps({"event": "reset", "episode": self.episode, "temperature": self.temperature,
@@ -206,7 +232,9 @@ class ExploringPolicy:
             self.turn = None
         if self.turn is None and not self._started(self.turn_rate_hz, dt):
             return None
-        visible, bearing = self.bearing(frame)
+        if self.turn is None or now - self._bearing_t >= BEARING_REFRESH_S:
+            self._bearing, self._bearing_t = self.bearing(frame), now
+        visible, bearing = self._bearing
         if not visible or abs(bearing) < CENTRED:
             self.turn = None                     # nothing to turn to, or already on it
             return None
