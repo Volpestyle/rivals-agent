@@ -116,3 +116,17 @@ def step_events(flags, stride=STRIDE):
     """Per row r, the max over rows r..r+stride-1: events in the 10 Hz step that starts at r."""
     n = len(flags)
     return [[max(flags[j][c] for j in range(r, min(r + stride, n))) for c in range(len(flags[r]))] for r in range(n)]
+
+
+def step_known(header, rows, stride=STRIDE):
+    """Per row r, ACTION_DIM known bits for the step over rows r..r+stride-1 of James's own logger (the inverse of
+    'unknown -> 0' in step_actions): holds need held_known in every row, the camera needs relative_known in every row.
+    Presses are always observed. Rows past the end get all-known (they are never window starts)."""
+    order = _order(header)
+    out = []
+    for r in range(len(rows)):
+        chunk = rows[r:r + stride]
+        held = [1.0 if all(c["held_known"][j] for c in chunk) else 0.0 for j in order]
+        cam = 1.0 if all(c.get("relative_known") for c in chunk) else 0.0
+        out.append(held + [1.0] * N_ACT + [cam, cam])
+    return out

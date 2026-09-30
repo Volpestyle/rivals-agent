@@ -79,3 +79,72 @@ def test_training_smoke_on_synthetic_data(tmp_path):
     assert len(res["model_mean"]["mse"]) == 3
     assert (tmp_path / "real_vs_imagined.mp4").stat().st_size > 0
     assert (tmp_path / "model.pt").exists()
+
+
+def replay_row(i, run="v:0-1", held=None, known=True, press=None, yaw=1.0, conf=0.9):
+    held = held if held is not None else [0] * N
+    return {"i": i, "run": run, "suitability": "accepted", "held_end": held, "held_known": [known] * N,
+            "press": press if press is not None else [0] * N, "press_known": [True] * N,
+            "yaw_deg": yaw, "pitch_deg": 0.0, "camera_conf": conf}
+
+
+def test_expert_kept_rows_and_trusted_channels_only():
+    from rl.world_model import expert_prep as E
+    rows = [replay_row(i) for i in range(7)] + [replay_row(8), replay_row(9), replay_row(10)]   # gap at 7->8
+    assert E.kept_rows(rows) == [0, 3, 7]
+    order = {name: j for j, name in enumerate(D.ACTIONS)}
+    held = [1] * N
+    v = E.step_action([replay_row(0, held=held), replay_row(1, held=held), replay_row(2, held=held, conf=0.1)], order)
+    vals, known = v[:D.ACTION_DIM], v[D.ACTION_DIM:]
+    assert known[D.ACTIONS.index("move_forward")] == 1 and vals[D.ACTIONS.index("move_forward")] == 1
+    assert known[D.ACTIONS.index("move_back")] == 0 and vals[D.ACTIONS.index("move_back")] == 0     # noise channel
+    assert known[N + D.ACTIONS.index("jump")] == 1 and known[N + D.ACTIONS.index("get_over_here")] == 0
+    assert known[-1] == 0 and vals[-2] == 0          # low camera confidence in one row -> camera unknown
+    nulls = [replay_row(0), replay_row(1), dict(replay_row(2), yaw_deg=None)]
+    assert E.step_action(nulls, order)[-1] == 0
+
+
+def test_own_known_mask():
+    rows = [row(0), dict(row(1), relative_known=False), row(2), row(3)]
+    k = D.step_known(header(), rows)
+    assert k[0][-1] == 0 and k[2][-1] == 1 and k[0][N] == 1
+
+
+def test_segment_starts():
+    pytest.importorskip("numpy")
+    pytest.importorskip("torch")
+    from rl.world_model.v2 import segment_starts
+    assert segment_starts([0, 0, 0, 1, 1, 1, 1], 3) == [0, 3, 4]
+    assert segment_starts([0, 0], 3) == []
+
+
+def test_v3_smoke_with_expert_shard(tmp_path):
+    np = pytest.importorskip("numpy")
+    pytest.importorskip("torch")
+    cv2 = pytest.importorskip("cv2")
+    pytest.importorskip("PIL")
+    import shutil
+    if not shutil.which("ffmpeg"):
+        pytest.skip("ffmpeg missing")
+    from rl.world_model import v2
+    shard = tmp_path / "expert" / "expert-x-s0"
+    shard.mkdir(parents=True)
+    offs, blob = [0], b""
+    for m in range(40):
+        img = np.full((144, 256, 3), m * 5, np.uint8)
+        jpg = cv2.imencode(".jpg", img)[1].tobytes()
+        blob += jpg
+        offs.append(len(blob))
+    (shard / "frames.bin").write_bytes(blob)
+    np.save(shard / "offsets.npy", np.asarray(offs, np.int64))
+    np.save(shard / "actions.npy", np.zeros((40, 2 * D.ACTION_DIM), np.float32))
+    np.save(shard / "segs.npy", np.asarray([0] * 20 + [1] * 20, np.int32))
+    (shard / "meta.json").write_text(json.dumps({"shard": "expert-x-s0", "player": "reqmr", "kept": 40}))
+    res = v2.main(["--synthetic", "--out", str(tmp_path / "out"), "--steps", "3", "--batch", "4", "--ctx", "4",
+                   "--roll-max", "2", "--roll-start", "0", "--roll-p", "1", "--chs", "8,16,16,16,16", "--horizon", "3",
+                   "--eval-n", "2", "--video-clips", "1", "--sample-steps", "2", "--expert-root", str(tmp_path / "expert"),
+                   "--expert-share", "0.5"])
+    assert "native/mean|all" in res
+    log = [json.loads(line) for line in (tmp_path / "out" / "log.jsonl").read_text().splitlines()]
+    data = next(r for r in log if r["event"] == "data")
+    assert data["expert"]["shards"] == 1 and data["expert"]["sources"] == ["james", "reqmr"]

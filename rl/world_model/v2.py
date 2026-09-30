@@ -13,6 +13,11 @@ batches first imagine R (1..--roll-max) frames with the model's own mean predict
 real frame after them from that partly imagined context, which is the drift the rollouts suffer. A RewardHead learns
 per-step hit / KO / fall probabilities on real frames (lightly noised) from rl/labels/range_rewards_*.json, mapped to
 steps with rl.awr.step_rewards.
+
+v3 (--expert-root): adds IDM-labelled expert shards packed by rl.world_model.expert_prep (10 Hz, stride 1, JPEG)
+drawn with probability --expert-share. The action input then carries a known mask and a one-hot source (James or
+the expert player), so null labels stay unknown and each source can learn its own camera scale. Frames live in CPU
+memory when they no longer fit beside the model on the GPU. Evaluation stays on James's held-out footage.
 """
 from __future__ import annotations
 
@@ -54,6 +59,7 @@ def parse_session(steps_path, labels):
     if header.get("split") not in ("train", "dev") or sid in D.VALIDATION:
         raise ValueError(f"{sid}: split {header.get('split')!r} refused")
     acts = np.asarray([a if a is not None else [0.0] * D.ACTION_DIM for a in D.step_actions(header, rows)], np.float32)
+    known = np.asarray(D.step_known(header, rows), np.float32)
     ev_rows = np.zeros((len(rows), len(KINDS)), np.float32)
     kept = None
     if sid in labels:
@@ -66,8 +72,8 @@ def parse_session(steps_path, labels):
     ev = ev_rows.copy()
     for j in range(1, D.STRIDE):     # the 10 Hz step starting at row r covers rows r..r+STRIDE-1
         ev[:-j] = np.maximum(ev[:-j], ev_rows[j:])
-    return {"sid": sid, "rows": rows, "actions": acts, "events": ev, "labelled": kept is not None, "kept": kept,
-            "n": len(rows), "minutes": len(rows) / 30 / 60}
+    return {"sid": sid, "rows": rows, "actions": acts, "known": known, "events": ev, "labelled": kept is not None,
+            "kept": kept, "n": len(rows), "minutes": len(rows) / 30 / 60, "stride": D.STRIDE, "source": 0}
 
 
 def load_frames(cache_dir, n_rows, out):
@@ -107,21 +113,56 @@ def synthetic(sid, n=900, seed=0):
                 ev[j, 1] = 1
             x = nx
     rows = [{"i": j, "run": "r0", "suitability": "accepted", "gap_free": True} for j in range(n)]
-    return {"sid": sid, "rows": rows, "actions": act, "events": ev, "labelled": True, "kept": None, "n": n,
-            "minutes": n / 1800, "frames": frames}
+    return {"sid": sid, "rows": rows, "actions": act, "known": np.ones_like(act), "events": ev, "labelled": True,
+            "kept": None, "n": n, "minutes": n / 1800, "frames": frames, "stride": D.STRIDE, "source": 0}
+
+
+def expert_meta(root):
+    """Packed expert shards (rl.world_model.expert_prep) under root, and the source names: james first."""
+    shards = sorted(d for d in Path(root).iterdir() if (d / "meta.json").exists())
+    metas = [json.loads((d / "meta.json").read_text(encoding="utf-8")) for d in shards]
+    players = sorted({m["player"] or "unknown" for m in metas})
+    return list(zip(shards, metas)), ["james"] + players
+
+
+def load_expert(shard_dir, meta, out, workers=12):
+    """Decode a shard's JPEGs into out (m,3,H,W) uint8; returns (actions [m,2*ACTION_DIM], segs [m])."""
+    import cv2
+    offs = np.load(shard_dir / "offsets.npy")
+    blob = np.fromfile(shard_dir / "frames.bin", np.uint8)
+    if len(offs) != meta["kept"] + 1 or offs[-1] != len(blob):
+        raise ValueError(f"{shard_dir}: frames.bin does not match offsets")
+
+    def one(m):
+        img = cv2.imdecode(blob[offs[m]:offs[m + 1]], cv2.IMREAD_COLOR)
+        out[m] = img[:, :, ::-1].transpose(2, 0, 1)
+
+    with ThreadPoolExecutor(workers) as ex:
+        list(ex.map(one, range(meta["kept"])))
+    return np.load(shard_dir / "actions.npy"), np.load(shard_dir / "segs.npy")
+
+
+def segment_starts(segs, n):
+    """m such that kept rows m..m+n-1 share one segment code (consecutive 100 ms steps)."""
+    segs = np.asarray(segs)
+    if len(segs) < n:
+        return []
+    same = segs[:len(segs) - n + 1] == segs[n - 1:]
+    return np.nonzero(same)[0].tolist()
 
 
 class Pool:
     """Frames (uint8, on `store`), actions and events (on `dev`) of all sessions, indexed by global row."""
 
-    def __init__(self, frames, actions, events, store, dev):
+    def __init__(self, frames, actions, events, store, dev, stride=None):
         self.frames = frames.to(store)
         self.actions = torch.from_numpy(actions).to(dev)
         self.events = torch.from_numpy(events).to(dev)
+        self.stride = torch.full((len(frames),), D.STRIDE, dtype=torch.long) if stride is None else torch.from_numpy(stride).long()
         self.store, self.dev = store, dev
 
     def window(self, starts, n):
-        idx = starts[:, None] + D.STRIDE * torch.arange(n)[None]
+        idx = starts[:, None] + self.stride[starts][:, None] * torch.arange(n)[None]
         f = self.frames[idx.to(self.store)].to(self.dev, non_blocking=True).float() / 127.5 - 1
         idx = idx.to(self.dev)
         return f, self.actions[idx], self.events[idx]
@@ -173,6 +214,20 @@ def head_scores(y, p):
     return out
 
 
+def act32(a):
+    """The step-action values alone (heads and full-01 take these; v3 appends a known mask and a source)."""
+    return a[..., :D.ACTION_DIM]
+
+
+def zero_actions(a):
+    """'Do nothing' actions: zero values, and for v3 inputs every channel known and the source James."""
+    z = torch.zeros_like(a)
+    if a.shape[-1] > D.ACTION_DIM:
+        z[..., D.ACTION_DIM:2 * D.ACTION_DIM] = 1
+        z[..., 2 * D.ACTION_DIM] = 1
+    return z
+
+
 def half(x):
     """B,T,3,H,W -> 2x average-pooled, the resolution full-01 works at."""
     b, t = x.shape[:2]
@@ -204,7 +259,7 @@ def evaluate(model, head, base, pool, starts, sids, ctx, horizon, sample_steps, 
         cands = {"copy_last": frames[:, ctx - 1:ctx].expand_as(real),
                  "mean": rollout(model, c, acts, horizon, "mean"),
                  "mean_shuffled": rollout(model, c, acts[perm], horizon, "mean"),
-                 "mean_zero": rollout(model, c, torch.zeros_like(acts), horizon, "mean"),
+                 "mean_zero": rollout(model, c, zero_actions(acts), horizon, "mean"),
                  "sample": rollout(model, c, acts, horizon, "sample", sample_steps),
                  "sample_shuffled": rollout(model, c, acts[perm], horizon, "sample", sample_steps)}
         for k, v in cands.items():
@@ -213,14 +268,14 @@ def evaluate(model, head, base, pool, starts, sids, ctx, horizon, sample_steps, 
         if base is not None:
             hb = half(frames)
             for mode, steps in (("mean", 3), ("sample", 3)):
-                v = rollout(base, hb[:, ctx - base.ctx:ctx], acts[:, ctx - base.ctx:], horizon, mode, steps)
+                v = rollout(base, hb[:, ctx - base.ctx:ctx], act32(acts[:, ctx - base.ctx:]), horizon, mode, steps)
                 add("half/full01_" + mode, sid_b, (((v - half(real)) / 2) ** 2).mean(dim=(2, 3, 4)))
         seq_real, seq_img = frames, torch.cat([c, cands["sample"]], 1)
         for k in range(horizon):
             j = ctx + k                                  # the frame after step j-1
             y = ev[:, j - 1]
-            real_p.append(torch.sigmoid(head(seq_real[:, j + 1 - HF:j + 1], acts[:, j - 1])).float().cpu())
-            img_p.append(torch.sigmoid(head(seq_img[:, j + 1 - HF:j + 1], acts[:, j - 1])).float().cpu())
+            real_p.append(torch.sigmoid(head(seq_real[:, j + 1 - HF:j + 1], act32(acts[:, j - 1]))).float().cpu())
+            img_p.append(torch.sigmoid(head(seq_img[:, j + 1 - HF:j + 1], act32(acts[:, j - 1]))).float().cpu())
             labels.append(y.cpu())
     model.train(), head.train()
     res = {}
@@ -241,7 +296,7 @@ def head_holdout(head, pool, starts, ctx, batch=256):
     ps, ys = [], []
     for a in range(0, len(starts), batch):
         f, acts, ev = pool.window(starts[a:a + batch], HF)
-        ps.append(torch.sigmoid(head(f, acts[:, HF - 2])).float().cpu())
+        ps.append(torch.sigmoid(head(f, act32(acts[:, HF - 2]))).float().cpu())
         ys.append(ev[:, HF - 2].cpu())
     head.train()
     return head_scores(torch.cat(ys).numpy(), torch.cat(ps).numpy())
@@ -267,11 +322,11 @@ def render(model, head, base, pool, starts, ctx, horizon, sample_steps, out, sho
     torch.manual_seed(5)
     img = rollout(model, frames[:, :ctx], acts, horizon, "sample", sample_steps)
     seq = torch.cat([frames[:, :ctx], img], 1)
-    p_img = [torch.sigmoid(head(seq[:, ctx + k + 1 - HF:ctx + k + 1], acts[:, ctx + k - 1])) for k in range(horizon)]
+    p_img = [torch.sigmoid(head(seq[:, ctx + k + 1 - HF:ctx + k + 1], act32(acts[:, ctx + k - 1]))) for k in range(horizon)]
     b01 = None
     if base is not None:
         hb = half(frames)
-        b01 = F.interpolate(rollout(base, hb[:, ctx - base.ctx:ctx], acts[:, ctx - base.ctx:], horizon, "sample", 3)
+        b01 = F.interpolate(rollout(base, hb[:, ctx - base.ctx:ctx], act32(acts[:, ctx - base.ctx:]), horizon, "sample", 3)
                             .flatten(0, 1), scale_factor=2, mode="nearest").unflatten(0, (len(starts), horizon))
     model.train(), head.train()
 
@@ -330,7 +385,7 @@ def render(model, head, base, pool, starts, ctx, horizon, sample_steps, out, sho
 def pick_video_starts(pool, starts, ctx, horizon, n, seed=1):
     g = torch.Generator().manual_seed(seed)
     idx = starts[:, None] + D.STRIDE * torch.arange(ctx, ctx + horizon)[None]     # actions only, never frames
-    motion = pool.actions[idx.to(pool.dev), -2].abs().sum(1).cpu()
+    motion = pool.actions[idx.to(pool.dev), D.ACTION_DIM - 2].abs().sum(1).cpu()
     chosen = []
     for s in starts[motion.argsort(descending=True)].tolist():
         if all(abs(s - c) > 3 * (ctx + horizon) for c in chosen):
@@ -371,6 +426,8 @@ def main(argv=None, commit=None):
     p.add_argument("--ckpt-every", type=int, default=2000)
     p.add_argument("--max-minutes", type=float, default=1e9)
     p.add_argument("--load-workers", type=int, default=6)
+    p.add_argument("--expert-root", help="v3: packed expert shards (rl.world_model.expert_prep)")
+    p.add_argument("--expert-share", type=float, default=0.5, help="v3: share of each batch from expert windows")
     a = p.parse_args(argv)
     commit = commit or (lambda: None)
     out = Path(a.out)
@@ -381,10 +438,15 @@ def main(argv=None, commit=None):
     span_train = D.window_span(a.ctx + 1 + a.roll_max)
     span_eval = D.window_span(a.ctx + a.horizon)
 
+    experts, sources = expert_meta(a.expert_root) if a.expert_root else ([], ["james"])
+    n_expert = sum(m["kept"] for _, m in experts)
     if a.synthetic:
         sessions = [synthetic("synA", seed=0), synthetic(VIDEO_SESSION, seed=1), synthetic(HOLDOUT[1], seed=2)]
-        frames = np.concatenate([s.pop("frames") for s in sessions])
-        mapped = np.ones(len(frames), bool)
+        own = np.concatenate([s.pop("frames") for s in sessions])
+        frames = np.empty((len(own) + n_expert, 3, H, W), np.uint8)
+        frames[:len(own)] = own
+        del own
+        mapped = np.ones(sum(s["n"] for s in sessions), bool)
     else:
         paths = sorted(Path(a.steps_root).glob("*.jsonl"))
         D.check_not_sealed([q.stem for q in paths], a.denylist)
@@ -394,7 +456,7 @@ def main(argv=None, commit=None):
         sessions = [parse_session(q, labels) for q in paths]
         log(out, event="parsed", seconds=round(time.time() - t0, 1))
         total = sum(s["n"] for s in sessions)
-        frames = np.empty((total, 3, H, W), np.uint8)
+        frames = np.empty((total + n_expert, 3, H, W), np.uint8)
         offs = np.cumsum([0] + [s["n"] for s in sessions])
         with ThreadPoolExecutor(a.load_workers) as ex:
             masks = list(ex.map(lambda i: load_frames(Path(a.cache_root) / sessions[i]["sid"], sessions[i]["n"],
@@ -407,6 +469,15 @@ def main(argv=None, commit=None):
         s["eval_starts"] = [offs[i] + x for x in D.valid_starts(rows, span_eval)]
         s["head_starts"] = [offs[i] + x for x in D.valid_starts(rows, D.window_span(HF))][::D.STRIDE]
         s["rows"] = None
+    own_rows = int(offs[-1])
+    expert_s, at = [], own_rows
+    for shard_dir, meta in experts:
+        acts_k, segs = load_expert(shard_dir, meta, frames[at:at + meta["kept"]], a.load_workers * 2)
+        src = sources.index(meta["player"] or "unknown")
+        expert_s.append({"sid": meta["shard"], "actions": acts_k, "segs": segs, "source": src, "n": meta["kept"],
+                         "minutes": meta["kept"] / 600, "stride": 1,
+                         "train_starts": [at + x for x in segment_starts(segs, a.ctx + 1 + a.roll_max)]})
+        at += meta["kept"]
     train_s = [s for s in sessions if s["sid"] not in HOLDOUT]
     hold_s = [s for s in sessions if s["sid"] in HOLDOUT]
     info = {"train": {s["sid"]: {"minutes": round(s["minutes"], 2), "windows": len(s["train_starts"]),
@@ -414,14 +485,28 @@ def main(argv=None, commit=None):
             "holdout": {s["sid"]: {"minutes": round(s["minutes"], 2), "eval_windows": len(s["eval_starts"]),
                                    "kept": s["kept"]} for s in hold_s},
             "train_minutes": round(sum(s["minutes"] for s in train_s), 1), "frames_gb": round(frames.nbytes / 1e9, 1),
+            "expert": {"shards": len(expert_s), "minutes": round(sum(s["minutes"] for s in expert_s), 1),
+                       "windows": sum(len(s["train_starts"]) for s in expert_s), "sources": sources},
             "load_seconds": round(time.time() - t0, 1), "device": dev,
             "gpu": torch.cuda.get_device_name() if dev == "cuda" else None}
     log(out, event="data", **info)
     store = dev if frames.nbytes < 45e9 else "cpu"
-    all_actions = np.concatenate([s["actions"] for s in sessions])
-    all_events = np.concatenate([s["events"] for s in sessions])
-    pool = Pool(torch.from_numpy(frames), all_actions, all_events, store, dev)
+    if a.expert_root:     # v3 action input: values, known mask, one-hot source
+        def with_source(v, src):
+            onehot = np.zeros((len(v), len(sources)), np.float32)
+            onehot[:, src] = 1
+            return np.concatenate([v, onehot], 1)
+        all_actions = np.concatenate([with_source(np.concatenate([s["actions"], s["known"]], 1), 0) for s in sessions]
+                                     + [with_source(s["actions"], s["source"]) for s in expert_s])
+    else:
+        all_actions = np.concatenate([s["actions"] for s in sessions])
+    all_events = np.concatenate([np.concatenate([s["events"] for s in sessions]),
+                                 np.zeros((n_expert, len(KINDS)), np.float32)])
+    stride = np.concatenate([np.full(s["n"], s["stride"], np.int64) for s in sessions + expert_s])
+    pool = Pool(torch.from_numpy(frames), all_actions, all_events, store, dev, stride)
     del frames
+    action_dim = all_actions.shape[1]
+    expert_starts = torch.tensor([x for s in expert_s for x in s["train_starts"]], dtype=torch.long)
     train_starts = torch.tensor([x for s in train_s if s["labelled"] for x in s["train_starts"]]
                                 + [x for s in train_s if not s["labelled"] for x in s["train_starts"]], dtype=torch.long)
     labelled_starts = torch.tensor([x for s in train_s if s["labelled"] for x in s["train_starts"]], dtype=torch.long)
@@ -432,7 +517,7 @@ def main(argv=None, commit=None):
         store=str(store))
 
     chs = tuple(int(c) for c in a.chs.split(","))
-    model = Denoiser(a.ctx, D.ACTION_DIM, chs, attn_levels=a.attn_levels).to(dev)
+    model = Denoiser(a.ctx, action_dim, chs, attn_levels=a.attn_levels).to(dev)
     head = RewardHead(D.ACTION_DIM).to(dev)
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=1e-2)
     opt_h = torch.optim.AdamW(head.parameters(), lr=3e-4, weight_decay=1e-2)
@@ -465,6 +550,9 @@ def main(argv=None, commit=None):
             group["lr"] = lr
         R = int(rng.integers(1, a.roll_max + 1)) if step >= a.roll_start * a.steps and rng.random() < a.roll_p else 0
         st = train_starts[torch.randint(len(train_starts), (a.batch,), generator=g)]
+        if len(expert_starts):
+            use = torch.rand(a.batch, generator=g) < a.expert_share
+            st = torch.where(use, expert_starts[torch.randint(len(expert_starts), (a.batch,), generator=g)], st)
         frames, acts, _ = pool.window(st, a.ctx + 1 + R)
         with amp:
             context = frames[:, :a.ctx]
@@ -485,7 +573,7 @@ def main(argv=None, commit=None):
         hf, ha, he = pool.window(sh, HF)
         hf = hf + torch.rand(len(sh), 1, 1, 1, 1, device=dev) * 0.3 * torch.randn_like(hf)
         with amp:
-            logits = head(hf, ha[:, HF - 2])
+            logits = head(hf, act32(ha[:, HF - 2]))
         lh = F.binary_cross_entropy_with_logits(logits.float(), he[:, HF - 2], pos_weight=pos_weight)
         opt_h.zero_grad(set_to_none=True)
         lh.backward()
@@ -508,7 +596,8 @@ def main(argv=None, commit=None):
             save()
     save()
     torch.save({"model": model.state_dict(), "head": head.state_dict(), "ctx": a.ctx, "chs": chs,
-                "attn_levels": a.attn_levels, "action_dim": D.ACTION_DIM, "step": step, "holdout": HOLDOUT},
+                "attn_levels": a.attn_levels, "action_dim": action_dim, "sources": sources, "step": step,
+                "holdout": HOLDOUT},
                out / "model.pt")
     commit()
 

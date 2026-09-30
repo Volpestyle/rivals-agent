@@ -1,6 +1,7 @@
 """World model v2 on one Modal H100. Launch from the Mac, from a directory holding this repo's rl/ package:
 
   modal run --detach rl/world_model/modal_v2.py --run v2-probe --steps 600 --minutes 40 --extra "--eval-n 32"
+  modal run --detach rl/world_model/modal_v2.py --run v3-expert --steps 38000 --minutes 240       --extra "--expert-root /expert/shards"                      # v3: adds the packed expert shards
 
 Reads the ten cohort sessions from the read-only volume rivals-explore-chunks-20260927 (another lane's: steps/ and
 caches/), sequentially, once, into RAM and then GPU memory (no random Volume reads). Writes checkpoints, eval.json and
@@ -22,11 +23,12 @@ image = (modal.Image.debian_slim(python_version="3.12")
          .add_local_dir(ROOT / "rl", "/root/rl", ignore=["**/__pycache__", "**/out"])
          .add_local_file(ROOT / "data/human/sealed-denylist.v2.json", "/root/sealed-denylist.v2.json"))
 src = modal.Volume.from_name("rivals-explore-chunks-20260927")
+expert = modal.Volume.from_name("rivals-rl-wm-expert-20260930", create_if_missing=True)   # third-party: delete after
 out = modal.Volume.from_name("rivals-rl-wm-20260930", create_if_missing=True)
 
 
-@app.function(image=image, gpu="H100", cpu=12, memory=110000, timeout=60 * 60,
-              volumes={"/src": src.read_only(), "/out": out})
+@app.function(image=image, gpu="H100", cpu=16, memory=150000, timeout=60 * 60,
+              volumes={"/src": src.read_only(), "/out": out, "/expert": expert.read_only()})
 def train(run: str, args: list[str]):
     import sys
     sys.path.insert(0, "/root")
