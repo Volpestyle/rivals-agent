@@ -248,7 +248,7 @@ def test_warmup_uses_three_real_fresh_frames_and_closes_capture(failure):
 
 
 def test_real_warmup_capture_timeout_closes_before_attach(monkeypatch):
-    ticks = iter([0., 3.])
+    ticks = iter([0., 15.])
     monkeypatch.setattr(C.time, 'perf_counter', lambda: next(ticks))
     closed = []
     capture = SimpleNamespace(backend='dxcam', grab=lambda: pytest.fail('capture after timeout'),
