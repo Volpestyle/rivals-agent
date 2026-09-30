@@ -1,0 +1,98 @@
+[
+  {
+    "name": "i4-mix469-s0",
+    "seed": 0,
+    "epochs": 30,
+    "batch_size": 8,
+    "use_dt": true,
+    "hidden": 1536,
+    "layers": 2,
+    "expert": true,
+    "expert_sessions": [
+      "expert-2871149954-s0",
+      "expert-2871149954-s1",
+      "expert-2871149954-s2",
+      "expert-2871149954-s3",
+      "expert-2873352801-s0",
+      "expert-2873352801-s1",
+      "expert-2873352801-s2",
+      "expert-2873352801-s3",
+      "expert-2873352801-s4",
+      "expert-2873352801-s5",
+      "expert-2873352801-s6",
+      "expert-2873352801-s7",
+      "expert-2874563514-s0",
+      "expert-2879205768-s0",
+      "expert-2879205768-s1",
+      "expert-2879205768-s2"
+    ],
+    "eval_sessions": [
+      "20260925T212646-322Z-49728-6"
+    ],
+    "expert_label_source": "idm v2-a (v2-a.pt)"
+  },
+  {
+    "name": "i4-mix469-s1",
+    "seed": 1,
+    "epochs": 30,
+    "batch_size": 8,
+    "use_dt": true,
+    "hidden": 1536,
+    "layers": 2,
+    "expert": true,
+    "expert_sessions": [
+      "expert-2871149954-s0",
+      "expert-2871149954-s1",
+      "expert-2871149954-s2",
+      "expert-2871149954-s3",
+      "expert-2873352801-s0",
+      "expert-2873352801-s1",
+      "expert-2873352801-s2",
+      "expert-2873352801-s3",
+      "expert-2873352801-s4",
+      "expert-2873352801-s5",
+      "expert-2873352801-s6",
+      "expert-2873352801-s7",
+      "expert-2874563514-s0",
+      "expert-2879205768-s0",
+      "expert-2879205768-s1",
+      "expert-2879205768-s2"
+    ],
+    "eval_sessions": [
+      "20260925T212646-322Z-49728-6"
+    ],
+    "expert_label_source": "idm v2-a (v2-a.pt)"
+  },
+  {
+    "name": "i4-mix469-s2",
+    "seed": 2,
+    "epochs": 30,
+    "batch_size": 8,
+    "use_dt": true,
+    "hidden": 1536,
+    "layers": 2,
+    "expert": true,
+    "expert_sessions": [
+      "expert-2871149954-s0",
+      "expert-2871149954-s1",
+      "expert-2871149954-s2",
+      "expert-2871149954-s3",
+      "expert-2873352801-s0",
+      "expert-2873352801-s1",
+      "expert-2873352801-s2",
+      "expert-2873352801-s3",
+      "expert-2873352801-s4",
+      "expert-2873352801-s5",
+      "expert-2873352801-s6",
+      "expert-2873352801-s7",
+      "expert-2874563514-s0",
+      "expert-2879205768-s0",
+      "expert-2879205768-s1",
+      "expert-2879205768-s2"
+    ],
+    "eval_sessions": [
+      "20260925T212646-322Z-49728-6"
+    ],
+    "expert_label_source": "idm v2-a (v2-a.pt)"
+  }
+]

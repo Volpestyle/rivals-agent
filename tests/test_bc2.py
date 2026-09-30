@@ -64,3 +64,91 @@ def test_tiny_fit_and_evaluate(tmp_path):
     assert 0 <= pooled["press_macro_f1"] <= 1
     assert pooled["yaw"]["zero_mae"] > 0 and pooled["yaw"]["steps"] > 0
     assert set(report["selected"]["thresholds"]) == set(vocab.NAMES)
+
+
+def relabel_case(tmp_path, *, change=None):
+    from copy import deepcopy
+    from policy.range_bc import fixture, steps
+    h, rows = fixture.replay_session("expert-123", runs=(8,))
+    sh = dict(h, session_id="expert-123-s0", session_group="expert-123-s0", source_video_group="expert-123")
+    old = fixture.write(tmp_path / "old.jsonl", sh, rows)
+    nh, new = deepcopy(h), deepcopy(rows[1:])
+    nh["calibration"]["source"] = "new-idm"
+    nh["idm"] = {"checkpoint": "c.pt+d.pt"}
+    # Changed nominal clock, dropped first and interior rows, unchanged physical frame identities.
+    new = [r for r in new if r["i"] != 4]
+    for i, r in enumerate(new):
+        r["i"] = i
+        r["anchor_ns"] += 100
+        r["yaw_deg"] = 2.
+    if change:
+        change(nh, new)
+    labels = fixture.write(tmp_path / "new.jsonl", nh, new)
+    d = make_session(tmp_path, "expert-123-s0", n=8)
+    (d / "meta.json").write_text(json.dumps({"session": sh["session_id"], "steps_sha256": steps.sha256(old)}))
+    return old, labels, d
+
+
+def test_relabel_keeps_exact_feature_rows_and_resets_across_missing_rows(tmp_path):
+    from policy.bc2.expert import relabel
+    old, labels, d = relabel_case(tmp_path)
+    expected = {name: np.load(d / (name + ".npy"))[[1, 2, 3, 5, 6, 7]]
+                for name in ("feats", "gray_g", "gray_c", "green")}
+    assert relabel(old, labels, d) == (6, 2)
+    s = bc2_train.Session(d, "cpu")
+    assert s.t["feature_row"].tolist() == [1, 2, 3, 5, 6, 7]
+    assert s.runs == [(0, 3), (3, 6)]
+    assert s.prev.tolist() == [0, 0, 1, 3, 3, 4]
+    for name, values in expected.items():
+        np.testing.assert_array_equal(getattr(s, name).numpy(), values)
+    assert s.t["yaw"].tolist() == [2.] * 6
+    assert s.meta["relabel"]["idm"]["checkpoint"] == "c.pt+d.pt"
+
+
+@pytest.mark.parametrize("change,message", [
+    (lambda h, r: h.update(media_sha256="f" * 64), "different source"),
+    (lambda h, r: r.append(dict(r[0], i=len(r))), "duplicate source-frame"),
+    (lambda h, r: [x["frame"].update(pts=x["frame"]["pts"] + 1) for x in r], "no eligible exact"),
+])
+def test_relabel_refuses_wrong_source_duplicates_and_no_overlap_without_writing(tmp_path, change, message):
+    from policy.bc2.expert import relabel
+    old, labels, d = relabel_case(tmp_path, change=change)
+    before = (d / "targets.npz").read_bytes(), (d / "meta.json").read_bytes()
+    with pytest.raises(ValueError, match=message):
+        relabel(old, labels, d)
+    assert before == ((d / "targets.npz").read_bytes(), (d / "meta.json").read_bytes())
+
+
+def test_session_refuses_shortened_targets_without_feature_mapping(tmp_path):
+    d = make_session(tmp_path, "short", n=8)
+    with np.load(d / "targets.npz") as z:
+        targets = {k: z[k][1:] for k in z.files}
+    np.savez(d / "targets.npz", **targets)
+    with pytest.raises(ValueError, match="explicit feature_row required"):
+        bc2_train.Session(d, "cpu")
+
+
+def test_fit_refuses_expert_rows_that_form_no_trainable_windows(tmp_path):
+    own = make_session(tmp_path, "own", n=64)
+    expert = make_session(tmp_path, "short-expert", n=8)
+    with pytest.raises(ValueError, match="no trainable runs"):
+        bc2_train.fit([own], [own], [], tmp_path / "out", config=bc2_model.Config(), device="cpu",
+                      expert_dirs=[expert])
+
+
+def test_explicit_expert_cohort_ignores_arrivals_and_refuses_mixed_or_incomplete_shards(tmp_path):
+    from policy.bc2.cohort import expert_dirs
+    a, b = [make_session(tmp_path, name, n=8) for name in ("expert-123-s0", "expert-456-s0")]
+    for d in (a, b):
+        (d / "meta.json").write_text(json.dumps({"session": d.name, "calibration": {"source": "v2-a"}}))
+    assert expert_dirs(tmp_path, [a.name]) == [a]
+    with pytest.raises(ValueError, match="differs from requested"):
+        expert_dirs(tmp_path, [a.name], "v2-cd")
+    with pytest.raises(ValueError, match="duplicate"):
+        expert_dirs(tmp_path, [a.name, a.name])
+    (b / "meta.json").write_text(json.dumps({"session": b.name, "calibration": {"source": "v2-cd"}}))
+    with pytest.raises(ValueError, match="mixes label sources"):
+        expert_dirs(tmp_path, [a.name, b.name])
+    (a / "gray_c.npy").unlink()
+    with pytest.raises(ValueError, match="incomplete"):
+        expert_dirs(tmp_path, [a.name])

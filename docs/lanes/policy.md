@@ -207,6 +207,50 @@ Mac from idm's per-span clips, which keep the original timestamps; rows match cl
 `bc2-mix-s1` (dev's pick by press F1): val press F1 0.364, above the incumbent head's 0.325, so it needs no
 hybrid. It runs p50 38 / p95 46 ms.
 
+### Explicit next scaling cohort and v2-cd alignment (2026-09-30)
+
+The five grid-i3 reports were already collected when temporary policy ownership began; all five name the same
+13 shards / 399,231 expert steps. Their Modal app `ap-yHoZU5QlkSlroa0lxrYqUz` stopped at 11:34:59 CDT with zero
+tasks. No additional fit was run during the relief window.
+
+The ready next comparison is [`grid-i4-mix469.json`](../../policy/bc2/grid-i4-mix469.json): seeds 0-2, 30 epochs,
+batch 8, LSTM 1536 x2, frame-interval input, full expert mix, with the same human TRAIN, frozen-dev selection and
+val reporting as grid-i3. At 12:14 CDT, all six files of each of its 16 explicitly named feature shards were
+listed on `rivals-policy-bc2-20260930:/expert-features`; the Mac's completed-upload markers agree. This is 468,699
+v2-a expert steps: Day 116,847, Req 248,268, Necros 94,230, LuckyZeal 9,354. More arriving shards do not enter this
+comparison. The spec also requires the existing `idm v2-a (v2-a.pt)` label source; it cannot silently become a
+v2-cd run. Compare against the existing three `i3-mix-s*` reports; no own-data refit is needed. The cached array
+volume grows about 9% over grid-i3 (same model and batch); runtime and peak device memory remain estimates until
+run. This spec is prepared, not launched; a paid launch remains the lead's next decision.
+
+`cloud.fit` now accepts `expert_sessions` and `expert_label_source`. It rejects missing shard files, duplicate
+names, mismatched session metadata and mixed/incorrect label sources, then stages only those shards locally.
+The old automatic enumeration remains available for callers that omit the explicit list.
+
+The v2-cd upgrade cannot yet reuse the two exported Day videos as a useful training cohort. A read-only join of
+the full local v2-a and v2-cd step tables found **zero `(run, anchor_ns)` matches** in either video: the wider IDM
+window changes the nominal export grid's origin. Exact `(run, frame_index, pts, timebase)` matching gives:
+
+| Video | Existing feature rows | Exact frame matches | Unmatched old rows | Longest retained run | Runs of at least 32 steps |
+|---|---:|---:|---:|---:|---:|
+| 2871149954 | 116,847 | 76,570 | 40,277 | 2 | 0 |
+| 2872282230 | 80,154 | 52,580 | 27,574 | 2 | 0 |
+
+Runs reset across gaps in either the old or new row sequence. The input tables and target-only audit outputs are
+under `D:/rivals-agent-local/idm-labels/{v2-a,v2-cd}/` and `D:/rivals-policy/relief-20260930/alignment.json`
+respectively; the latter records both input hashes and target hashes. Original features and labels were not
+changed. The needed IDM export uses the original v2-a anchor/frame grid with v2-cd interval answers, retaining
+nulls and trimming unsupported ends. Rebuilding features or joining by nearest timestamp is unnecessary at this
+point. This interface prerequisite was sent to the temporary IDM owner; creator-FOV scaling remains off.
+
+`expert.relabel` now checks the source video and original shard hash, joins exact physical frames, records the
+full ensemble checkpoint, and writes `feature_row` indices. `train.Session` uses those indices for every cached
+input array, refuses ambiguous target/feature length mismatches, and preserves the new run boundaries. A fit
+refuses an expert shard with no run of at least 32 steps, rather than counting it as expert data while training
+on no expert windows. Focused synthetic regressions cover a shifted clock, missing edge/interior rows, all four
+input arrays, wrong-source/duplicate/no-match refusals, an arriving shard, mixed labels and empty training
+support. The existing tiny CPU fit also passes. No game input, decoding, feature rebuild or paid function ran.
+
 # Policy: the learned chooser (steps 1-3)
 
 **Status (2026-09-29): HISTORY.** The MLX chooser and the VUH-1311 offline consumer (`policy/behaviour.py`); this part stays their record.

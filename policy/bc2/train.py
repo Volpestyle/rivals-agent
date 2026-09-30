@@ -35,11 +35,28 @@ class Session:
         self.t = {k: t[k] for k in t.files}
         n = len(self.t["frame"])
         dev = torch.device(device)
-        self.feats = torch.from_numpy(np.load(root / "feats.npy")).to(dev)
-        self.gray_g = torch.from_numpy(np.load(root / gray_file)).to(dev)
-        self.gray_c = torch.from_numpy(np.load(root / "gray_c.npy")).to(dev)
+        feature_row = self.t.get("feature_row")
+        if feature_row is not None and (feature_row.shape != (n,) or feature_row.dtype.kind not in "iu"
+                                        or np.any(feature_row < 0) or np.any(feature_row[1:] <= feature_row[:-1])):
+            raise ValueError("feature_row must be strictly increasing nonnegative row indices")
+
+        def load_features(name):
+            a = np.load(root / name, mmap_mode="r")
+            if feature_row is None:
+                if len(a) != n:
+                    raise ValueError(f"{name}: target/feature row mismatch; explicit feature_row required")
+                a = np.array(a)
+            else:
+                if n and feature_row[-1] >= len(a):
+                    raise ValueError(f"{name}: feature_row outside cached rows")
+                a = a[feature_row]
+            return torch.from_numpy(a).to(dev)
+
+        self.feats = load_features("feats.npy")
+        self.gray_g = load_features(gray_file)
+        self.gray_c = load_features("gray_c.npy")
         green = root / "green.npy"
-        self.green = torch.from_numpy(np.load(green)).to(dev) if green.exists() else None
+        self.green = load_features("green.npy") if green.exists() else None
         prev = np.arange(n) - 1
         prev[self.t["run_start"]] = np.flatnonzero(self.t["run_start"])
         self.prev = torch.from_numpy(np.maximum(prev, 0)).to(dev)
@@ -358,6 +375,9 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
     load = lambda dirs: [Session(d, device, gray_file) for d in dirs]
     train_s, dev_s, eval_s = load(train_dirs), load(dev_dirs), load(eval_dirs)
     expert_s = load(expert_dirs)
+    unusable = [s.id for s in expert_s if not any(b - a >= 32 for a, b in s.runs)]
+    if unusable:
+        raise ValueError(f"expert sessions have no trainable runs (minimum 32 steps): {unusable}")
     if not expert_actions:                 # camera-only expert labels
         for s in expert_s:
             s.act_mask[:] = False

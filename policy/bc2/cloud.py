@@ -67,7 +67,7 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
         feat_dropout: float = .3, hidden: int = 512, use_green: bool = False, use_dt: bool = False,
         chunk: int = 0, onset_weight: float = 1., chunk_weight: float = .5, expert: bool = False,
         expert_epochs: int = None, expert_share: float = None, hires: bool = False, layers: int = 1,
-        expert_actions: bool = True):
+        expert_actions: bool = True, expert_sessions: list = None, expert_label_source: str = None):
     _setup()
     import shutil
     from policy.bc2 import model, train
@@ -77,11 +77,13 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
     for s in TRAIN + DEV + evals:
         shutil.copytree(root / s, local / s)
     experts = []
+    if expert_sessions is not None and not expert:
+        raise ValueError("expert_sessions requires expert=True")
     if expert:
-        for d in sorted(Path("/out/expert-features").iterdir()):
-            if (d / "meta.json").exists():
-                shutil.copytree(d, local / d.name)
-                experts.append(local / d.name)
+        from policy.bc2.cohort import expert_dirs
+        for d in expert_dirs("/out/expert-features", expert_sessions, expert_label_source):
+            shutil.copytree(d, local / d.name)
+            experts.append(local / d.name)
     run = Path("/tmp/run") / name
     config = model.Config(use_feats=use_feats, use_motion=use_motion, feat_dropout=feat_dropout, hidden=hidden,
                           use_green=use_green, use_dt=use_dt, chunk=chunk, hires=hires, layers=layers)

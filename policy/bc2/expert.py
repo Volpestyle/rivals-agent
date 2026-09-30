@@ -307,32 +307,59 @@ LABEL_FIELDS = ("held_start", "held_end", "held_known", "press", "press_known", 
 def relabel(shard_labels, video_labels, out_features_dir):
     """Swap a shard's targets to a newer label set for the same video (frames and features unchanged).
 
-    Rows are matched by (run, anchor_ns); a shard row the new set lacks (it trims span edges differently) is
-    marked rejected, so it leaves the eligible runs but every row keeps its frame index. Writes targets.npz and a
-    note in meta.json; returns (matched, missing)."""
+    Match exact source frames within each run, not the exporter's nominal anchor grid (which can shift with
+    the IDM window). Unmatched rows leave the eligible runs. Targets carry explicit feature_row indices so
+    the loader selects the corresponding cached features and resets motion/history across gaps.
+    Writes targets.npz and provenance in meta.json; returns (matched, missing)."""
     from policy.bc2 import data
     from policy.range_bc import steps
     shard = load_labels(shard_labels)
+    out = Path(out_features_dir)
+    meta = json.loads((out / "meta.json").read_text())
+    if meta["session"] != shard.session_id or meta["steps_sha256"] != shard.sha256:
+        raise ValueError("cached features do not belong to these shard labels")
+
+    def frame_key(r):
+        f = r["frame"]
+        return r["run"], f["frame_index"], f["pts"], tuple(f["timebase"])
+
     new = {}
     with Path(video_labels).open(encoding="utf-8") as stream:
         header = json.loads(stream.readline())
-        for line in stream:
+        steps.check_header(header)
+        if (header["session_id"] != shard.header.get("source_video_group", shard.session_id)
+                or header["media_sha256"] != shard.header["media_sha256"]):
+            raise ValueError("new labels are from a different source video")
+        for i, line in enumerate(line for line in stream if line.strip()):
             r = json.loads(line)
-            new[(r["run"], r["anchor_ns"])] = r
-    rows, missing = [], 0
+            steps.check_row(r, header, i)
+            key = frame_key(r)
+            if key in new:
+                raise ValueError("duplicate source-frame identity in new labels")
+            new[key] = r
+    rows, missing, new_indices = [], 0, []
     for r in shard.rows:
-        m = new.get((r["run"], r["anchor_ns"]))
+        m = new.get(frame_key(r))
+        new_indices.append(None if m is None else m["i"])
         if m is None:
             missing += 1
             rows.append(dict(r, suitability="rejected"))
         else:
-            rows.append(dict(r, **{k: m[k] for k in LABEL_FIELDS}))
+            rows.append(dict(r, **{k: m[k] for k in (*LABEL_FIELDS, "suitability", "regime", "gap_free")}))
     session = steps.Session(shard.path, shard.sha256, dict(shard.header, calibration=header["calibration"]), rows)
-    out = Path(out_features_dir)
-    np.savez(out / "targets.npz", **data.session_arrays(session, list(range(len(rows)))))
-    meta = json.loads((out / "meta.json").read_text())
+    targets = data.session_arrays(session, list(range(len(rows))))
+    if not len(targets["row"]):
+        raise ValueError("no eligible exact source-frame matches; cached features cannot be relabelled")
+    targets["feature_row"] = targets["row"].copy()
+    matched_indices = np.array([new_indices[k] for k in targets["row"]], dtype=np.int64)
+    targets["run_start"][1:] |= np.diff(matched_indices) != 1
+    run_lengths = np.diff(np.r_[np.flatnonzero(targets["run_start"]), len(targets["row"])])
+    np.savez(out / "targets.npz", **targets)
     meta["relabel"] = {"labels": str(video_labels), "labels_sha256": steps.sha256(video_labels),
-                       "calibration": header["calibration"], "matched": len(rows) - missing, "missing": missing}
+                       "calibration": header["calibration"], "idm": header.get("idm"),
+                       "match": "run + frame_index + pts + timebase", "target_steps": len(targets["row"]),
+                       "max_run_steps": int(run_lengths.max()),
+                       "matched": len(rows) - missing, "missing": missing}
     (out / "meta.json").write_text(json.dumps(meta, indent=2) + "\n")
     return len(rows) - missing, missing
 
