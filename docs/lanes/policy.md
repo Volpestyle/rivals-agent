@@ -207,7 +207,20 @@ Grid i4 (the explicit 16-shard 468,699-step v2-a cohort below; 3 seeds): val yaw
 80.5%, still false turn 8.7%, press F1 0.381, pitch 0.395; dev yaw 0.769, press F1 0.323. Compared with i3's 399k,
 the camera plateaus and only the buttons still improve. The extra 70k is mostly more Necros plus a little
 LuckyZeal, with no new Day or Req. More of the same v2-a labels no longer improves aim; label quality and new
-creators are the next levers. False turns and buttons improve on both sets, yaw
+creators are the next levers.
+
+Label quality, grid j (the same 5 Day shards and original features; v2-a targets vs aligned v2-cd overlays via
+`cloud.fit(expert_targets=...)`; 3 seeds each): val yaw v2-a 0.776 vs v2-cd 0.797 (own 0.786), onset 79.7% vs
+79.0%, still false turn 9.1% vs 8.7%, press F1 0.354 vs 0.353; dev yaw 0.788 vs 0.813, press F1 0.327 vs 0.319.
+The v2-cd IDM's better held-out label scores do not carry through to the policy at this scale: no gain, and
+yaw is slightly worse. The comparison is one creator; a v2-cd seed-0 outlier (val yaw 0.819) widens the gap.
+
+Cost: about 20 H100-minutes per run (about 637 s of training plus staging and eval), about $1.3. Grid j
+cost about $9 including four runs that failed at startup (warm-container scratch reuse, fixed in `287eb2b`);
+grid i4 cost about $4. On Mac MPS the same step takes 0.45 s, about 10 min per epoch at 700k steps.
+
+With i4 flat on camera and j flat on labels, BC on this corpus has reached diminishing returns.
+`bc2-mix399-s0` remains the camera pick (budget note to the lead, 2026-09-30). False turns and buttons improve on both sets, yaw
 improves slightly, and onset is flat on val and 1.5 points lower on dev. Views for later videos are built on the
 Mac from idm's per-span clips, which keep the original timestamps; rows match clip frames within 1 ms. Bundle
 `bc2-mix-s1` (dev's pick by press F1): val press F1 0.364, above the incumbent head's 0.325, so it needs no
