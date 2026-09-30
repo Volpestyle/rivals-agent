@@ -1,6 +1,6 @@
 param(
     [ValidateSet('A', 'B')][string]$Run = 'A',
-    [string]$PolicyBundle = 'D:/rivals-policy/bundles/bc2-mix-s1',
+    [string]$PolicyBundle = 'D:/rivals-policy/bundles/bc2-mix399-s0',
     [string]$ObsVideo = ''
 )
 # Private closed-loop test after compat run-05, not a demo (James/lead, 2026-09-30).
