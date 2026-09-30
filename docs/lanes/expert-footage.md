@@ -509,3 +509,41 @@ No models, labels, camera multipliers, action mappings, catalogue or source mask
 were changed. Decode used CPU/two threads with game/OBS and decoder guards; spend
 was $0. Lead reviews the private images before IDM's small paired test after GPU
 release; nothing from this inspection is public third-party visual evidence.
+
+## Bounded menu/action diagnostic (2026-09-30, VUH-1353)
+
+Private record and native images:
+`D:/rivals-expert-footage/private-review/menu-action-check/README.md`.
+**Confirmed:** scoreboard footage remains inside the two reported admitted DayMR
+spans. Their fire-held pulse and combo press originate in model predictions;
+441 distinct export rows / 959 selected action-row checks have zero conversion
+mismatches, and all three saved review ASS files match their detail projections.
+This establishes the threshold/export mechanism, not expert physical-input truth
+or exact encoded-frame timing.
+
+DayMR's missing jump tick has a .909540 peak below the .981267 press threshold;
+ReqMR's visual jump control reaches .991108 and exports a tick. Swing gaps follow
+held probabilities crossing .5. ReqMR wall movement coincides with predicted
+fire hold, but expert LMB state is unknown. Preserve James's clarification as
+positive observed end-boundary agreement plus incomplete preceding hold;
+exported release remains unknown, with no verified physical key release.
+
+James's existing unsealed -11 logs provide real negatives and a nearby E-press
+control. In the second inspected Tab transition, 2/29 post-Tab predictions falsely
+hold fire with known LMB up; scoreboard opens over a killcam, so menu causality is
+unresolved. The first transition has 0/29 post-Tab false holds; its false holds are
+before Tab during death footage. `enscd-m11-orig.npz` embeds c-only checkpoint
+metadata, but its action probability/held arrays were verified exactly equal to
+the existing c+d mean, with identical indices (maximum difference 0.0); full
+checkpoint paths and this provenance caveat are in `control-provenance.json`.
+
+118 private frames across 12.25 seconds, CPU/two-thread guarded sequential decode,
+existing predictions only, $0. No production, mask, model or catalogue changes.
+The exact missing evidence is synchronized expert key state and a comparison
+isolating menus from death/killcam. Lead owns acceptance and next fix scope.
+
+A final lead-supplied raw-label case, ReqMR ordinal 7 (991.000–1002.500), is
+appended to the private record: no web_cluster or get_over_here export ticks;
+the reported amber +6.083 tick is team_up. Listed raw peaks remain below the
+respective cast thresholds. This worker did not re-extract or independently
+verify that case's visual cast timing; it is explicitly attributed to the lead.
