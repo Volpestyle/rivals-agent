@@ -2,7 +2,7 @@ param(
     [Parameter(Mandatory = $true)][string]$Out,
     [string]$BaseBundle = 'D:/rivals-policy/bundles/bc2-mix399-s0',
     [int]$Episodes = 20,
-    [double]$EpisodeS = 20,
+    [double]$EpisodeSeconds = 20,
     [double]$ExploreTemp = 1.0,
     [double]$OptionRate = 0.5,
     [double]$YawScale = 1.0,
@@ -34,7 +34,7 @@ $rlArguments = @(
     'run', '--no-project', '--python', $rlPython, 'python', '-m', 'rl.online.sitting',
     '--live', '--game-pid', "$rlGamePid", '--camera-settings-match', 'alt-247-124',
     '--base-bundle', ('"' + $BaseBundle + '"'), '--out', ('"' + $Out + '"'),
-    '--episodes', "$Episodes", '--episode-s', "$EpisodeS", '--explore-temp', "$ExploreTemp", '--option-rate', "$OptionRate",
+    '--episodes', "$Episodes", '--episode-s', "$EpisodeSeconds", '--explore-temp', "$ExploreTemp", '--option-rate', "$OptionRate",
     '--yaw-scale', "$YawScale", '--decision-hz', "$DecisionHz", '--device', 'cuda'
 )
 $rlProcess = Start-Process -FilePath $rlUv -ArgumentList $rlArguments -WorkingDirectory 'C:/Users/volpe/repos/rivals-agent' -WindowStyle Hidden -PassThru -RedirectStandardOutput $rlStdout -RedirectStandardError $rlStderr
