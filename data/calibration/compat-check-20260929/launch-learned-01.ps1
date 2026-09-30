@@ -1,10 +1,10 @@
 param(
     [ValidateSet('A', 'B')][string]$Run = 'A',
-    [string]$PolicyBundle = 'D:/rivals-policy/bundles/bc2-l2h1536-hybrid',
+    [string]$PolicyBundle = 'D:/rivals-policy/bundles/bc2-mix-s1',
     [string]$ObsVideo = ''
 )
 # Private closed-loop test after compat run-05, not a demo (James/lead, 2026-09-30).
-# BC2 camera plus old buttons; run A uses full yaw, run B uses half yaw.
+# Pure BC2 expert-mix policy; run A uses full yaw, run B uses half yaw.
 # Lead launches only after the quick safety read and sitting grant.
 # Spider-Man in Practice Range near Galacta bots; crosshair between bots, slight downward look.
 # Steam Input disabled, alt controller sensitivities 247 horizontal / 124 vertical.
