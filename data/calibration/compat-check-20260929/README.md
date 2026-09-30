@@ -190,3 +190,43 @@ trace identifies that newer frame. Report observed response delays as evidence,
 not guaranteed latency or pitch degrees. Focal, pitch angular rates, latency
 and interpolation remain holes; passing this bounded check does not accept
 an ordinary whole-camera controller map.
+
+## First learned-policy sitting (2026-09-30)
+
+The lead launches this only after the quick live-input safety read and James's
+sitting grant. Use Spider-Man in the Practice Range near the Galacta bots, with
+the crosshair between them and a slight downward look. Keep Steam Input disabled
+and the alt controller settings at horizontal 247 / vertical 124. Start OBS
+recording before launch; keep that original native video. The runner does not
+navigate, choose a hero, start OBS or send a scripted attach-prime input.
+
+Invoke `launch-learned-01.ps1 -Run A` for a maximum of 60 seconds with learned
+yaw disabled. After inspecting that result and arranging the next sitting,
+invoke `launch-learned-01.ps1 -Run B` for another independently launched maximum
+of 60 seconds with `--yaw-scale 0.5`. Each can take `-ObsVideo '<native MKV path>'`
+to record the operator-supplied video path. Outputs are `learned-01-a/` and
+`learned-01-b/`, with separate stdout/stderr; existing attempts are refused.
+
+The bundle defaults to `D:/rivals-policy/bundles/ng-nohist-s1` and can be changed
+with `-PolicyBundle`. Real policy/readers/finder warm-up happens before attach,
+then the recurrent policy resets. Inference uses one latest-frame worker;
+capture and guarded input remain on the control thread. Native frames at up to
+10 Hz, per-tick predictions, raw/scaled yaw, masked actions, sent pad snapshots,
+request expiry/release times, inference/queue timing and the stop frame are
+retained alongside `result.json`. OBS remains the native session-video owner.
+
+Yaw uses measured signed knots, capped at |rx|=0.45; the policy's yaw is poor
+offline, hence the A/B setting. Pitch goes through an explicitly **unmeasured**
+rate approximation (signed yaw rate times 124/247), capped at |ry|=0.2. Each
+axis pulse is at most 1/60 second; action-only leases are at most 100 ms. Every
+input request still expires 100 ms after its original policy frame. Ult,
+team-up and GOH-targeting remain masked. No calibrated pitch accuracy or
+guaranteed camera latency is claimed.
+
+Completion means reaching the configured deadline with a confirmed pad close
+and usable recording. Bad play is permitted; it is not a learned-policy success
+claim. Any focus/HUD/idle/takeover/IO failure stops and releases input. Stale
+decisions are discarded with neutral input and re-observed, never given a wider
+freshness window. Preserve all artifacts and return to the lead; do not retry
+or navigate automatically. Inspect the actual play and recording before a
+second sitting or any policy-quality claim.
