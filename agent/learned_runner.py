@@ -97,14 +97,18 @@ class LatestPolicy:
         self.thread = threading.Thread(target=self._work, daemon=True, name='learned-policy')
         self.thread.start()
 
-    def offer(self, frame, stamp):
+    def offer(self, frame, stamp, *, timing=None):
         with self.condition:
             # Throttle new jobs, not replacement of a job already waiting for
             # inference. Otherwise a 50 ms model starts a 20-30 ms old frame.
             if self.done or (self.job is None and stamp - self.last < self.period):
                 return
             self.last = stamp
-            self.job = (frame.copy() if hasattr(frame, 'copy') else frame, stamp)
+            copying = self.clock()
+            snapshot = frame.copy() if hasattr(frame, 'copy') else frame
+            offered = self.clock()
+            self.job = (snapshot, stamp, offered,
+                        {**(timing or {}), 'offer_copy_s': offered - copying})
             self.condition.notify()
 
     def poll(self):
@@ -127,7 +131,7 @@ class LatestPolicy:
                     self.condition.wait_for(lambda: self.done or self.job is not None)
                     if self.done:
                         return
-                    frame, stamp = self.job
+                    frame, stamp, offered, timing = self.job
                     self.job = None
                 started = self.clock()
                 if not 0 <= started - stamp <= FRESH_S:
@@ -136,7 +140,8 @@ class LatestPolicy:
                 finished = self.clock()
                 with self.condition:
                     if not self.done:
-                        self.latest = (frame, stamp, step, started, finished)
+                        self.latest = (frame, stamp, step, started, finished,
+                                       {**timing, 'queue_resident_s': started - offered})
                         self.condition.notify_all()
         except BaseException as e:
             with self.condition:
@@ -166,6 +171,8 @@ class LearnedRunner:
         self.last_frame, self.last_stamp, self.last_t, self.size = None, None, None, None
         self.threaded, self.worker, self.decision_t = threaded, None, None
         self.yaw_scale = yaw_scale
+        self.observation_timing = {}
+        self.awaiting_fresh = False
         if type(decision_hz) not in (int, float) or not math.isfinite(decision_hz) or not 10 <= decision_hz <= 30:
             raise ValueError('decision-hz must be finite and in [10,30]')
         self.decision_hz = decision_hz
@@ -182,6 +189,7 @@ class LearnedRunner:
         if obs is None:
             raise RangeLost('replay_complete')
         frame, stamp = obs
+        received = self.io.now()
         self.last_frame, self.last_stamp = frame, stamp
         if not self.guard(frame):
             raise RangeLost('range_or_scope_lost')
@@ -190,26 +198,57 @@ class LearnedRunner:
                 or (self.size is not None and self.size != size)):
             raise ValueError('native frame size changed or invalid')
         self.size = size
-        if (not math.isfinite(stamp) or not 0 <= self.now() - stamp <= FRESH_S
-                or (self.last_t is not None and stamp <= self.last_t)):
-            raise RangeLost('stale_or_nonmonotonic_frame')
+        checked = self.now()
+        age = checked - stamp
+        timing = {'capture_s': received - stamp, 'readers_s': checked - received}
+        clause = None
+        if not math.isfinite(stamp):
+            clause = 'invalid_frame_timestamp'
+        elif age < 0:
+            clause = 'future_frame_timestamp'
+        elif self.last_t is not None and stamp < self.last_t:
+            clause = 'frame_timestamp_regressed'
+        elif age > L.LOST_GRACE_S:
+            clause = 'capture_stalled'
+        elif age > FRESH_S:
+            clause = 'stale_after_capture' if received - stamp > FRESH_S else 'stale_after_readers'
+        elif stamp == self.last_t:
+            clause = 'repeated_frame'
+        if clause:
+            self.io.release()
+            fatal = clause in {'invalid_frame_timestamp', 'future_frame_timestamp',
+                               'frame_timestamp_regressed', 'capture_stalled'}
+            self.write({'event': 'observation_refusal' if fatal else 'observation_discard',
+                        't': checked, 'clause': clause, 'frame_t': stamp,
+                        'previous_frame_t': self.last_t, 'age_s': age, **timing}, frame)
+            if fatal:
+                raise RangeLost(clause)
+            self.last_t = stamp
+            self.awaiting_fresh = True
+            return None  # no inference or input; next acquisition must be fresh
         self.last_t = stamp
+        self.awaiting_fresh = False
+        self.observation_timing = timing
         if self.worker is not None:
-            self.worker.offer(frame, stamp)
+            self.worker.offer(frame, stamp, timing=timing)
         return frame, stamp
 
     def decision(self):
         while True:
-            if self.worker is not None:
+            if self.worker is not None and not self.awaiting_fresh:
                 latest = self.worker.poll()
                 if latest is not None and latest[1] != self.decision_t:
                     self.decision_t = latest[1]
                     return latest
-            frame, stamp = self.observe()
+            obs = self.observe()
+            if obs is None:
+                continue
+            frame, stamp = obs
             if self.worker is None:
                 started = self.now()
                 step = self.policy.step(frame, t=stamp)
-                return frame, stamp, step, started, self.now()
+                return frame, stamp, step, started, self.now(), {
+                    **self.observation_timing, 'offer_copy_s': 0., 'queue_resident_s': 0.}
             self.worker.wait_after(self.decision_t)
 
     def write(self, row, frame=None):
@@ -235,7 +274,7 @@ class LearnedRunner:
             if self.threaded:
                 self.worker = LatestPolicy(self.policy, self.io.now, hz=self.decision_hz)
             while True:
-                frame, stamp, step, started, finished = self.decision()
+                frame, stamp, step, started, finished, *timing = self.decision()
                 pad, active, masked = action_pad(step)
                 if type(step.yaw_deg) not in (int, float) or not math.isfinite(step.yaw_deg):
                     raise ValueError('finite numeric camera degrees required')
@@ -248,7 +287,8 @@ class LearnedRunner:
                        'held': step.held, 'press': step.press, 'release': step.release,
                        'active': active, 'masked': masked, 'yaw_deg': step.yaw_deg,
                        'yaw_scale': self.yaw_scale, 'scaled_yaw_deg': scaled_yaw,
-                       'pitch_deg': step.pitch_deg, 'pulses': pulses}
+                       'pitch_deg': step.pitch_deg, 'pulses': pulses,
+                       **(timing[0] if timing else {})}
                 self.ticks += 1
                 if not self.guard(frame):
                     raise RangeLost('range_or_scope_lost_after_inference')
@@ -273,7 +313,10 @@ class LearnedRunner:
                                 break
                             self.sleep(min(.005, remaining))
                             if self.io.now() < end:
-                                proof_frame, proof_stamp = self.observe()
+                                obs = self.observe()
+                                if obs is None:
+                                    raise InputExpired('no fresh observation during camera pulse')
+                                proof_frame, proof_stamp = obs
                                 self.write({'event': 'guard', 't': proof_stamp, 'tick': self.ticks - 1}, proof_frame)
                         self.io.release()  # never extend a camera pulse through inference
                     sent = self.now()
@@ -281,11 +324,11 @@ class LearnedRunner:
                     self.send(pad, stamp, end)  # right stick neutral; holds may span the next inference
                     self.write({'event': 'send', 't': sent, 'tick': self.ticks - 1,
                                 'policy_frame_t': stamp, 'pad': pad, 'release_at': end})
-                except InputExpired:
+                except InputExpired as e:
                     self.io.release()
                     self.dropped += 1
                     self.write({'event': 'discard', 't': self.io.now(), 'tick': self.ticks - 1,
-                                'clause': 'policy_frame_expired_before_input'})
+                                'clause': 'policy_frame_expired_before_input', 'detail': str(e)})
         except RangeLost as e:
             reason = str(e)
         except BaseException as e:
@@ -552,7 +595,7 @@ def main(argv=None):
                                           native_size=runner.size, camera=runner.camera.metadata())
                         try:
                             if runner is not None and runner.last_frame is not None:
-                                log.save('stop', runner.last_frame)
+                                log.save('stop', runner.last_frame, required=True)
                         except Exception as e:
                             result['stop_frame_error'] = repr(e)
                         finally:

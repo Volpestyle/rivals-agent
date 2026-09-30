@@ -311,7 +311,9 @@ def test_cli_closes_pad_before_policy_or_recording_teardown_on_all_failures(fail
         def __init__(self,*a,**k): out.mkdir()
         def write(self,*a):
             if failure=='record': raise OSError('record')
-        def save(self,*a): return 'stop.png'
+        def save(self,*a,**kwargs):
+            assert kwargs=={'required':True}
+            return 'stop.png'
         def close(self,*a): order.append('record')
     monkeypatch.setattr(L,'RunLog',Recorder)
     args=['--live','--policy-bundle','fake','--game-pid','123','--camera-settings-match','alt-247-124',
@@ -365,6 +367,11 @@ def test_async_latest_frame_queue_replaces_pending_job_and_closes_without_late_p
         assert second.wait(1)
         assert frames[:2]==['first','latest']
         assert stamps[:2]==[first_stamp,latest_stamp]
+        with worker.condition:
+            assert worker.condition.wait_for(lambda: worker.latest is not None and
+                                             worker.latest[1]==latest_stamp,timeout=1)
+        assert worker.poll()[-1]['queue_resident_s']==0.
+        assert worker.poll()[-1]['offer_copy_s']==0.
     finally:
         unblock.set()
         assert worker.close()
@@ -400,7 +407,7 @@ def test_decision_waits_for_worker_completion_before_another_blocking_capture():
     class Worker:
         latest=None
         def poll(self): return self.latest
-        def offer(self,frame,stamp): self.job=(frame,stamp,decision(),stamp,stamp+.04)
+        def offer(self,frame,stamp,**kwargs): self.job=(frame,stamp,decision(),stamp,stamp+.04)
         def wait_after(self,stamp):
             assert stamp is None
             self.latest=self.job
@@ -442,3 +449,159 @@ def test_ram_replay_rejects_unbounded_input_before_episode(count,nbytes,match,mo
     monkeypatch.setattr(L,'RunSource',lambda directory:source)
     with pytest.raises(ValueError,match=match):
         R.ReplayIO('fake',predecode=True)
+
+
+@pytest.mark.parametrize('age,clause',[(.05,'repeated_frame'),(.15,'stale_after_capture')])
+def test_transient_capture_reuse_releases_and_recovers_without_inference_or_input(age,clause):
+    f=setup(deadline=.6)
+    _,stamp=f.runner.observe()
+    f.io.t=stamp+age
+    fresh_next=f.io.next
+    f.io.next=lambda:(f.io.frame,stamp)
+    assert f.runner.observe() is None
+    assert f.io.pad==NEUTRAL and not f.io.calls and not f.policy.calls
+    row=f.log.rows[-1]
+    assert row['event']=='observation_discard' and row['clause']==clause
+    assert row['frame_t']==row['previous_frame_t']==stamp and row['age_s']==pytest.approx(age)
+    f.io.next=fresh_next
+    result=f.runner.run()
+    assert result['result'] in {'deadline','range_or_scope_lost'} and f.io.calls
+    assert all(t>stamp for t in f.policy.capture_times)
+    assert all(0 <= row['t']-row['policy_frame_t'] < .1
+               for row in f.log.rows if row['event']=='send')
+    assert R.FRESH_S==.1 and L.LOST_GRACE_S==.25
+
+
+def test_slow_reader_discards_frame_and_records_named_timing_then_recovers():
+    f=setup(deadline=.6)
+    guard=f.runner.guard
+    def slow(frame):
+        f.io.t+=.114
+        return guard(frame)
+    f.runner.guard=slow
+    assert f.runner.observe() is None
+    assert not f.policy.calls and not f.io.calls
+    row=f.log.rows[-1]
+    assert row['clause']=='stale_after_readers' and row['readers_s']==pytest.approx(.114)
+    f.runner.guard=guard
+    assert f.runner.run()['result']=='deadline' and f.io.calls
+
+
+@pytest.mark.parametrize('stamp,now,last,clause',[
+    (float('nan'),.03,None,'invalid_frame_timestamp'),
+    (.04,.03,None,'future_frame_timestamp'),
+    (.01,.03,.02,'frame_timestamp_regressed'),
+    (.01,.28,.01,'capture_stalled'),
+])
+def test_invalid_or_persistently_stalled_capture_stops_with_named_frame_evidence(stamp,now,last,clause):
+    f=setup(deadline=.6)
+    f.runner.last_t=last
+    def capture():
+        f.io.t=now
+        return f.io.frame,stamp
+    f.io.next=capture
+    assert f.runner.run()['result']==clause
+    assert f.io.pad==NEUTRAL and not f.io.calls and not f.policy.calls
+    row=f.log.rows[-2]
+    assert row['event']=='observation_refusal' and row['clause']==clause
+    assert row['previous_frame_t']==last and f.runner.last_frame is f.io.frame
+
+
+def test_capture_and_reader_cost_is_separate_from_actual_queue_wait():
+    f=setup(deadline=.3)
+    guard=f.runner.guard
+    def reader(frame):
+        f.io.t+=.02
+        return guard(frame)
+    f.runner.guard=reader
+    f.runner.run()
+    row=next(x for x in f.log.rows if x['event']=='decision')
+    assert row['capture_s']==0 and row['readers_s']==pytest.approx(.02)
+    assert row['queue_wait_s']==pytest.approx(.02) and row['queue_resident_s']==0
+    assert row['offer_copy_s']==0
+
+
+def test_repeated_frame_during_camera_pulse_releases_and_skips_remaining_old_decision():
+    f=setup(deadline=.3)
+    stamp=None
+    repeated=False
+    def capture():
+        nonlocal stamp,repeated
+        f.io.t+=.005
+        if f.io.calls and not repeated:
+            repeated=True
+            return f.io.frame,stamp
+        stamp=f.io.t
+        return f.io.frame,stamp
+    f.io.next=capture
+    result=f.runner.run()
+    assert repeated and result['dropped_decisions']>=1 and f.io.pad==NEUTRAL
+    assert any(x['clause']=='repeated_frame' for x in f.log.rows if x['event']=='observation_discard')
+    sent=[x for x in f.log.rows if x['event']=='send' and x['tick']==0]
+    assert len(sent)==1 and sent[0]['pad']['ry']!=0  # no old action-only lease
+
+
+def test_ready_model_result_cannot_bypass_reacquisition_after_capture_discard():
+    f=setup(deadline=.6)
+    frame,stamp=f.runner.observe()
+    f.io.t+=.05
+    capture=f.io.next
+    f.io.next=lambda:(frame,stamp)
+    assert f.runner.observe() is None
+    offered=[]
+    class Worker:
+        def poll(self): return (frame,stamp,decision(),stamp,stamp+.04)
+        def offer(self,frame,stamp,**kwargs): offered.append(stamp)
+        def wait_after(self,stamp): pass
+    f.runner.worker=Worker()
+    f.io.next=capture
+    f.runner.decision()
+    assert offered and offered[0]>stamp and not f.runner.awaiting_fresh
+
+
+@pytest.mark.parametrize('failure',[None,'counters','nvml'])
+def test_launcher_gpu_probe_reports_resident_python_clients_and_unknowns_without_launch(failure):
+    import subprocess
+    import sys
+    if sys.platform!='win32':
+        pytest.skip('Windows launcher and GPU performance counters')
+    launcher=(Path(__file__).parents[1]/'data/calibration/compat-check-20260929/launch-learned-01.ps1')
+    script="""
+    $ErrorActionPreference='Stop'
+    function nvidia-smi {
+        $global:LASTEXITCODE=0
+        if ('FAILURE' -eq 'nvml') { $global:LASTEXITCODE=1; return }
+        '10, C:\\python.exe, [N/A]'
+        '11, C:\\python.exe, [N/A]'
+        '555, C:\\Marvel-Win64-Shipping.exe, [N/A]'
+    }
+    function Get-CimInstance {
+        param($ClassName,$ErrorAction)
+        if ('FAILURE' -eq 'counters') { throw 'counters unavailable' }
+        [pscustomobject]@{Name='pid_10_luid_0_phys_0';DedicatedUsage=1073741824}
+        [pscustomobject]@{Name='pid_10_luid_1_phys_0';DedicatedUsage=536870912}
+        [pscustomobject]@{Name='pid_11_luid_0_phys_0';DedicatedUsage=0}
+    }
+    $tokens=$null; $errors=$null
+    $ast=[System.Management.Automation.Language.Parser]::ParseFile('LAUNCHER',[ref]$tokens,[ref]$errors)
+    if ($errors.Count) { throw 'launcher syntax' }
+    $fn=$ast.Find({param($n) $n -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
+        $n.Name -eq 'Get-LearnedGpuPreflight'},$true)
+    . ([scriptblock]::Create($fn.Extent.Text))
+    Get-LearnedGpuPreflight | ConvertTo-Json -Depth 5 -Compress
+    """.replace('FAILURE',failure or '').replace('LAUNCHER',str(launcher).replace("'","''"))
+    # Only the extracted read-only probe runs; no launcher, capture or pad code.
+    result=subprocess.run(['powershell','-NoProfile','-Command',script],capture_output=True,
+                          text=True,timeout=30,check=False)
+    assert result.returncode==0,result.stderr
+    probe=json.loads(result.stdout)
+    if failure=='nvml':
+        assert probe['clients']==[] and probe['errors']
+    else:
+        assert [x['pid'] for x in probe['clients']]==[10,11]
+        assert probe['clients'][0]['nvml_mib']=='[N/A]'
+        if failure=='counters':
+            assert all(x['dedicated_mib'] is None for x in probe['clients']) and probe['errors']
+        else:
+            assert [x['dedicated_mib'] for x in probe['clients']]==[1536.,0.]
+            assert probe['errors']==[]

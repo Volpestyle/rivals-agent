@@ -3,6 +3,33 @@ param(
     [string]$PolicyBundle = 'D:/rivals-policy/bundles/bc2-mix399-s0',
     [string]$ObsVideo = ''
 )
+function Get-LearnedGpuPreflight {
+    $gpuErrors = @()
+    $gpuRows = @()
+    $gpuCounters = $null
+    try {
+        $gpuCsv = @(& nvidia-smi --query-compute-apps=pid,process_name,used_memory --format=csv,noheader)
+        if ($LASTEXITCODE -ne 0) { throw 'nvidia-smi process query failed' }
+        $gpuRows = @($gpuCsv | ConvertFrom-Csv -Header 'pid','process','nvml_mib')
+    } catch { $gpuErrors += $_.Exception.Message }
+    try {
+        $gpuCounters = @(Get-CimInstance -ClassName Win32_PerfFormattedData_GPUPerformanceCounters_GPUProcessMemory -ErrorAction Stop)
+    } catch { $gpuErrors += $_.Exception.Message }
+    $gpuClients = @(
+        foreach ($gpuRow in $gpuRows) {
+            if ($gpuRow.process.Trim() -notmatch '(?i)(pythonw?|trtexec)\.exe$') { continue }
+            $gpuClientPid = [int]$gpuRow.pid.Trim()
+            $gpuMemory = @($gpuCounters | Where-Object { $_.Name -like "pid_${gpuClientPid}_*" })
+            $gpuDedicatedMiB = $null
+            if ($gpuMemory.Count) {
+                $gpuDedicatedMiB = [math]::Round(($gpuMemory | Measure-Object DedicatedUsage -Sum).Sum / 1MB, 1)
+            }
+            [pscustomobject]@{ pid=$gpuClientPid; process=$gpuRow.process.Trim();
+                nvml_mib=$gpuRow.nvml_mib.Trim(); dedicated_mib=$gpuDedicatedMiB }
+        }
+    )
+    [pscustomobject]@{ utc=[DateTime]::UtcNow.ToString('o'); clients=$gpuClients; errors=$gpuErrors }
+}
 # Private closed-loop test after compat run-05, not a demo (James/lead, 2026-09-30).
 # Pure BC2 expert-mix policy; run A uses full yaw, run B uses half yaw.
 # Lead launches only after the quick safety read and sitting grant.
@@ -28,9 +55,17 @@ $learnedYawScale = if ($Run -eq 'A') { '1.0' } else { '0.5' }
 $learnedOut = Join-Path $learnedSitting $learnedName
 $learnedStdout = Join-Path $learnedSitting ($learnedName + '.stdout.log')
 $learnedStderr = Join-Path $learnedSitting ($learnedName + '.stderr.log')
-foreach ($learnedPath in @($learnedOut, $learnedStdout, $learnedStderr)) {
+$learnedGpuPath = Join-Path $learnedSitting ($learnedName + '.gpu-preflight.json')
+foreach ($learnedPath in @($learnedOut, $learnedStdout, $learnedStderr, $learnedGpuPath)) {
     if (Test-Path -LiteralPath $learnedPath) { throw 'Attempt path exists; preserve it and return to the lead' }
 }
+$learnedGpu = Get-LearnedGpuPreflight
+$learnedGpu | ConvertTo-Json -Depth 5 | Set-Content -Encoding utf8 -LiteralPath $learnedGpuPath
+foreach ($learnedClient in $learnedGpu.clients) {
+    $learnedMemory = if ($null -eq $learnedClient.dedicated_mib) { 'unknown' } else { "$($learnedClient.dedicated_mib) MiB dedicated" }
+    Write-Warning "Other GPU client PID $($learnedClient.pid): $($learnedClient.process), memory $learnedMemory. Pausing it does not release VRAM; sharing may increase policy latency."
+}
+foreach ($learnedGpuError in $learnedGpu.errors) { Write-Warning "GPU preflight incomplete: $learnedGpuError" }
 $learnedArguments = @(
     'run', '--no-project', '--python', $learnedPython, 'python', '-m', 'agent.learned_runner',
     '--live', '--policy-bundle', ('"' + $PolicyBundle + '"'), '--device', 'cuda',

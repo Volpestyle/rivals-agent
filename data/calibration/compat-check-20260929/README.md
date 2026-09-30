@@ -229,6 +229,12 @@ retained alongside `result.json`. OBS remains the native session-video owner.
 Both launch modes cap new inference jobs at 15 Hz to leave time for camera
 execution inside the original 100 ms frame budget. Pending jobs are replaced
 with the latest fresh frame; the bundle is trained for intervals at 10–30 Hz.
+The launcher records `<attempt>.gpu-preflight.json` and warns when other
+Python/TensorRT GPU clients are present. Windows GPU process-memory counters
+provide dedicated usage when available; missing telemetry stays unknown.
+This is diagnostic, not a launch gate. Paused jobs may retain VRAM; the launcher
+does not pause or close other processes. See [learned-01 A diagnosis](learned-01-a/README.md)
+for the first live attempt and the runner fixes.
 
 The loaded 30-second mocked-pad RAM replay of `bc2-dt-s1-hybrid` at the 15 Hz
 cap produced 14.5 decisions/s and 24.4% expiry (106/435 decisions) while four IDM CUDA shards
@@ -258,3 +264,6 @@ decisions are discarded with neutral input and re-observed, never given a wider
 freshness window. Preserve all artifacts and return to the lead; do not retry
 or navigate automatically. Inspect the actual play and recording before a
 second sitting or any policy-quality claim.
+Transient repeated/stale capture observations also release input and are
+reacquired within the existing no-frame grace; clock regression and persistent
+capture stalls stop with a named clause and timestamp evidence.
