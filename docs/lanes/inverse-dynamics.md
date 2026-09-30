@@ -241,6 +241,42 @@ reference's quality cut, so the geometric statistic may itself be failing on his
 Treat DayMR's camera magnitudes (7.1 h) as uncertain until checked. Combo/GOH press labels on creators whose HUD
 order differs from James's are the weakest labels.
 
+**Follow-ups (idm, 2026-09-30 15:50).**
+
+*Slot-order test.* James's held-out -11/-12 was labelled twice, with the original HUD and with combo/GOH ability
+slots swapped to DayMR's order (`D:/rivals-agent-local/idm-expert-check/slot-swap.json`). Press F1:
+
+| Action | Original | Swapped |
+|---|---:|---:|
+| combo | 0.667 | 0.675 |
+| GOH | 0.80 | 0.75 (9 presses) |
+| swing | 0.79 | 0.80 |
+| cluster | 0.70 | 0.64 |
+| jump | 0.68 | 0.62 |
+
+There is no combo/GOH swap bug, so no remap is needed. A different layout costs cluster and jump recall (about -0.06 F1).
+
+*Overlay masks shrink camera degrees.* This explains the DayMR flag. Each creator's dominant overlay-mask set was
+applied to James's held-out -11/-12, 6 min in all with the truth known. The table is the v2-cd slope on true degrees
+(`mask-test-creators.json`; the unmasked baseline is yaw 0.859 and pitch 0.619):
+
+| Mask set of | Mask area | Yaw slope | Yaw vs unmasked | Pitch vs unmasked | Moving-yaw MAE |
+|---|---:|---:|---:|---:|---:|
+| none | 0 | 0.859 | 1.00 | 1.00 | 0.523 |
+| rdpaco | 0.06 | 0.856 | 1.00 | 0.97 | 0.534 |
+| reqmr | 0.05 | 0.848 | 0.99 | 0.98 | 0.533 |
+| 6fthumblearab | 0.05 | 0.843 | 0.98 | 0.98 | 0.533 |
+| luckyzeal | 0.21 | 0.837 | 0.97 | 0.95 | 0.584 |
+| simii_exe | 0.20 | 0.812 | 0.95 | 0.87 | 0.591 |
+| rekriot | 0.20 | 0.811 | 0.94 | 0.92 | 0.585 |
+| necros | 0.29 | 0.797 | 0.93 | 0.92 | 0.604 |
+| **daymr** | 0.28 | **0.707** | **0.82** | **0.65** | **0.755** |
+
+DayMR's set includes a large top-centre box (x 0.46-0.73, y 0-0.48) that also defeats the geometric reference. The
+labels are consistently too small under masking. The correction would be camera_scale = 1 / (ratio), per creator and
+per axis (DayMR yaw x1.22, pitch x1.54), for spans whose mask set is the dominant one. It is not applied yet (see the
+handoff). The better fix is to shrink conservative masks at the source and relabel.
+
 ### Cached-feature anchor alignment (IDM relief, 2026-09-30)
 
 Changing the IDM context window moved the first labelled timestamp and therefore the exporter's nominal 30 Hz
