@@ -101,7 +101,7 @@ def features(labels, views_root, out_root, tower, *, device="cuda", batch=256, l
     import torch
     from policy.bc2 import data
     from policy.bc2.features import tower_features
-    from policy.bc2.model import FEAT, GREEN_DIM, gray_full, gray_small, green_profile
+    from policy.bc2.model import FEAT, GREEN_DIM, gray_small, green_profile
     session = load_labels(labels)
     n = len(session.rows)
     src = Path(views_root) / session.session_id
@@ -114,7 +114,6 @@ def features(labels, views_root, out_root, tower, *, device="cuda", batch=256, l
     feats = np.lib.format.open_memmap(out / "feats.npy", "w+", np.float16, (n, 2, FEAT))
     gray_g = np.lib.format.open_memmap(out / "gray_g.npy", "w+", np.uint8, (n, 72, 128))
     gray_c = np.lib.format.open_memmap(out / "gray_c.npy", "w+", np.uint8, (n, 64, 64))
-    gray_g1 = np.lib.format.open_memmap(out / "gray_g1.npy", "w+", np.uint8, (n, 144, 256))
     green = np.lib.format.open_memmap(out / "green.npy", "w+", np.float16, (n, GREEN_DIM))
     started = time.monotonic()
     with torch.no_grad():
@@ -125,9 +124,8 @@ def features(labels, views_root, out_root, tower, *, device="cuda", batch=256, l
             m = len(g)
             feats[s:s + m, 0], feats[s:s + m, 1] = f[:m].cpu().numpy(), f[m:].cpu().numpy()
             gray_g[s:s + m], gray_c[s:s + m] = gray_small(g).cpu().numpy(), gray_small(c).cpu().numpy()
-            gray_g1[s:s + m] = gray_full(g).cpu().numpy()
             green[s:s + m] = green_profile(g).cpu().numpy()
-    for a in (feats, gray_g, gray_c, gray_g1, green):
+    for a in (feats, gray_g, gray_c, green):
         a.flush()
     np.savez(out / "targets.npz", **data.session_arrays(session, list(range(n))))
     meta = {"session": session.session_id, "split": session.split, "source_kind": "replay",
