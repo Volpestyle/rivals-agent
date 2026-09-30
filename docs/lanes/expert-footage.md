@@ -547,3 +547,8 @@ appended to the private record: no web_cluster or get_over_here export ticks;
 the reported amber +6.083 tick is team_up. Listed raw peaks remain below the
 respective cast thresholds. This worker did not re-extract or independently
 verify that case's visual cast timing; it is explicitly attributed to the lead.
+James subsequently described Peni team-up and Web-Cluster as visually similar web
+shots, and Venom team-up as the giant black spiky-ball effect. This is user-supplied
+visual taxonomy, not independently verified cast truth. Ordinal 7's +6.083 team_up
+tick is therefore a possible web-shot/team-up confusion, not a confirmed false
+positive without agreement from available team-up and contemporaneous HUD state.
