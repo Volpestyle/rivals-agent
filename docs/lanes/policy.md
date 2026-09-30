@@ -188,7 +188,20 @@ Three seeds, Req s0-s2 as expert data (92,793 steps, +31%), means over seeds 0-2
 | own | 0.786 | 79.1% | 10.2% | 0.314 | 0.809 | 76.6% | 11.2% | 0.290 |
 | mix | 0.776 | 79.7% | 8.8% | 0.333 | 0.797 | 75.1% | 9.5% | 0.304 |
 
-The gain is modest; the one-shard seed-0 preview overstated it. False turns and buttons improve on both sets, yaw
+With 399,231 expert steps (Req 8 shards, Day 2871149954 4, Necros 1: three creators, 1.3x James's data):
+
+| 3-seed mean | Val yaw | Val onset | Val moving sign | Val still false turn | Val press F1 | Dev yaw | Dev still false turn | Dev press F1 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| own | 0.786 | 79.1% | 94.3% | 10.2% | 0.314 | 0.809 | 11.2% | 0.290 |
+| + 93k (1 creator) | 0.776 | 79.7% | 94.3% | 8.8% | 0.333 | 0.797 | 9.5% | 0.304 |
+| + 399k (3 creators) | 0.746 | 82.6% | 95.2% | 7.9% | 0.363 | 0.762 | 8.8% | 0.322 |
+| + 399k, expert at most half the windows (2 seeds) | 0.761 | 81.8% | 95.1% | 8.3% | 0.369 | 0.786 | 10.1% | 0.336 |
+
+At 399k, every mix seed beats every own seed on yaw, on val (0.736-0.755 vs 0.779-0.795) and on dev (0.755-0.769
+vs 0.804-0.812). The gain grows with expert data and creators. Bundle `bc2-mix399-s0` (dev-selected by yaw): val
+yaw 0.736, onset 82.0%, still false turn 7.6%, press F1 0.346.
+
+At 93k the gain is modest; the one-shard seed-0 preview overstated it. False turns and buttons improve on both sets, yaw
 improves slightly, and onset is flat on val and 1.5 points lower on dev. Views for later videos are built on the
 Mac from idm's per-span clips, which keep the original timestamps; rows match clip frames within 1 ms. Bundle
 `bc2-mix-s1` (dev's pick by press F1): val press F1 0.364, above the incumbent head's 0.325, so it needs no
