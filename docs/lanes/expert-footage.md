@@ -395,3 +395,36 @@ counts-only milestone chart and measured totals live in external
 completed sources appear in the current README/export without rewriting that
 milestone snapshot. Source masks are measured separately: the final white-shirt
 Rdpaco broadcast places its facecam lower than the black-shirt broadcast.
+
+
+## Read-only IDM labelling page
+
+`scripts/idm_board.py` projects published metadata for `/idm-labelling` on the
+Mac training board; the main page links it. A separate 30-second background SSH
+fetch runs its stdlib collector on the PC, with a 15-second timeout. Page
+requests never wait for SSH. It opens only the external catalogue/spans,
+explicit `idm-*` job receipts, and the first bounded line of each v2-a/v2-cd
+label file. No action rows, frames, checkpoints, supervisor internals or GPU
+work are read. A malformed header cannot fall through to action rows.
+
+IDM owns the optional `C:/Users/volpe/jobs/idm-labelling.json` receipt: supervisor
+state/reason, per-video state/count/hours/update, throughput/ETA, and published
+per-creator expert-check accuracy. Missing values remain unknown; an aggregate
+`done` job receipt never means all corpus spans were labelled. Partial span
+counts cannot establish partial duration without knowing which spans were
+labelled. Fully labelled videos can use admitted durations from the catalogue
+export. Cached counts survive a failed fetch with a visible warning and an
+unconfirmed supervisor state. Backups beside the Mac scripts use `.bak`.
+
+
+The IDM receipt publishes `pending|partial|labelled|exported` per video. The
+page maps these to queued/labelling/done and applies the published supervisor
+pause/hold to unfinished rows. The superseded v2-a set is held. An exported
+video may have refused spans, so the displayed count stays below its denominator;
+processing completion is not invented label coverage. The expert-check value
+is a yaw/image-shift slope relative to James, not classification accuracy; the
+page retains its metric, sample count, source, DayMR uncertainty flag and the
+separate press spot-check precision. Throughput/ETA remain owner-reported.
+The metadata sidecar refreshes roughly every two minutes; the page/fetch refresh
+is 30 seconds. Thirty-two synthetic tests and Ruff passed, and live Mac HTTP
+checks confirmed both sets, forty videos per set and eight creator/check rows.

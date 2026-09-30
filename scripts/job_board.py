@@ -23,8 +23,10 @@ import time
 from urllib.parse import urlsplit
 
 if __package__:
+    from .idm_board import LabellingCache, render as render_labelling
     from .job_status import timestamp, validate as validate_status, matches_receipt
 else:
+    from idm_board import LabellingCache, render as render_labelling
     from job_status import timestamp, validate as validate_status, matches_receipt
 
 
@@ -198,6 +200,7 @@ class Board:
         self.pc_deadline = 0
         self.pc_data = None
         self.pc_warning = None
+        self.labelling = LabellingCache()
 
     def _poll_pc(self):
         try:
@@ -850,7 +853,7 @@ def render(snapshot, evidence):
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<meta http-equiv="refresh" content="30"><title>Rivals · Training lab</title><style>{CSS}</style></head><body><div class="shell">'
             '<header class="masthead"><div class="brand">RIVALS<span>/ TRAINING LAB</span></div><div class="live-label"><span class="dot"></span>'
-            '<span class="refresh-label">Updates every 30 seconds</span><a href="/api/status">Snapshot ↗</a></div></header>'
+            '<span class="refresh-label">Updates every 30 seconds</span><a href="/idm-labelling">IDM labelling</a><a href="/api/status">Snapshot ↗</a></div></header>'
             f'<section class="overview"><div><h1>{headline}</h1><p>{summary}</p></div><div class="stats">'
             f'<div class="stat"><b class="orange">{running_count}</b><span>RUNNING JOBS</span></div><div class="stat"><b>{sum(j["stage"] == "done" for j in recent_runs)}</b><span>FINISHED · LAST 48 H</span></div>'
             f'<div class="stat"><b class="{"amber" if unconfirmed else "mint"}">{len(unconfirmed)}</b><span>UNCONFIRMED · CURRENT</span></div></div></section>'
@@ -871,11 +874,18 @@ def render(snapshot, evidence):
 def serve(board, port):
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self):
-            snapshot = board.snapshot()
             path = urlsplit(self.path).path
-            if path == "/":
+            if path in ("/idm-labelling", "/api/idm-labelling"):
+                data, warning = board.labelling.snapshot()
+                if path == "/idm-labelling":
+                    body, mime = render_labelling(data, warning, CSS).encode(), "text/html; charset=utf-8"
+                else:
+                    body, mime = json.dumps(dict(data, warning=warning)).encode(), "application/json"
+            elif path == "/":
+                snapshot = board.snapshot()
                 body, mime = render(snapshot, board.evidence).encode(), "text/html; charset=utf-8"
             elif path == "/api/status":
+                snapshot = board.snapshot()
                 body, mime = json.dumps(snapshot).encode(), "application/json"
             elif path.startswith("/evidence/") and path[10:] in board.evidence:
                 body = json.dumps(board.evidence[path[10:]], indent=2).encode()
