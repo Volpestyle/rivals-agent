@@ -66,7 +66,8 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
         eval_sessions: list = None, batch_size: int = 32, lr: float = 3e-4, wd: float = .05,
         feat_dropout: float = .3, hidden: int = 512, use_green: bool = False, use_dt: bool = False,
         chunk: int = 0, onset_weight: float = 1., chunk_weight: float = .5, expert: bool = False,
-        expert_epochs: int = None, expert_share: float = None, hires: bool = False, layers: int = 1):
+        expert_epochs: int = None, expert_share: float = None, hires: bool = False, layers: int = 1,
+        expert_actions: bool = True):
     _setup()
     import shutil
     from policy.bc2 import model, train
@@ -87,7 +88,7 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
     report = train.fit([local / s for s in TRAIN], [local / s for s in DEV], [local / s for s in evals], run,
                        config=config, seed=seed, epochs=epochs, batch_size=batch_size, lr=lr, wd=wd,
                        onset_weight=onset_weight, chunk_weight=chunk_weight, expert_dirs=experts,
-                       expert_epochs=expert_epochs, expert_share=expert_share,
+                       expert_epochs=expert_epochs, expert_share=expert_share, expert_actions=expert_actions,
                        incumbent=train.load_incumbent("/out/assets/incumbent/epoch-26.pt",
                                                       "/out/assets/incumbent/evaluation.json"),
                        log=lambda m: print(m, flush=True))

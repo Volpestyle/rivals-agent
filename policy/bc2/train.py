@@ -347,7 +347,7 @@ def dev_loss(model, sessions, pw, chunk=512):
 
 def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batch_size=32, lr=3e-4, wd=.05,
         device="cuda", incumbent=None, log=print, onset_weight=1., chunk_weight=.5, expert_dirs=(),
-        expert_epochs=None, expert_share=None):
+        expert_epochs=None, expert_share=None, expert_actions=True):
     """expert_dirs: IDM-labelled expert sessions (policy.bc2.expert), used as extra training windows for the first
     expert_epochs epochs (default: all; VPT-style pretrain-then-finetune when fewer). expert_share caps the
     expert fraction of an epoch's windows. Selection, thresholds and pos_weight stay on James's data."""
@@ -358,6 +358,9 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
     load = lambda dirs: [Session(d, device, gray_file) for d in dirs]
     train_s, dev_s, eval_s = load(train_dirs), load(dev_dirs), load(eval_dirs)
     expert_s = load(expert_dirs)
+    if not expert_actions:                 # camera-only expert labels
+        for s in expert_s:
+            s.act_mask[:] = False
     all_s = train_s + expert_s
     expert_epochs = epochs if expert_epochs is None else expert_epochs
     log(f"loaded {sum(s.n for s in train_s)} train steps, {sum(s.n for s in expert_s)} expert, "
@@ -419,7 +422,8 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
     torch.save(payload, out / "final.pt")
     report = {"config": config.as_dict(), "seed": seed, "epochs": epochs, "history": history, "selected_epoch": best[1],
               "expert": {"sessions": [s.id for s in expert_s], "steps": sum(s.n for s in expert_s),
-                         "epochs": expert_epochs if expert_s else 0, "share": expert_share},
+                         "epochs": expert_epochs if expert_s else 0, "share": expert_share,
+                         "actions": expert_actions},
               "selection": "lowest dev loss (dev sessions only); eval sessions never used for selection"}
     live = [bool(x) for x in vocab.live_mask([10 ** 6] * vocab.N)]
     for tag, ep in (("selected", best[1]), ("final", epochs)):
