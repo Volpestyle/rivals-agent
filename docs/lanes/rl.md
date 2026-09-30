@@ -286,3 +286,44 @@ Limits and next steps:
    (§2, §3). Offline AWR is the initialisation for that, not the product.
 
 Cost: about $1.5 on Modal (smoke plus step0-01, ~20 H100-minutes). No containers left running.
+
+## 7. Online RL in the range (2026-09-30): built, dry-rehearsed, not yet run live
+
+Code `rl/online/` (tests `tests/test_rl_online.py`, 9 passing). Launch: `rl/online/launch-sitting.ps1 -Out <sitting dir>`
+(same capture, single-game and GPU preflights as `launch-learned-01.ps1`), after the sitting grant.
+
+- **Episodes.** 20 s each through `agent/learned_runner.py`, unchanged: every guard, lease, deadline and pad release
+  is the runner's. `rl/online/episode.py` only substitutes the policy object.
+- **Exploration** (`explore.py`). Each live action's hold/press/release gate fires with probability
+  `sigmoid((logit p - logit threshold) / T)` and goes through the policy's own `executor.decode_step`. T = 0 is the
+  deterministic decode bit for bit, masked actions never fire, and the camera is untouched.
+- **Rewards** (`data.py`). The §1 readers on the runner's retained ~10 Hz frames: hit, KO, fall.
+  **Targets:** the executed decisions (disposition `ready`).
+  **Inputs:** bc2 features recomputed from the same frames, with frame interval `dt` (bc2 trains with 1-3 step
+  jitter, so 10 Hz is in range).
+- **Update** (`update.py`). AWR on the sitting's RL episodes: 2 s half-life returns, a constant baseline, weights
+  `exp(A/beta)` clipped at 20. The loss is bc2's BC loss on the executed actions plus 1.0 x KL(BC || policy), 40 steps
+  after each RL episode on the PC GPU. It writes a bundle that reuses the base tower files by absolute path
+  (hash-checked by LivePolicy).
+- **Sitting** (`sitting.py`). Arms alternate frozen BC (T = 0) and RL (latest bundle, T = 0.5), giving a within-sitting
+  control. It stops at the first episode ending other than its deadline, with no retry. It writes `curve.jsonl` and
+  `curve.png` (KOs/min per episode by arm) and `sitting.json`. The sitting process itself sends no input.
+- **Base bundle.** It must be a plain bc2 bundle: Policy2's own action head is what RL updates. The hybrid bundle's
+  incumbent button head is not. Default `bc2-mix399-s0`; switch to policy's motion-dropout fix when it lands.
+
+**Checks so far:**
+- Dry rehearsal (4 episodes replaying `learned-01-a` through the real bundle and GPU): runs end to end. The updated
+  bundle `rl-001` loaded and ran in the next RL episode; KL to BC went 0.009 to 0.08 over 40 steps. No rewards: the
+  replay has no KOs.
+- `learned-01-a` itself shows why the policy fix matters: 3 of its 81 retained decisions were executed (121 of 126
+  decisions dropped stale).
+- The quick safety read (another agent, 2026-09-30) passed guards, masks, lifecycle and the orchestrator, and found one
+  fail-closed bug (live warm-up calls `step` before `reset`). Fixed, with a test, before any live run.
+
+**Open:**
+- VRAM and game-FPS cost: the sitting process holds a tower copy while each episode loads another. Measure it at the
+  first sitting.
+- ~20 RL episodes per sitting is ~400 s of RL data, so the first curve tests the plumbing and the direction, not
+  convergence.
+- Hit-count shaping is uncapped per episode here; the §3 cap of 20 per 20 s encounter is rarely reached at the
+  agent's current rates.
