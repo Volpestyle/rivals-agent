@@ -201,7 +201,13 @@ At 399k, every mix seed beats every own seed on yaw, on val (0.736-0.755 vs 0.77
 vs 0.804-0.812). The gain grows with expert data and creators. Bundle `bc2-mix399-s0` (dev-selected by yaw): val
 yaw 0.736, onset 82.0%, still false turn 7.6%, press F1 0.346.
 
-At 93k the gain is modest; the one-shard seed-0 preview overstated it. False turns and buttons improve on both sets, yaw
+At 93k the gain is modest; the one-shard seed-0 preview overstated it.
+
+Grid i4 (the explicit 16-shard 468,699-step v2-a cohort below; 3 seeds): val yaw 0.755 (seeds 0.749-0.760), onset
+80.5%, still false turn 8.7%, press F1 0.381, pitch 0.395; dev yaw 0.769, press F1 0.323. Compared with i3's 399k,
+the camera plateaus and only the buttons still improve. The extra 70k is mostly more Necros plus a little
+LuckyZeal, with no new Day or Req. More of the same v2-a labels no longer improves aim; label quality and new
+creators are the next levers. False turns and buttons improve on both sets, yaw
 improves slightly, and onset is flat on val and 1.5 points lower on dev. Views for later videos are built on the
 Mac from idm's per-span clips, which keep the original timestamps; rows match clip frames within 1 ms. Bundle
 `bc2-mix-s1` (dev's pick by press F1): val press F1 0.364, above the incumbent head's 0.325, so it needs no
