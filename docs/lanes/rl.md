@@ -152,4 +152,36 @@ Plan, in order (each step ships a visible result):
 
 ## 5. World-model prototype result
 
-Running (Modal, `rl/world_model/`, commit `dd62726`). Results go here when the run finishes.
+**full-01 (2026-09-30, EXPLORATORY): the model beats copy-last-frame and the logged actions help, but it only holds
+the scene for ~0.5 s.** By ~1 s an imagined rollout dissolves into a purple haze with the HUD intact.
+
+- Model: DIAMOND-style EDM next-frame denoiser, 29.7M parameters, 72x128 at 10 Hz. It sees 4 context frames plus the
+  step's action (15 held + 15 pressed semantic actions, camera yaw/pitch degrees), with context-noise augmentation.
+  Code `rl/world_model/` (`dd62726`).
+- Data: the frozen `caches15`/`steps15` train cohort already on Modal volume `rivals-range-bc`: six sessions (~93 min)
+  for training, `20260925T025230` (3.7 min) held out for dev loss and every rollout. No sealed data.
+- Run: 32k steps, 62 min on one H100, dev loss 0.113. Checkpoint on the Mac at `~/dev/rl-wm/runs/full-01/model.pt`
+  and on volume `rivals-rl-wm-20260930`. Modal cost ~$5-6 (estimated from H100 minutes; another lane's app shared the
+  billing window). Apps stopped; no containers of ours left.
+
+512 rollouts of 1.6 s from the same held-out start frames with the same logged inputs (`rl/world_model/out/full-01_eval.json`):
+
+| Rollout | PSNR dB +0.1 s | +0.4 s | +0.8 s | +1.6 s | mean MSE |
+|---|---|---|---|---|---|
+| copy last frame | 15.8 | 13.7 | 13.1 | 12.7 | 0.0464 |
+| model, mean prediction | **20.1** | **16.8** | **15.9** | **15.1** | **0.0245** |
+| model, shuffled actions | 16.9 | 15.0 | 14.8 | 14.6 | 0.0319 |
+| model, zero actions | 17.8 | 15.0 | 14.4 | 14.2 | 0.0337 |
+| model, 3-step sampled | 17.0 | 15.1 | 14.8 | 14.6 | 0.0315 |
+
+Real actions beat shuffled ones by 3.2 dB at +0.1 s and 0.5 dB at +1.6 s, so the model uses them. Sampled frames are
+sharper but score below the mean prediction, as expected. Visual: `rl/world_model/out/full-01_real_vs_imagined.mp4`
+(6 clips; real | sampled | mean; 0.4 s of real context then 3 s imagined) and a 5.1 MB GIF of the first three.
+
+Limits: a short-horizon predictor, not yet a simulator; at 72x128 the bots are a few pixels, so the §1 readers cannot
+run on imagined frames (hence reward heads, §4 step 2); one held-out session and one seed; mouse degrees use one
+calibration constant with acceleration on; actions are pooled over three 30 Hz steps.
+
+Next, in order: longer context (4 frames is 0.4 s); a bigger model and more steps (loss still falling); the newer
+admitted sessions; training on its own rollouts so errors do not compound; reward and termination heads on the §1
+labels; then BC-policy rollouts in imagination with the KL anchor, checked against real footage.
