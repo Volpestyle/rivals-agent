@@ -64,6 +64,11 @@ only once an outcome can be measured reliably.
     footage for practice in imagination ([lane](lanes/rl.md)).
 
   No learned policy plays live until its held-out yaw beats "never turn" (James, 2026-09-30).
+
+  **Priority order (James, 2026-09-30):** (1) the learned policy working live; (2) a live RL proof of concept in the
+  real range, using the pixel reward readers; (3) the world model as a background side track. World-model experiments
+  stay small and local, running on the PC overnight with checkpoint/resume and yielding to the game. Modal only for
+  one final run once a small version clearly works. Budget: $500 total cloud (`docs/compute.md`).
 - *Superseded 2026-09-30 by the lean push above:* **NitroGen and the IDM are parked (2026-09-28).** The full NitroGen
   actor missed its runtime cutoff ([report](evidence/nitrogen-vl-cache-20260928/REPORT.md)); the inverse-dynamics data
   engine is parked on VUH-1353.
