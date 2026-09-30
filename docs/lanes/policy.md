@@ -121,6 +121,32 @@ passes the measured interval, clamped to 1-3 steps; after 0.5 s it passes no mot
 press F1 0.25-0.27. Bundles `bc2-dt-s1` and `bc2-dt-s1-hybrid` (checkpoint `d-dt-bs8-s1`) set
 `camera_decode: mean` in bundle.json. They run p50 34-35 ms / p95 38-41 ms.
 
+Training-side onset changes, seed 0, frame-interval base, on val (mean decode onset sign / still false turn):
+base 76.5% / 8.9%; onset-weighted camera loss x3 77.0% / 11.9%, x6 75.5% / 13.8%; 15-step future-camera
+auxiliary head 76.9% / 11.8%; both 75.6% / 11.0%. The lopsided decode (commit to one side's median when its mass
+passes a threshold chosen so TRAIN's turn rate matches James's) scores no better than the median. None is kept.
+
+Live path check: `live_replay` of `bc2-dt-s1-hybrid` on 2 min of val gives yaw 0.955 vs zero 1.761, moving sign
+91.7%, onset sign 75.5% (n=155), pitch 0.463 vs zero 0.764
+(`D:/rivals-policy/replay/bc2-dt-s1-hybrid-val-t/`). Without capture times the interval input saw replay
+wall-clock gaps and yaw degraded to 1.29, so a caller must pass each frame's own capture time to `step`.
+
+## Step 3: IDM-labelled expert footage (`policy/bc2/expert.py`)
+
+The idm lane labels footage's expert spans with full03 as REPLAY step tables (format agreed 2026-09-30): 30 Hz
+anchors on 60 fps Twitch video, yaw/pitch degrees per step (null on abstention), press onsets for jump,
+amazing_combo and web_cluster only, holds null. Their anchors step by frame pts (33.0 ms), so `load_labels` skips
+steps.check_sequence's exact-stride check and runs the header and row checks.
+
+Views come from a direct area downscale on the CPU: global = the whole frame at 144x256, crop = the centre square
+of width x 256/2560 at 128x128, the same field of view as live. Against the live GPU path on the same 1080p
+frames the mean difference is 0.06-0.08 grey levels (global) and 0.15-0.6 (crop). About 66 rows/s per process;
+the features stage (tower, gray, green, targets) needs a quiet PC GPU window. Views compress only 1.3-1.8x, so
+features (about 77 KB/step), not views, go to Modal. `train.fit(expert_dirs=..., expert_epochs=...,
+expert_share=...)` mixes expert windows in, or pretrains on them then fine-tunes on James's data only. Selection,
+thresholds and pos_weight stay on James's data; the gain is measured on James's dev and val against the
+human-only runs above.
+
 # Policy: the learned chooser (steps 1-3)
 
 **Status (2026-09-29): HISTORY.** The MLX chooser and the VUH-1311 offline consumer (`policy/behaviour.py`); this part stays their record.
