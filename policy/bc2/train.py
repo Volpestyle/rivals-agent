@@ -391,7 +391,7 @@ def dev_loss(model, sessions, pw, chunk=512):
 def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batch_size=32, lr=3e-4, wd=.05,
         device="cuda", incumbent=None, log=print, onset_weight=1., chunk_weight=.5, expert_dirs=(),
         expert_epochs=None, expert_share=None, expert_actions=True, motion_dropout=0., static_aug=0.,
-        expert_mask=None):
+        expert_mask=None, oversample=None):
     """expert_dirs: IDM-labelled expert sessions (policy.bc2.expert), used as extra training windows for the first
     expert_epochs epochs (default: all; VPT-style pretrain-then-finetune when fewer). expert_share caps the
     expert fraction of an epoch's windows. Selection, thresholds and pos_weight stay on James's data."""
@@ -433,7 +433,20 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
         if expert and expert_share is not None:
             keep = int(len(human) * expert_share / (1 - expert_share))
             expert = [expert[i] for i in torch.randperm(len(expert), generator=gen)[:keep].tolist()]
-        return human + expert
+        items = human + expert
+        # oversample {session id: share}: repeat that session's windows until they are about `share` of the epoch
+        # (a short targeted take, e.g. start-from-still, would otherwise be a sliver of every batch).
+        for sid, share in (oversample or {}).items():
+            idx = {i for i, s in enumerate(all_s) if s.id == sid}
+            own = [w for w in items if w[0] in idx]
+            if not own:
+                raise ValueError(f"oversample session {sid} has no training windows")
+            want = int(share * (len(items) - len(own)) / (1 - share))
+            extra = want - len(own)
+            if extra > 0:
+                picks = torch.randint(0, len(own), (extra,), generator=gen).tolist()
+                items = items + [own[i] for i in picks]
+        return items
     pw = pos_weights(train_s)
     model = Policy2(config).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=wd)

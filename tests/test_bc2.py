@@ -57,7 +57,7 @@ def test_tiny_fit_and_evaluate(tmp_path):
     dv = [make_session(feats, "c", seed=3)]
     config = bc2_model.Config(embed=16, motion=16, hidden=32, use_green=True, use_dt=True, chunk=4, hires=True)
     report = bc2_train.fit(tr, dv, dv, tmp_path / "out", config=config,
-                           epochs=2, batch_size=4, device="cpu", log=lambda *_: None, onset_weight=3., motion_dropout=.5, static_aug=.5,
+                           epochs=2, batch_size=4, device="cpu", log=lambda *_: None, onset_weight=3., motion_dropout=.5, static_aug=.5, oversample={"a": .6},
                            expert_dirs=[make_session(feats, "x", seed=4)], expert_epochs=1, expert_share=.5)
     assert report["selected_epoch"] in (1, 2) and report["expert"]["steps"] == 300
     pooled = report["selected"]["eval_pooled"]
@@ -152,3 +152,13 @@ def test_explicit_expert_cohort_ignores_arrivals_and_refuses_mixed_or_incomplete
     (a / "gray_c.npy").unlink()
     with pytest.raises(ValueError, match="incomplete"):
         expert_dirs(tmp_path, [a.name])
+
+
+def test_split_features(tmp_path):
+    from policy.bc2 import local_eval
+    d = make_session(tmp_path, "x", n=100, seed=5)
+    cut, n = local_eval.split(d, .8)
+    assert (cut, n) == (80, 100)
+    fit, hold = bc2_train.Session(tmp_path / "x-fit", "cpu"), bc2_train.Session(tmp_path / "x-hold", "cpu")
+    assert fit.n == 80 and hold.n == 20 and bool(hold.t["run_start"][0])
+    assert np.array_equal(np.load(tmp_path / "x-hold" / "gray_c.npy"), np.load(d / "gray_c.npy")[80:])

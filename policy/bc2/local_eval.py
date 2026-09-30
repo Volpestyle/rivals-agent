@@ -88,6 +88,38 @@ def features(steps_path, out_root, tower, *, batch=64, log=print):
     log(f"{session.session_id}: features for {n} rows")
 
 
+def split(feature_dir, frac=.8):
+    """Cut one session's features into <id>-fit (first ~frac of rows) and <id>-hold (the rest, e.g. the last reps
+    of a targeted take held back for evaluation). The cut is a new run start in the held part; arrays are copied
+    row-for-row, so both parts load as ordinary train.Session directories."""
+    from policy.bc2.expert import NpyRows
+    src = Path(feature_dir)
+    t = np.load(src / "targets.npz")
+    t = {k: t[k] for k in t.files}
+    n = len(t["frame"])
+    cut = int(n * frac)
+    meta = json.loads((src / "meta.json").read_text())
+    for suffix, lo, hi in (("fit", 0, cut), ("hold", cut, n)):
+        dst = src.parent / f"{meta['session']}-{suffix}"
+        dst.mkdir(exist_ok=True)
+        for name in ("feats", "gray_g", "gray_c", "green"):
+            if not (src / f"{name}.npy").exists():
+                continue
+            r = NpyRows(src / f"{name}.npy")
+            w = NpyRows(dst / f"{name}.npy", r.dtype, (hi - lo, *r.shape[1:]))
+            for s in range(lo, hi, 4096):
+                w.write(s - lo, r.read(s, min(4096, hi - s)))
+            r.close(), w.close()
+        part = {k: v[lo:hi].copy() for k, v in t.items()}
+        part["run_start"][0] = True
+        if "feature_row" in part:
+            part["feature_row"] = part["feature_row"] - lo
+        np.savez(dst / "targets.npz", **part)
+        (dst / "meta.json").write_text(json.dumps(dict(meta, session=dst.name, split_of=meta["session"],
+                                                       rows=[lo, hi]), indent=2) + "\n")
+    return cut, n
+
+
 def evaluate(feature_root, sessions, arms, *, device="cuda"):
     import torch
     from policy.bc2 import train
@@ -132,7 +164,8 @@ def table(results):
 
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("stage", choices=("features", "evaluate"))
+    p.add_argument("stage", choices=("features", "evaluate", "split"))
+    p.add_argument("--frac", type=float, default=.8, help="split: share of rows kept for fitting")
     p.add_argument("steps", nargs="*")
     p.add_argument("--out")
     p.add_argument("--features")
@@ -143,6 +176,10 @@ def main(argv=None):
     a = p.parse_args(argv)
     import torch
     torch.set_num_threads(2)
+    if a.stage == "split":
+        for d in a.steps:                       # here: feature directories
+            print(d, split(d, a.frac))
+        return 0
     if a.stage == "features":
         from policy.bc2.features import load_tower
         tower = load_tower(a.vision, a.vision_config, "cuda")
