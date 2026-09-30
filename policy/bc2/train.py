@@ -277,14 +277,16 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
         history.append({"epoch": epoch + 1, "train_loss": running / per_epoch, "dev_loss": dl,
                         "seconds": time.monotonic() - started})
         log(json.dumps(history[-1]))
-        torch.save({"config": config.as_dict(), "model": model.state_dict(), "epoch": epoch + 1}, out / f"epoch-{epoch + 1}.pt")
+        payload = {"config": config.as_dict(), "model": model.state_dict(), "epoch": epoch + 1}
         if dl < best[0]:
             best = (dl, epoch + 1)
+            torch.save(payload, out / "selected.pt")
+    torch.save(payload, out / "final.pt")
     report = {"config": config.as_dict(), "seed": seed, "epochs": epochs, "history": history, "selected_epoch": best[1],
               "selection": "lowest dev loss (dev sessions only); eval sessions never used for selection"}
     live = [bool(x) for x in vocab.live_mask([10 ** 6] * vocab.N)]
     for tag, ep in (("selected", best[1]), ("final", epochs)):
-        model.load_state_dict(torch.load(out / f"epoch-{ep}.pt", map_location=device)["model"])
+        model.load_state_dict(torch.load(out / f"{tag}.pt", map_location=device)["model"])
         model.eval()
         preds = [predict(model, s) for s in train_s]
         th = calibrate(preds, train_s, live)

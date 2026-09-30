@@ -44,7 +44,10 @@ def extract_session(session: str, cache_root: str = "/src/caches", steps_root: s
     from policy.bc2 import features
     local = Path("/tmp/cache") / session
     shutil.copytree(f"{cache_root}/{session}", local, ignore=shutil.ignore_patterns("hud.u8"))
-    (local / "hud.u8").symlink_to(f"{cache_root}/{session}/hud.u8")
+    import json
+    frames = json.loads((local / "cache.json").read_text())["frames"]
+    with (local / "hud.u8").open("wb") as f:          # unused by bc2; sparse, sized for open_cache's check
+        f.truncate(frames * 80 * 200 * 3)
     tower = features.load_tower("/out/assets/vision.safetensors", "/out/assets/siglip2-large-config.json", "cuda")
     dest = Path("/tmp/features") / session
     meta = features.extract(f"{steps_root}/{session}.jsonl", local, dest, tower,
@@ -60,7 +63,8 @@ def extract_session(session: str, cache_root: str = "/src/caches", steps_root: s
 @app.function(image=image, gpu="H100", cpu=8, memory=98304, timeout=4 * 3600, retries=0,
               volumes={"/out": out})
 def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_motion: bool = True,
-        eval_sessions: list = None):
+        eval_sessions: list = None, batch_size: int = 32, lr: float = 3e-4, wd: float = .05,
+        feat_dropout: float = .3, hidden: int = 512):
     _setup()
     import shutil
     from policy.bc2 import model, train
@@ -70,26 +74,25 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
     for s in TRAIN + DEV + evals:
         shutil.copytree(root / s, local / s)
     run = Path("/tmp/run") / name
-    config = model.Config(use_feats=use_feats, use_motion=use_motion)
+    config = model.Config(use_feats=use_feats, use_motion=use_motion, feat_dropout=feat_dropout, hidden=hidden)
     report = train.fit([local / s for s in TRAIN], [local / s for s in DEV], [local / s for s in evals], run,
-                       config=config, seed=seed, epochs=epochs,
+                       config=config, seed=seed, epochs=epochs, batch_size=batch_size, lr=lr, wd=wd,
                        incumbent=train.load_incumbent("/out/assets/incumbent/epoch-26.pt",
                                                       "/out/assets/incumbent/evaluation.json"),
                        log=lambda m: print(m, flush=True))
     final = Path("/out/runs") / name
     if final.exists():
         shutil.rmtree(final)
-    final.mkdir(parents=True)
-    keep = {f"epoch-{report['selected_epoch']}.pt", f"epoch-{epochs}.pt", "report.json"}
-    for f in run.iterdir():
-        if f.name in keep:
-            shutil.copy(f, final / f.name)
+    shutil.copytree(run, final)
     out.commit()
-    return {k: report[k] for k in ("selected_epoch", "history")}
+    return {"name": name, "selected_epoch": report["selected_epoch"]}
 
 
 @app.local_entrypoint()
-def extract(sessions: str = ""):
+def extract(sessions: str = "", val: bool = False):
+    if val:
+        print(extract_session.remote(VAL[0], cache_root="/out/val/caches", steps_root="/out/val/steps"))
+        return
     names = sessions.split(",") if sessions else TRAIN + DEV
     for meta in extract_session.map(names, return_exceptions=True):
         print(meta)
@@ -101,3 +104,12 @@ def sweep(prefix: str = "a", epochs: int = 12, seed: int = 0):
     calls = {arm: fit.spawn(f"{prefix}-{arm}-s{seed}", seed, epochs, f, m) for arm, (f, m) in arms.items()}
     for arm, call in calls.items():
         print(arm, call.get())
+
+
+@app.local_entrypoint()
+def grid(spec: str):
+    """spec: JSON list of fit kwargs, each with a unique "name"."""
+    import json
+    calls = [fit.spawn(**kw) for kw in json.loads(spec)]
+    for call in calls:
+        print(call.get(), flush=True)

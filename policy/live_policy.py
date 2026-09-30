@@ -124,8 +124,8 @@ class LivePolicy:
             import torch
             from policy.bc2.features import load_tower
             from policy.bc2.model import Config, Policy2
-            if preprocess != "torch" or device != "cuda":
-                raise ValueError("bc2 bundles run with preprocess='torch' on cuda")
+            if preprocess != "torch":
+                raise ValueError("bc2 bundles run with preprocess='torch'")
             for key in ("checkpoint", "vision", "vision_config"):
                 if _sha256(files[key][0]) != files[key][1]:
                     raise ValueError(f"{files[key][0]}: hash differs from bundle.json")
