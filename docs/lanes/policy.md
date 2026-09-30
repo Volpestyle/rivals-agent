@@ -220,6 +220,35 @@ cost about $9 including four runs that failed at startup (warm-container scratch
 grid i4 cost about $4. On Mac MPS the same step takes 0.45 s, about 10 min per epoch at 700k steps.
 
 With i4 flat on camera and j flat on labels, BC on this corpus has reached diminishing returns.
+
+### learned-01 A live idle: a copycat on observed motion (2026-09-30)
+
+In the first live run with `bc2-mix399-s0` (`data/calibration/compat-check-20260929/learned-01-a/`, 126 decisions),
+the median yaw was 0.0 and there were no presses. `policy/live_diagnose.py` replays the 81 retained frames through
+LivePolicy and reproduces the idle: max hold probability 0.011 and turn probability 0.001, against 0.52 and 0.59 on
+James's frames at the same 10 Hz. The following are ruled out:
+- the capture clock (forcing a 30 Hz clock gives 0.048);
+- JPEG;
+- the controller HUD, whose swap in either direction changes nothing;
+- capture colour, whose statistics match;
+- the scene: James frames nearest in feature space (cosine 0.92) give 0.52.
+
+An input-swap ablation isolates the cause: live frames with James's motion input give 0.275 and 0.383, while James
+frames with the live motion input give 0.011. Swapping in James's image features or green profile changes nothing,
+and James's own first frame repeated (zero motion) gives 0.020. The model predicts stillness whenever nothing moves,
+and stillness produces no motion. James is never fully still for long: 10.9% of val steps are still, and the
+longest still stretch is 42 steps (1.4 s).
+
+Motion-input dropout (`train.batch(motion_dropout=)`: blank the motion over a random 25-100% span of a window;
+grid k, i3 cohort, seed 0, about $2.6) does not meet its pre-stated keep criterion: hold >= 0.3 and turn >= 0.2 on
+the retained live frames. At p = 0.3 hold is 0.041, turn 0.045 and max press 0.314; at p = 0.5 they are 0.038,
+0.045 and 0.266. Both runs are discarded. As a side result, p = 0.3 keeps val yaw at 0.742 and raises val press
+F1 to 0.405 (mix399 0.346). The likely limit is that the scene around a blanked span still shows James in
+action, whereas live the whole scene is idle standing, a state absent from the data.
+
+Latency (`LivePolicy` CUDA graph, `74ebd74`): the whole bc2 step replays as one graph, with outputs identical to
+eager. Under idm's ~60% GPU load, p50/p95 fall from 54.7/63.2 ms to 21.6/33.9 ms; with a saturating matmul
+load as well, from 75.9/89.1 to 41.0/45.2 ms.
 `bc2-mix399-s0` remains the camera pick (budget note to the lead, 2026-09-30). False turns and buttons improve on both sets, yaw
 improves slightly, and onset is flat on val and 1.5 points lower on dev. Views for later videos are built on the
 Mac from idm's per-span clips, which keep the original timestamps; rows match clip frames within 1 ms. Bundle
