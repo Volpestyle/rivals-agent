@@ -153,9 +153,8 @@ co-leads route scope decisions through that lead. A status request alone creates
   native-frame sample before a large extraction. Test the demonstrated failures and valid
   controls together; synthetic correctness alone cannot establish that a label is true.
   Use only authorized development evidence; sealed sources remain under the plan's contract.
-- **Review the changed boundary.** Required independent review remains binding. Reuse accepted
-  evidence for unchanged inputs and behavior; re-review the delta and unresolved findings.
-  A new review or benchmark needs a named uncertainty, not another completion ceremony.
+- **Review only live-input safety** (lean mode, "Working here"). Everything else ships on the owner's tests and a
+  visible result. A new review or benchmark needs a named uncertainty, not another completion ceremony.
 - **Keep capacity tied to a deliverable.** Park workers with no independent ready result.
   During shared-data migration, keep one corpus writer and stop dependent readers; spare
   capacity may address the independent episode stream. Do not fill idle panes with new scope.
@@ -172,13 +171,12 @@ co-leads route scope decisions through that lead. A status request alone creates
   unless `--corpus` is given, so a whole-file or broad `-k` run never opens sealed or mid-migration files
   by accident. Each lane marks its own tests.
 - Python via `uv`; standard library first; add a dependency only when a few lines cannot do it.
-- Review is independent of the lane that wrote the code: a read-only review by an agent outside the lane, preferably
-  another model family. The lead verifies each finding before dispatching a fix to the owning lane. A lane's own tests
-  and report are evidence, not a review.
-- Review only where it pays off (James, 2026-09-27). Before the code lands or runs: live-game input, a new or changed
-  spend guard, and anything that could open sealed data. After landing, before the result is used: data admission and a
-  confirm run's judge. Nothing else is reviewed; exploratory code, launch plumbing and record-keeping rely on the
-  owner's tests. `docs/compute.md`, "The two experiment tracks", has the detail.
+- **Lean mode (James, 2026-09-30): "first make it work, then make it good".** No ceremony that slows results. New
+  work gets no receipts, freeze manifests, hash pins, pre-registrations, or re-review rounds. Frozen *existing*
+  records stay untouched, but nothing new gets frozen. Owners test their own code, commit it, and report.
+  Before new live-game input code first runs, one quick read-only safety check by any agent other than the author
+  (focus, HUD guard, human takeover, deadline, pad release) takes minutes, not a packet. Sealed test data stays
+  sealed. Cost is not a gate: rent GPUs when it speeds results, and log the spend in the ledger afterwards.
 - Several agents often share this checkout. Edit only the paths your brief names, and
   load the `shared-checkout` skill before committing.
 - **Frozen review packets.** A lane note whose current bytes are pinned by a review receipt or a freeze
