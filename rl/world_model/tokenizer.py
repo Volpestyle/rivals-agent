@@ -8,6 +8,13 @@ Trains on every mapped frame of James's non-held-out sessions under --caches (po
 and, with --expert-root, on the private packed expert shards (rl.world_model.expert_prep); no action labels needed.
 Loss: L1 + VGG16 perceptual + a tiny KL, and a hinge patch-GAN from --gan-start of the run.
 
+PC overnight mode (--own-pack/--holdout-pack instead of --caches): frames come from JPEG packs made by `pack` on
+the Mac, read per frame through file handles (the process stays well under 3 GB), a checkpoint every
+--ckpt-minutes, and with --yield-check it exits with code 3 within ~30 s of the game or another GPU job (idm
+labelling, policy) starting; rl/world_model/pc_tokenizer.sh relaunches it when the PC is free again.
+
+  python -m rl.world_model.tokenizer pack --caches C --denylist DL --out PACKS        # Mac: own + held-out packs
+
 Gate (docs: rl/world_model/latent_proposal.md), on the held-out sessions (v2.HOLDOUT):
   reconstruction PSNR (MSE on [0,1] pixels, averaged over frames) >= 28 dB, contrast ratio (pixel std, recon / real)
   >= 0.95, and the v2 reward head (--head: a v2 model.pt) scoring KO/hit on reconstructed frames within 0.02 AUC of
@@ -18,6 +25,9 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
+import subprocess
+import sys
 import time
 from pathlib import Path
 
@@ -134,22 +144,47 @@ class OwnFrames:
 
 
 class ExpertFrames:
-    def __init__(self, root):
-        self.shards = []
-        for d in sorted(p for p in Path(root).iterdir() if (p / "offsets.npy").exists()):
-            self.shards.append((np.load(d / "offsets.npy"), np.fromfile(d / "frames.bin", np.uint8)))
-        self.index = [(s, m) for s, (o, _) in enumerate(self.shards) for m in range(len(o) - 1)]
+    """JPEG packs (frames.bin + offsets.npy per directory: expert_prep shards or `pack` output), read per frame
+    through open file handles, never whole files; empty entries (unmapped rows) are skipped."""
+
+    def __init__(self, root, dirs=None):
+        self.files, self.offs, self.index = [], [], []
+        dirs = dirs if dirs is not None else sorted(p for p in Path(root).iterdir() if (p / "offsets.npy").exists())
+        for d in dirs:
+            o = np.load(Path(d) / "offsets.npy")
+            self.offs.append(o)
+            self.files.append(open(Path(d) / "frames.bin", "rb"))
+            self.index += [(len(self.files) - 1, int(m)) for m in np.nonzero(np.diff(o) > 0)[0]]
 
     def __len__(self):
         return len(self.index)
 
-    def get(self, ks):
+    def read(self, s, m):
         import cv2
-        out = []
-        for s, m in (self.index[k] for k in ks):
-            o, blob = self.shards[s]
-            out.append(cv2.imdecode(blob[o[m]:o[m + 1]], cv2.IMREAD_COLOR)[:, :, ::-1])
-        return np.stack(out)
+        o, f = self.offs[s], self.files[s]
+        f.seek(int(o[m]))
+        return cv2.imdecode(np.frombuffer(f.read(int(o[m + 1] - o[m])), np.uint8), cv2.IMREAD_COLOR)[:, :, ::-1]
+
+    def get(self, ks):
+        return np.stack([self.read(s, m) for s, m in (self.index[k] for k in ks)])
+
+
+class HoldoutPack(ExpertFrames):
+    """Per held-out session, one JPEG entry per step-table row (empty for unmapped rows)."""
+
+    def __init__(self, root, sessions):
+        self.sids = list(sessions)
+        super().__init__(root, [Path(root) / s for s in self.sids])
+
+    def rows(self, sid, idx):
+        """uint8 [*idx.shape, 3, H, W] for row indices of one session."""
+        s = self.sids.index(sid)
+        idx = np.asarray(idx)
+        flat = [self.read(s, int(m)) for m in idx.ravel()]
+        return np.stack(flat).transpose(0, 3, 1, 2).reshape(*idx.shape, 3, H, W)
+
+    def mapped(self, sid):
+        return np.diff(self.offs[self.sids.index(sid)]) > 0
 
 
 class Synthetic:
@@ -188,7 +223,7 @@ def recon_stats(tok, frames, dev, batch=32):
 
 
 @torch.no_grad()
-def head_gate(tok, head_path, steps_root, cache_root, labels, denylist, dev, batch=64):
+def head_gate(tok, head_path, steps_root, cache_root, labels, denylist, dev, batch=64, pack=None):
     """v2 reward head on held-out 10 Hz steps: AUC on real frames vs the same frames through the tokenizer."""
     from rl.world_model import data as D
     from rl.world_model import v2
@@ -205,14 +240,18 @@ def head_gate(tok, head_path, steps_root, cache_root, labels, denylist, dev, bat
     for sid in v2.HOLDOUT:
         D.check_not_sealed([sid], denylist)
         s = v2.parse_session(Path(steps_root) / f"{sid}.jsonl", lab)
-        frames = np.empty((s["n"], 3, H, W), np.uint8)
-        mapped = v2.load_frames(Path(cache_root) / sid, s["n"], frames)
+        if pack is not None:
+            frames, mapped = None, pack.mapped(sid)
+        else:
+            frames = np.empty((s["n"], 3, H, W), np.uint8)
+            mapped = v2.load_frames(Path(cache_root) / sid, s["n"], frames)
         rows = [r if mapped[j] else dict(r, suitability="unmapped") for j, r in enumerate(s["rows"])]
         starts = np.asarray(D.valid_starts(rows, D.window_span(RewardHead.FRAMES))[::D.STRIDE])
         ys, p_real, p_rec = [], [], []
         for a in range(0, len(starts), batch):
             idx = starts[a:a + batch, None] + D.STRIDE * np.arange(RewardHead.FRAMES)[None]
-            f = torch.from_numpy(frames[idx]).to(dev).float() / 127.5 - 1          # B,4,3,H,W
+            raw = frames[idx] if frames is not None else pack.rows(sid, idx)
+            f = torch.from_numpy(raw).to(dev).float() / 127.5 - 1                 # B,4,3,H,W
             act = torch.from_numpy(s["actions"][idx[:, -2]]).to(dev)
             r = tok(f.flatten(0, 1), sample=False)[0].clamp(-1, 1).unflatten(0, f.shape[:2])
             p_real.append(torch.sigmoid(head(f, act)).cpu())
@@ -239,11 +278,83 @@ def recon_png(tok, frames, dev, path):
     Image.fromarray(np.concatenate([top, np.zeros((4, top.shape[1], 3), np.uint8), bot], 0)).save(path)
 
 
+# --- PC etiquette -------------------------------------------------------------------------------------------------
+GPU_JOBS = ("policy.idm", "policy.bc2", "agent.loop", "agent.server")
+PS_PYTHON = "Get-CimInstance Win32_Process -Filter \"Name='python.exe'\" | ForEach-Object { $_.CommandLine }"
+
+
+def below_normal():
+    if os.name == "nt":
+        import ctypes
+        ctypes.windll.kernel32.SetPriorityClass(ctypes.windll.kernel32.GetCurrentProcess(), 0x4000)
+
+
+def busy_reason():
+    """Why the PC's GPU is not ours right now (the game, or another lane's GPU job), else None. Windows only."""
+    if os.name != "nt":
+        return None
+    tl = subprocess.run(["tasklist", "/FI", "IMAGENAME eq Marvel-Win64-Shipping.exe", "/NH"], capture_output=True,
+                        text=True).stdout
+    if "marvel-win64-shipping" in tl.lower():
+        return "game running"
+    ps = subprocess.run(["powershell", "-NoProfile", "-Command", PS_PYTHON], capture_output=True, text=True).stdout
+    for job in GPU_JOBS:
+        if f"-m {job}" in ps:
+            return f"{job} running"
+    return None
+
+
+# --- pack (Mac) ---------------------------------------------------------------------------------------------------
+def pack(argv):
+    """JPEG packs for the PC: every 3rd mapped frame of each train session (q90), every row of the held-out ones (q95)."""
+    import cv2
+    from rl.world_model import data as D
+    from rl.world_model import v2
+    p = argparse.ArgumentParser()
+    p.add_argument("--caches", required=True)
+    p.add_argument("--denylist", required=True)
+    p.add_argument("--out", required=True)
+    a = p.parse_args(argv)
+    sids = sorted(d.name for d in Path(a.caches).iterdir() if (d / "cache.json").exists())
+    D.check_not_sealed(sids, a.denylist)
+    for sid in sids:
+        if sid in D.VALIDATION:
+            continue
+        hold = sid in v2.HOLDOUT
+        dest = Path(a.out) / ("holdout" if hold else "own") / sid
+        if (dest / "offsets.npy").exists():
+            continue
+        dest.mkdir(parents=True, exist_ok=True)
+        meta = json.loads((Path(a.caches) / sid / "cache.json").read_text(encoding="utf-8"))
+        mm = np.memmap(Path(a.caches) / sid / "global.u8", dtype=np.uint8, mode="r").reshape(-1, H, W, 3)
+        rows = meta["row_frame"] if hold else sorted({f for f in meta["row_frame"] if f is not None})[::3]
+        offs = [0]
+        with open(dest / "frames.bin", "wb") as blob:
+            for f in rows:
+                if f is not None:
+                    jpg = cv2.imencode(".jpg", np.ascontiguousarray(mm[f][:, :, ::-1]),
+                                       [cv2.IMWRITE_JPEG_QUALITY, 95 if hold else 90])[1].tobytes()
+                    blob.write(jpg)
+                    offs.append(offs[-1] + len(jpg))
+                else:
+                    offs.append(offs[-1])
+        np.save(dest / "offsets.npy", np.asarray(offs, np.int64))
+        print(json.dumps({"session": sid, "holdout": hold, "entries": len(rows), "bytes": offs[-1]}), flush=True)
+
+
 # --- main ---------------------------------------------------------------------------------------------------------
 def main(argv=None):
     from rl.world_model import v2
+    argv = sys.argv[1:] if argv is None else argv
+    if argv[:1] == ["pack"]:
+        return pack(argv[1:])
     p = argparse.ArgumentParser()
     p.add_argument("--caches")
+    p.add_argument("--own-pack", help="PC: JPEG packs of the own train sessions (from `pack`)")
+    p.add_argument("--holdout-pack", help="PC: JPEG packs of the held-out sessions, one entry per row")
+    p.add_argument("--init", help="start from this checkpoint (e.g. the Mac probe's ckpt.pt) when --out has none")
+    p.add_argument("--ckpt-minutes", type=float, default=15.0)
+    p.add_argument("--yield-check", action="store_true", help="exit 3 within ~30 s of the game or a GPU job starting")
     p.add_argument("--steps-root")
     p.add_argument("--expert-root")
     p.add_argument("--head", help="a v2 model.pt whose reward head scores the reconstructions")
@@ -265,6 +376,7 @@ def main(argv=None):
     p.add_argument("--no-head-gate", action="store_true")
     a = p.parse_args(argv)
     torch.set_num_threads(a.threads)
+    below_normal()
     try:
         import cv2
         cv2.setNumThreads(1)
@@ -276,8 +388,13 @@ def main(argv=None):
     t0 = time.time()
     torch.manual_seed(0)
     rng = np.random.default_rng(0)
+    hold_pack = None
     if a.synthetic:
         own, hold, expert = Synthetic(64, 0), Synthetic(16, 1), None
+    elif a.own_pack:
+        own = ExpertFrames(a.own_pack)
+        hold = hold_pack = HoldoutPack(a.holdout_pack, v2.HOLDOUT)
+        expert = ExpertFrames(a.expert_root) if a.expert_root else None
     else:
         from rl.world_model import data as D
         sids = sorted(d.name for d in Path(a.caches).iterdir() if (d / "cache.json").exists())
@@ -297,14 +414,15 @@ def main(argv=None):
     opt_d = torch.optim.AdamW(disc.parameters(), lr=a.lr, betas=(0.5, 0.9), weight_decay=1e-4)
     step = 0
     ck = out / "ckpt.pt"
-    if ck.exists():
-        s = torch.load(ck, map_location=dev)
+    start = ck if ck.exists() else (Path(a.init) if a.init else None)
+    if start is not None:
+        s = torch.load(start, map_location=dev)
         tok.load_state_dict(s["tok"])
         disc.load_state_dict(s["disc"])
         opt.load_state_dict(s["opt"])
         opt_d.load_state_dict(s["opt_d"])
         step = s["step"]
-        v2.log(out, event="resume", step=step)
+        v2.log(out, event="resume", step=step, source=str(start))
     v2.log(out, event="model", params=sum(q.numel() for q in tok.parameters()), latent=[LATENT, H // 8, W // 8])
 
     def save():
@@ -312,7 +430,18 @@ def main(argv=None):
                     "opt_d": opt_d.state_dict(), "step": step}, ck)
 
     t_run, losses = time.time(), []
+    t_ck = t_check = time.time()
     while step < a.steps:
+        if a.yield_check and time.time() - t_check > 30:
+            t_check = time.time()
+            why = busy_reason()
+            if why:
+                save()
+                v2.log(out, event="yield", step=step, reason=why)
+                sys.exit(3)
+        if time.time() - t_ck > a.ckpt_minutes * 60:
+            save()
+            t_ck = time.time()
         n_exp = int(rng.binomial(a.batch, a.expert_share)) if expert else 0
         parts = [own.get(rng.integers(0, len(own), a.batch - n_exp))]
         if n_exp:
@@ -350,7 +479,7 @@ def main(argv=None):
     torch.save({"tok": tok.state_dict(), "latent": LATENT, "step": step}, out / "tokenizer.pt")
     gate = {"steps": step, "recon": recon_stats(tok, gate_frames, dev)}
     if not a.synthetic and not a.no_head_gate and a.head:
-        gate["head"] = head_gate(tok, a.head, a.steps_root, a.caches, a.labels, a.denylist, dev)
+        gate["head"] = head_gate(tok, a.head, a.steps_root, a.caches, a.labels, a.denylist, dev, pack=hold_pack)
     r, gate["keep"] = gate["recon"], {}
     gate["keep"]["psnr>=28"] = r["psnr"] >= 28
     gate["keep"]["contrast>=0.95"] = r["contrast_ratio"] >= 0.95
