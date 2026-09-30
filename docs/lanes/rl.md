@@ -193,19 +193,22 @@ v2 (`1b8e8c2`): native 144x256, 12 context frames, hit/KO/fall reward heads; tra
 (`9c56753`) adds 21.7 h of idm v2-a expert spans with an action-known mask. Held-out: dev 205528 and 025230 (own
 footage). Visuals: `rl/world_model/out/<run>/real_vs_imagined.mp4` (real | v2/v3 | full-01).
 
-Mean-prediction PSNR (dB) by horizon, 768 windows, native 144x256:
+Per-window mean-prediction PSNR (dB), 768 windows, 1 seed; same convention as the full-01 table above
+(`rl/world_model/out/*/eval.json`, summarised in `rl/world_model/latent_proposal.md`):
 
-| Model | 0.1 s | 0.5 s | 1 s | 2 s | 3 s |
+| Model | +0.1 s | +1 s | +3 s | Sampled +0.1 / +3 s | Modal $ |
 |---|---|---|---|---|---|
-| copy last frame | 21.4 | 19.2 | 18.7 | 18.4 | 18.3 |
-| v2-noroll | 24.9 | 22.1 | 21.2 | 20.8 | 20.6 |
-| v2-main (own rollouts) | 24.8 | 22.1 | 21.3 | 20.8 | 20.6 |
-| v3-expert (+ expert data) | 24.5 | 21.9 | 21.3 | 21.0 | 20.9 |
-| v2 with shuffled actions | 22.8 | 21.0 | 20.7 | 20.6 | 20.5 |
+| copy last frame | 15.3 | 12.7 | 12.3 | – | – |
+| full-01 (72x128; scored at half res) | 20.1 | 15.6 | 14.9 | 17.1 / 14.5 | 5.00 |
+| v2-noroll | 18.9 | 15.2 | 14.6 | 14.1 / 14.0 | 13.42 |
+| v2-main (own rollouts) | 18.8 | 15.3 | 14.6 | 14.2 / 14.0 | 16.11 |
+| v3-expert (+ expert data) | 18.4 | 15.3 | 14.8 | 13.9 / 14.0 | 17.52 |
 
-At matched half resolution full-01 scores 26.4 / 22.8 / 21.7 / 21.2 / 20.9: every v2/v3 variant is within ~0.5 dB of
-it. By eye v2 frames are sharper and keep the HUD and sometimes Spider-Man to ~2.8 s, but the scene layout is
-hallucinated after ~1 s. The 2-3 s target is not met.
+Logged actions beat shuffled ones by 1.4-2.1 dB at +0.1 s and ~0.1 dB at +3 s. Every v2/v3 variant is within
+~0.3 dB of full-01 past 1 s. By eye v2 frames are sharper and keep the HUD and sometimes Spider-Man to ~2.8 s, but
+the scene layout is hallucinated after ~1 s. The 2-3 s target is not met. Today's world-model Modal spend, all runs:
+$54.73. (The lead's interim reports on 2026-09-30 quoted PSNR from mean MSE on a [-1, 1] range, ~6 dB higher; the
+comparisons were the same.)
 
 Reward heads (hit / KO AUC): 0.97 / 0.997 on real held-out frames; 0.67 / 0.71 (v2-noroll), 0.63 / 0.69 (v2-main)
 and 0.56 / 0.65 (v3) on imagined frames. Imagined rollouts do not yet carry usable reward. Fall is unscored (no
@@ -216,9 +219,9 @@ Diagnostics on v2-noroll:
 - The haze is the denoiser: from the first imagined step, frames have 43-60% of real contrast and +0.06 brightness,
   and more Euler steps (5 to 20) lower PSNR (14.2 to 13.5 dB on the sweep's scale).
 
-Conclusion: bigger pixel models, longer context, own-rollout training and 10x data each move the metric by at most
-0.5 dB. The next step is a latent world model (proposal to the lead first, local-first, with a keep criterion per paid
-stage). Phase C (imagination RL) waits until imagined-frame reward AUC approaches real.
+Conclusion: bigger pixel models, longer context, own-rollout training and expert data each move the metric by at
+most ~0.3 dB past 1 s. The next step is a latent world model: `rl/world_model/latent_proposal.md` (draft for the lead;
+local-first, a keep criterion per paid stage). Phase C (imagination RL) waits until imagined-frame reward AUC approaches real.
 
 ## 6. Offline AWR step 0 on bc2 (2026-09-30, EXPLORATORY)
 
