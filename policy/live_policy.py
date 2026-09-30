@@ -124,10 +124,15 @@ class LivePolicy:
                      "known": [True] * vocab.N, "cy": vocab.ZERO_CLASS, "cp": vocab.ZERO_CLASS}
         self.index = 0
 
-    def _frame(self, frame):
+    @staticmethod
+    def _check(frame):
         import numpy as np
         if frame.dtype != np.uint8 or frame.ndim != 3 or frame.shape[2] != 3:
             raise ValueError("uint8 HxWx3 BGR frame required")
+        return frame if frame.flags.c_contiguous else np.ascontiguousarray(frame)
+
+    def _frame(self, frame):
+        frame = self._check(frame)
         h, w = frame.shape[:2]
         if (w, h) == TRAIN_SIZE:
             return frame
@@ -145,6 +150,10 @@ class LivePolicy:
         p = self.predict
         with torch.inference_mode():
             x = torch.from_numpy(frame).to(p.device, non_blocking=True).permute(2, 0, 1)[None].flip(1).float()
+            if tuple(x.shape[-2:]) != TRAIN_SIZE[::-1]:
+                if not self.resize:
+                    raise ValueError(f"frame {tuple(x.shape[-2:])} differs from training {TRAIN_SIZE[::-1]}")
+                x = F.interpolate(x, TRAIN_SIZE[::-1], mode="area" if x.shape[-1] > TRAIN_SIZE[0] else "bilinear")
             h, w = x.shape[-2:]
             views = [F.interpolate(x, (144, 256), mode="area"),
                      F.interpolate(x[..., (h - 256) // 2:(h - 256) // 2 + 256, (w - 256) // 2:(w - 256) // 2 + 256],
@@ -166,11 +175,10 @@ class LivePolicy:
     def step(self, frame_bgr):
         from policy.range_bc import executor, vocab
         started = time.perf_counter()
-        frame = self._frame(frame_bgr)
         if self.preprocess == "torch":
-            probs, cameras = self._torch_predict(frame)
+            probs, cameras = self._torch_predict(self._check(frame_bgr))
         else:
-            probs, cameras = self.predict(frame, self.prev)
+            probs, cameras = self.predict(self._frame(frame_bgr), self.prev)
         held_p, press_p, release_p = (probs[i * vocab.N:(i + 1) * vocab.N] for i in range(3)) \
             if len(probs) == 3 * vocab.N else probs
         held, press, release = [], [], []
