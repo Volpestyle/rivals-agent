@@ -117,7 +117,7 @@ def load_encoder_checkpoint(path, sha256):
 
 class LivePolicy:
     def __init__(self, bundle_dir, *, device="cuda", thresholds="train", resize=True, preprocess="torch",
-                 camera_decode=None):
+                 camera_decode=None, cuda_graph=True):
         """thresholds: "train" (per-action, TRAIN-calibrated to human press counts) or a float for all actions.
         resize: scale frames that are not 2560x1440 to it (area) first, so the crop view keeps its training field
         of view. Otherwise a different size is refused.
@@ -161,6 +161,8 @@ class LivePolicy:
         self.levels = tuple(float(self.bundle["thresholds"][n]) if thresholds == "train" else float(thresholds)
                             for n in self.names)
         self.resize, self.device = resize, device
+        # bc2 on CUDA replays one captured CUDA graph per decision (captured on the first frame).
+        self.graph = {} if (cuda_graph and self.kind == "bc2" and str(device).startswith("cuda")) else None
         self.camera_decode = camera_decode or self.bundle.get("camera_decode", "median")
         if self.camera_decode not in ("median", "mean"):
             raise ValueError("camera_decode is median or mean")
@@ -172,6 +174,12 @@ class LivePolicy:
         if self.predict is not None:
             self.predict.state = None
         self.state, self.gray_prev, self.buttons_state, self.t_prev = None, None, None, None
+        if getattr(self, "graph", None):
+            import torch
+            with torch.inference_mode():         # the graph's buffers are inference tensors
+                for tensor in (*self.graph["state"], self.graph["prev_g"], self.graph["prev_c"]):
+                    if tensor is not None:
+                        tensor.zero_()
         self.prev = {"held": [0] * vocab.N, "press": [0] * vocab.N, "release": [0] * vocab.N,
                      "known": [True] * vocab.N, "cy": vocab.ZERO_CLASS, "cp": vocab.ZERO_CLASS}
         self.index = 0
@@ -201,43 +209,125 @@ class LivePolicy:
             raise ValueError(f"frame {frame.shape[:2]} differs from training {TRAIN_SIZE[::-1]}")
         return views_from_bgr(torch.from_numpy(frame).to(self.device, non_blocking=True))
 
+    def _bc2_core(self, frame_u8, prev_g, prev_c, use_prev, dt, h, c, bh=None, bc=None):
+        """One bc2 step on device tensors, free of host syncs and host-to-device copies, so the same code runs
+        eagerly and inside a CUDA graph. use_prev: 0-dim bool (False = no usable previous frame: no motion).
+        Returns action probs [3, N], camera probs [2, C], new LSTM state, this frame's gray views, and the hybrid
+        action head's state."""
+        import torch
+        from policy.bc2.features import tower_features, views_from_bgr
+        from policy.bc2.model import gray_full, gray_small, green_profile
+        rgb = [v.permute(0, 2, 3, 1).to(torch.uint8) for v in views_from_bgr(frame_u8)]
+        feats = tower_features(self.tower, rgb)[None, None]           # both views in one tower batch
+        gg = gray_full(rgb[0]) if self.model.config.hires else gray_small(rgb[0])
+        gc = gray_small(rgb[1])
+        pg, pc = torch.where(use_prev, prev_g, gg), torch.where(use_prev, prev_c, gc)
+        green = green_profile(rgb[0]).to(torch.float16)[None] if self.model.config.use_green else None
+        with torch.autocast("cuda", dtype=torch.bfloat16, enabled=frame_u8.is_cuda):
+            acts, cams, (h1, c1) = self.model(feats, pg[None], gg[None], pc[None], gc[None], (h, c), green, dt)
+        acts, cams = acts.float(), cams.float()
+        if self.buttons is not None:          # hybrid: incumbent action head on the same tower features
+            from policy.range_bc import steps
+            zero = torch.zeros(1, 1, steps.PREV_DIM, device=feats.device)
+            acts, _, (bh, bc) = self.buttons(feats[:, :, 0], feats[:, :, 1], None, zero, (bh, bc))
+        return torch.sigmoid(acts[0, 0]), torch.softmax(cams[0, 0], -1), h1, c1, gg, gc, bh, bc
+
+    def _bc2_inputs(self, t):
+        """Per-step scalar inputs from the capture clock: (use previous frame?, frame interval in steps)."""
+        now = time.perf_counter() if t is None else t
+        gap = None if self.t_prev is None else now - self.t_prev
+        use_prev = gap is not None and gap <= MAX_GAP_S and self.gray_prev is not None
+        self.t_prev = now
+        return use_prev, min(3., max(1., (gap or STEP_S) / STEP_S))
+
+    def _zero_state(self):
+        import torch
+        cfg = self.model.config
+        z = lambda: torch.zeros(cfg.layers, 1, cfg.hidden, device=self.device)
+        bz = None
+        if self.buttons is not None:
+            bz = lambda: torch.zeros(1, 1, self.buttons.core.hidden_size, device=self.device)
+        return z(), z(), (bz() if bz else None), (bz() if bz else None)
+
     def _bc2_predict(self, frame, t=None):
         """policy.bc2: tower features of both views plus motion observed since the previous step's frame."""
         import torch
-        from policy.bc2.features import tower_features
-        from policy.bc2.model import gray_small
+        use_prev, dt = self._bc2_inputs(t)
         with torch.inference_mode():
-            rgb = [v.permute(0, 2, 3, 1).to(torch.uint8) for v in self._views(frame)]
-            feats = tower_features(self.tower, rgb)[None, None]      # both views in one tower batch
-            gray = [gray_small(v) for v in rgb]
-            if self.model.config.hires:
-                from policy.bc2.model import gray_full
-                gray[0] = gray_full(rgb[0])
-            now = time.perf_counter() if t is None else t
-            gap = None if self.t_prev is None else now - self.t_prev
-            if gap is None or gap > MAX_GAP_S:        # no usable previous frame: no motion this step
-                prev = gray
-            else:
-                prev = self.gray_prev
-            dt = torch.full((1, 1), min(3., max(1., (gap or STEP_S) / STEP_S)), device=feats.device)
-            self.t_prev = now
-            green = None
-            if self.model.config.use_green:
-                from policy.bc2.model import green_profile
-                green = green_profile(rgb[0]).to(torch.float16)[None]
-            with torch.autocast("cuda", dtype=torch.bfloat16):
-                acts, cams, self.state = self.model(feats, prev[0][None], gray[0][None], prev[1][None],
-                                                    gray[1][None], self.state, green, dt)
-            self.gray_prev = gray
-            acts, cams = acts.float(), cams.float()
-            if self.buttons is not None:          # hybrid: incumbent action head on the same tower features
-                from policy.range_bc import steps
-                zero = torch.zeros(1, 1, steps.PREV_DIM, device=feats.device)
-                acts, _, self.buttons_state = self.buttons(feats[:, :, 0], feats[:, :, 1], None, zero,
-                                                           self.buttons_state)
+            if self.graph is not None:
+                return self._graph_step(frame, use_prev, dt)
+            x = self._device_frame(frame)
+            if self.state is None:
+                self.state = self._zero_state()
+            prev = self.gray_prev or (torch.zeros(1, 72, 128, dtype=torch.uint8, device=x.device),
+                                      torch.zeros(1, 64, 64, dtype=torch.uint8, device=x.device))
+            acts, cams, h, c, gg, gc, bh, bc = self._bc2_core(
+                x, prev[0], prev[1], torch.tensor(use_prev, device=x.device),
+                torch.full((1, 1), dt, device=x.device), *self.state)
+            self.state, self.gray_prev = (h, c, bh, bc), (gg, gc)
             if not (bool(torch.isfinite(acts).all()) and bool(torch.isfinite(cams).all())):
                 raise ValueError("nonfinite model outputs")
-            return torch.sigmoid(acts[0, 0]).tolist(), torch.softmax(cams[0, 0], -1).tolist()
+            return acts.tolist(), cams.tolist()
+
+    def _device_frame(self, frame):
+        import torch
+        if frame.shape[:2] != TRAIN_SIZE[::-1] and not self.resize:
+            raise ValueError(f"frame {frame.shape[:2]} differs from training {TRAIN_SIZE[::-1]}")
+        return torch.from_numpy(frame).to(self.device, non_blocking=True)
+
+    def _graph_step(self, frame, use_prev, dt):
+        """CUDA-graph replay of _bc2_core: one launch per decision instead of hundreds, which matters when the
+        game time-slices the GPU. Captured on the first frame (per frame size); inputs copied into static
+        buffers, outputs copied back into the recurrent state."""
+        import torch
+        g = self.graph
+        if g.get("shape") != frame.shape:
+            self._capture(frame)
+            g = self.graph
+        g["host"].copy_(torch.from_numpy(frame))
+        g["frame"].copy_(g["host"], non_blocking=True)
+        g["use_prev"].fill_(bool(use_prev))
+        g["dt"].fill_(dt)
+        g["graph"].replay()
+        acts, cams, h, c, gg, gc, bh, bc = g["out"]
+        for dst, src in zip(g["state"], (h, c, bh, bc)):
+            if dst is not None:
+                dst.copy_(src)
+        g["prev_g"].copy_(gg)
+        g["prev_c"].copy_(gc)
+        self.gray_prev = True                  # marks that a previous frame exists (its grays live in the graph)
+        acts, cams = acts.cpu(), cams.cpu()
+        if not (bool(torch.isfinite(acts).all()) and bool(torch.isfinite(cams).all())):
+            raise ValueError("nonfinite model outputs")
+        return acts.tolist(), cams.tolist()
+
+    def _capture(self, frame):
+        import torch
+        dev = self.device
+        g = {"shape": frame.shape,
+             "host": torch.empty(frame.shape, dtype=torch.uint8).pin_memory(),
+             "frame": torch.zeros(frame.shape, dtype=torch.uint8, device=dev),
+             "prev_g": torch.zeros(1, 72, 128, dtype=torch.uint8, device=dev),
+             "prev_c": torch.zeros(1, 64, 64, dtype=torch.uint8, device=dev),
+             "use_prev": torch.zeros((), dtype=torch.bool, device=dev),
+             "dt": torch.ones(1, 1, device=dev),
+             "state": self._zero_state()}
+        if self.model.config.hires:
+            g["prev_g"] = torch.zeros(1, 144, 256, dtype=torch.uint8, device=dev)
+        g["host"].copy_(torch.from_numpy(frame))
+        g["frame"].copy_(g["host"])
+        args = lambda: (g["frame"], g["prev_g"], g["prev_c"], g["use_prev"], g["dt"], *g["state"])
+        side = torch.cuda.Stream()
+        side.wait_stream(torch.cuda.current_stream())
+        with torch.inference_mode(), torch.cuda.stream(side):
+            for _ in range(3):                   # warm-up (cuDNN/cuFFT plans, allocator) before capture
+                self._bc2_core(*args())
+        torch.cuda.current_stream().wait_stream(side)
+        graph = torch.cuda.CUDAGraph()
+        with torch.inference_mode(), torch.cuda.graph(graph):
+            g["out"] = self._bc2_core(*args())
+        g["graph"] = graph
+        self.graph = g
 
     def _torch_predict(self, frame):
         """EncoderPredictor.__call__ with the cache views computed on the device."""

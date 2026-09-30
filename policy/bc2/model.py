@@ -70,11 +70,21 @@ def gray_full(rgb_u8):
     return (x[..., 0] * .299 + x[..., 1] * .587 + x[..., 2] * .114).round().clamp(0, 255).to(torch.uint8)
 
 
+_CONST = {}     # per-device constants, built once (keeps the step free of host-to-device copies: CUDA graphs)
+
+
+def _const(key, make):
+    if key not in _CONST:
+        _CONST[key] = make()
+    return _CONST[key]
+
+
 def phase_corr(prev, cur):
     """Integer+parabolic sub-pixel shift of cur relative to prev, [N, H, W] float -> [N, 3] (dx, dy, peak).
     dx, dy are in pixels of the given image; peak is the normalized correlation height (confidence)."""
     n, h, w = cur.shape
-    win = torch.outer(torch.hann_window(h, device=cur.device), torch.hann_window(w, device=cur.device))
+    win = _const(("hann", h, w, str(cur.device)), lambda: torch.outer(torch.hann_window(h, device=cur.device),
+                                                                     torch.hann_window(w, device=cur.device)))
     a = torch.fft.rfft2((prev - prev.mean((1, 2), keepdim=True)) * win)
     b = torch.fft.rfft2((cur - cur.mean((1, 2), keepdim=True)) * win)
     r = b * a.conj()
@@ -101,7 +111,7 @@ def motion_scalars(gp, gc, cp, cc, hires=False):
     g = phase_corr(gp[:, :rows].float(), gc[:, :rows].float())
     c = phase_corr(cp.float(), cc.float())
     gs = 1 / 16 if hires else 1 / 8
-    scale = torch.tensor([gs, gs, 4., 1 / 8, 1 / 8, 4.], device=g.device)
+    scale = _const(("scale", hires, str(g.device)), lambda: torch.tensor([gs, gs, 4., 1 / 8, 1 / 8, 4.], device=g.device))
     return torch.cat((g, c), 1) * scale
 
 
