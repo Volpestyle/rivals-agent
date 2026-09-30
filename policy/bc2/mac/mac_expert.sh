@@ -19,9 +19,12 @@ for labels in "$@"; do
   todo=()
   for s in $shards; do sid=${${s:t}%.steps.jsonl}; [ -f $ROOT/done/$sid ] || todo+=$s; done
   echo "$(date +%T) views for ${#todo} shards"
-  nice -n 10 $PY -m policy.bc2.expert views $todo --out $ROOT/mviews --clips $CLIPS --jobs 1 || { echo "views FAILED"; exit 1; }
   for s in $todo; do
     sid=${${s:t}%.steps.jsonl}
+    # Per shard: a clip still being copied fails only its own shard, which a later run retries.
+    if ! nice -n 10 $PY -m policy.bc2.expert views $s --out $ROOT/mviews --clips $CLIPS --jobs 1; then
+      echo "$(date +%T) SKIPPED $sid (views failed; clips incomplete?)"; rm -rf $ROOT/mviews/$sid; continue
+    fi
     if nice -n 10 $PY -m policy.bc2.expert features $s --views $ROOT/mviews --out $ROOT/mfeat --device mps \
          --vision $VISION --vision-config $CONFIG \
        && modal volume put --force rivals-policy-bc2-20260930 $ROOT/mfeat/$sid /expert-features/$sid >/dev/null; then
