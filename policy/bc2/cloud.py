@@ -158,14 +158,30 @@ def sweep(prefix: str = "a", epochs: int = 12, seed: int = 0):
         print(arm, call.get())
 
 
+def _status(name, **fields):
+    """Job-board status (docs/compute.md) from the launching host; never fails the run."""
+    try:
+        from scripts.job_status import write
+        write("policy-modal-" + name, **fields)
+    except Exception as exc:
+        print(f"status write failed for {name}: {exc}", flush=True)
+
+
 @app.local_entrypoint()
-def grid(spec: str):
-    """spec: JSON list of fit kwargs, each with a unique "name"."""
+def grid(spec: str, log: str = ""):
+    """spec: JSON list of fit kwargs, each with a unique "name". log: this launcher's log path (board evidence)."""
     import json
     specs = json.loads(spec)
     calls = [fit.spawn(**kw) for kw in specs]
+    for kw in specs:
+        _status(kw["name"], owner="policy (VUH-1346)", stage="running", host="modal",
+                evidence=log or "modal volume rivals-policy-bc2-20260930:/runs/" + kw["name"],
+                progress="training on a Modal H100; report at /runs/" + kw["name"] + "/report.json")
     for kw, call in zip(specs, calls):
         try:
-            print(call.get(), flush=True)
+            result = call.get()
+            print(result, flush=True)
+            _status(kw["name"], stage="done", progress=f"selected epoch {result.get('selected_epoch')}")
         except Exception as exc:          # one failed run must not stop the others
             print({"name": kw["name"], "failed": str(exc)[:500]}, flush=True)
+            _status(kw["name"], stage="failed", progress=str(exc)[:200])
