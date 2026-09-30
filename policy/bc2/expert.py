@@ -211,6 +211,50 @@ def shard(labels, out_dir, rows_per_shard=30000):
     return paths
 
 
+def _jpeg_params():
+    import cv2
+    return [cv2.IMWRITE_JPEG_QUALITY, 98, cv2.IMWRITE_JPEG_SAMPLING_FACTOR, cv2.IMWRITE_JPEG_SAMPLING_FACTOR_444]
+
+
+def pack(views_dir, *, batch=2000):
+    """<name>.jpgs (concatenated JPEGs) and <name>.idx.npy (int64 offsets, n + 1) for global and crop, so a
+    shard's views cross the ~5-10 MB/s PC-to-Mac link 3.3x faster. unpack() restores the .npy views."""
+    import cv2
+    views_dir = Path(views_dir)
+    params = _jpeg_params()
+    for name in ("global", "crop"):
+        rows = NpyRows(views_dir / f"{name}.npy")
+        offsets = [0]
+        with (views_dir / f"{name}.jpgs").open("wb") as out:
+            for s in range(0, rows.shape[0], batch):
+                for x in rows.read(s, batch):
+                    ok, buf = cv2.imencode(".jpg", x[..., ::-1], params)
+                    if not ok:
+                        raise ValueError("jpeg encode failed")
+                    out.write(buf.tobytes())
+                    offsets.append(offsets[-1] + len(buf))
+        rows.close()
+        np.save(views_dir / f"{name}.idx.npy", np.array(offsets, np.int64))
+
+
+def unpack(views_dir, *, batch=2000):
+    import cv2
+    views_dir = Path(views_dir)
+    for name, shape in (("global", GLOBAL), ("crop", CROP)):
+        offsets = np.load(views_dir / f"{name}.idx.npy")
+        n = len(offsets) - 1
+        out = NpyRows(views_dir / f"{name}.npy", np.uint8, (n, *shape))
+        with (views_dir / f"{name}.jpgs").open("rb") as src:
+            for s in range(0, n, batch):
+                e = min(n, s + batch)
+                src.seek(int(offsets[s]))
+                blob = src.read(int(offsets[e] - offsets[s]))
+                rows = [cv2.imdecode(np.frombuffer(blob[offsets[k] - offsets[s]:offsets[k + 1] - offsets[s]], np.uint8),
+                                     cv2.IMREAD_COLOR)[..., ::-1] for k in range(s, e)]
+                out.write(s, np.stack(rows))
+        out.close()
+
+
 def free_ram_gb():
     """Available physical memory (Windows GlobalMemoryStatusEx; elsewhere /proc/meminfo)."""
     import ctypes
@@ -297,7 +341,7 @@ def _views_job(args):
 
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("stage", choices=("shard", "views", "features", "pipeline"))
+    p.add_argument("stage", choices=("shard", "views", "features", "pipeline", "pack", "unpack"))
     p.add_argument("--features-out", help="features root (pipeline stage)")
     p.add_argument("--floor-gb", type=float, default=6.)
     p.add_argument("--views-only", action="store_true", help="pipeline: views here, features elsewhere")
@@ -312,6 +356,11 @@ def main(argv=None):
     if a.stage == "pipeline":
         pipeline(a.labels, a.out, a.features_out, floor_gb=a.floor_gb, features=not a.views_only,
                  log=lambda m: print(time.strftime("%H:%M:%S"), m, flush=True))
+        return 0
+    if a.stage in ("pack", "unpack"):
+        for d in a.labels:                 # here: view directories
+            (pack if a.stage == "pack" else unpack)(d)
+            print(a.stage, d, flush=True)
         return 0
     if a.stage == "shard":
         for labels in a.labels:
