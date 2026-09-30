@@ -97,6 +97,15 @@ Linear). Input spans: the `footage` lane's `D:/rivals-expert-footage/idm-spans.j
   Null always means unknown, never "no".
 - **Masking.** Each span's overlay rects are painted constant grey in the motion frames and black where they cover
   the HUD crop before inference.
+- **Decode.** `--fast` (the default for the bulk run) resizes in YUV before the RGB conversion and decodes on the GPU.
+  On a 48 s expert span it is 3.7x faster than the frame-store graph. Predictions differ by 0.002 deg in camera
+  (MAE is about 0.5), at most 0.05 in press probability, and 99.7 % of held states agree. The npz meta records
+  `fast_decode`.
+- **Where it runs.** The PC labels from the original VODs. Offloaded videos go to the Mac as stream-copied per-span
+  mkv clips (`labels.py clips`: `-ss` and `-t` before `-i` with `-copyts` keep the source timestamps; an output-side
+  `-t` or a trim with output seeking loses them). Mac results are pulled back and exported on the PC. OBS mkv
+  originals have no seek index; mp4 VODs and the clips seek by timestamp, and a clip's `-ss` counts from its own
+  start_time.
 
 ## Why
 

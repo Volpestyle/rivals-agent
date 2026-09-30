@@ -284,7 +284,21 @@ def span_pts(video, start, end, *, ffprobe="ffprobe"):
                   if start - 1e-4 <= t <= end + 1e-4)
 
 
-def decode_span(video, start, end, *, ffmpeg="ffmpeg", threads=8):
+def _fast_graph():
+    """decode.GRAPH with every resize done in YUV before the RGB conversion (about an order of magnitude cheaper at
+    1080p; pixels differ slightly from the frame stores', which v2's augmentation covers)."""
+    from policy.range_bc import cache
+    c = cache.CONVERT
+    return ("{select},split=2[m][h];"
+            f"[m]scale={D.MOTION[1]}:{D.MOTION[0]}:flags=area,{c}[g];[h]split=2[h1][h2];"
+            "[h1]crop=iw*%.6f:ih*%.6f:iw*%.6f:ih*%.6f,scale=200:50:flags=area," % (
+                cache.ABILITY_ROW[2], cache.ABILITY_ROW[3], cache.ABILITY_ROW[0], cache.ABILITY_ROW[1]) + c + "[ab];"
+            "[h2]crop=iw*%.6f:ih*%.6f:iw*%.6f:ih*%.6f,scale=40:30:flags=area," % (
+                cache.WEBS_BOX_MK[2], cache.WEBS_BOX_MK[3], cache.WEBS_BOX_MK[0], cache.WEBS_BOX_MK[1]) + c +
+            f",pad=200:30[wb];[ab][wb]vstack,pad={D.MOTION[1]}:80[hd];[g][hd]vstack")
+
+
+def decode_span(video, start, end, *, ffmpeg="ffmpeg", threads=8, fast=False):
     """(grey [n, 252, 448] uint8, hud [n, 80, 200, 3] uint8, pts seconds [n]) for every frame in [start, end], through
     the frame-store pixel graph (policy.idm.decode.GRAPH), seeking by timestamp (mp4 / indexed containers)."""
     import tempfile
@@ -300,9 +314,11 @@ def decode_span(video, start, end, *, ffmpeg="ffmpeg", threads=8):
     size = D._STACK[0] * D._STACK[1] * 3
     with tempfile.TemporaryDirectory(prefix="rivals-idm-label-") as tmp:
         script = Path(tmp) / "graph.txt"
-        script.write_text(D.GRAPH.format(select=sel), encoding="ascii")
+        script.write_text((_fast_graph() if fast else D.GRAPH).format(select=sel), encoding="ascii")
         # -t bounds the read: select alone would keep decoding to the end of a multi-hour VOD
-        proc = subprocess.Popen([ffmpeg, "-v", "error", "-nostdin", "-threads", str(threads), "-ss", f"{seek:.3f}",
+        # VideoToolbox on the Mac; on the PC, CUDA's per-launch init costs more than a short span's CPU decode
+        hw = ["-hwaccel", "videotoolbox"] if fast and sys.platform == "darwin" else []
+        proc = subprocess.Popen([ffmpeg, "-v", "error", "-nostdin", "-threads", str(threads), *hw, "-ss", f"{seek:.3f}",
                                  "-t", f"{end - t0 - seek + 1:.3f}", "-copyts", "-i", str(video), "-map", "0:v:0",
                                  "-filter_script:v", str(script), "-fps_mode", "passthrough", "-an", "-sn",
                                  "-pix_fmt", "rgb24", "-f", "rawvideo", "-"], stdout=subprocess.PIPE)
@@ -339,13 +355,13 @@ def mask_overlays(grey, hud, rects, fill=128):
     return grey, hud
 
 
-def label_span(model, video, start, end, *, rects=(), device="cuda", batch=32, calibration=None):
+def label_span(model, video, start, end, *, rects=(), device="cuda", batch=32, calibration=None, fast=False):
     """Per 60 Hz interval of [start, end] (one per decoded frame with a full +-W window): press and held
     probabilities, camera mean/log-variance and the camera answer (None = abstain). Frames are taken at the
     video's own rate, which must be about 60 fps."""
     import torch
     from policy.idm import train
-    grey, hud, pts = decode_span(video, start, end)
+    grey, hud, pts = decode_span(video, start, end, fast=fast)
     if len(pts) > 2:
         fps = (len(pts) - 1) / (pts[-1] - pts[0])
         if not 55 <= fps <= 65:
@@ -375,10 +391,10 @@ def label_span(model, video, start, end, *, rects=(), device="cuda", batch=32, c
             "cam": cam, "held": np.concatenate(helds) if helds else None, "answers": answers}
 
 
-def label_file(ckpt, video, out, *, start, end, rects=(), device="cuda", span_id=None, loaded=None):
+def label_file(ckpt, video, out, *, start, end, rects=(), device="cuda", span_id=None, loaded=None, fast=False):
     from policy.range_bc import vocab
     model, supported, thresholds = loaded or load_any(ckpt, device)
-    res = label_span(model, video, start, end, rects=rects, device=device)
+    res = label_span(model, video, start, end, rects=rects, device=device, fast=fast)
     extra = {} if res["held"] is None else {"held": res["held"]}
 
     def col(key):
@@ -388,7 +404,7 @@ def label_file(ckpt, video, out, *, start, end, rects=(), device="cuda", span_id
         pts_ms=np.round(res["pts_all"] * 1000).astype(np.int64), prob=res["prob"], cam=res["cam"], **extra,
         yaw_ans=col("yaw_deg"), pitch_ans=col("pitch_deg"), yaw_std=col("yaw_std_deg"), pitch_std=col("pitch_std_deg"),
         meta=json.dumps({"ckpt": str(ckpt), "video": str(video), "span_id": span_id, "start": start, "end": end,
-                         "rects": [list(r) for r in rects], "actions": list(vocab.NAMES), "supported": supported,
+                         "rects": [list(r) for r in rects], "fast_decode": fast, "actions": list(vocab.NAMES), "supported": supported,
                          "thresholds": thresholds}))
     return len(res["frame"])
 
