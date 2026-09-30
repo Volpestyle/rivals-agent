@@ -188,3 +188,20 @@ def test_tokenizer_shapes_and_smoke(tmp_path):
                    "--gate-n", "4"])
     assert set(gate["keep"]) >= {"psnr>=28", "contrast>=0.95", "all"}
     assert (tmp_path / "recon_vs_real.png").exists()
+
+
+def test_latent_dynamics_smoke(tmp_path):
+    pytest.importorskip("numpy")
+    pytest.importorskip("torch")
+    from rl.world_model import latent_dyn as L
+    shape = L.main(["smoke", "--out", str(tmp_path), "--steps", "2"])
+    assert tuple(shape) == (2, 3, L.C, L.LH, L.LW)
+
+
+def test_latent_valid_starts():
+    np = pytest.importorskip("numpy")
+    from rl.world_model.latent_dyn import valid_starts
+    ok = np.array([1, 1, 1, 0, 1, 1, 1, 1], bool)
+    run = np.zeros(8, np.int32)
+    i = np.arange(8)
+    assert valid_starts(ok, run, i, 3).tolist() == [0, 4, 5]

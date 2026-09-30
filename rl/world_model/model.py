@@ -137,13 +137,16 @@ class FourierEmbedding(nn.Module):
 
 
 class Denoiser(nn.Module):
-    def __init__(self, ctx=4, action_dim=32, chs=(64, 128, 256, 256), cond=256, attn_levels=1):
+    def __init__(self, ctx=4, action_dim=32, chs=(64, 128, 256, 256), cond=256, attn_levels=1, channels=3,
+                 extra_frames=0):
+        """channels: 3 for pixels, the latent width for latent frames. extra_frames: frames passed before the ctx
+        context frames (e.g. a key frame from further back) that carry no action."""
         super().__init__()
-        self.ctx, self.action_dim = ctx, action_dim
+        self.ctx, self.action_dim, self.channels, self.extra_frames = ctx, action_dim, channels, extra_frames
         self.noise = nn.Sequential(FourierEmbedding(cond), nn.Linear(cond, cond), nn.SiLU(), nn.Linear(cond, cond))
         self.act = nn.Sequential(nn.Linear(ctx * action_dim, cond), nn.SiLU(), nn.Linear(cond, cond))
         self.aug = nn.Sequential(FourierEmbedding(cond), nn.Linear(cond, cond), nn.SiLU(), nn.Linear(cond, cond))
-        self.net = UNet(3 + 3 * ctx, 3, chs, cond, attn_levels=attn_levels)
+        self.net = UNet(channels * (1 + ctx + extra_frames), channels, chs, cond, attn_levels=attn_levels)
 
     def forward(self, x_noisy, sigma, frames, actions, level=None):
         """x_noisy B,3,H,W; sigma B; frames B,ctx,3,H,W in [-1,1] (already corrupted at `level`, B);
