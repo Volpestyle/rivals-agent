@@ -35,7 +35,7 @@ $learnedArguments = @(
     'run', '--no-project', '--python', $learnedPython, 'python', '-m', 'agent.learned_runner',
     '--live', '--policy-bundle', ('"' + $PolicyBundle + '"'), '--device', 'cuda',
     '--camera-settings-match', 'alt-247-124', '--game-pid', "$learnedGamePid",
-    '--max-s', '60', '--decision-hz', '20', '--yaw-scale', $learnedYawScale, '--save-fps', '10', '--out', $learnedOut
+    '--max-s', '60', '--decision-hz', '15', '--yaw-scale', $learnedYawScale, '--save-fps', '10', '--out', $learnedOut
 )
 if ($ObsVideo) { $learnedArguments += @('--obs-video', ('"' + $ObsVideo + '"')) }
 $learnedProcess = Start-Process -FilePath $learnedUv -ArgumentList $learnedArguments -WorkingDirectory 'C:/Users/volpe/repos/rivals-agent' -WindowStyle Hidden -PassThru -RedirectStandardOutput $learnedStdout -RedirectStandardError $learnedStderr

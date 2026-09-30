@@ -226,9 +226,22 @@ camera decoding uses the bundle's mean decode. Native frames at up to
 10 Hz, per-tick predictions, raw/scaled yaw, masked actions, sent pad snapshots,
 request expiry/release times, inference/queue timing and the stop frame are
 retained alongside `result.json`. OBS remains the native session-video owner.
-Both launch modes cap new inference jobs at 20 Hz to leave time for camera
+Both launch modes cap new inference jobs at 15 Hz to leave time for camera
 execution inside the original 100 ms frame budget. Pending jobs are replaced
 with the latest fresh frame; the bundle is trained for intervals at 10–30 Hz.
+
+The loaded 30-second mocked-pad RAM replay at the 15 Hz cap produced 14.5
+decisions/s and 24.4% expiry (106/435 decisions) while four IDM CUDA shards
+shared the PC. Of these, one was stale after inference and 105 expired during
+camera execution after partial mocked sends. That measurement preceded the
+completion-notification fix, which remains in the runner. Its retained result
+and timing summary are in
+`D:/rivals-offline/learned-runner-20260930/bc2-dt-ram-30s-a-15hz/`, with the
+adjacent `bc2-dt-ram-30s-a-15hz-load.json` PC-load snapshot. The later quiet-GPU
+measurement does not represent gameplay GPU contention. The under-20% figure
+was a rough target, not a launch gate (lead, 2026-09-30); the live run's recorded
+drop rate is the relevant measurement. Do not pause other lanes' GPU jobs for
+this launch preparation.
 
 Yaw uses measured signed knots, capped at |rx|=0.45; A/B compares full and half
 learned yaw in this private test. Pitch goes through an explicitly **unmeasured**
