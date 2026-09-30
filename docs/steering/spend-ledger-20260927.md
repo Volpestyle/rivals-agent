@@ -103,3 +103,12 @@ other lane's app. `metrics/modal-apps-at-50h.json` verifies all twelve expansion
 apps stopped with zero tasks. All were ephemeral CPU jobs with timeout=7200,
 no GPU or persistent volume; local download processes also completed. No
 other lane's resources were stopped.
+
+## 2026-09-30 whole-day Modal snapshot (lead, 13:25 CDT)
+
+`modal billing report --for "this month"` (profile `rivals`): **$261.09 month to date**, of which **$164.81 on 2026-09-30**
+(09-27 $47.30, 09-28 $48.98). By resource: H100 $95.74, L40S $72.79, CPU $53.45, memory $35.64, L4 $3.33.
+Biggest apps today: policy bc2 grids $53.02, world model v2 $42.70 (+ full-01 $5.66), expert footage CPU $26.62,
+IDM v2 fits $25.54 (+ labelling $5.56), offline AWR $4.24. James hit his Modal GPU limit at about 13:00 CDT; new
+Modal GPU launches are paused pending his decision. Defaults from now on: 1 seed for exploration, 3 seeds only to adopt a
+bundle, PC 4080 or Mac first, and no world-model training without a stated cost and a result that justifies it.
