@@ -40,6 +40,27 @@ action). **Compression, 60 fps and 1080p/720p scaling are not the blocker for la
 test does not cover: 30 fps VODs (the 60 Hz window needs a retrained model), the expert's FOV (camera degrees scale
 with it), HUD scale/layout and overlays over the HUD crop, other heroes' and skins' pixels, and pad players.
 
+### Expert-footage labels (agreed with `policy`, 2026-09-30)
+
+Format: policy's REPLAY step table (`policy/range_bc/steps.py`, `source_kind: "replay"`, split `"replay"`), written by
+`python -m policy.idm.labels export`; every row passes `steps.check_row`. One file per video,
+`D:/rivals-agent-local/idm-labels/<model>/expert-<video_id>.steps.jsonl` (third-party footage: local only, never git or
+Linear). Input spans: the `footage` lane's `D:/rivals-expert-footage/idm-spans.jsonl`; each span is one `run`.
+
+- **Anchor and step.** The anchor is a decoded frame (`frame.frame_index` is the true ordinal in the mp4 from its packet
+  index, `pts` in the stream timebase); the 33 ms step is the next two 60 Hz intervals.
+- **Camera.** `yaw_deg` / `pitch_deg` are the two intervals' IDM answers summed (yaw + right, pitch + down); null when
+  either abstains. Degrees are on James's FOV/sensitivity scale; the expert's FOV is not calibrated, so the scale per
+  source is uncertain. `beyond_pad_envelope` uses the targets' pad envelope (415 / 99 deg/s).
+- **Presses.** `press[c]` = 1 when a predicted onset (the peak of an above-threshold run) falls in the step, only for
+  actions the checkpoint has a TRAIN-rate threshold for (full03: jump, amazing_combo, web_cluster; v2: every supported
+  action); other actions null. `release` is null.
+- **Holds.** From a held head at 0.5 (v2: WASD, swing, fire); null for full03.
+- **Extras.** `press_p` (step max probability), `camera_std` [yaw, pitch] in degrees, `camera_conf` = exp(-yaw_std).
+  Null always means unknown, never "no".
+- **Masking.** Each span's overlay rects are painted constant grey in the motion frames and black where they cover
+  the HUD crop before inference.
+
 ## Why
 
 The in-client replay of a selected expert (`data/demos/replays/daymr-20260923-004325/`, VUH-1328) shows his own camera

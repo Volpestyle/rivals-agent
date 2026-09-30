@@ -50,6 +50,7 @@ def fit(run: str, args: list):
 
 @app.local_entrypoint()
 def main(run: str, epochs: int = 8, batch_chunks: int = 8, lr: float = 2e-3, workers: int = 12,
-         max_steps: int = 0):
+         max_steps: int = 0, window: int = 8):
     print(fit.remote(run, ["--epochs", str(epochs), "--batch-chunks", str(batch_chunks), "--lr", str(lr),
-                           "--workers", str(workers), "--max-steps", str(max_steps), "--device", "cuda"]))
+                           "--workers", str(workers), "--max-steps", str(max_steps), "--device", "cuda",
+                           "--window", str(window)]))

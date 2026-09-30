@@ -70,7 +70,7 @@ def demo_pts(path):
     return json.loads(Path(path).read_text(encoding="utf-8").splitlines()[1])["decoded"]["pts"]
 
 
-def plan(rows, pts, *, start_ms=None, end_ms=None):
+def plan(rows, pts, *, start_ms=None, end_ms=None, window=WINDOW):
     """[(row, c1, window ordinals, hud ordinals)] for rows whose frames all exist in the video within half a
     60 Hz interval of the row's own frames. step = video frames per 60 Hz interval."""
     period = (pts[-1] - pts[0]) / max(len(pts) - 1, 1)
@@ -90,7 +90,7 @@ def plan(rows, pts, *, start_ms=None, end_ms=None):
         c1, c0 = nearest(t1), nearest(r["frame0"]["pts"])
         if c1 is None or c0 is None:
             continue
-        win = [c1 + step * k for k in range(-WINDOW, WINDOW + 1)]
+        win = [c1 + step * k for k in range(-window, window + 1)]
         if win[0] < 0 or win[-1] >= len(pts):
             continue
         if c0 == c1:                                       # 60 fps: frame0 is the previous 60 Hz frame
@@ -166,7 +166,8 @@ def predict_file(ckpt, targets_path, video, out, *, pts=None, start=None, end=No
     header, rows = load_targets(targets_path)
     pts = demo_pts(pts) if pts else probe_pts(video)
     planned, step = plan(rows, pts, start_ms=None if start is None else start * 1000,
-                         end_ms=None if end is None else end * 1000)
+                         end_ms=None if end is None else end * 1000,
+                         window=model.config.window)
     res = stream_predict(model, video, planned, device=device,
                          progress=lambda a, b: print(f"  decoded {a}/{b}", file=sys.stderr, flush=True))
     ids = sorted(res)
@@ -348,11 +349,12 @@ def label_span(model, video, start, end, *, rects=(), device="cuda", batch=32, c
     grey, hud = mask_overlays(grey, hud, rects)
     raw = getattr(model, "raw_window", False)
     cal = calibration or JAMES_CALIBRATION
-    ks = list(range(WINDOW, len(pts) - WINDOW))
+    W = model.config.window
+    ks = list(range(W, len(pts) - W))
     probs, cams, helds, answers = [], [], [], []
     for s in range(0, len(ks), batch):
         idx = ks[s:s + batch]
-        w = np.stack([grey[k - WINDOW:k + WINDOW + 1] for k in idx]).astype(np.float32) / 255.0
+        w = np.stack([grey[k - W:k + W + 1] for k in idx]).astype(np.float32) / 255.0
         m = w if raw else np.diff(w, axis=1)
         h = np.stack([np.concatenate([hud[k - 1], hud[k]], axis=2).transpose(2, 0, 1) for k in idx])
         with torch.no_grad():

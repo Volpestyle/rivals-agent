@@ -8,8 +8,10 @@ present) with policy.idm.vod.label_span, masking the span's overlay rects. On th
 is running (the GPU and CPU belong to the game). `export` writes one rivals-range-steps-v1 table per video with
 source_kind "replay" (policy/range_bc/steps.py): one row per 30 Hz anchor, one run per span.
 
-Row semantics: the anchor is a decoded frame; the step covers the next two 60 Hz intervals. yaw/pitch are their summed
-camera answers (null if either abstains). press is 1 when a predicted onset (an above-threshold run's peak) falls in
+Row semantics: anchors lie on the nominal 30 Hz grid from the span's first labelled frame; the row's frame is the last
+decoded frame at or before the anchor, and the step covers the 60 Hz intervals ending in (anchor, anchor + 33.3 ms]
+(two, occasionally one or three on a variable-rate VOD). yaw/pitch are their summed camera answers (null if any
+abstains). press is 1 when a predicted onset (an above-threshold run's peak) falls in
 the step, for actions the checkpoint has a threshold for; other actions are null. held_* come from a held head (v2)
 at 0.5, else null. release is null. Extra fields: press_p (step max probability), camera_std (deg), camera_conf.
 Third-party frames and labels stay local: never git, never Linear.
@@ -124,33 +126,43 @@ def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0):
         onset[vod.onsets(prob[:, c], thr), c] = True
     rows = []
     step_s = STEP_NS / 1e9
-    for j in range(0, len(t) - 2, 2):
-        a, b = j + 1, j + 2
-        if not (0.025 <= t[b] - t[j] <= 0.042):                   # two 60 Hz intervals, or the span has a hole
+    base_ns = int(round(float(t[0]) * 1e9))
+    for k in range(int((t[-1] - t[0]) / step_s)):
+        anchor_ns = base_ns + k * STEP_NS                          # the nominal 30 Hz grid (steps.check_sequence)
+        anchor = anchor_ns / 1e9
+        a = int(np.searchsorted(t, anchor + 1e-9, side="right")) - 1   # last decoded frame at or before the anchor
+        js = []
+        b = a + 1
+        while b < len(t) and t[b] <= anchor + step_s + 1e-9:
+            js.append(b)
+            b += 1
+        if a < 0 or not js or np.any(np.diff(t[a:js[-1] + 1]) > 0.025):   # no interval, or a hole in the span
             continue
-        anchor = float(t[j])
-        ordinal = int(np.searchsorted(index_pts, anchor - 1e-6))
-        y = None if np.isnan(yaw[a]) or np.isnan(yaw[b]) else float(yaw[a] + yaw[b])
-        p = None if np.isnan(pitch[a]) or np.isnan(pitch[b]) else float(pitch[a] + pitch[b])
+        if anchor - t[a] > 2 * FRAME_PERIOD_NS / 1e9:
+            continue
+        frame_s = float(t[a])
+        ordinal = int(np.searchsorted(index_pts, frame_s - 1e-6))
+        y = None if np.isnan(yaw[js]).any() else float(yaw[js].sum())
+        p = None if np.isnan(pitch[js]).any() else float(pitch[js].sum())
         press = [None] * len(actions)
         press_p = [None] * len(actions)
         for name in thresholds:
             c = actions.index(name)
-            press[c] = int(onset[a, c] or onset[b, c])
-            press_p[c] = round(float(max(prob[a, c], prob[b, c])), 4)
+            press[c] = int(onset[js, c].any())
+            press_p[c] = round(float(prob[js, c].max()), 4)
         hs = he = [None] * len(actions)
         if held is not None:
             hs, he = list(hs), list(he)
             for name in HELD_ACTIONS:
                 c = actions.index(name)
-                hs[c], he[c] = int(held[j, c] >= 0.5), int(held[b, c] >= 0.5)
-        std = (None if np.isnan(ystd[a]) or np.isnan(ystd[b]) else
-               [round(float(np.hypot(ystd[a], ystd[b])), 4), round(float(np.hypot(pstd[a], pstd[b])), 4)])
+                hs[c], he[c] = int(held[a, c] >= 0.5), int(held[js[-1], c] >= 0.5)
+        std = (None if np.isnan(ystd[js]).any() else
+               [round(float(np.sqrt((ystd[js] ** 2).sum())), 4), round(float(np.sqrt((pstd[js] ** 2).sum())), 4)])
         rows.append({
-            "i": i0 + len(rows), "run": run_id, "anchor_ns": int(round(anchor * 1e9)),
+            "i": i0 + len(rows), "run": run_id, "anchor_ns": anchor_ns,
             "frame": {"video_path": str(video_path), "frame_index": ordinal,
-                      "pts": int(round(anchor * tb[1] / tb[0])), "timebase": tb,
-                      "composition_ns": int(round(anchor * 1e9))},
+                      "pts": int(round(frame_s * tb[1] / tb[0])), "timebase": tb,
+                      "composition_ns": min(int(round(frame_s * 1e9)), anchor_ns)},
             "gap_free": True, "segment": run_id, "suitability": "accepted", "regime": "normal", "tags": [],
             "tag_source": "untagged", "held_start": hs, "held_end": he,
             "held_known": [hs[c] is not None and he[c] is not None for c in range(len(actions))],

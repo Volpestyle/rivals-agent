@@ -70,7 +70,7 @@ def decode_frames(video, ordinals, pts, size=(GW, GH), ffmpeg="ffmpeg"):
     want = set(ordinals)
     graph = (f"select='between(t\\,{(a - 0.5) / 1000:.4f}\\,{(b + 0.5) / 1000:.4f})',{cache.CONVERT},"
              f"scale={size[0]}:{size[1]}:flags=area")
-    proc = subprocess.Popen([ffmpeg, "-v", "fatal", "-nostdin", "-hwaccel", "auto", "-ss", f"{max(0, a / 1000 - 3):.3f}",
+    proc = subprocess.Popen([ffmpeg, "-v", "fatal", "-nostdin", "-hwaccel", "videotoolbox" if sys.platform == "darwin" else "cuda", "-ss", f"{max(0, a / 1000 - 3):.3f}",
                              "-copyts", "-i", str(video), "-map", "0:v:0", "-vf", graph, "-fps_mode", "passthrough",
                              "-an", "-pix_fmt", "rgb24", "-f", "rawvideo", "-"], stdout=subprocess.PIPE)
     n = size[0] * size[1] * 3
