@@ -322,3 +322,29 @@ The Mac's installed CLI does expose `modal billing`. Its hourly report returned
 the first session's actual app usage, recorded in the requested
 [spend ledger](../steering/spend-ledger-20260927.md); the earlier availability
 assumption and configured estimate are superseded by that report.
+
+Luckyzeal's bottom-left avatar covers the hero portrait across multiple heroes.
+Native portrait profiles are therefore explicitly refused for that channel.
+V6 can resegment retained numeric reads without decoding again: an unknown
+hero read needs a named Spider-Man ability plus independently read 250 maximum
+HP, or 250 current HP with a measured full health bar. Known exclusions and
+explicit foreign-hero readings remain rejected. On 72 private development
+controls this recovered two additional positives and introduced no additional
+false positives; the generic baseline's existing one false positive remains.
+The table is `audit/masked-validation.json` in external storage. An offline
+regression check specifically prevents a killcam or foreign HP reading from
+being restored. New v6 candidates still need the twelve native retained checks.
+
+RekRiot's first inspected broadcast includes watching DayMR's gameplay. Its
+tail from 2,900 seconds is conservatively withheld, including later own-play
+sections; a fresh retained sample of the earlier own-play prefix passed. This
+is why player HUD alone does not establish source provenance. Later broadcasts
+need their own distributed and retained checks. Humble's music card is at right
+centre and Twitch chat can overlap the bottom-right ability prompts; native
+inspection corrected its masks before further consumer use.
+
+Additional diversity discovery includes rdpaco, whose primary Season 10 archive
+titles claim One Above All / rank 1 Spider-Man peak. That is a creator claim,
+not independent rank verification. Tephrite's explicitly controller-titled day
+is excluded from acquisition; other available titles emphasize different heroes
+or tournaments. Source metadata and claim links remain in external `experts.json`.

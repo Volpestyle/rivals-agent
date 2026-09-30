@@ -5,10 +5,22 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
-from scripts.footage_corpus import exclude_review_intervals, jpeg_frames, refresh, spans_from_reads, write_json
+from scripts.footage_corpus import exclude_review_intervals, jpeg_frames, masked_portrait_recovery, refresh, spans_from_reads, write_json
 
 
 class SpanTests(unittest.TestCase):
+    def test_masked_portrait_does_not_restore_killcam_or_foreign_hp(self):
+        reads = [dict(t=i/2, accepted=False, reason="unknown", hp=250, max_hp=250,
+                      bar=1, icon_evidence=["swing"]) for i in range(30)]
+        reads[10]["reason"] = "yellow_exclusion_banner"
+        reads[20].update(hp=300, max_hp=300)
+        result = masked_portrait_recovery(dict(info=dict(uploader_id="luckyzeal"), reads=reads, limitation="sampled"))
+        self.assertFalse(result["reads"][10]["accepted"])
+        self.assertFalse(result["reads"][20]["accepted"])
+        self.assertTrue(result["reads"][0]["accepted"])
+        with self.assertRaises(ValueError):
+            masked_portrait_recovery(dict(info=dict(uploader_id="other"), reads=reads))
+
     def test_unreviewed_rescan_cannot_publish_or_leave_stale_manifest(self):
         with TemporaryDirectory() as folder:
             root = Path(folder)

@@ -25,7 +25,8 @@ PROFILE_TIMES = {
 }
 
 
-def _screen_source(sid: str, pilot_seconds: int = 0, source_profile: bool = False, profile_time: float = 0):
+def _screen_source(sid: str, pilot_seconds: int = 0, source_profile: bool = False,
+                   profile_time: float = 0, reference_id: str = ""):
     import sys
     import time
     import subprocess
@@ -61,20 +62,31 @@ def _screen_source(sid: str, pilot_seconds: int = 0, source_profile: bool = Fals
         expected = pilot_seconds or info["duration"]
         template, reference = None, None
         if source_profile:
-            if (profile_time or sid in PROFILE_TIMES) and not pilot_seconds:
+            if info["uploader_id"] == "luckyzeal":
+                raise ValueError("portrait covered by channel avatar; use ability-only screening")
+            if reference_id:
+                if reference_id in SEALED or not reference_id.isdigit() or profile_time <= 0:
+                    raise ValueError("reference source refused")
+                reference = dict(source_id=reference_id, t=profile_time, basis="human-inspected same-channel HUD reference")
+            elif (profile_time or sid in PROFILE_TIMES) and not pilot_seconds:
                 reference = dict(source_id=sid, t=profile_time or PROFILE_TIMES[sid], basis="human-inspected Spider-Man frame")
-                ref_media = media
-                ref_time = reference["t"]
             elif info["uploader_id"] == "simii_exe":
                 reference = dict(source_id="2879380353", t=3669.375, basis="human-inspected same-channel HUD, cross-video controls checked")
-                # Network seeking across Twitch's fragmented HLS can stall.
-                # A full temporary reference download uses the proven demux path.
-                subprocess.run(["yt-dlp", "--no-progress", "-f", "best", "--fixup", "never", "--hls-use-mpegts",
-                                "-o", str(base / "reference.mp4"), "https://www.twitch.tv/videos/2879380353"],
-                               check=True, capture_output=True, timeout=600)
-                ref_media, ref_time = base / "reference.mp4", reference["t"]
             else:
                 raise ValueError("source profile requires a human-inspected positive timestamp")
+            ref_time = reference["t"]
+            if reference["source_id"] == sid:
+                ref_media = media
+            else:
+                # Network seeking across Twitch's fragmented HLS can stall.
+                # A full temporary reference download uses the proven demux path.
+                subprocess.run(["yt-dlp", "--no-progress", "--write-info-json", "-f", "best", "--fixup", "never", "--hls-use-mpegts",
+                                "-o", str(base / "reference.mp4"), "https://www.twitch.tv/videos/" + reference["source_id"]],
+                               check=True, capture_output=True, timeout=600)
+                reference_info = json.loads((base / "reference.info.json").read_text())
+                if reference_info["uploader_id"] != info["uploader_id"]:
+                    raise ValueError("reference channel differs from target")
+                ref_media = base / "reference.mp4"
             raw = subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-threads", "1", "-ss", str(ref_time),
                                   "-i", str(ref_media), "-frames:v", "1", "-threads", "1", "-f", "image2pipe",
                                   "-c:v", "mjpeg", "pipe:1"], capture_output=True, check=True, timeout=90).stdout
@@ -123,9 +135,10 @@ def _screen_source(sid: str, pilot_seconds: int = 0, source_profile: bool = Fals
 @app.function(image=image, cpu=8, memory=4096,
               timeout=7200, max_containers=4, retries=0, scaledown_window=2,
               nonpreemptible=True)
-def screen_source(sid: str, pilot_seconds: int = 0, source_profile: bool = False, profile_time: float = 0):
+def screen_source(sid: str, pilot_seconds: int = 0, source_profile: bool = False,
+                  profile_time: float = 0, reference_id: str = ""):
     try:
-        return _screen_source(sid, pilot_seconds, source_profile, profile_time)
+        return _screen_source(sid, pilot_seconds, source_profile, profile_time, reference_id)
     except Exception as error:
         # One unavailable public source must not discard other completed results.
         return dict(source_id=sid, error=str(error), spans=[])
@@ -138,9 +151,12 @@ def main(ids: str = "2886339556", output: str = "/Users/james/dev/expert-footage
     out.mkdir(parents=True, exist_ok=True)
     source_ids = ids.split(",")
     times = json.loads(Path(profile_times).read_text()) if profile_times else {}
+    references = [times.get(sid, 0) for sid in source_ids]
     for result in screen_source.map(source_ids, [pilot_seconds] * len(source_ids),
                                     [source_profile] * len(source_ids),
-                                    [float(times.get(sid, 0)) for sid in source_ids], order_outputs=False):
+                                    [float(r["t"] if isinstance(r, dict) else r) for r in references],
+                                    [r.get("source_id", "") if isinstance(r, dict) else "" for r in references],
+                                    order_outputs=False):
         path = out / f"{result['source_id']}.json"
         temp = path.with_suffix(".tmp")
         temp.write_text(json.dumps(result, indent=2) + "\n")

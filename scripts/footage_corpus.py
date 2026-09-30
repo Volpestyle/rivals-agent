@@ -210,6 +210,32 @@ def spans_from_reads(reads, max_gap=2.5, trim_s=2.0, min_s=8.0, bridge_unknown=0
     return spans
 
 
+def masked_portrait_recovery(result):
+    """Recover inspected Luckyzeal HUDs from retained pixel-reader evidence.
+
+    The avatar hides the portrait. Require a distinctive Spider-Man ability
+    and independently read 250 maximum HP, or 250 HP plus a measured full bar.
+    Never reconsider a known exclusion or explicit foreign-hero reading.
+    """
+    if result["info"]["uploader_id"] != "luckyzeal":
+        raise ValueError("masked-portrait recovery is specific to inspected Luckyzeal layout")
+    recovered = []
+    for original in result["reads"]:
+        row = dict(original)
+        hp, maximum, bar = row.get("hp"), row.get("max_hp"), row.get("bar")
+        if (row.get("reason") == "unknown" and hp is not None and hp > 0
+                and (maximum == 250 or (maximum is None and hp == 250 and bar is not None and bar > .98))
+                and set(row.get("icon_evidence", [])) & {"swing", "get_over_here", "uppercut"}):
+            row.update(accepted=True, reason="masked_portrait_ability_hp", hero=True)
+        recovered.append(row)
+    spans = spans_from_reads(recovered, max_gap=.6, trim_s=.5, min_s=4, bridge_unknown=2)
+    for span in spans:
+        span["confidence"] = "2hz_hud_candidate"
+    return dict(result, reads=recovered, spans=spans, classifier_version="masked_ability_hp_banner_v6",
+                gameplay_candidate_s=sum(s["end_s"]-s["start_s"] for s in spans),
+                limitation=result["limitation"] + " Covered portrait: independent ability/250HP evidence, never native portrait template.")
+
+
 def jpeg_frames(stream):
     """Bounded streaming JPEG transport avoids megabytes per Windows pipe write."""
     pending = bytearray()
