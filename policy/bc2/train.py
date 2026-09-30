@@ -103,7 +103,10 @@ def windows(sessions, generator, jitter=False):
     return out
 
 
-def batch(sessions, items, device, chunk=0):
+def batch(sessions, items, device, chunk=0, motion_dropout=0.):
+    """motion_dropout: per window, the probability of blanking the observed motion (previous frame = current
+    frame) over a random span of 25-100% of the window, so the policy also learns to act from a static view
+    (live, a still start otherwise stays still: docs/lanes/policy.md, learned-01 idle)."""
     t = max(item[2] for item in items)
     parts = {k: [] for k in ("feats", "gp", "gc", "cp", "cc", "green", "dt", "onset", "fcam", "fcam_mask", "act",
                              "act_mask", "camera", "camera_mask")}
@@ -112,6 +115,14 @@ def batch(sessions, items, device, chunk=0):
         idx = (st + stride * torch.arange(t, device=device)).clamp_max(s.n - 1)
         inputs = s.inputs(idx[None], stride)
         parts["dt"].append(inputs[7][0])
+        inputs = list(inputs)
+        if motion_dropout and float(torch.rand(1)) < motion_dropout:
+            span = int(n * (.25 + .75 * float(torch.rand(1))))
+            s0 = int(torch.randint(0, max(1, n - span + 1), (1,)))
+            blank = torch.zeros(t, dtype=torch.bool, device=device)
+            blank[s0:s0 + span] = True
+            inputs[1] = torch.where(blank[None, :, None, None], inputs[2], inputs[1])     # gray global prev := cur
+            inputs[3] = torch.where(blank[None, :, None, None], inputs[4], inputs[3])     # gray crop prev := cur
         for k, v in zip(("feats", "gp", "gc", "cp", "cc"), inputs[:5]):
             parts[k].append(v[0])
         if inputs[6] is not None:
@@ -364,7 +375,7 @@ def dev_loss(model, sessions, pw, chunk=512):
 
 def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batch_size=32, lr=3e-4, wd=.05,
         device="cuda", incumbent=None, log=print, onset_weight=1., chunk_weight=.5, expert_dirs=(),
-        expert_epochs=None, expert_share=None, expert_actions=True):
+        expert_epochs=None, expert_share=None, expert_actions=True, motion_dropout=0.):
     """expert_dirs: IDM-labelled expert sessions (policy.bc2.expert), used as extra training windows for the first
     expert_epochs epochs (default: all; VPT-style pretrain-then-finetune when fewer). expert_share caps the
     expert fraction of an epoch's windows. Selection, thresholds and pos_weight stay on James's data."""
@@ -409,7 +420,8 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
         order = torch.randperm(len(items), generator=gen).tolist()
         started, running = time.monotonic(), 0.
         for k in range(per_epoch):
-            b = batch(all_s, [items[i] for i in order[k * batch_size:(k + 1) * batch_size]], device, config.chunk)
+            b = batch(all_s, [items[i] for i in order[k * batch_size:(k + 1) * batch_size]], device, config.chunk,
+                      motion_dropout)
             with torch.autocast("cuda", dtype=torch.bfloat16, enabled=device == "cuda"):
                 x, y, _, fut = model(b["feats"], b["gp"], b["gc"], b["cp"], b["cc"], green=b.get("green"), dt=b["dt"],
                                      future=True)
