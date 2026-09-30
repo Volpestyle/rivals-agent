@@ -342,28 +342,46 @@ def dev_loss(model, sessions, pw):
 
 
 def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batch_size=32, lr=3e-4, wd=.05,
-        device="cuda", incumbent=None, log=print, onset_weight=1., chunk_weight=.5):
+        device="cuda", incumbent=None, log=print, onset_weight=1., chunk_weight=.5, expert_dirs=(),
+        expert_epochs=None, expert_share=None):
+    """expert_dirs: IDM-labelled expert sessions (policy.bc2.expert), used as extra training windows for the first
+    expert_epochs epochs (default: all; VPT-style pretrain-then-finetune when fewer). expert_share caps the
+    expert fraction of an epoch's windows. Selection, thresholds and pos_weight stay on James's data."""
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     torch.manual_seed(seed)
     load = lambda dirs: [Session(d, device) for d in dirs]
     train_s, dev_s, eval_s = load(train_dirs), load(dev_dirs), load(eval_dirs)
-    log(f"loaded {sum(s.n for s in train_s)} train steps, {sum(s.n for s in dev_s)} dev, {sum(s.n for s in eval_s)} eval")
+    expert_s = load(expert_dirs)
+    all_s = train_s + expert_s
+    expert_epochs = epochs if expert_epochs is None else expert_epochs
+    log(f"loaded {sum(s.n for s in train_s)} train steps, {sum(s.n for s in expert_s)} expert, "
+        f"{sum(s.n for s in dev_s)} dev, {sum(s.n for s in eval_s)} eval")
+
+    def epoch_items(epoch):
+        items = windows(all_s, gen, config.use_dt)
+        human = [w for w in items if w[0] < len(train_s)]
+        expert = [w for w in items if w[0] >= len(train_s)] if epoch < expert_epochs else []
+        if expert and expert_share is not None:
+            keep = int(len(human) * expert_share / (1 - expert_share))
+            expert = [expert[i] for i in torch.randperm(len(expert), generator=gen)[:keep].tolist()]
+        return human + expert
     pw = pos_weights(train_s)
     model = Policy2(config).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=wd)
     gen = torch.Generator().manual_seed(seed)
-    per_epoch = len(windows(train_s, gen, config.use_dt)) // batch_size
-    total = per_epoch * epochs
+    sizes = [len(epoch_items(e)) // batch_size for e in (0, epochs - 1)]
+    total = sizes[0] * expert_epochs + sizes[1] * (epochs - expert_epochs)
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda k: min(1, k / 300) * .5 * (1 + math.cos(math.pi * min(k, total) / total)))
     history, best = [], (math.inf, -1)
     for epoch in range(epochs):
         model.train()
-        items = windows(train_s, gen, config.use_dt)
+        items = epoch_items(epoch)
+        per_epoch = len(items) // batch_size
         order = torch.randperm(len(items), generator=gen).tolist()
         started, running = time.monotonic(), 0.
         for k in range(per_epoch):
-            b = batch(train_s, [items[i] for i in order[k * batch_size:(k + 1) * batch_size]], device, config.chunk)
+            b = batch(all_s, [items[i] for i in order[k * batch_size:(k + 1) * batch_size]], device, config.chunk)
             with torch.autocast("cuda", dtype=torch.bfloat16, enabled=device == "cuda"):
                 x, y, _, fut = model(b["feats"], b["gp"], b["gc"], b["cp"], b["cc"], green=b.get("green"), dt=b["dt"],
                                      future=True)
@@ -395,6 +413,8 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
             torch.save(payload, out / "selected.pt")
     torch.save(payload, out / "final.pt")
     report = {"config": config.as_dict(), "seed": seed, "epochs": epochs, "history": history, "selected_epoch": best[1],
+              "expert": {"sessions": [s.id for s in expert_s], "steps": sum(s.n for s in expert_s),
+                         "epochs": expert_epochs if expert_s else 0, "share": expert_share},
               "selection": "lowest dev loss (dev sessions only); eval sessions never used for selection"}
     live = [bool(x) for x in vocab.live_mask([10 ** 6] * vocab.N)]
     for tag, ep in (("selected", best[1]), ("final", epochs)):

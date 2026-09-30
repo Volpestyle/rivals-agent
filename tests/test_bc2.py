@@ -56,8 +56,9 @@ def test_tiny_fit_and_evaluate(tmp_path):
     dv = [make_session(feats, "c", seed=3)]
     config = bc2_model.Config(embed=16, motion=16, hidden=32, use_green=True, use_dt=True, chunk=4)
     report = bc2_train.fit(tr, dv, dv, tmp_path / "out", config=config,
-                           epochs=1, batch_size=4, device="cpu", log=lambda *_: None, onset_weight=3.)
-    assert report["selected_epoch"] == 1
+                           epochs=2, batch_size=4, device="cpu", log=lambda *_: None, onset_weight=3.,
+                           expert_dirs=[make_session(feats, "x", seed=4)], expert_epochs=1, expert_share=.5)
+    assert report["selected_epoch"] in (1, 2) and report["expert"]["steps"] == 300
     pooled = report["selected"]["eval_pooled"]
     assert 0 <= pooled["press_macro_f1"] <= 1
     assert pooled["yaw"]["zero_mae"] > 0 and pooled["yaw"]["steps"] > 0
