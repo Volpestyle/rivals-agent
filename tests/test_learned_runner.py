@@ -53,12 +53,14 @@ class Policy:
     def __init__(self, io, *, latency=.04, step=None):
         self.io, self.latency, self.output = io, latency, step or decision()
         self.resets, self.calls, self.closed, self.hook = 0, 0, False, None
+        self.capture_times = []
 
     def reset(self):
         self.resets += 1
 
-    def step(self, frame):
+    def step(self, frame, *, t=None):
         self.calls += 1
+        self.capture_times.append(t)
         self.io.t += self.latency
         if self.hook:
             self.hook()
@@ -140,6 +142,8 @@ def test_runner_uses_guarded_deadlines_and_records_predictions_actual_commands_a
     rows = f.log.rows
     assert rows[-1]['event'] == 'stop'
     decisions = {r['tick']:r for r in rows if r['event'] == 'decision'}
+    assert f.policy.capture_times[:len(decisions)] == [r['t'] for r in decisions.values()]
+    assert f.policy.capture_times[0] == .005  # capture, not inference completion
     assert all(r['size'] == [2560,1440] and r['masked'] == ['ultimate'] for r in decisions.values())
     for sent, pad, limits in f.io.calls:
         assert pad['buttons'] == ('LB',) and pad['rt'] == 1
@@ -221,6 +225,12 @@ def test_reader_or_inference_exception_releases_before_propagation():
     ['--dry','absent','--stub-policy','--max-s','nan'],
     ['--dry','absent','--stub-policy','--yaw-scale','nan'],
     ['--dry','absent','--stub-policy','--yaw-scale','2'],
+    ['--dry','absent','--stub-policy','--decision-hz','nan'],
+    ['--dry','absent','--stub-policy','--decision-hz','9'],
+    ['--dry','absent','--stub-policy','--decision-hz','31'],
+    ['--dry','absent','--stub-policy','--predecode-replay'],
+    ['--live','--policy-bundle','x','--game-pid','1','--camera-settings-match','alt-247-124',
+     '--predecode-replay','--async-policy'],
 ])
 def test_cli_invalid_live_and_bounds_never_attach(args,tmp_path,monkeypatch):
     monkeypatch.setattr(L,'_open_live_io',lambda *a: pytest.fail('must not attach'))
@@ -273,10 +283,14 @@ def test_cli_closes_pad_before_policy_or_recording_teardown_on_all_failures(fail
     f.io.close=close
     f.policy.close=lambda: order.append('policy')
     monkeypatch.setitem(sys.modules,'policy.live_policy',SimpleNamespace(LivePolicy=lambda *a,**k:f.policy))
-    def warm(percept,focus,takeover):
+    monkeypatch.setitem(sys.modules,'scripts.capture',
+                        SimpleNamespace(Capture=lambda *a:SimpleNamespace(grab=lambda:f.io.frame)))
+    def warm(percept,focus,takeover,*,capture):
         assert not f.io.calls
         if failure=='warmup': raise ValueError('warmup')
-        percept.wide(f.io.frame)
+        frame=capture.grab()
+        percept.wide(frame)
+        assert f.policy.capture_times[-1] is not None
         return {'kind':'test'}
     f.runner.percept.wide=lambda frame:[]
     monkeypatch.setattr(C,'warm_perception',warm)
@@ -314,14 +328,17 @@ def test_cli_closes_pad_before_policy_or_recording_teardown_on_all_failures(fail
         assert order.index('pad') < order.index('policy') < order.index('record')
 
 
-def test_async_latest_frame_queue_replaces_pending_job_and_closes_without_late_publication():
+@pytest.mark.parametrize('hz',[15.,30.])
+def test_async_latest_frame_queue_replaces_pending_job_and_closes_without_late_publication(hz):
     import threading
-    import time
     started, unblock, second = threading.Event(), threading.Event(), threading.Event()
     frames=[]
+    stamps=[]
+    clock=[1.]
     class Model:
-        def step(self,frame):
+        def step(self,frame,*,t=None):
             frames.append(frame)
+            stamps.append(t)
             if len(frames)==1:
                 started.set()
                 assert unblock.wait(1)
@@ -330,24 +347,30 @@ def test_async_latest_frame_queue_replaces_pending_job_and_closes_without_late_p
             return decision()
         def close(self): self.closed=True
     model=Model()
-    worker=R.LatestPolicy(model,time.perf_counter)
+    worker=R.LatestPolicy(model,lambda:clock[0],hz=hz)
     try:
-        worker.offer('first',time.perf_counter())
+        first_stamp=clock[0]
+        worker.offer('first',first_stamp)
         assert started.wait(1)
-        # Offer times remain valid and >= one trained step apart.
-        with worker.condition: worker.last=-math.inf
-        worker.offer('replaced',time.perf_counter())
-        with worker.condition: worker.last=-math.inf
-        worker.offer('latest',time.perf_counter())
+        clock[0]=1.02
+        worker.offer('too-soon-new-job',clock[0])
+        with worker.condition:
+            assert worker.job is None  # preserve the 30 Hz new-job gate
+        clock[0]=1.+1/hz+.005
+        worker.offer('replaced',clock[0])
+        # Replacement must stay fresh even inside the 30 Hz new-job gate.
+        clock[0]=latest_stamp=clock[0]+.01
+        worker.offer('latest',latest_stamp)
         unblock.set()
         assert second.wait(1)
         assert frames[:2]==['first','latest']
+        assert stamps[:2]==[first_stamp,latest_stamp]
     finally:
         unblock.set()
         assert worker.close()
     assert model.closed
     published=worker.poll()
-    worker.offer('after-close',time.perf_counter())
+    worker.offer('after-close',clock[0])
     assert worker.poll() is published
 
 
@@ -357,7 +380,7 @@ def test_async_model_error_is_propagated_but_model_teardown_waits_for_owner_clos
     failed=threading.Event()
     class Model:
         closed=False
-        def step(self,frame):
+        def step(self,frame,*,t=None):
             failed.set()
             raise OSError('model')
         def close(self): self.closed=True
@@ -370,3 +393,52 @@ def test_async_model_error_is_propagated_but_model_teardown_waits_for_owner_clos
     assert not model.closed
     with pytest.raises(OSError,match='model'): worker.poll()
     assert worker.close() and model.closed
+
+
+def test_decision_waits_for_worker_completion_before_another_blocking_capture():
+    f=setup()
+    class Worker:
+        latest=None
+        def poll(self): return self.latest
+        def offer(self,frame,stamp): self.job=(frame,stamp,decision(),stamp,stamp+.04)
+        def wait_after(self,stamp):
+            assert stamp is None
+            self.latest=self.job
+    f.runner.worker=Worker()
+    f.runner.sleep=lambda seconds:pytest.fail('completion notification replaces blind sleep')
+    frame,stamp,_,_,_=f.runner.decision()
+    assert frame is f.io.frame and stamp==f.io.t==.005  # only one acquisition
+
+
+def test_ram_replay_decodes_unique_frames_only_before_episode_and_reuses_after_warmup(tmp_path,monkeypatch):
+    cv2=pytest.importorskip('cv2')
+    source=tmp_path/'replay'
+    source.mkdir()
+    frame=(Path(__file__).parent/'fixtures/reentry/in-range.jpg').resolve()
+    (source/'frames.jsonl').write_text(''.join(json.dumps({'t':i/60,'file':str(frame)})+'\n'
+                                            for i in range(20)))
+    reads=[]
+    original=cv2.imread
+    def read(path):
+        reads.append(path)
+        return original(path)
+    monkeypatch.setattr(cv2,'imread',read)
+    io=R.ReplayIO(source,predecode=True)
+    assert len(reads)==1 and len(io.decoded)==1
+    first=io.next()[0]
+    assert io.decoded_bytes==first.nbytes
+    io.restart(realtime=True)
+    for _ in range(20):
+        assert io.next()[0] is first
+    assert io.next() is None and len(reads)==1
+    io.close()
+    assert io.pad==NEUTRAL
+
+
+@pytest.mark.parametrize('count,nbytes,match',[(257,1,'256 distinct'),(1,769*1024**2,'768 MiB')])
+def test_ram_replay_rejects_unbounded_input_before_episode(count,nbytes,match,monkeypatch):
+    source=SimpleNamespace(items=[(i,Path(str(i))) for i in range(count)],
+                           imread=lambda path: SimpleNamespace(nbytes=nbytes))
+    monkeypatch.setattr(L,'RunSource',lambda directory:source)
+    with pytest.raises(ValueError,match=match):
+        R.ReplayIO('fake',predecode=True)

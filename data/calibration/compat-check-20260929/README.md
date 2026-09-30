@@ -194,7 +194,7 @@ an ordinary whole-camera controller map.
 ## First learned-policy sitting (2026-09-30)
 
 **Private closed-loop test after compat run-05, not a demo (James/lead,
-2026-09-30).** The lead selected `bc2-bs8-hybrid`: BC2 camera with the old
+2026-09-30).** The lead selected `bc2-dt-s1-hybrid`: BC2 camera with the old
 buttons, whose held-out yaw now beats zero. These commands authorize no sitting
 themselves.
 
@@ -212,7 +212,7 @@ of 60 seconds with `--yaw-scale 0.5`. Each can take `-ObsVideo '<native MKV path
 to record the operator-supplied video path. Outputs are `learned-01-a/` and
 `learned-01-b/`, with separate stdout/stderr; existing attempts are refused.
 
-The bundle defaults to `D:/rivals-policy/bundles/bc2-bs8-hybrid` and can be changed
+The bundle defaults to `D:/rivals-policy/bundles/bc2-dt-s1-hybrid` and can be changed
 with `-PolicyBundle`. Real policy/readers/finder warm-up happens before attach,
 then the recurrent policy resets. Both compat run-05 and learned runs opt into
 one guarded attach opener: LY=0.25 for at most 50 ms, with no camera, trigger or
@@ -220,10 +220,15 @@ button, then neutral and a fresh range observation. This cancels the measured
 fresh-pad left drift before target acquisition or learned input. It is logged
 separately from the compatibility camera-pulse caps; their 2 s / 40-pulse caps
 remain unchanged. Inference uses one latest-frame worker;
-capture and guarded input remain on the control thread. Native frames at up to
+capture and guarded input remain on the control thread. Policy steps receive
+the original capture timestamp in seconds for frame-interval conditioning;
+camera decoding uses the bundle's mean decode. Native frames at up to
 10 Hz, per-tick predictions, raw/scaled yaw, masked actions, sent pad snapshots,
 request expiry/release times, inference/queue timing and the stop frame are
 retained alongside `result.json`. OBS remains the native session-video owner.
+Both launch modes cap new inference jobs at 20 Hz to leave time for camera
+execution inside the original 100 ms frame budget. Pending jobs are replaced
+with the latest fresh frame; the bundle is trained for intervals at 10–30 Hz.
 
 Yaw uses measured signed knots, capped at |rx|=0.45; A/B compares full and half
 learned yaw in this private test. Pitch goes through an explicitly **unmeasured**

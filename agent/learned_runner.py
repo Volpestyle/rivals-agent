@@ -88,8 +88,9 @@ class CameraPulses:
 
 class LatestPolicy:
     """One inference owner, one replaceable pending frame, no capture or pad IO."""
-    def __init__(self, policy, clock):
+    def __init__(self, policy, clock, *, hz=30.):
         self.policy, self.clock = policy, clock
+        self.period = 1 / hz
         self.condition = threading.Condition()
         self.job = self.latest = self.error = None
         self.done, self.last = False, -math.inf
@@ -98,7 +99,9 @@ class LatestPolicy:
 
     def offer(self, frame, stamp):
         with self.condition:
-            if self.done or stamp - self.last < STEP_S:
+            # Throttle new jobs, not replacement of a job already waiting for
+            # inference. Otherwise a 50 ms model starts a 20-30 ms old frame.
+            if self.done or (self.job is None and stamp - self.last < self.period):
                 return
             self.last = stamp
             self.job = (frame.copy() if hasattr(frame, 'copy') else frame, stamp)
@@ -109,6 +112,13 @@ class LatestPolicy:
             if self.error is not None:
                 raise self.error
             return self.latest
+
+    def wait_after(self, stamp):
+        # Spend the next capture interval waiting for inference completion,
+        # rather than entering another blocking capture before polling again.
+        with self.condition:
+            self.condition.wait_for(lambda: self.error is not None or self.done or
+                                    (self.latest is not None and self.latest[1] != stamp), timeout=.01)
 
     def _work(self):
         try:
@@ -122,11 +132,12 @@ class LatestPolicy:
                 started = self.clock()
                 if not 0 <= started - stamp <= FRESH_S:
                     continue
-                step = self.policy.step(frame)
+                step = self.policy.step(frame, t=stamp)
                 finished = self.clock()
                 with self.condition:
                     if not self.done:
                         self.latest = (frame, stamp, step, started, finished)
+                        self.condition.notify_all()
         except BaseException as e:
             with self.condition:
                 self.error = e
@@ -145,7 +156,7 @@ class LatestPolicy:
 
 
 class LearnedRunner:
-    def __init__(self, io, percept, guard, policy, deadline, *, log=None, sleep=time.sleep, threaded=False, yaw_scale=0.):
+    def __init__(self, io, percept, guard, policy, deadline, *, log=None, sleep=time.sleep, threaded=False, yaw_scale=0., decision_hz=30.):
         if type(yaw_scale) not in (int, float) or not math.isfinite(yaw_scale) or not 0 <= yaw_scale <= 1:
             raise ValueError('yaw-scale must be finite and in [0,1]')
         self.io, self.percept, self.guard, self.policy = io, percept, guard, policy
@@ -155,6 +166,9 @@ class LearnedRunner:
         self.last_frame, self.last_stamp, self.last_t, self.size = None, None, None, None
         self.threaded, self.worker, self.decision_t = threaded, None, None
         self.yaw_scale = yaw_scale
+        if type(decision_hz) not in (int, float) or not math.isfinite(decision_hz) or not 10 <= decision_hz <= 30:
+            raise ValueError('decision-hz must be finite and in [10,30]')
+        self.decision_hz = decision_hz
 
     def now(self):
         now = self.io.now()
@@ -194,9 +208,9 @@ class LearnedRunner:
             frame, stamp = self.observe()
             if self.worker is None:
                 started = self.now()
-                step = self.policy.step(frame)
+                step = self.policy.step(frame, t=stamp)
                 return frame, stamp, step, started, self.now()
-            self.sleep(.001)
+            self.worker.wait_after(self.decision_t)
 
     def write(self, row, frame=None):
         if self.log is not None:
@@ -219,7 +233,7 @@ class LearnedRunner:
             self.io.release()
             self.policy.reset()
             if self.threaded:
-                self.worker = LatestPolicy(self.policy, self.io.now)
+                self.worker = LatestPolicy(self.policy, self.io.now, hz=self.decision_hz)
             while True:
                 frame, stamp, step, started, finished = self.decision()
                 pad, active, masked = action_pad(step)
@@ -286,8 +300,29 @@ class LearnedRunner:
 
 class ReplayIO:
     """Recorded frames and simulated leases only; never imports or attaches a pad."""
-    def __init__(self, directory, *, realtime=False):
+    def __init__(self, directory, *, realtime=False, predecode=False):
         self.source = L.RunSource(directory)
+        self.decoded = {}
+        self.decoded_bytes = 0
+        if predecode:
+            paths = dict.fromkeys(path for _, path in self.source.items)
+            if len(paths) > 256:
+                raise ValueError('RAM replay is limited to 256 distinct frames')
+            for path in paths:
+                frame = self.source.imread(str(path))
+                if frame is None:
+                    raise ValueError(f'RAM replay frame missing: {path}')
+                self.decoded_bytes += frame.nbytes
+                if self.decoded_bytes > 768 * 1024**2:
+                    raise ValueError('RAM replay exceeds 768 MiB; use fewer frames')
+                frame.flags.writeable = False
+                self.decoded[str(path)] = frame
+            self.source.imread = self.decoded.get  # no disk decode during the episode
+        self.restart(realtime=realtime)
+
+    def restart(self, *, realtime=False):
+        """Reset episode clock/history after warm-up; keep bounded decoded pixels."""
+        self.source.i = 0
         self.realtime = realtime
         self.offset, self.started = 0., time.perf_counter()
         self.t0, self.origin, self.pad, self.calls = 0., None, dict(NEUTRAL), []
@@ -364,7 +399,7 @@ class StubPolicy:
     def reset(self):
         self.index = 0
 
-    def step(self, frame):
+    def step(self, frame, *, t=None):
         self.index += 1
         return SimpleNamespace(held={'spider_power': True, 'move_forward': self.index % 2 == 0},
                                press={'jump': self.index % 3 == 0, 'ultimate': True}, release={},
@@ -392,7 +427,10 @@ def main(argv=None):
     ap.add_argument('--policy-bundle', type=Path)
     ap.add_argument('--stub-policy', action='store_true', help='dry only; never available to live mode')
     ap.add_argument('--async-policy', action='store_true', help='exercise the live inference worker in dry mode')
+    ap.add_argument('--predecode-replay', action='store_true',
+                    help='dry async only; decode up to 256 unique frames / 768 MiB before the episode')
     ap.add_argument('--device', choices=('cuda', 'cpu'), default='cuda')
+    ap.add_argument('--decision-hz', type=float, default=30., help='maximum new inference jobs per second [10,30]')
     ap.add_argument('--camera-settings-match')
     ap.add_argument('--game-pid', type=int)
     ap.add_argument('--max-s', type=float, default=60.)
@@ -407,8 +445,12 @@ def main(argv=None):
         ap.error('save-fps must be in (0,30]')
     if not math.isfinite(a.yaw_scale) or not 0 <= a.yaw_scale <= 1:
         ap.error('yaw-scale must be finite and in [0,1]')
+    if not math.isfinite(a.decision_hz) or not 10 <= a.decision_hz <= 30:
+        ap.error('decision-hz must be finite and in [10,30]')
     if a.live and (a.stub_policy or a.game_pid is None or a.camera_settings_match != 'alt-247-124'):
         ap.error('live requires a real policy, game PID and explicit alt-247-124 settings match')
+    if a.predecode_replay and (a.live or not a.async_policy):
+        ap.error('predecode-replay requires dry async mode')
     if not a.stub_policy and a.policy_bundle is None:
         ap.error('policy-bundle required')
     if a.out.exists():
@@ -416,7 +458,7 @@ def main(argv=None):
     policy = source = safety = log = runner = None
     result = {'result': 'exception', 'live': a.live, 'policy_bundle': str(a.policy_bundle), 'max_s': a.max_s,
               'obs_video': a.obs_video, 'recording': 'native frames + per-tick JSONL; session video owned by OBS',
-              'yaw_scale': a.yaw_scale}
+              'yaw_scale': a.yaw_scale, 'decision_hz': a.decision_hz}
     try:
         CameraPulses()  # parse the map before hardware
         if a.live:
@@ -433,13 +475,22 @@ def main(argv=None):
             policy = LivePolicy(a.policy_bundle, device=a.device)
         if a.live:
             from .camera_compat import warm_perception
+            from scripts.capture import Capture
+            warm_capture = Capture('dxcam')
+            warm_stamp = None
+            grab = warm_capture.grab
+            def warm_grab():
+                nonlocal warm_stamp
+                warm_stamp = time.perf_counter()
+                return grab()
+            warm_capture.grab = warm_grab
             def warm_finder(frame):
                 detections = percept.wide(frame)
-                policy.step(frame)
+                policy.step(frame, t=warm_stamp)
                 return detections
             warm_readers = SimpleNamespace(idle=percept.idle, in_range=percept.in_range,
                                            size=percept.size, wide=warm_finder)
-            result['warmup'] = warm_perception(warm_readers, focus, takeover)
+            result['warmup'] = warm_perception(warm_readers, focus, takeover, capture=warm_capture)
             policy.reset()  # warm-up observations are never episode history or input
             safety = L.LiveSafety(focus, takeover, time.perf_counter() + a.max_s)
             log = L.RunLog(a.out, save_fps=a.save_fps)
@@ -448,7 +499,7 @@ def main(argv=None):
             guard = safety.proof(percept.in_range, percept.idle, range_required=True)
             deadline, sleep = safety.deadline - source.t0, time.sleep
         else:
-            source = ReplayIO(a.dry)
+            source = ReplayIO(a.dry, predecode=a.predecode_replay)
             guard = lambda f: percept.in_range(f) is True and percept.idle(f) is False
             # Same cold-model preparation as live, using only recorded pixels.
             policy.reset()
@@ -459,15 +510,18 @@ def main(argv=None):
                     break
                 if not guard(obs[0]):
                     raise ValueError('range/idle during dry warmup refused')
-                policy.step(obs[0])
+                policy.step(obs[0].copy(), t=obs[1])
                 warmed += 1
             result['warmup'] = {'kind': 'recorded_frames_no_input', 'iterations': warmed}
             source.close()
-            source = ReplayIO(a.dry, realtime=a.async_policy)
+            source.restart(realtime=a.async_policy)
+            result['replay'] = {'predecoded_frames': len(source.decoded),
+                                'predecoded_bytes': source.decoded_bytes,
+                                'simulated_capture_hz': 60 if a.async_policy else None}
             deadline, sleep = a.max_s, source.sleep
             log = L.RunLog(a.out, save_fps=a.save_fps)
         runner = LearnedRunner(source, percept, guard, policy, deadline, log=log, sleep=sleep,
-                               threaded=a.live or a.async_policy, yaw_scale=a.yaw_scale)
+                               threaded=a.live or a.async_policy, yaw_scale=a.yaw_scale, decision_hz=a.decision_hz)
         result.update(runner.run())
         if safety is not None and safety.status['stop_reason']:
             result['result'] = safety.status['stop_reason']
