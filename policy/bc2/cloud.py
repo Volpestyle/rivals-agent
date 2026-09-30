@@ -64,7 +64,7 @@ def extract_session(session: str, cache_root: str = "/src/caches", steps_root: s
               volumes={"/out": out})
 def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_motion: bool = True,
         eval_sessions: list = None, batch_size: int = 32, lr: float = 3e-4, wd: float = .05,
-        feat_dropout: float = .3, hidden: int = 512):
+        feat_dropout: float = .3, hidden: int = 512, use_green: bool = False):
     _setup()
     import shutil
     from policy.bc2 import model, train
@@ -74,7 +74,8 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
     for s in TRAIN + DEV + evals:
         shutil.copytree(root / s, local / s)
     run = Path("/tmp/run") / name
-    config = model.Config(use_feats=use_feats, use_motion=use_motion, feat_dropout=feat_dropout, hidden=hidden)
+    config = model.Config(use_feats=use_feats, use_motion=use_motion, feat_dropout=feat_dropout, hidden=hidden,
+                          use_green=use_green)
     report = train.fit([local / s for s in TRAIN], [local / s for s in DEV], [local / s for s in evals], run,
                        config=config, seed=seed, epochs=epochs, batch_size=batch_size, lr=lr, wd=wd,
                        incumbent=train.load_incumbent("/out/assets/incumbent/epoch-26.pt",
@@ -86,6 +87,26 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
     shutil.copytree(run, final)
     out.commit()
     return {"name": name, "selected_epoch": report["selected_epoch"]}
+
+
+@app.function(image=image, cpu=8, memory=16384, timeout=3600, retries=0,
+              volumes={"/src": src.read_only(), "/out": out})
+def green_session(session: str):
+    _setup()
+    import torch
+    from policy.bc2 import features
+    torch.set_num_threads(8)
+    cache_root = "/out/val/caches" if session in VAL else "/src/caches"
+    n = features.add_green(f"{cache_root}/{session}", f"/out/features/{session}")
+    out.commit()
+    return session, n
+
+
+@app.local_entrypoint()
+def green(sessions: str = ""):
+    names = sessions.split(",") if sessions else TRAIN + DEV + VAL
+    for result in green_session.map(names, return_exceptions=True):
+        print(result, flush=True)
 
 
 @app.local_entrypoint()

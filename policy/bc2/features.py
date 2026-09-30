@@ -15,7 +15,7 @@ import torch
 from torch.nn import functional as F
 
 from policy.bc2 import data
-from policy.bc2.model import FEAT, gray_small, motion_scalars
+from policy.bc2.model import FEAT, GREEN_DIM, gray_small, green_profile, motion_scalars
 from policy.range_bc import cache, steps
 
 
@@ -32,11 +32,14 @@ def load_tower(vision_path, config_path, device):
 
 
 def tower_features(tower, rgb_u8):
-    """[B, H, W, 3] uint8 RGB view -> [B, FEAT] float16, the training/live graph."""
+    """[B, H, W, 3] uint8 RGB view (or a list of such views of any sizes, batched into one tower call)
+    -> [B, FEAT] float16, the training/live graph."""
     from policy.range_bc.explore_encoder import pool_tokens
-    x = rgb_u8.permute(0, 3, 1, 2).float()
-    x = F.interpolate(x, (256, 256), mode="bilinear", align_corners=False, antialias=True)
-    return pool_tokens(tower(pixel_values=(x / 127.5 - 1).to(torch.bfloat16)).last_hidden_state).to(torch.float16)
+    views = rgb_u8 if isinstance(rgb_u8, (list, tuple)) else [rgb_u8]
+    x = torch.cat([F.interpolate(v.permute(0, 3, 1, 2).float(), (256, 256), mode="bilinear", align_corners=False,
+                                 antialias=True) for v in views])
+    dtype = next(tower.parameters()).dtype
+    return pool_tokens(tower(pixel_values=(x / 127.5 - 1).to(dtype)).last_hidden_state).to(torch.float16)
 
 
 @torch.no_grad()
@@ -50,6 +53,7 @@ def extract(steps_path, cache_dir, out_dir, tower, *, device="cuda", batch=128, 
     feats = np.lib.format.open_memmap(out / "feats.npy", "w+", np.float16, (n, 2, FEAT))
     gray_g = np.lib.format.open_memmap(out / "gray_g.npy", "w+", np.uint8, (n, 72, 128))
     gray_c = np.lib.format.open_memmap(out / "gray_c.npy", "w+", np.uint8, (n, 64, 64))
+    green = np.lib.format.open_memmap(out / "green.npy", "w+", np.float16, (n, GREEN_DIM))
     started = time.monotonic()
     for s in range(0, n, batch):
         idx = arr["frame"][s:s + batch]
@@ -59,9 +63,10 @@ def extract(steps_path, cache_dir, out_dir, tower, *, device="cuda", batch=128, 
         feats[s:s + batch, 1] = tower_features(tower, cv).cpu().numpy()
         gray_g[s:s + batch] = gray_small(gv).cpu().numpy()
         gray_c[s:s + batch] = gray_small(cv).cpu().numpy()
+        green[s:s + batch] = green_profile(gv).cpu().numpy()
         if s // batch % 50 == 0:
             log(f"{session.session_id}: {s + len(idx)}/{n} steps, {time.monotonic() - started:.0f} s")
-    for a in (feats, gray_g, gray_c):
+    for a in (feats, gray_g, gray_c, green):
         a.flush()
     np.savez(out / "targets.npz", **arr)
     leak = lag_check(arr, np.asarray(gray_g), np.asarray(gray_c), device)
@@ -98,3 +103,17 @@ def lag_check(arr, gray_g, gray_c, device):
             row[name + "~pitch"] = float(np.corrcoef(s[k][okp, col], p[okp])[0, 1])
         out[f"lag{lag:+d}"] = row
     return out
+
+
+def add_green(cache_dir, feature_dir, *, batch=2048):
+    """green.npy for an already extracted session, from its cache's global view and targets.npz frame indices."""
+    import json as _json
+    feature_dir = Path(feature_dir)
+    frames = np.load(feature_dir / "targets.npz")["frame"]
+    n_cache = _json.loads((Path(cache_dir) / "cache.json").read_text())["frames"]
+    g = np.memmap(Path(cache_dir) / "global.u8", np.uint8, "r", shape=(n_cache, 144, 256, 3))
+    out = np.lib.format.open_memmap(feature_dir / "green.npy", "w+", np.float16, (len(frames), GREEN_DIM))
+    for s in range(0, len(frames), batch):
+        out[s:s + batch] = green_profile(torch.from_numpy(np.ascontiguousarray(g[frames[s:s + batch]]))).numpy()
+    out.flush()
+    return len(frames)

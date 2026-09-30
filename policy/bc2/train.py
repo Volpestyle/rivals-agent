@@ -36,6 +36,8 @@ class Session:
         self.feats = torch.from_numpy(np.load(root / "feats.npy")).to(dev)
         self.gray_g = torch.from_numpy(np.load(root / "gray_g.npy")).to(dev)
         self.gray_c = torch.from_numpy(np.load(root / "gray_c.npy")).to(dev)
+        green = root / "green.npy"
+        self.green = torch.from_numpy(np.load(green)).to(dev) if green.exists() else None
         prev = np.arange(n) - 1
         prev[self.t["run_start"]] = np.flatnonzero(self.t["run_start"])
         self.prev = torch.from_numpy(np.maximum(prev, 0)).to(dev)
@@ -51,7 +53,8 @@ class Session:
     def inputs(self, idx):
         """idx LongTensor [B, T] of rows -> model inputs."""
         p = self.prev[idx]
-        return self.feats[idx], self.gray_g[p], self.gray_g[idx], self.gray_c[p], self.gray_c[idx]
+        return (self.feats[idx], self.gray_g[p], self.gray_g[idx], self.gray_c[p], self.gray_c[idx], None,
+                None if self.green is None else self.green[idx])
 
 
 def windows(sessions, generator):
@@ -69,20 +72,22 @@ def windows(sessions, generator):
 
 def batch(sessions, items, device):
     t = max(n for _, _, n, _ in items)
-    parts = {k: [] for k in ("feats", "gp", "gc", "cp", "cc", "act", "act_mask", "camera", "camera_mask")}
+    parts = {k: [] for k in ("feats", "gp", "gc", "cp", "cc", "green", "act", "act_mask", "camera", "camera_mask")}
     for si, st, n, at_start in items:
         s = sessions[si]
         idx = torch.arange(st, st + t, device=device).clamp_max(s.n - 1)
         inputs = s.inputs(idx[None])
-        for k, v in zip(("feats", "gp", "gc", "cp", "cc"), inputs):
+        for k, v in zip(("feats", "gp", "gc", "cp", "cc"), inputs[:5]):
             parts[k].append(v[0])
+        if inputs[6] is not None:
+            parts["green"].append(inputs[6][0])
         keep = torch.zeros(t, dtype=torch.bool, device=device)
         keep[(0 if at_start else BURN_IN):n] = True
         parts["act"].append(s.act[idx])
         parts["act_mask"].append(s.act_mask[idx] & keep[:, None, None])
         parts["camera"].append(s.cam[idx])
         parts["camera_mask"].append(s.cam_mask[idx] & keep[:, None])
-    return {k: torch.stack(v) for k, v in parts.items()}
+    return {k: torch.stack(v) for k, v in parts.items() if v}
 
 
 def pos_weights(sessions):
@@ -106,7 +111,8 @@ def predict(model, s, *, incumbent=False, chunk=512):
                     prev = torch.zeros(1, idx.shape[1], model.hist[0].in_features, device=f.device)
                     x, y, state = model(f[:, :, 0], f[:, :, 1], None, prev, state)
                 else:
-                    x, y, state = model(*s.inputs(idx), state)
+                    inp = s.inputs(idx)
+                    x, y, state = model(*inp[:5], state, inp[6])
             acts[idx[0]], cams[idx[0]] = torch.sigmoid(x[0].float()), torch.softmax(y[0].float(), -1)
     return acts, cams
 
@@ -283,7 +289,7 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
         for k in range(per_epoch):
             b = batch(train_s, [items[i] for i in order[k * batch_size:(k + 1) * batch_size]], device)
             with torch.autocast("cuda", dtype=torch.bfloat16, enabled=device == "cuda"):
-                x, y, _ = model(b["feats"], b["gp"], b["gc"], b["cp"], b["cc"])
+                x, y, _ = model(b["feats"], b["gp"], b["gc"], b["cp"], b["cc"], green=b.get("green"))
             terms = rtrain.loss_terms(x.float(), y.float(), b, pw)
             loss = sum(terms.values())
             opt.zero_grad(set_to_none=True)

@@ -29,6 +29,41 @@ def gray_small(rgb_u8):
     return y.round().clamp(0, 255).to(torch.uint8)
 
 
+GREEN_BAND = (54, 70, 90, 120)     # perception.outline.GREEN: OpenCV hue 0-180, saturation and value minima
+GREEN_DEAD = ((0.00, 0.83, 1.00, 1.00), (0.86, 0.00, 1.00, 0.32), (0.00, 0.00, 0.26, 0.20),
+              (0.27, 0.39, 0.47, 0.90))   # HUD strip, fps/ping readout, key hints, the hero (perception.outline)
+GREEN_COLS, GREEN_ROWS = 32, 16
+GREEN_DIM = GREEN_COLS + GREEN_ROWS + 3
+
+
+def green_profile(rgb_u8):
+    """Enemy-colour marks (nameplate bars, outlines) in the global 144x256 RGB view -> [N, GREEN_DIM]:
+    log column and row histograms of masked pixels, total mass, mass-weighted bearing and the bearing of the
+    marked column nearest the crosshair (both in [-1, 1] of half-width; 0 and a zero mass when nothing is found)."""
+    x = rgb_u8.float()
+    r, g, b = x[..., 0], x[..., 1], x[..., 2]
+    mx, mn = x.max(-1).values, x.min(-1).values
+    d = (mx - mn).clamp_min(1e-6)
+    hue = torch.where(mx == r, ((g - b) / d) % 6, torch.where(mx == g, (b - r) / d + 2, (r - g) / d + 4)) * 30
+    sat = torch.where(mx > 0, 255 * (mx - mn) / mx.clamp_min(1e-6), torch.zeros_like(mx))
+    lo, hi, smin, vmin = GREEN_BAND
+    mask = (hue >= lo) & (hue <= hi) & (sat > smin) & (mx > vmin) & (mx - mn > 0)
+    n, h, w = mask.shape
+    for x0, y0, x1, y1 in GREEN_DEAD:
+        mask[:, int(y0 * h):int(y1 * h), int(x0 * w):int(x1 * w)] = False
+    m = mask.float()
+    cols = m.reshape(n, h, GREEN_COLS, w // GREEN_COLS).sum((1, 3))
+    rows = m.reshape(n, GREEN_ROWS, h // GREEN_ROWS, w).sum((2, 3)) if h % GREEN_ROWS == 0 else \
+        F.adaptive_avg_pool1d(m.sum(2)[:, None], GREEN_ROWS)[:, 0] * (h / GREEN_ROWS)
+    mass = cols.sum(1)
+    centres = (torch.arange(GREEN_COLS, device=m.device).float() + .5) / GREEN_COLS * 2 - 1
+    bearing = (cols * centres).sum(1) / mass.clamp_min(1)
+    near = torch.where(cols > 0, centres.abs().expand_as(cols), torch.full_like(cols, 9.)).argmin(1)
+    nearest = torch.where(mass > 0, centres[near], torch.zeros_like(mass))
+    return torch.cat((torch.log1p(cols), torch.log1p(rows), torch.log1p(mass)[:, None], bearing[:, None],
+                      nearest[:, None]), 1)
+
+
 def phase_corr(prev, cur):
     """Integer+parabolic sub-pixel shift of cur relative to prev, [N, H, W] float -> [N, 3] (dx, dy, peak).
     dx, dy are in pixels of the given image; peak is the normalized correlation height (confidence)."""
@@ -89,6 +124,7 @@ class Config:
     feat_dropout: float = .3
     use_feats: bool = True
     use_motion: bool = True
+    use_green: bool = False
 
     def as_dict(self):
         return asdict(self)
@@ -107,12 +143,15 @@ class Policy2(nn.Module):
             self.mot_g, self.mot_c = PairCNN(GRAY_G, c.motion), PairCNN(GRAY_C, c.motion)
             self.mot_s = nn.Sequential(nn.Linear(6, 64), nn.GELU())
             width += 2 * c.motion + 64
+        if c.use_green:
+            self.green = nn.Sequential(nn.Linear(GREEN_DIM, 64), nn.GELU())
+            width += 64
         self.norm = nn.LayerNorm(width)
         self.core = nn.LSTM(width, c.hidden, num_layers=c.layers, batch_first=True)
         self.actions = nn.Linear(c.hidden, 3 * vocab.N)
         self.camera = nn.Linear(c.hidden, 2 * vocab.CAMERA_CLASSES)
 
-    def step_inputs(self, feats, gp, gc, cp, cc):
+    def step_inputs(self, feats, gp, gc, cp, cc, green=None):
         """Per-step features [B, T, D]. feats [B, T, 2, FEAT]; gray pairs uint8 [B, T, H, W]."""
         b, t = gc.shape[:2]
         parts = []
@@ -126,10 +165,12 @@ class Policy2(nn.Module):
             parts += [self.mot_g(flat(gp), flat(gc)).reshape(b, t, -1),
                       self.mot_c(flat(cp), flat(cc)).reshape(b, t, -1),
                       self.mot_s(s).reshape(b, t, -1)]
+        if c.use_green:
+            parts.append(self.green(green.float()))
         return self.norm(torch.cat(parts, -1))
 
-    def forward(self, feats, gp, gc, cp, cc, state=None):
-        x = self.step_inputs(feats, gp, gc, cp, cc)
+    def forward(self, feats, gp, gc, cp, cc, state=None, green=None):
+        x = self.step_inputs(feats, gp, gc, cp, cc, green)
         out, state = self.core(x, state)
         b, t = out.shape[:2]
         return (self.actions(out).reshape(b, t, 3, vocab.N),

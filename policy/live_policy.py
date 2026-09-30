@@ -208,12 +208,16 @@ class LivePolicy:
         from policy.bc2.model import gray_small
         with torch.inference_mode():
             rgb = [v.permute(0, 2, 3, 1).to(torch.uint8) for v in self._views(frame)]
-            feats = torch.stack([tower_features(self.tower, v)[0] for v in rgb])[None, None]
+            feats = tower_features(self.tower, rgb)[None, None]      # both views in one tower batch
             gray = [gray_small(v) for v in rgb]
             prev = self.gray_prev or gray
+            green = None
+            if self.model.config.use_green:
+                from policy.bc2.model import green_profile
+                green = green_profile(rgb[0]).to(torch.float16)[None]
             with torch.autocast("cuda", dtype=torch.bfloat16):
                 acts, cams, self.state = self.model(feats, prev[0][None], gray[0][None], prev[1][None],
-                                                    gray[1][None], self.state)
+                                                    gray[1][None], self.state, green)
             self.gray_prev = gray
             acts, cams = acts.float(), cams.float()
             if self.buttons is not None:          # hybrid: incumbent action head on the same tower features

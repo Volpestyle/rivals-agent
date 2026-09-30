@@ -19,6 +19,13 @@ def test_phase_corr_recovers_shift():
     assert round(dx) == -5 and round(dy) == 2 and peak > .1
 
 
+def test_green_profile_finds_bar_bearing():
+    view = torch.zeros(1, 144, 256, 3, dtype=torch.uint8)
+    view[0, 40:42, 180:200] = torch.tensor([64, 175, 88], dtype=torch.uint8)      # an in-game green bar, right
+    out = bc2_model.green_profile(view)[0]
+    assert out[-3].expm1() > 30 and 0.4 < float(out[-2]) < 0.6 and 0.3 < float(out[-1]) < 0.6
+
+
 def make_session(root, sid, n=300, seed=0):
     rng = np.random.default_rng(seed)
     d = root / sid
@@ -26,6 +33,7 @@ def make_session(root, sid, n=300, seed=0):
     np.save(d / "feats.npy", rng.standard_normal((n, 2, bc2_model.FEAT)).astype(np.float16))
     np.save(d / "gray_g.npy", rng.integers(0, 255, (n, 72, 128), dtype=np.uint8))
     np.save(d / "gray_c.npy", rng.integers(0, 255, (n, 64, 64), dtype=np.uint8))
+    np.save(d / "green.npy", rng.standard_normal((n, bc2_model.GREEN_DIM)).astype(np.float16))
     act = np.zeros((n, 3, vocab.N), np.uint8)
     act[::10, 1, vocab.INDEX["jump"]] = 1
     act[::10, 2, vocab.INDEX["jump"]] = 1
@@ -46,7 +54,8 @@ def test_tiny_fit_and_evaluate(tmp_path):
     feats.mkdir()
     tr = [make_session(feats, "a", seed=1), make_session(feats, "b", seed=2)]
     dv = [make_session(feats, "c", seed=3)]
-    report = bc2_train.fit(tr, dv, dv, tmp_path / "out", config=bc2_model.Config(embed=16, motion=16, hidden=32),
+    config = bc2_model.Config(embed=16, motion=16, hidden=32, use_green=True)
+    report = bc2_train.fit(tr, dv, dv, tmp_path / "out", config=config,
                            epochs=1, batch_size=4, device="cpu", log=lambda *_: None)
     assert report["selected_epoch"] == 1
     pooled = report["selected"]["eval_pooled"]
