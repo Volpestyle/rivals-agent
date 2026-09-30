@@ -90,7 +90,8 @@ def test_returns_decay_and_weights_have_mean_one():
 
 @pytest.mark.skipif(not (RUN / "frames.jsonl").exists(), reason="retained learned-runner run not present")
 def test_targets_from_a_real_learned_run():
-    rows, result = data.decisions(RUN)
+    rows, saved, result = data.decisions(RUN)
+    assert len(saved) >= len(rows) and all(a["t"] <= b["t"] for a, b in zip(saved, saved[1:]))
     live = {"move_forward", "jump", "spider_power", "web_cluster"}
     act, known, cam, cam_known = data.targets(rows, live, yaw_enabled=True)
     ready = np.array([r.get("disposition") == "ready" for r in rows])
@@ -194,3 +195,8 @@ def test_no_options_and_zero_temperature_is_still_the_plain_decode():
     pol = explore.ExploringPolicy(base, temperature=0., option_rate_hz=0.)
     pol.reset()
     assert pol.step(None, t=0.).held == base.step(None).held
+
+
+def test_guard_frame_rewards_are_credited_to_the_preceding_decision():
+    r = data.credit([0.05, 0.12, 0.31, 0.9], [1., 0., 10., 1.], [0.0, 0.1, 0.3])
+    assert list(r) == [1., 0., 11.]          # 0.12 -> decision 0.1; 0.31 and 0.9 -> decision 0.3

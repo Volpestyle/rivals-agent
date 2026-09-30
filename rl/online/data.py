@@ -19,10 +19,16 @@ STEP_S = 1 / 30
 
 
 def decisions(run_dir):
+    """(decision rows with a retained frame, every row with a retained frame in time order, result.json).
+
+    The runner retains frames on decision rows AND on 'guard' rows (fresh proofs during camera pulses), about a third
+    of them. Rewards must read all of them: a hit marker can be visible only on a guard frame (rl-sitting-20260930-01
+    episode 1, frame 000086). Targets stay on decision rows, where the executed action is recorded."""
     rows = [json.loads(line) for line in open(Path(run_dir) / "frames.jsonl", encoding="utf-8") if line.strip()]
-    kept = [r for r in rows if r.get("event") == "decision" and r.get("file")]
+    saved = sorted((r for r in rows if r.get("file") and "t" in r), key=lambda r: r["t"])
+    kept = [r for r in saved if r.get("event") == "decision"]
     result = json.loads((Path(run_dir) / "result.json").read_text()) if (Path(run_dir) / "result.json").exists() else {}
-    return kept, result
+    return kept, saved, result
 
 
 def targets(rows, live_names, yaw_enabled):
@@ -45,8 +51,17 @@ def targets(rows, live_names, yaw_enabled):
     return act, known, cam, cam_known
 
 
+def credit(event_times, event_rewards, decision_times):
+    """Reward per decision: each frame's reward goes to the latest decision at or before it (the first decision if
+    it precedes them all)."""
+    out = np.zeros(len(decision_times))
+    idx = np.searchsorted(np.asarray(decision_times, float), np.asarray(event_times, float), side="right") - 1
+    np.add.at(out, np.clip(idx, 0, max(0, len(decision_times) - 1)), event_rewards)
+    return out
+
+
 def rewards(frames_and_times, weights=None):
-    """Per-row reward and event flags from the pixel readers (rl.rewards), in row order."""
+    """Per-frame reward and event flags from the pixel readers (rl.rewards), in time order."""
     from rl.rewards import RewardTracker, Weights, hit_marker, ko_marker, own_hp
     tracker = RewardTracker(weights or Weights())
     r = np.zeros(len(frames_and_times))
@@ -100,14 +115,18 @@ def load_frames(run_dir, rows):
 
 def episode(run_dir, live_names, tower=None, device="cpu", weights=None):
     """Everything the update needs from one episode, plus its KO/hit counts and duration."""
-    rows, result = decisions(run_dir)
+    rows, saved, result = decisions(run_dir)
     if not rows:
         return None
     frames = load_frames(run_dir, rows)
     times = [float(r["t"]) for r in rows]
     yaw_enabled = float(result.get("yaw_scale") or 0.) > 0
     act, known, cam, cam_known = targets(rows, live_names, yaw_enabled)
-    r, events = rewards(list(zip(frames, times)), weights)
+    all_frames = frames if len(saved) == len(rows) else load_frames(run_dir, saved)
+    all_times = [float(r["t"]) for r in saved]
+    per_frame, events = rewards(list(zip(all_frames, all_times)), weights)
+    r = credit(all_times, per_frame, times)
+    events["frames_read"] = len(saved)
     out = {"run": str(run_dir), "t": np.array(times), "dt": intervals(times), "act": act, "act_known": known,
            "cam_class": cam, "cam_known": cam_known, "reward": r, "events": events,
            "seconds": times[-1] - times[0] if len(times) > 1 else 0., "result": result.get("result")}
