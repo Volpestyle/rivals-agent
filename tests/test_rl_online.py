@@ -218,7 +218,7 @@ def test_after_episode_only_a_pixel_confirmed_death_continues_and_safety_stops_e
                     reason="first live RL sitting not present")
 def test_the_live_fall_is_seen_on_the_last_frame_and_stop_png():
     e = data.episode("data/calibration/rl-sitting-20260930-01/ep-005-rl", {"jump"})
-    assert e["events"]["death"] == 1 and e["events"]["hit"] == 1
+    assert e["events"]["death"] == 1 and e["events"]["hit"] == 0     # the 000052 "hit" was water foam (HIT_RUN 6)
 
 
 @pytest.mark.skipif(not (RUN / "frames.jsonl").exists(), reason="retained learned-runner run not present")

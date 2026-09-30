@@ -26,7 +26,8 @@ HIT_R = (8, 68)         # radii searched along each diagonal, 1440p px
 HIT_OFF = 10            # perpendicular offset of the two side samples, 1440p px
 HIT_RIDGE = 35          # grey levels brighter than the brighter side sample
 HIT_FLOOR = 150         # min-channel floor: the strokes are white or near-white
-HIT_RUN = 6             # consecutive ridge samples that make a stroke, 1440p px
+HIT_RUN = 10            # consecutive ridge samples that make a stroke, 1440p px. 6 fired on water foam in a live
+                        # fall (rl-sitting-20260930-01 ep 5, arms 6/2/7/7); 10 keeps P 1.00, R 0.969 on the 900 labels
 HIT_ARMS = 3            # strokes needed out of four
 DIAGONALS = ((1, 1), (1, -1), (-1, 1), (-1, -1))
 
