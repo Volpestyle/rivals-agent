@@ -42,7 +42,8 @@ class ExploringPolicy:
         self.rng = random.Random(seed)
         self.log = open(log_path, "w", encoding="utf-8", buffering=1) if log_path else None
         self.episode = 0
-        self.prev_exec = None               # set by reset(); the runner resets before its first step
+        # The live runner's warm-up calls step() before reset() (agent/learned_runner.py warm_finder): start from no holds.
+        self.prev_exec = [0] * len(base.names)
 
     def __getattr__(self, name):                # anything else the runner reads comes from the base policy
         return getattr(self.base, name)

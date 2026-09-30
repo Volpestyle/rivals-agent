@@ -147,3 +147,20 @@ def test_write_bundle_points_at_base_tower_files(tmp_path):
     from policy.bc2.model import Config, Policy2
     Policy2(Config(**payload["config"])).load_state_dict(payload["model"])
     assert spec["files"]["checkpoint"]["sha256"] == update._sha256(out / "selected.pt")
+
+
+def test_step_before_reset_works_like_the_live_warmup():
+    base = FakeBase(.45)
+    base.reset()                            # the base LivePolicy resets itself in __init__
+    pol = explore.ExploringPolicy(base, temperature=.5, seed=2)
+    pol.step(None)                          # learned_runner's warm-up steps before policy.reset()
+    pol.reset()
+    assert isinstance(pol.step(None).held["move_forward"], bool)
+
+
+def test_curve_plot_falls_back_to_cv2(tmp_path):
+    pytest.importorskip("cv2")
+    from rl.online import sitting
+    curve = [{"episode": 0, "arm": "bc", "kos_per_min": 2.}, {"episode": 1, "arm": "rl", "kos_per_min": 3.}]
+    sitting._plot_cv2(curve, tmp_path / "c.png")
+    assert (tmp_path / "c.png").stat().st_size > 1000

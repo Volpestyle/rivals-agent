@@ -38,13 +38,17 @@ def episode_command(a, index, arm, bundle, out):
 
 
 def plot(curve, path):
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
+    """KOs/min per episode, frozen BC grey and RL blue. matplotlib if present, else a plain cv2 chart."""
+    try:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+    except ImportError:
+        return _plot_cv2(curve, path)
     fig, ax = plt.subplots(figsize=(7, 3.5), dpi=120)
     for arm, colour in (("bc", "#888888"), ("rl", "#1f77b4")):
-        xs = [c["episode"] for c in curve if c["arm"] == arm]
-        ys = [c["kos_per_min"] for c in curve if c["arm"] == arm]
+        xs = [c["episode"] for c in curve if c["arm"] == arm and "kos_per_min" in c]
+        ys = [c["kos_per_min"] for c in curve if c["arm"] == arm and "kos_per_min" in c]
         ax.plot(xs, ys, "o-", color=colour, label="frozen BC" if arm == "bc" else "RL (updated after each)")
     ax.set_xlabel("episode")
     ax.set_ylabel("KOs / min (pixel reader)")
@@ -53,6 +57,25 @@ def plot(curve, path):
     fig.tight_layout()
     fig.savefig(path)
     plt.close(fig)
+
+
+def _plot_cv2(curve, path, w=840, h=420, pad=50):
+    import cv2
+    import numpy as np
+    img = np.full((h, w, 3), 255, np.uint8)
+    rows = [c for c in curve if "kos_per_min" in c]
+    top = max([c["kos_per_min"] for c in rows] + [1.])
+    n = max([c["episode"] for c in rows] + [1])
+    xy = lambda c: (int(pad + (w - 2 * pad) * c["episode"] / n), int(h - pad - (h - 2 * pad) * c["kos_per_min"] / top))
+    cv2.rectangle(img, (pad, pad), (w - pad, h - pad), (200, 200, 200), 1)
+    for arm, colour in (("bc", (136, 136, 136)), ("rl", (180, 119, 31))):
+        pts = [xy(c) for c in rows if c["arm"] == arm]
+        for a, b in zip(pts, pts[1:]):
+            cv2.line(img, a, b, colour, 2)
+        for p in pts:
+            cv2.circle(img, p, 4, colour, -1)
+    cv2.putText(img, f"KOs/min (max {top:.1f}) by episode; grey frozen BC, blue RL", (pad, 30), 0, .55, (0, 0, 0), 1)
+    cv2.imwrite(str(path), img)
 
 
 def main(argv=None):
