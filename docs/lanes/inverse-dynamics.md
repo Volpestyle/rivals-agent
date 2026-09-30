@@ -168,6 +168,27 @@ so the pooled median must not be interpreted as stable calibration for every fra
 per-span clip, keeps creator identity from source_path, and records each sampled window's frame count.
 All three Mac validation jobs completed with two CPU/ffmpeg threads; existing labelling and Modal jobs continued.
 
+**All eight creators, and the label column (idm, 2026-09-30 13:15).** ReqMR, Rdpaco and Rekriot were sampled
+the same way (six 3 s windows per video, 1-2 videos each; `creator-sample-rest.json` beside the others). Read
+against James's own unzoomed footage (z 1.0042-1.0043), every creator sits at 0.993-1.000:
+
+| Creator | Frames | z | z / James |
+|---|---:|---:|---:|
+| daymr | 1080 | 1.0040 | 0.9998 |
+| luckyzeal | 540 | 1.0015 | 0.9973 |
+| simii_exe | 180 | 1.0043 | 1.0000 |
+| 6fthumblearab | 180 | 0.9973 | 0.9931 |
+| necros | 180 | 1.0033 | 0.9991 |
+| reqmr | 180 | 1.0041 | 0.9999 |
+| rdpaco | 360 | 1.0040 | 0.9998 |
+| rekriot | 360 | 1.0039 | 0.9997 |
+
+The sampled creators play at James's field of view, so no correction is applied. The v2-cd tables carry
+`camera_scale` = 1.0 on every row (true_deg ~= deg * camera_scale). Their header `camera_scale` holds the applied
+value, the creator's measurement and the basis, and it comes from `idm-labels-work/camera-scale.json` via
+`labels.py export --camera-scale`. The two aligned tables the relief worker exported earlier (2871149954,
+2872282230) predate the column and are not rewritten.
+
 ### Cached-feature anchor alignment (IDM relief, 2026-09-30)
 
 Changing the IDM context window moved the first labelled timestamp and therefore the exporter's nominal 30 Hz

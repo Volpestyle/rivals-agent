@@ -230,7 +230,7 @@ def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0, anchor_ro
     return rows
 
 
-def export(ckpt, spans_path, work, out_dir, *, video=None, model=None, anchor_dir=None):
+def export(ckpt, spans_path, work, out_dir, *, video=None, model=None, anchor_dir=None, camera_scale=None):
     from policy.range_bc import vocab
     _, supported, thresholds = vod.load_any(ckpt, "cpu")
     thresholds = {a: t for a, t in (thresholds or vod.FULL03_THRESHOLDS).items() if t < 1.0}
@@ -304,6 +304,13 @@ def export(ckpt, spans_path, work, out_dir, *, video=None, model=None, anchor_di
             "video_size": [ss[0]["width"], ss[0]["height"]], "patch": "unknown",
             "idm": {"checkpoint": str(ckpt), "thresholds": thresholds, "spans": len(ss),
                     "labelled_spans": sum(span_file(work, name, s).exists() for s in ss)}}
+        if camera_scale is not None:
+            # true_deg ~= yaw_deg * camera_scale. Applied values come from the scale file; degrees are never rewritten.
+            applied = float(camera_scale.get("applied", {}).get(player, camera_scale.get("default", 1.0)))
+            header["camera_scale"] = {"applied": applied, "measured": camera_scale.get("creators", {}).get(player),
+                                      "basis": camera_scale.get("basis")}
+            for r in rows:
+                r["camera_scale"] = applied
         out = out_dir / f"expert-{vid}.steps.jsonl"
         if reference is not None:
             header["idm"]["anchor_reference"] = str(reference)
@@ -359,6 +366,8 @@ def main(argv=None):
     e.add_argument("--video")
     e.add_argument("--model")
     e.add_argument("--anchor-dir", help="reuse this label directory's anchors; requires new output files")
+    e.add_argument("--camera-scale", help="JSON {default, applied: {creator: scale}, creators: {creator: measured}, "
+                                          "basis}: adds camera_scale (row column and header)")
     c = sub.add_parser("clips")
     c.add_argument("spans")
     c.add_argument("out")
@@ -372,8 +381,9 @@ def main(argv=None):
         run(a.ckpt, a.spans, a.work, video=a.video, shard=(k, n), device=a.device, model=a.model, fast=a.fast,
             workers=a.workers)
     else:
+        scale = json.loads(Path(a.camera_scale).read_text(encoding="utf-8")) if a.camera_scale else None
         print(json.dumps(export(a.ckpt, a.spans, a.work, a.out, video=a.video, model=a.model,
-                                anchor_dir=a.anchor_dir), indent=1))
+                                anchor_dir=a.anchor_dir, camera_scale=scale), indent=1))
     return 0
 
 

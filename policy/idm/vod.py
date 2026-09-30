@@ -300,6 +300,34 @@ def score(npz, targets_path=None, thresholds=None, rows_filter=None):
     return out
 
 
+# ---- the camera answer without policy.idm.train (its import chain is heavy for a worker image) -------------------
+# Copies of policy.idm.train's pre-registered constants; tests/test_idm_vod_camera.py pins them to train's.
+CAMERA_ABSTAIN_STD = {"calibrated": 1.0, "extrapolated": 3.0}
+PITCH_STD_CALIBRATION = "A-6f8dba7b"
+PITCH_STD_EDGES = (0.06059320594627363, 0.10755754546016058, 0.16996028513718056, 0.351656956463779)
+PITCH_STD_K = (1.0, 1.0, 1.0, 1.6005068343947064, 1.242973089376128)
+
+
+def camera_answer(mu_yaw, mu_pitch, logvar, r, cal):
+    """policy.idm.train._camera, line for line."""
+    import math
+    from policy import idm_targets as T
+    gy, gp = cal.get("yaw_deg_per_count"), cal.get("pitch_deg_per_count")
+    if not gy:
+        return {"yaw_deg": None, "pitch_deg": None, "yaw_std_deg": None, "pitch_std_deg": None, "gain_regime": None,
+                "pitch_std_calibration": PITCH_STD_CALIBRATION}
+    _, regime = T.gain_regime(mu_yaw / gy, mu_pitch / gp if gp else 0.0, r["t1_ns"] - r["t0_ns"])
+    var = [math.exp(float(v)) for v in logvar]
+    out = {"gain_regime": regime, "pitch_std_calibration": PITCH_STD_CALIBRATION}
+    for axis, mu, v, gain in (("yaw", mu_yaw, var[0], gy), ("pitch", mu_pitch, var[1], gp or 0.0)):
+        std = math.sqrt(v + T.camera_sigma(mu, regime, gain) ** 2)
+        if axis == "pitch":
+            std = std * PITCH_STD_K[bisect.bisect_right(PITCH_STD_EDGES, out["yaw_std_deg"])]
+        out[f"{axis}_std_deg"] = std
+        out[f"{axis}_deg"] = None if std > CAMERA_ABSTAIN_STD[regime] else mu
+    return out
+
+
 # ---- labelling footage without logged inputs ------------------------------------------------------------------------
 
 JAMES_CALIBRATION = {"yaw_deg_per_count": 0.0330738, "pitch_deg_per_count": 0.0330738}
@@ -401,7 +429,6 @@ def label_span(model, video, start, end, *, rects=(), device="cuda", batch=32, c
     probabilities, camera mean/log-variance and the camera answer (None = abstain). Frames are taken at the
     video's own rate, which must be about 60 fps. `prepared` is prepare_span's result when decoded elsewhere."""
     import torch
-    from policy.idm import train
     grey, hud, pts = prepared or prepare_span(video, start, end, rects=rects, fast=fast)
     raw = getattr(model, "raw_window", False)
     cal = calibration or JAMES_CALIBRATION
@@ -427,7 +454,7 @@ def label_span(model, video, start, end, *, rects=(), device="cuda", batch=32, c
     cam = np.concatenate(cams) if cams else np.zeros((0, 4), np.float32)
     for j, k in enumerate(ks):
         r = {"t0_ns": int(pts[k - 1] * 1e9), "t1_ns": int(pts[k] * 1e9)}
-        answers.append(train._camera(float(cam[j, 0]), float(cam[j, 1]), cam[j, 2:], r, cal))
+        answers.append(camera_answer(float(cam[j, 0]), float(cam[j, 1]), cam[j, 2:], r, cal))
     return {"frame": np.array(ks), "t": pts[ks], "pts_all": pts, "prob": np.concatenate(probs) if probs else None,
             "cam": cam, "held": np.concatenate(helds) if helds else None, "answers": answers}
 
