@@ -224,8 +224,8 @@ def main(argv=None):
     tower = load_tower(a.vision, a.vision_config, "cuda")
     for labels in a.labels:
         sid = json.loads(open(labels, encoding="utf-8").readline())["session_id"]
-        if (Path(a.out) / sid / "meta.json").exists():
-            continue
+        if (Path(a.out) / sid / "meta.json").exists() or not (Path(a.views) / sid / "views.json").exists():
+            continue                       # done, or its views are not finished yet
         if game_running():
             raise SystemExit("the game started; stopping between videos")
         features(labels, a.views, a.out, tower, log=lambda m: print(m, flush=True))
