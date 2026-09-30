@@ -76,6 +76,9 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
     from policy.bc2 import model, train
     root = Path("/out/features")
     local = Path("/tmp/features")
+    # Modal can reuse a warm container for the next fit call: start from empty scratch every time.
+    shutil.rmtree(local, ignore_errors=True)
+    shutil.rmtree(Path("/tmp/run"), ignore_errors=True)
     evals = [s for s in (eval_sessions if eval_sessions is not None else VAL) if (root / s).exists()]
     for s in TRAIN + DEV + evals:
         shutil.copytree(root / s, local / s)
