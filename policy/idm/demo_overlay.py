@@ -73,18 +73,27 @@ def decode_frames(video, ordinals, pts, size=(GW, GH), ffmpeg="ffmpeg"):
     want = set(ordinals)
     graph = (f"select='between(t\\,{(a - 0.5) / 1000:.4f}\\,{(b + 0.5) / 1000:.4f})',{cache.CONVERT},"
              f"scale={size[0]}:{size[1]}:flags=area")
-    proc = subprocess.Popen([ffmpeg, "-v", "fatal", "-nostdin", "-hwaccel", "videotoolbox" if sys.platform == "darwin" else "cuda", "-ss", f"{max(0, a / 1000 - 3):.3f}",
-                             "-copyts", "-i", str(video), "-map", "0:v:0", "-vf", graph, "-fps_mode", "passthrough",
-                             "-an", "-pix_fmt", "rgb24", "-f", "rawvideo", "-"], stdout=subprocess.PIPE)
+    t0 = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=start_time", "-of", "csv=p=0",
+                               str(video)], check=True, capture_output=True, text=True).stdout.strip() or 0)
+    seek = max(0.0, a / 1000 - 3 - t0)                 # input -ss counts from the container's start
+    hw = "videotoolbox" if sys.platform == "darwin" else "cuda"
+    # -t bounds the read: select alone would keep decoding to the end of a multi-hour VOD
+    proc = subprocess.Popen([ffmpeg, "-v", "fatal", "-nostdin", "-hwaccel", hw, "-ss", f"{seek:.3f}",
+                             "-t", f"{b / 1000 - t0 - seek + 1:.3f}", "-copyts", "-i", str(video), "-map", "0:v:0",
+                             "-vf", graph, "-fps_mode", "passthrough", "-an", "-pix_fmt", "rgb24", "-f", "rawvideo",
+                             "-"], stdout=subprocess.PIPE)
     n = size[0] * size[1] * 3
-    for o in span:
-        block = proc.stdout.read(n)
-        if len(block) < n:
-            raise RuntimeError(f"display decode ended early at ordinal {o}")
-        if o in want:
-            yield np.frombuffer(block, np.uint8).reshape(size[1], size[0], 3)
-    proc.stdout.close()
-    proc.wait()
+    try:
+        for o in span:
+            block = proc.stdout.read(n)
+            if len(block) < n:
+                raise RuntimeError(f"display decode ended early at ordinal {o}")
+            if o in want:
+                yield np.frombuffer(block, np.uint8).reshape(size[1], size[0], 3)
+    finally:
+        proc.stdout.close()
+        proc.kill()
+        proc.wait()
 
 
 def trace(img, box, t, p, now, span, scale, label):
@@ -166,6 +175,8 @@ def render(pred, video, out, *, start, end, pts_table=None, title="", truth=True
         ordinals = json.loads(str(z["ordinals"])) if "ordinals" in z else None
         stat = "inferred inputs only: no logged truth for this footage"
     py, pp = cam[:, 0], cam[:, 1]
+    held_p = z["held"][order] if "held" in z.files else None      # v2: held-at-end probabilities
+    HELD = ("move_forward", "move_left", "move_back", "move_right", "web_swing", "spider_power")
 
     enc = subprocess.Popen([ffmpeg, "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", f"{W}x{H}",
                             "-r", "60", "-i", "-", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
@@ -218,13 +229,16 @@ def render(pred, video, out, *, start, end, pts_table=None, title="", truth=True
                     fill = (GREEN, 0.85) if held[k, c] else None
                     flash = k - last_t[c] < FLASH
                 else:
-                    fill = (ORANGE, min(1.0, float(prob[k, c]) / thr[a]) ** 4) if sup else None
+                    if held_p is not None and a in HELD:
+                        fill = (ORANGE, 0.85 if held_p[k, c] >= 0.5 else 0.0)
+                    else:
+                        fill = (ORANGE, min(1.0, float(prob[k, c]) / thr[a]) ** 4) if sup else None
                     flash = sup and k - last_p[c] < FLASH
                 key(img, (x, y), (w_, 64), lab if (sup or is_truth) else f"{lab}", fill, flash, sup or is_truth)
                 if r_ == len(rows_) - 1:
                     text(img, LABEL[a] if sup else f"{LABEL[a]} n/a", (x + 2, y + 84), 0.42, GREY)
                 x += w_ + 8
-        text(img, "IDM row: fill = press-onset probability (vs its threshold), white ring = predicted press", (kx, H - 40), 0.5, GREY)
+        text(img, "IDM row: WASD/swing/fire fill = predicted held (v2), other keys fill = press probability; white ring = predicted press", (kx, H - 40), 0.5, GREY)
         # piano roll: onsets from -2.25 s to +0.75 s
         px0, py0, px1, py1 = GW + 20, 705, W - 20, H - 30
         roll = [a for _, a in KEYS if a in thr or truth]
@@ -242,6 +256,8 @@ def render(pred, video, out, *, start, end, pts_table=None, title="", truth=True
                     cv2.line(img, (xx, yy + 3), (xx, yy + int(lh) - 3), rgb((30, 70, 40)), 1)
                 if truth and t_on[kk, c]:
                     cv2.line(img, (xx, yy + 2), (xx, yy + int(lh / 2)), rgb(GREEN), 3)
+                if held_p is not None and a in HELD and held_p[kk, c] >= 0.5:
+                    cv2.line(img, (xx, yy + int(lh / 2) + 2), (xx, yy + int(lh) - 3), rgb((110, 70, 25)), 1)
                 if pred_on[kk, c]:
                     cv2.line(img, (xx, yy + int(lh / 2)), (xx, yy + int(lh) - 2), rgb(ORANGE), 3)
         cv2.line(img, (nowx, py0), (nowx, py1), rgb(WHITE), 1)
