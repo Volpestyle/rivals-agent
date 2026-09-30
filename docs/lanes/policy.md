@@ -227,7 +227,7 @@ run. This spec is prepared, not launched; a paid launch remains the lead's next 
 names, mismatched session metadata and mixed/incorrect label sources, then stages only those shards locally.
 The old automatic enumeration remains available for callers that omit the explicit list.
 
-The v2-cd upgrade cannot yet reuse the two exported Day videos as a useful training cohort. A read-only join of
+The original v2-cd exports could not reuse the two Day videos as a useful training cohort. A read-only join of
 the full local v2-a and v2-cd step tables found **zero `(run, anchor_ns)` matches** in either video: the wider IDM
 window changes the nominal export grid's origin. Exact `(run, frame_index, pts, timebase)` matching gives:
 
@@ -241,7 +241,7 @@ under `D:/rivals-agent-local/idm-labels/{v2-a,v2-cd}/` and `D:/rivals-policy/rel
 respectively; the latter records both input hashes and target hashes. Original features and labels were not
 changed. The needed IDM export uses the original v2-a anchor/frame grid with v2-cd interval answers, retaining
 nulls and trimming unsupported ends. Rebuilding features or joining by nearest timestamp is unnecessary at this
-point. This interface prerequisite was sent to the temporary IDM owner; creator-FOV scaling remains off.
+point. The IDM owner supplied that exporter in `1fe92d9`; creator-FOV scaling remains off.
 
 `expert.relabel` now checks the source video and original shard hash, joins exact physical frames, records the
 full ensemble checkpoint, and writes `feature_row` indices. `train.Session` uses those indices for every cached
@@ -250,6 +250,19 @@ refuses an expert shard with no run of at least 32 steps, rather than counting i
 on no expert windows. Focused synthetic regressions cover a shifted clock, missing edge/interior rows, all four
 input arrays, wrong-source/duplicate/no-match refusals, an arriving shard, mixed labels and empty training
 support. The existing tiny CPU fit also passes. No game input, decoding, feature rebuild or paid function ran.
+
+The aligned exports under `D:/rivals-agent-local/idm-labels-aligned-20260930/v2-cd/` pass the real target-cache
+consumer check: 2871149954 keeps 115,187 rows in 332 trainable runs (max 1,771); 2872282230 keeps 79,084 rows in
+214 runs (max 1,606). Only 1,660 / 1,070 old boundary rows are omitted. Both original full-video frame-key sets
+match the corresponding seven Mac shard sets. The four uploaded shards of the first video plus `2872282230-s0`
+have separate `targets.npz`/`meta.json` copies under `D:/rivals-policy/relief-20260930/targets-v2cd-aligned/`, also
+staged at `/Users/james/dev/policy-bc2/relief-20260930/targets-v2cd-aligned/`: **144,415 rows, 415 trainable runs**.
+Every copy's original shard byte hash matches the cached feature metadata. Those files overlay targets only;
+the original `/expert-features` volume is unchanged. The second video's s1/s2 feature uploads were not verified
+complete at this check, so no target copy was produced for them. Full-video and per-shard counts/hashes are in
+the sibling `alignment-aligned-*.json` and `aligned-shards-*.json` files. This resolves the alignment prerequisite,
+not the remaining multi-creator v2-cd exports or a v2-cd fit. Such a fit must stage the separate target copies
+with their original features; the prepared grid-i4 comparison still uses v2-a exclusively.
 
 # Policy: the learned chooser (steps 1-3)
 
