@@ -1317,12 +1317,13 @@ class LiveSafety:
             raise RuntimeError(f"live safety could not confirm release: {self.status['errors']}")
 
 
-def _open_live_io(safety, percept, board, session):
+def _open_live_io(safety, percept, board, session, *, attach_opener=False):
     from .controller import Live
     safety.start()  # before attach: a stop during construction remains latched
+    opener = {"attach_opener_deadline": safety.deadline} if attach_opener else {}
     native = Live(guard=safety.proof(percept.in_range, percept.idle, range_required=True),
                   board_guard=safety.proof(board, percept.idle),
-                  session_guard=safety.proof(session, percept.idle), settle_s=0)
+                  session_guard=safety.proof(session, percept.idle), settle_s=0, **opener)
     try:
         safety.bind(native)
         return LiveIO(native, safety=safety)

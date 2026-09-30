@@ -280,8 +280,10 @@ def test_cli_closes_pad_before_policy_or_recording_teardown_on_all_failures(fail
         return {'kind':'test'}
     f.runner.percept.wide=lambda frame:[]
     monkeypatch.setattr(C,'warm_perception',warm)
-    def attach(safety,*args):
+    def attach(safety,*args,**kwargs):
+        assert kwargs == {'attach_opener':True}
         f.io.t0=R.time.perf_counter()
+        f.io.live=SimpleNamespace(attach_opener={'test':True})
         safety.bind(f.io)
         if failure=='attach': raise OSError('attach')
         if failure=='inference':

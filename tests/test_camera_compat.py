@@ -613,11 +613,12 @@ def compat_cli(tmp_path,monkeypatch):
         return {"kind": "test_no_input"}
     monkeypatch.setattr(C,'warm_perception',warmup)
     monkeypatch.setitem(sys.modules,'cv2',SimpleNamespace(imwrite=lambda *a: True))
-    def open_io(scope,*args):
+    def open_io(scope,*args,**kwargs):
+        assert kwargs == {'attach_opener':True}
         flags.scope=scope;scope.start();device=Device();flags.device=device
         if flags.stage=='attach': flags.takeover=True
         scope.bind(device)
-        return SimpleNamespace(t0=time.perf_counter(),close=device.close)
+        return SimpleNamespace(t0=time.perf_counter(),close=device.close,live=SimpleNamespace(attach_opener={'test':True}))
     monkeypatch.setattr(L,'_open_live_io',open_io)
     class Check:
         events=[]

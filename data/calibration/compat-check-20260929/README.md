@@ -193,12 +193,17 @@ an ordinary whole-camera controller map.
 
 ## First learned-policy sitting (2026-09-30)
 
+**Do not launch learned play until held-out policy yaw beats the zero-yaw
+baseline (James/lead, 2026-09-30).** The current `ng-nohist-s1` bundle does not
+qualify. The runner and A/B launch commands below are prepared for a later
+qualifying bundle selected by the lead; they authorize no sitting themselves.
+
 The lead launches this only after the quick live-input safety read and James's
 sitting grant. Use Spider-Man in the Practice Range near the Galacta bots, with
 the crosshair between them and a slight downward look. Keep Steam Input disabled
 and the alt controller settings at horizontal 247 / vertical 124. Start OBS
 recording before launch; keep that original native video. The runner does not
-navigate, choose a hero, start OBS or send a scripted attach-prime input.
+navigate, choose a hero or start OBS.
 
 Invoke `launch-learned-01.ps1 -Run A` for a maximum of 60 seconds with learned
 yaw disabled. After inspecting that result and arranging the next sitting,
@@ -209,7 +214,12 @@ to record the operator-supplied video path. Outputs are `learned-01-a/` and
 
 The bundle defaults to `D:/rivals-policy/bundles/ng-nohist-s1` and can be changed
 with `-PolicyBundle`. Real policy/readers/finder warm-up happens before attach,
-then the recurrent policy resets. Inference uses one latest-frame worker;
+then the recurrent policy resets. Both compat run-05 and learned runs opt into
+one guarded attach opener: LY=0.25 for at most 50 ms, with no camera, trigger or
+button, then neutral and a fresh range observation. This cancels the measured
+fresh-pad left drift before target acquisition or learned input. It is logged
+separately from the compatibility camera-pulse caps; their 2 s / 40-pulse caps
+remain unchanged. Inference uses one latest-frame worker;
 capture and guarded input remain on the control thread. Native frames at up to
 10 Hz, per-tick predictions, raw/scaled yaw, masked actions, sent pad snapshots,
 request expiry/release times, inference/queue timing and the stop frame are

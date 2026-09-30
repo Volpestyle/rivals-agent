@@ -443,7 +443,8 @@ def main(argv=None):
             policy.reset()  # warm-up observations are never episode history or input
             safety = L.LiveSafety(focus, takeover, time.perf_counter() + a.max_s)
             log = L.RunLog(a.out, save_fps=a.save_fps)
-            source = L._open_live_io(safety, percept, lambda f: False, lambda f: False)
+            source = L._open_live_io(safety, percept, lambda f: False, lambda f: False, attach_opener=True)
+            result['attach_opener'] = source.live.attach_opener
             guard = safety.proof(percept.in_range, percept.idle, range_required=True)
             deadline, sleep = safety.deadline - source.t0, time.sleep
         else:

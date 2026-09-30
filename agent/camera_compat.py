@@ -411,12 +411,13 @@ def main(argv):
     source = check = watch = None
     result = {"result": "exception", "camera": admission.receipt}
     try:
-        source = L._open_live_io(safety, percept, lambda f: False, lambda f: False)
+        source = L._open_live_io(safety, percept, lambda f: False, lambda f: False, attach_opener=True)
+        result['attach_opener'] = source.live.attach_opener
         guard = safety.proof(percept.in_range, percept.idle, range_required=True)
         save = NativeRetention(a.out)
         watch = ResponseWatch(safety, source.t0)
         check = CompatibilityCheck(source, percept, guard, admission, safety.deadline - source.t0, save=save, response_watch=watch)
-        result = check.run()
+        result.update(check.run())
         if not safety.check():
             result["result"] = safety.status["stop_reason"]
         return 0 if result["result"] == "passed" else 1

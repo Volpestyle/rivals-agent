@@ -65,7 +65,10 @@ class Live:
     perception.scoreboard.is_scoreboard and record.banner_score.
     """
 
-    def __init__(self, pad_factory=None, capture=None, guard=None, board_guard=None, session_guard=None, settle_s=3.0):
+    def __init__(self, pad_factory=None, capture=None, guard=None, board_guard=None, session_guard=None, settle_s=3.0,
+                 attach_opener_deadline=None):
+        if attach_opener_deadline is not None and not math.isfinite(attach_opener_deadline):
+            raise ValueError("finite attach opener deadline required")
         if guard is None:
             from record import BANNER_MIN, banner_score, in_range as guard
             if session_guard is None:
@@ -93,13 +96,38 @@ class Live:
             self._pad = pad_factory()
         self.sent = dict(NEUTRAL)
         self._lock, self._lease_until, self._closed, self._dead = threading.Lock(), None, threading.Event(), False
+        self.attach_opener = None
         try:                     # the pad exists from here, and the caller has no object to close if __init__ fails:
             threading.Thread(target=self._watchdog, daemon=True).start()
+            if attach_opener_deadline is not None:
+                self._cancel_attach_drift(attach_opener_deadline)
             time.sleep(settle_s)  # enumerate + the "Switching Devices" banner
         except BaseException:    # KeyboardInterrupt during enumeration included
             self.close()         # neutral, watchdog stopped (it would otherwise keep this object and its pad alive)
             self._pad = None     # drop the device
             raise
+
+    def _cancel_attach_drift(self, deadline):
+        """One guarded tiny move, then neutral and a new range frame; no camera/attack."""
+        started = time.perf_counter()
+        end = min(started + .05, deadline)
+        self.attach_opener = {"ly": .25, "max_s": .05, "started_t": started,
+                              "release_at": end, "report_returned": False}
+        try:
+            self.send_guarded({**NEUTRAL, "ly": .25}, not_after=end, release_at=end, scope_not_after=deadline)
+            self.attach_opener["report_returned"] = True
+            while time.perf_counter() < end:
+                if not self._in_range(self.fresh()):
+                    raise RangeLost("range/scope lost during attach opener")
+                remaining = end - time.perf_counter()
+                if remaining > 0:
+                    time.sleep(min(.005, remaining))
+        finally:
+            self.release()
+            self.attach_opener["neutral_returned_t"] = time.perf_counter()
+        if not self._in_range(self.fresh()):
+            raise RangeLost("range/scope lost after attach opener")
+        self.attach_opener["fresh_frame_t"] = self.frame_t
 
     # -- frames -----------------------------------------------------------------------------------------------------
     def fresh(self, timeout=FRESH_S):

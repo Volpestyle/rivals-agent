@@ -3,7 +3,9 @@ param(
     [string]$PolicyBundle = 'D:/rivals-policy/bundles/ng-nohist-s1',
     [string]$ObsVideo = ''
 )
-# Lead launches only after the quick live-input safety read and James's sitting grant.
+# DO NOT LAUNCH until held-out policy yaw beats zero (James/lead, 2026-09-30).
+# Current ng-nohist-s1 does not qualify; see this sitting's README.md.
+# Lead launches a qualifying bundle only after the quick safety read and sitting grant.
 # Spider-Man in Practice Range near Galacta bots; crosshair between bots, slight downward look.
 # Steam Input disabled, alt controller sensitivities 247 horizontal / 124 vertical.
 # Start OBS session recording first; optionally supply -ObsVideo with its native MKV path.
