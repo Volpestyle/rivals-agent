@@ -268,6 +268,125 @@ def score(npz, targets_path=None, thresholds=None, rows_filter=None):
     return out
 
 
+# ---- labelling footage without logged inputs ------------------------------------------------------------------------
+
+JAMES_CALIBRATION = {"yaw_deg_per_count": 0.0330738, "pitch_deg_per_count": 0.0330738}
+
+
+def span_pts(video, start, end, *, ffprobe="ffprobe"):
+    """Presentation times (seconds) of every frame with start <= t <= end, from the container index."""
+    out = subprocess.run([ffprobe, "-v", "error", "-select_streams", "v:0", "-read_intervals",
+                          f"{max(0.0, start - 3):.3f}%{end + 1:.3f}", "-show_entries", "packet=pts_time",
+                          "-of", "csv=p=0", str(video)], check=True, capture_output=True, text=True).stdout
+    return sorted(t for t in (float(x) for x in out.split() if x.strip() and x.strip() != "N/A")
+                  if start - 1e-4 <= t <= end + 1e-4)
+
+
+def decode_span(video, start, end, *, ffmpeg="ffmpeg", threads=8):
+    """(grey [n, 252, 448] uint8, hud [n, 80, 200, 3] uint8, pts seconds [n]) for every frame in [start, end], through
+    the frame-store pixel graph (policy.idm.decode.GRAPH), seeking by timestamp (mp4 / indexed containers)."""
+    import tempfile
+    pts = span_pts(video, start, end)
+    sel = f"select=between(t\\,{start - 1e-4:.4f}\\,{end + 1e-4:.4f})"
+    seek = max(0.0, start - 2)
+    grey = np.empty((len(pts), *D.MOTION), np.uint8)               # preallocated: a 90 s span is ~0.9 GB
+    hud = np.empty((len(pts), *D.FR.HUD_SHAPE), np.uint8)
+    got = 0
+    size = D._STACK[0] * D._STACK[1] * 3
+    with tempfile.TemporaryDirectory(prefix="rivals-idm-label-") as tmp:
+        script = Path(tmp) / "graph.txt"
+        script.write_text(D.GRAPH.format(select=sel), encoding="ascii")
+        # -t bounds the read: select alone would keep decoding to the end of a multi-hour VOD
+        proc = subprocess.Popen([ffmpeg, "-v", "error", "-nostdin", "-threads", str(threads), "-ss", f"{seek:.3f}",
+                                 "-t", f"{end - seek + 1:.3f}", "-copyts", "-i", str(video), "-map", "0:v:0",
+                                 "-filter_script:v", str(script), "-fps_mode", "passthrough", "-an", "-sn",
+                                 "-pix_fmt", "rgb24", "-f", "rawvideo", "-"], stdout=subprocess.PIPE)
+        while True:
+            block = proc.stdout.read(size)
+            if len(block) < size:
+                break
+            if got < len(pts):
+                img = np.frombuffer(block, np.uint8).reshape(D._STACK)
+                grey[got] = D.grey(img[:D.MOTION[0]])
+                hud[got] = img[D.MOTION[0]:, :D.FR.HUD_SHAPE[1]]
+            got += 1
+        proc.stdout.close()
+        if proc.wait() != 0:
+            raise RuntimeError(f"ffmpeg failed on {video}")
+    if got != len(pts):
+        raise RuntimeError(f"{video}: decoded {got} frames in [{start}, {end}], the index lists {len(pts)}")
+    return grey, hud, np.array(pts)
+
+
+def mask_overlays(grey, hud, rects, fill=128):
+    """Paint normalised overlay rects [x0, y0, x1, y1] (facecam, chat, alerts) a constant grey in the motion frames
+    and black in the HUD crop where they cover it, so the model reads no motion there."""
+    from policy.range_bc import cache
+    h, w = grey.shape[1:]
+    for x0, y0, x1, y1 in rects:
+        grey[:, int(y0 * h):int(np.ceil(y1 * h)), int(x0 * w):int(np.ceil(x1 * w))] = fill
+        for (cx, cy, cw, ch), (oy, oh, ow) in ((cache.ABILITY_ROW, (0, 50, 200)), (cache.WEBS_BOX_MK, (50, 30, 40))):
+            ax0, ax1 = max(x0, cx), min(x1, cx + cw)
+            ay0, ay1 = max(y0, cy), min(y1, cy + ch)
+            if ax0 < ax1 and ay0 < ay1:
+                hud[:, oy + int((ay0 - cy) / ch * oh):oy + int(np.ceil((ay1 - cy) / ch * oh)),
+                    int((ax0 - cx) / cw * ow):int(np.ceil((ax1 - cx) / cw * ow))] = 0
+    return grey, hud
+
+
+def label_span(model, video, start, end, *, rects=(), device="cuda", batch=32, calibration=None):
+    """Per 60 Hz interval of [start, end] (one per decoded frame with a full +-W window): press and held
+    probabilities, camera mean/log-variance and the camera answer (None = abstain). Frames are taken at the
+    video's own rate, which must be about 60 fps."""
+    import torch
+    from policy.idm import train
+    grey, hud, pts = decode_span(video, start, end)
+    if len(pts) > 2:
+        fps = (len(pts) - 1) / (pts[-1] - pts[0])
+        if not 55 <= fps <= 65:
+            raise ValueError(f"{video}: {fps:.1f} fps; the IDM's window assumes 60 Hz intervals")
+    grey, hud = mask_overlays(grey, hud, rects)
+    raw = getattr(model, "raw_window", False)
+    cal = calibration or JAMES_CALIBRATION
+    ks = list(range(WINDOW, len(pts) - WINDOW))
+    probs, cams, helds, answers = [], [], [], []
+    for s in range(0, len(ks), batch):
+        idx = ks[s:s + batch]
+        w = np.stack([grey[k - WINDOW:k + WINDOW + 1] for k in idx]).astype(np.float32) / 255.0
+        m = w if raw else np.diff(w, axis=1)
+        h = np.stack([np.concatenate([hud[k - 1], hud[k]], axis=2).transpose(2, 0, 1) for k in idx])
+        with torch.no_grad():
+            out = model(torch.from_numpy(m).to(device), torch.from_numpy(h.astype(np.float32) / 255.0).to(device))
+        probs.append(torch.sigmoid(out[0]).float().cpu().numpy())
+        cams.append(out[1].float().cpu().numpy())
+        if len(out) > 2:
+            helds.append(torch.sigmoid(out[2]).float().cpu().numpy())
+    cam = np.concatenate(cams) if cams else np.zeros((0, 4), np.float32)
+    for j, k in enumerate(ks):
+        r = {"t0_ns": int(pts[k - 1] * 1e9), "t1_ns": int(pts[k] * 1e9)}
+        answers.append(train._camera(float(cam[j, 0]), float(cam[j, 1]), cam[j, 2:], r, cal))
+    return {"frame": np.array(ks), "t": pts[ks], "pts_all": pts, "prob": np.concatenate(probs) if probs else None,
+            "cam": cam, "held": np.concatenate(helds) if helds else None, "answers": answers}
+
+
+def label_file(ckpt, video, out, *, start, end, rects=(), device="cuda", span_id=None, loaded=None):
+    from policy.range_bc import vocab
+    model, supported, thresholds = loaded or load_any(ckpt, device)
+    res = label_span(model, video, start, end, rects=rects, device=device)
+    extra = {} if res["held"] is None else {"held": res["held"]}
+
+    def col(key):
+        return np.array([np.nan if a[key] is None else a[key] for a in res["answers"]])
+    np.savez_compressed(
+        out, i=res["frame"], ordinals=json.dumps([int(k) for k in res["frame"]]), t=res["t"],
+        pts_ms=np.round(res["pts_all"] * 1000).astype(np.int64), prob=res["prob"], cam=res["cam"], **extra,
+        yaw_ans=col("yaw_deg"), pitch_ans=col("pitch_deg"), yaw_std=col("yaw_std_deg"), pitch_std=col("pitch_std_deg"),
+        meta=json.dumps({"ckpt": str(ckpt), "video": str(video), "span_id": span_id, "start": start, "end": end,
+                         "rects": [list(r) for r in rects], "actions": list(vocab.NAMES), "supported": supported,
+                         "thresholds": thresholds}))
+    return len(res["frame"])
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -286,6 +405,15 @@ def main(argv=None):
     p.add_argument("--start", type=float)
     p.add_argument("--end", type=float)
     p.add_argument("--device", default="cuda")
+    lb = sub.add_parser("label")
+    lb.add_argument("ckpt")
+    lb.add_argument("video")
+    lb.add_argument("out")
+    lb.add_argument("--start", type=float, required=True)
+    lb.add_argument("--end", type=float, required=True)
+    lb.add_argument("--rects", default="[]", help="JSON list of normalised [x0, y0, x1, y1] overlay rects to mask")
+    lb.add_argument("--span-id")
+    lb.add_argument("--device", default="cuda")
     s = sub.add_parser("score")
     s.add_argument("npz", nargs="+")
     a = ap.parse_args(argv)
@@ -293,6 +421,10 @@ def main(argv=None):
         reencode(a.src, a.out, a.preset, start=a.start, duration=a.duration)
     elif a.cmd == "predict":
         n = predict_file(a.ckpt, a.targets, a.video, a.out, pts=a.pts, start=a.start, end=a.end, device=a.device)
+        print(json.dumps({"rows": n, "out": a.out}))
+    elif a.cmd == "label":
+        n = label_file(a.ckpt, a.video, a.out, start=a.start, end=a.end, rects=json.loads(a.rects),
+                       device=a.device, span_id=a.span_id)
         print(json.dumps({"rows": n, "out": a.out}))
     else:
         print(json.dumps({f: score(f) for f in a.npz}, indent=1))

@@ -1,0 +1,247 @@
+"""Label expert footage with an IDM and export policy's REPLAY step tables (VUH-1353, lean mode).
+
+    python -m policy.idm.labels run CKPT SPANS.jsonl WORK_DIR [--video ID] [--shard K/N] [--device cuda]
+    python -m policy.idm.labels export CKPT SPANS.jsonl WORK_DIR OUT_DIR [--video ID]
+
+`run` labels every span of the footage worker's export (one npz per span under WORK_DIR/<model>/, skipped when
+present) with policy.idm.vod.label_span, masking the span's overlay rects. On the PC it pauses while Marvel Rivals
+is running (the GPU and CPU belong to the game). `export` writes one rivals-range-steps-v1 table per video with
+source_kind "replay" (policy/range_bc/steps.py): one row per 30 Hz anchor, one run per span.
+
+Row semantics: the anchor is a decoded frame; the step covers the next two 60 Hz intervals. yaw/pitch are their summed
+camera answers (null if either abstains). press is 1 when a predicted onset (an above-threshold run's peak) falls in
+the step, for actions the checkpoint has a threshold for; other actions are null. held_* come from a held head (v2)
+at 0.5, else null. release is null. Extra fields: press_p (step max probability), camera_std (deg), camera_conf.
+Third-party frames and labels stay local: never git, never Linear.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+import numpy as np
+
+from policy.idm import vod
+
+STEP_NS = 33_333_333
+FRAME_PERIOD_NS = 16_666_667
+PAD_ENVELOPE = {"yaw_deg_per_s": 415.0, "pitch_deg_per_s": 99.0}      # the targets headers' pad_envelope
+HELD_ACTIONS = ("move_forward", "move_left", "move_back", "move_right", "web_swing", "spider_power")
+
+
+def game_running():
+    if sys.platform != "win32":
+        return False
+    out = subprocess.run(["tasklist", "/FI", "IMAGENAME eq Marvel-Win64-Shipping.exe"], capture_output=True,
+                         text=True).stdout
+    return "Marvel-Win64-Shipping" in out
+
+
+def spans(path, video=None):
+    rows = [json.loads(x) for x in Path(path).read_text(encoding="utf-8").splitlines() if x.strip()]
+    return [r for r in rows if video is None or r["video_id"] == video]
+
+
+def span_file(work, model, span):
+    return Path(work) / model / f"{span['span_id'].replace(':', '_')}.npz"
+
+
+def model_name(ckpt):
+    return Path(ckpt).stem if Path(ckpt).stem not in ("refit", "v2") else Path(ckpt).parent.name + "-" + Path(ckpt).stem
+
+
+def run(ckpt, spans_path, work, *, video=None, shard=(0, 1), device="cuda", model=None):
+    todo = [s for k, s in enumerate(spans(spans_path, video)) if k % shard[1] == shard[0]]
+    name = model or model_name(ckpt)
+    (Path(work) / name).mkdir(parents=True, exist_ok=True)
+    loaded = vod.load_any(ckpt, device)
+    done = 0
+    for s in todo:
+        out = span_file(work, name, s)
+        if out.exists():
+            continue
+        while game_running():
+            print(json.dumps({"event": "paused_for_game"}), flush=True)
+            time.sleep(60)
+        t0 = time.time()
+        rects = [o["rect"] for o in s.get("overlays", [])] + [o["rect"] for o in s.get("facecam_rects", [])
+                                                               if isinstance(o, dict) and "rect" in o]
+        try:
+            n = vod.label_file(ckpt, s["local_path"], str(out) + ".tmp.npz", start=s["start_s"], end=s["end_s"],
+                               rects=rects, device=device, span_id=s["span_id"], loaded=loaded)
+            Path(str(out) + ".tmp.npz").replace(out)
+        except Exception as e:                                          # one bad span must not stop the batch
+            print(json.dumps({"event": "span_failed", "span": s["span_id"], "error": str(e)[:300]}), flush=True)
+            continue
+        done += 1
+        print(json.dumps({"event": "span", "span": s["span_id"], "rows": n, "s": round(time.time() - t0, 1),
+                          "done": done, "of": len(todo)}), flush=True)
+
+
+def _sha(path, cache):
+    key = str(path)
+    if key not in cache:
+        h = hashlib.sha256()
+        with open(path, "rb") as fh:
+            for block in iter(lambda: fh.read(1 << 24), b""):
+                h.update(block)
+        cache[key] = h.hexdigest()
+    return cache[key]
+
+
+def _video_index(video, cache_dir):
+    """(every frame's pts in seconds, sorted; stream timebase [num, den]), cached next to the labels."""
+    cache = Path(cache_dir) / (Path(video).stem + ".frames.npz")
+    if cache.exists():
+        z = np.load(cache)
+        return z["pts"], [int(v) for v in z["tb"]]
+    tb = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=time_base",
+                         "-of", "csv=p=0", str(video)], check=True, capture_output=True, text=True).stdout.strip()
+    num, den = (int(v) for v in tb.split("/"))
+    out = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "packet=pts",
+                          "-of", "csv=p=0", str(video)], check=True, capture_output=True, text=True).stdout
+    pts = np.sort(np.array([int(x) for x in out.split() if x.strip() and x.strip() != "N/A"], np.int64)) * num / den
+    np.savez(cache, pts=pts, tb=np.array([num, den]))
+    return pts, [num, den]
+
+
+def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0):
+    """The span's 30 Hz replay rows, numbered from i0."""
+    t, cam = z["t"], z["cam"]
+    prob = z["prob"]
+    held = z["held"] if "held" in z else None
+    yaw, pitch = z["yaw_ans"], z["pitch_ans"]
+    ystd, pstd = z["yaw_std"], z["pitch_std"]
+    actions = json.loads(str(z["meta"]))["actions"]
+    onset = np.zeros(prob.shape, bool)
+    for a, thr in thresholds.items():
+        c = actions.index(a)
+        onset[vod.onsets(prob[:, c], thr), c] = True
+    rows = []
+    step_s = STEP_NS / 1e9
+    for j in range(0, len(t) - 2, 2):
+        a, b = j + 1, j + 2
+        if not (0.025 <= t[b] - t[j] <= 0.042):                   # two 60 Hz intervals, or the span has a hole
+            continue
+        anchor = float(t[j])
+        ordinal = int(np.searchsorted(index_pts, anchor - 1e-6))
+        y = None if np.isnan(yaw[a]) or np.isnan(yaw[b]) else float(yaw[a] + yaw[b])
+        p = None if np.isnan(pitch[a]) or np.isnan(pitch[b]) else float(pitch[a] + pitch[b])
+        press = [None] * len(actions)
+        press_p = [None] * len(actions)
+        for name in thresholds:
+            c = actions.index(name)
+            press[c] = int(onset[a, c] or onset[b, c])
+            press_p[c] = round(float(max(prob[a, c], prob[b, c])), 4)
+        hs = he = [None] * len(actions)
+        if held is not None:
+            hs, he = list(hs), list(he)
+            for name in HELD_ACTIONS:
+                c = actions.index(name)
+                hs[c], he[c] = int(held[j, c] >= 0.5), int(held[b, c] >= 0.5)
+        std = (None if np.isnan(ystd[a]) or np.isnan(ystd[b]) else
+               [round(float(np.hypot(ystd[a], ystd[b])), 4), round(float(np.hypot(pstd[a], pstd[b])), 4)])
+        rows.append({
+            "i": i0 + len(rows), "run": run_id, "anchor_ns": int(round(anchor * 1e9)),
+            "frame": {"video_path": str(video_path), "frame_index": ordinal,
+                      "pts": int(round(anchor * tb[1] / tb[0])), "timebase": tb,
+                      "composition_ns": int(round(anchor * 1e9))},
+            "gap_free": True, "segment": run_id, "suitability": "accepted", "regime": "normal", "tags": [],
+            "tag_source": "untagged", "held_start": hs, "held_end": he,
+            "held_known": [hs[c] is not None and he[c] is not None for c in range(len(actions))],
+            "press": press, "release": [None] * len(actions), "press_known": [v is not None for v in press],
+            "release_known": [False] * len(actions), "yaw_deg": y, "pitch_deg": p,
+            "beyond_pad_envelope": bool((y is not None and abs(y) / step_s > PAD_ENVELOPE["yaw_deg_per_s"])
+                                        or (p is not None and abs(p) / step_s > PAD_ENVELOPE["pitch_deg_per_s"])),
+            "press_p": press_p, "camera_std": std,
+            "camera_conf": None if std is None else round(float(np.exp(-std[0])), 4)})
+    return rows
+
+
+def export(ckpt, spans_path, work, out_dir, *, video=None, model=None):
+    from policy.range_bc import vocab
+    _, supported, thresholds = vod.load_any(ckpt, "cpu")
+    thresholds = {a: t for a, t in (thresholds or vod.FULL03_THRESHOLDS).items() if t < 1.0}
+    name = model or model_name(ckpt)
+    out_dir = Path(out_dir) / name
+    out_dir.mkdir(parents=True, exist_ok=True)
+    shas_path = Path(work) / "media-sha256.json"
+    shas = json.loads(shas_path.read_text()) if shas_path.exists() else {}
+    by_video = {}
+    for s in spans(spans_path, video):
+        by_video.setdefault(s["video_id"], []).append(s)
+    written = {}
+    for vid, ss in sorted(by_video.items()):
+        ss = sorted(ss, key=lambda s: s["start_s"])
+        path = ss[0]["local_path"]
+        index_pts, tb = _video_index(path, Path(work))
+        rows = []
+        for s in ss:
+            f = span_file(work, name, s)
+            if f.exists():
+                rows += step_rows(np.load(f), thresholds, video_path=path, index_pts=index_pts, tb=tb,
+                                  run_id=s["span_id"], i0=len(rows))
+        if not rows:
+            continue
+        sha = _sha(path, shas)
+        shas_path.write_text(json.dumps(shas, indent=1))
+        player = Path(path).parent.name
+        header = {
+            "format": "rivals-range-steps-v1", "source_kind": "replay", "session_id": f"expert-{vid}",
+            "media_sha256": sha, "session_group": f"expert-{vid}", "sitting": f"expert-footage-{player}",
+            "split": "replay", "step_ns": STEP_NS, "frame_period_ns": FRAME_PERIOD_NS, "actions": list(vocab.NAMES),
+            "calibration": {"kind": "replay_degrees", "source": f"idm {name} ({Path(ckpt).name})",
+                            "label_sources": {"camera": f"idm {name}", "edges": f"idm {name} onset thresholds",
+                                              "movement": f"idm {name} held head" if "held" in np.load(
+                                                  span_file(work, name, ss[0])) else "none (unknown)"}},
+            "expert_context": {"player": player, "match_id": "unknown",
+                               "viewer_fov_assumption": "unknown: degrees are on James's FOV/sensitivity scale, "
+                                                        "not calibrated per source",
+                               "replay_source": ss[0].get("source_url") or vid},
+            "hud_layout": "mk", "swing_mode": {"automatic_swing": None, "hold_to_swing": None},
+            "video_size": [ss[0]["width"], ss[0]["height"]], "patch": "unknown",
+            "idm": {"checkpoint": str(ckpt), "thresholds": thresholds, "spans": len(ss),
+                    "labelled_spans": sum(span_file(work, name, s).exists() for s in ss)}}
+        out = out_dir / f"expert-{vid}.steps.jsonl"
+        with open(out, "w", encoding="utf-8", newline="\n") as fh:
+            fh.write(json.dumps(header) + "\n")
+            for r in rows:
+                fh.write(json.dumps(r) + "\n")
+        written[str(out)] = len(rows)
+    return written
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    r = sub.add_parser("run")
+    r.add_argument("ckpt")
+    r.add_argument("spans")
+    r.add_argument("work")
+    r.add_argument("--video")
+    r.add_argument("--shard", default="0/1")
+    r.add_argument("--device", default="cuda")
+    r.add_argument("--model")
+    e = sub.add_parser("export")
+    e.add_argument("ckpt")
+    e.add_argument("spans")
+    e.add_argument("work")
+    e.add_argument("out")
+    e.add_argument("--video")
+    e.add_argument("--model")
+    a = ap.parse_args(argv)
+    if a.cmd == "run":
+        k, n = (int(v) for v in a.shard.split("/"))
+        run(a.ckpt, a.spans, a.work, video=a.video, shard=(k, n), device=a.device, model=a.model)
+    else:
+        print(json.dumps(export(a.ckpt, a.spans, a.work, a.out, video=a.video, model=a.model), indent=1))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

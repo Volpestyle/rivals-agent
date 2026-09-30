@@ -169,7 +169,8 @@ def render(pred, video, out, *, start, end, pts_table=None, title="", truth=True
                             "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(out)], stdin=subprocess.PIPE)
     last_t = np.full(len(actions), -99)
     last_p = np.full(len(actions), -99)
-    table = vod.demo_pts(pts_table) if pts_table else vod.probe_pts(video)
+    table = ([int(x) for x in z["pts_ms"]] if "pts_ms" in z else
+             vod.demo_pts(pts_table) if pts_table else vod.probe_pts(video))
     for k, frame in enumerate(decode_frames(video, ordinals, table, ffmpeg=ffmpeg)):
         img = np.full((H, W, 3), BG[::-1], np.uint8)
         img[:GH, :GW] = frame[:, :, ::-1]
