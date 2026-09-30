@@ -63,6 +63,37 @@ def decode_rows(video, rows, threads=4):
                 raise ValueError(f"{len(want)} row frames not found in {video} (run {rows[ks[0]]['run']})")
 
 
+def decode_rows_from_clips(clip_root, rows, threads=4):
+    """Like decode_rows, from the idm lane's per-span clips (<clip_root>/<video>/<video>_<start>-<end>.mkv, stream
+    copies with the original timestamps). A row matches the clip frame within 1 ms of its frame time."""
+    import av
+    runs = {}
+    for k, r in enumerate(rows):
+        runs.setdefault(r["run"], []).append(k)
+    for run, ks in runs.items():
+        video = run.split(":")[0]
+        path = Path(clip_root) / video / (run.replace(":", "_") + ".mkv")
+        ms = lambda f: round(f["pts"] * f["timebase"][0] * 1000 / f["timebase"][1])
+        want = {ms(rows[k]["frame"]): k for k in ks}
+        last = max(want)
+        with av.open(str(path)) as container:
+            stream = container.streams.video[0]
+            stream.thread_type = "AUTO"
+            stream.codec_context.thread_count = threads
+            tb = stream.time_base
+            for frame in container.decode(stream):
+                if frame.pts is None:
+                    continue
+                t = round(frame.pts * tb.numerator * 1000 / tb.denominator)
+                if t > last + 1:
+                    break
+                k = next((want.pop(t + d) for d in (0, -1, 1) if t + d in want), None)
+                if k is not None:
+                    yield k, frame.to_ndarray(format="bgr24")
+        if want:
+            raise ValueError(f"{len(want)} row frames not found in {path}")
+
+
 def views_of(bgr):
     """(global RGB 144x256, crop RGB 128x128) uint8 by direct area downscaling of a frame of any size."""
     import cv2
@@ -104,7 +135,7 @@ class NpyRows:
         self.file.close()
 
 
-def views(labels, out_root, *, log=print):
+def views(labels, out_root, *, log=print, clips=None):
     import cv2
     cv2.setNumThreads(1)
     session = load_labels(labels)
@@ -121,7 +152,8 @@ def views(labels, out_root, *, log=print):
         files.append(((out / name).open("r+b"), offset, size))
     started, done = time.monotonic(), 0
     try:
-        for k, bgr in decode_rows(rows[0]["frame"]["video_path"], rows):
+        source = decode_rows_from_clips(clips, rows) if clips else decode_rows(rows[0]["frame"]["video_path"], rows)
+        for k, bgr in source:
             for (f, offset, size), view in zip(files, views_of(bgr)):
                 f.seek(offset + k * size)
                 f.write(np.ascontiguousarray(view).tobytes())
@@ -343,13 +375,14 @@ def game_running():
 
 
 def _views_job(args):
-    labels, out = args
+    labels, out, *rest = args
+    clips = rest[0] if rest else None
     sid = json.loads(open(labels, encoding="utf-8").readline())["session_id"]
     if (Path(out) / sid / "views.json").exists():
         return sid, "done before"
     if game_running():
         return sid, "skipped: game running"
-    return sid, views(labels, out, log=lambda m: print(m, flush=True))["seconds"]
+    return sid, views(labels, out, log=lambda m: print(m, flush=True), clips=clips)["seconds"]
 
 
 def main(argv=None):
@@ -362,6 +395,7 @@ def main(argv=None):
     p.add_argument("labels", nargs="+")
     p.add_argument("--out", required=True)
     p.add_argument("--views", help="views root (features stage)")
+    p.add_argument("--clips", help="views: decode from per-span clips under this root, not the original video")
     p.add_argument("--jobs", type=int, default=4)
     p.add_argument("--vision", default="D:/rivals-policy/bundles/ng-nohist-s1/vision.safetensors")
     p.add_argument("--vision-config", default="D:/rivals-policy/bundles/ng-nohist-s1/siglip2-large-config.json")
@@ -382,12 +416,12 @@ def main(argv=None):
         return 0
     if a.stage == "views" and a.jobs == 1:      # inline: no pool worker to outlive a killed parent
         for x in a.labels:
-            print(_views_job((x, a.out)), flush=True)
+            print(_views_job((x, a.out, a.clips)), flush=True)
         return 0
     if a.stage == "views":
         from concurrent.futures import ProcessPoolExecutor
         with ProcessPoolExecutor(a.jobs) as pool:
-            for result in pool.map(_views_job, [(x, a.out) for x in a.labels]):
+            for result in pool.map(_views_job, [(x, a.out, a.clips) for x in a.labels]):
                 print(result, flush=True)
         return 0
     if game_running():
