@@ -1,0 +1,56 @@
+[
+ {
+  "name": "k-mdrop30-s0",
+  "motion_dropout": 0.3,
+  "seed": 0,
+  "epochs": 30,
+  "batch_size": 8,
+  "use_dt": true,
+  "hidden": 1536,
+  "layers": 2,
+  "expert": true,
+  "expert_sessions": [
+   "expert-2873352801-s0",
+   "expert-2873352801-s1",
+   "expert-2873352801-s2",
+   "expert-2873352801-s3",
+   "expert-2873352801-s4",
+   "expert-2873352801-s5",
+   "expert-2873352801-s6",
+   "expert-2873352801-s7",
+   "expert-2871149954-s0",
+   "expert-2871149954-s1",
+   "expert-2871149954-s2",
+   "expert-2871149954-s3",
+   "expert-2879205768-s0"
+  ],
+  "expert_label_source": "idm v2-a (v2-a.pt)"
+ },
+ {
+  "name": "k-mdrop50-s0",
+  "motion_dropout": 0.5,
+  "seed": 0,
+  "epochs": 30,
+  "batch_size": 8,
+  "use_dt": true,
+  "hidden": 1536,
+  "layers": 2,
+  "expert": true,
+  "expert_sessions": [
+   "expert-2873352801-s0",
+   "expert-2873352801-s1",
+   "expert-2873352801-s2",
+   "expert-2873352801-s3",
+   "expert-2873352801-s4",
+   "expert-2873352801-s5",
+   "expert-2873352801-s6",
+   "expert-2873352801-s7",
+   "expert-2871149954-s0",
+   "expert-2871149954-s1",
+   "expert-2871149954-s2",
+   "expert-2871149954-s3",
+   "expert-2879205768-s0"
+  ],
+  "expert_label_source": "idm v2-a (v2-a.pt)"
+ }
+]
