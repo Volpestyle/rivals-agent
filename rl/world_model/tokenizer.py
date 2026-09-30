@@ -26,6 +26,8 @@ import argparse
 import json
 import math
 import os
+import re
+import shlex
 import subprocess
 import sys
 import time
@@ -279,8 +281,10 @@ def recon_png(tok, frames, dev, path):
 
 
 # --- PC etiquette -------------------------------------------------------------------------------------------------
-GPU_JOBS = ("policy.idm", "policy.bc2", "agent.loop", "agent.server")
-PS_PYTHON = "Get-CimInstance Win32_Process -Filter \"Name='python.exe'\" | ForEach-Object { $_.CommandLine }"
+MANUAL_HOLD = Path("D:/rivals-agent-local/rl-wm/runs/tok-pc/manual.hold")
+PS_GPU_JOBS = ("Get-CimInstance Win32_Process | Where-Object { $_.Name -match "
+               "'^(python|pythonw|python3|obs64|obs32|Marvel-Win64-Shipping)\\.exe$' } | "
+               "Select-Object Name,CommandLine | ConvertTo-Json -Compress")
 
 
 def below_normal():
@@ -289,19 +293,70 @@ def below_normal():
         ctypes.windll.kernel32.SetPriorityClass(ctypes.windll.kernel32.GetCurrentProcess(), 0x4000)
 
 
-def busy_reason():
-    """Why the PC's GPU is not ours right now (the game, or another lane's GPU job), else None. Windows only."""
+def competing_process(name, command):
+    """Recognize executable/module/script positions, never arbitrary argument text."""
+    name = name.lower()
+    if name == "marvel-win64-shipping.exe":
+        return "game running"
+    if name in {"obs64.exe", "obs32.exe"}:
+        return "OBS running"
+    if name not in {"python.exe", "pythonw.exe", "python3.exe"} or not command:
+        return None
+    try:
+        args = [x.strip('"').replace("\\", "/") for x in shlex.split(command, posix=False)]
+    except ValueError:
+        return None
+    i = 1
+    while i < len(args):
+        arg = args[i]
+        if arg in {"-c", "-"}:
+            return None
+        if arg == "-m":
+            module = args[i + 1] if i + 1 < len(args) else ""
+            if re.match(r"^(policy\.(?:idm|bc2)(?:\.|$)|agent\.)", module):
+                return f"{module} running"
+            return None
+        if arg in {"-W", "-X"}:
+            i += 2
+            continue
+        if arg.startswith("-"):
+            i += 1
+            continue
+        script = arg.lower()
+        if (re.fullmatch(r"d:/rivals-policy/intake/[^/]+/run-local-features\.py", script)
+                or re.fullmatch(r"d:/rivals-policy/runs/[^/]+/(?:encode_val|local_checks)\.py", script)):
+            return f"policy launcher {script} running"
+        return None  # later arguments are data, not another Python invocation
+    return None
+
+
+def busy_reason(hold_file=MANUAL_HOLD):
+    """Persistent reservation first; then the game's/OBS's and policy's PC processes."""
+    if hold_file is not None and Path(hold_file).exists():
+        return f"manual hold: {hold_file}"
     if os.name != "nt":
         return None
-    tl = subprocess.run(["tasklist", "/FI", "IMAGENAME eq Marvel-Win64-Shipping.exe", "/NH"], capture_output=True,
-                        text=True).stdout
-    if "marvel-win64-shipping" in tl.lower():
-        return "game running"
-    ps = subprocess.run(["powershell", "-NoProfile", "-Command", PS_PYTHON], capture_output=True, text=True).stdout
-    for job in GPU_JOBS:
-        if f"-m {job}" in ps:
-            return f"{job} running"
+    try:
+        ps = subprocess.run(["powershell", "-NoProfile", "-Command", PS_GPU_JOBS], capture_output=True,
+                            text=True, check=True, timeout=10)
+        processes = json.loads(ps.stdout or "[]")
+        if isinstance(processes, dict):
+            processes = [processes]
+        for process in processes:
+            reason = competing_process(process["Name"], process.get("CommandLine"))
+            if reason:
+                return reason
+    except (subprocess.SubprocessError, OSError, ValueError, TypeError, KeyError):
+        return "GPU ownership query failed"
     return None
+
+
+def checkpoint_and_yield(reason, save, log):
+    """Never report a resumable yield before the checkpoint has completed."""
+    if reason:
+        save()
+        log(reason)
+        raise SystemExit(3)
 
 
 # --- pack (Mac) ---------------------------------------------------------------------------------------------------
@@ -355,6 +410,7 @@ def main(argv=None):
     p.add_argument("--init", help="start from this checkpoint (e.g. the Mac probe's ckpt.pt) when --out has none")
     p.add_argument("--ckpt-minutes", type=float, default=15.0)
     p.add_argument("--yield-check", action="store_true", help="exit 3 within ~30 s of the game or a GPU job starting")
+    p.add_argument("--hold-file", type=Path, default=MANUAL_HOLD, help="persistent PC GPU reservation; never removed by trainer")
     p.add_argument("--steps-root")
     p.add_argument("--expert-root")
     p.add_argument("--head", help="a v2 model.pt whose reward head scores the reconstructions")
@@ -384,6 +440,9 @@ def main(argv=None):
         pass
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
+    if a.yield_check and (why := busy_reason(a.hold_file)):
+        v2.log(out, event="yield", reason=why, phase="before_device_init")
+        raise SystemExit(3)  # no new model state yet; preserve the existing checkpoint
     dev = "mps" if torch.backends.mps.is_available() else ("cuda" if torch.cuda.is_available() else "cpu")
     t0 = time.time()
     torch.manual_seed(0)
@@ -434,11 +493,8 @@ def main(argv=None):
     while step < a.steps:
         if a.yield_check and time.time() - t_check > 30:
             t_check = time.time()
-            why = busy_reason()
-            if why:
-                save()
-                v2.log(out, event="yield", step=step, reason=why)
-                sys.exit(3)
+            checkpoint_and_yield(busy_reason(a.hold_file), save,
+                                 lambda why: v2.log(out, event="yield", step=step, reason=why))
         if time.time() - t_ck > a.ckpt_minutes * 60:
             save()
             t_ck = time.time()

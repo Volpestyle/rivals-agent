@@ -2,7 +2,7 @@
 # Overnight tokenizer on the PC 4080 (world model stage 1). One loop: wait until the GPU is ours, train, and after a
 # yield (exit 3: the game or another lane's GPU job started) wait again and resume from the last checkpoint.
 #   bash rl/world_model/pc_tokenizer.sh D:/rivals-agent-local/rl-wm/code-<sha>
-# Rules it follows: starts only when Marvel-Win64-Shipping is not running, no policy.idm / policy.bc2 / agent.loop
+# Rules it follows: starts only without manual.hold, game/OBS or recognized competing policy/agent jobs,
 # process exists and GPU utilisation is under 15%; the trainer re-checks every 30 s, runs BelowNormal, checkpoints
 # every 15 min. Board receipt: C:/Users/volpe/jobs/rl-wm-tok-pc.status.json (host pc). Exit file: $RUN.exit.
 set -u
@@ -12,6 +12,7 @@ RUN=$ROOT/runs/tok-pc
 PY=D:/rivals-agent-local/rl-wm-venv/Scripts/python.exe
 STEPS=${STEPS:-60000}
 LOG=$RUN/driver.log
+HOLD=$RUN/manual.hold
 mkdir -p "$RUN"
 rm -f "$RUN.exit"
 cd "$CODE"
@@ -22,7 +23,10 @@ status() {  # stage progress
 
 busy() {
   local why util
-  why=$("$PY" -c "from rl.world_model.tokenizer import busy_reason; print(busy_reason() or '')")
+  if [ -e "$HOLD" ]; then echo "manual hold: $HOLD"; return; fi
+  if ! why=$("$PY" -c "from rl.world_model.tokenizer import busy_reason; import sys; print(busy_reason(sys.argv[1]) or '')" "$HOLD"); then
+    echo "GPU ownership query failed"; return
+  fi
   if [ -n "$why" ]; then echo "$why"; return; fi
   util=$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits | head -1 | tr -d ' ')
   if [ "${util:-100}" -ge 15 ]; then echo "GPU busy (${util}%)"; fi
@@ -44,7 +48,7 @@ while true; do
     --expert-root D:/rivals-agent-local/rl-wm-expert --steps-root "$ROOT/steps" \
     --head "$ROOT/init/v2-main.pt" --labels rl/labels/range_rewards_20260930.json \
     --denylist data/human/sealed-denylist.v2.json --init "$ROOT/init/tok-probe-ckpt.pt" \
-    --out "$RUN" --steps "$STEPS" --batch 16 --threads 2 --ckpt-minutes 15 --yield-check >> "$RUN/train.out" 2>&1
+    --out "$RUN" --steps "$STEPS" --batch 16 --threads 2 --ckpt-minutes 15 --yield-check --hold-file "$HOLD" >> "$RUN/train.out" 2>&1
   rc=$?
   echo "$(date -Is) exit $rc at step $(step_now)" >> "$LOG"
   if [ $rc -eq 3 ]; then
