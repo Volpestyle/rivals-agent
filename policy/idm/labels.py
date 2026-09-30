@@ -323,7 +323,8 @@ def export(ckpt, spans_path, work, out_dir, *, video=None, model=None, anchor_di
             # true_deg ~= yaw_deg * camera_scale. Applied values come from the scale file; degrees are never rewritten.
             applied = float(camera_scale.get("applied", {}).get(player, camera_scale.get("default", 1.0)))
             header["camera_scale"] = {"applied": applied, "measured": camera_scale.get("creators", {}).get(player),
-                                      "basis": camera_scale.get("basis")}
+                                      "basis": camera_scale.get("basis"),
+                                      "flag": camera_scale.get("flags", {}).get(player)}
             for r in rows:
                 r["camera_scale"] = applied
         out = out_dir / f"expert-{vid}.steps.jsonl"
