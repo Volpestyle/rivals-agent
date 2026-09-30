@@ -70,7 +70,8 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
         chunk: int = 0, onset_weight: float = 1., chunk_weight: float = .5, expert: bool = False,
         expert_epochs: int = None, expert_share: float = None, hires: bool = False, layers: int = 1,
         expert_actions: bool = True, expert_sessions: list = None, expert_label_source: str = None,
-        expert_targets: str = None, motion_dropout: float = 0., static_aug: float = 0., expert_mask: dict = None):
+        expert_targets: str = None, motion_dropout: float = 0., static_aug: float = 0., expert_mask: dict = None,
+        extra_train: list = None):
     """expert_targets: a volume directory of target-only overlays (<shard>/{targets.npz, meta.json}, from
     expert.relabel) that replace each staged expert shard's targets; the original features are unchanged."""
     _setup()
@@ -82,7 +83,11 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
     shutil.rmtree(local, ignore_errors=True)
     shutil.rmtree(Path("/tmp/run"), ignore_errors=True)
     evals = [s for s in (eval_sessions if eval_sessions is not None else VAL) if (root / s).exists()]
-    for s in TRAIN + DEV + evals:
+    train_ids = TRAIN + [s for s in (extra_train or []) if s not in TRAIN]   # later James takes (e.g. start-from-still)
+    missing = [s for s in train_ids if not (root / s / "meta.json").is_file()]
+    if missing:
+        raise ValueError(f"train sessions without features: {missing}")
+    for s in train_ids + DEV + evals:
         shutil.copytree(root / s, local / s)
     experts = []
     if expert_sessions is not None and not expert:
@@ -111,7 +116,7 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
     run = Path("/tmp/run") / name
     config = model.Config(use_feats=use_feats, use_motion=use_motion, feat_dropout=feat_dropout, hidden=hidden,
                           use_green=use_green, use_dt=use_dt, chunk=chunk, hires=hires, layers=layers)
-    report = train.fit([local / s for s in TRAIN], [local / s for s in DEV], [local / s for s in evals], run,
+    report = train.fit([local / s for s in train_ids], [local / s for s in DEV], [local / s for s in evals], run,
                        config=config, seed=seed, epochs=epochs, batch_size=batch_size, lr=lr, wd=wd,
                        onset_weight=onset_weight, chunk_weight=chunk_weight, expert_dirs=experts,
                        expert_epochs=expert_epochs, expert_share=expert_share, expert_actions=expert_actions,
