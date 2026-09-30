@@ -51,6 +51,17 @@ def open_bots(frame, boxes, *, require_plate=True):
     return result
 
 
+def follow_target(candidates, previous=None):
+    """Spatial association, not identity proof; never switch to a remote outline."""
+    if previous is None:
+        return None
+    px, py = previous.center
+    matches = [d for d in candidates if .5 <= d.height / previous.height <= 2.
+               and abs(d.center[0] - px) <= 1.5 * max(d.bbox[2] - d.bbox[0], previous.bbox[2] - previous.bbox[0])
+               and abs(d.center[1] - py) <= .75 * max(d.height, previous.height)]
+    return min(matches, key=lambda d: math.hypot(d.center[0] - px, d.center[1] - py), default=None)
+
+
 class ResetRunner(LearnedRunner):
     def __init__(self, *args, arrival=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -73,11 +84,11 @@ class ResetRunner(LearnedRunner):
         return open_bots(frame, boxes)
 
     def approach_targets(self, frame, detections):
-        # Small outlines may lack a readable plate. They permit bounded approach,
-        # never episode readiness. Reject glass locally, not unrelated foliage.
+        # Keep the target when it grows beyond the walking band. A near outline
+        # without a plate is unverified, not absent and not permission to search.
         w, h = self.size
         candidates = [d for d in detections if d.cls == 'enemy'
-                      and .03 <= d.height / h < .08
+                      and .03 <= d.height / h <= .55
                       and .15 <= d.center[0] / w <= .85 and .1 <= d.center[1] / h <= .8]
         return open_bots(frame, candidates, require_plate=False)
 
@@ -125,6 +136,7 @@ class ResetRunner(LearnedRunner):
     def reset(self):
         a = self.arrival
         memory, count, phase = a.ArrivalMemory(), 0, None
+        target, lost, near_unverified = None, 0, 0
         started, frames = self.io.now(), 0
         self.start_state, self.frames = 'other', 0
         self.io.release()
@@ -189,12 +201,39 @@ class ResetRunner(LearnedRunner):
                 else:
                     # Only approach a visible centered bot, never walk blind.
                     w, h = self.size
-                    target = min(candidates, key=lambda d: abs(d.center[0] / w - .5), default=None)
+                    matched = (follow_target(candidates, target) if target is not None else
+                               min(candidates, key=lambda d: abs(d.center[0] / w - .5), default=None))
+                    if target is not None and matched is None:
+                        self.release()
+                        near_unverified = 0
+                        lost += 1
+                        self.write({'event': 'reset_target', 't': stamp, 'clause': 'target_lost',
+                                    'previous_bbox': list(target.bbox), 'frames': lost})
+                        if lost >= 3:
+                            raise RangeLost('reset_target_lost')
+                        self.sleep(.02)
+                        continue
+                    target, lost = matched, 0
+                    if target is not None:
+                        self.write({'event': 'reset_target', 't': stamp, 'bbox': list(target.bbox),
+                                    'height_fraction': target.height / h, 'plate': target.plate})
+                        if target.height / h >= .08:
+                            self.release()
+                            near_unverified += 1
+                            if near_unverified >= 3:
+                                raise RangeLost('reset_target_near_unverified')
+                            self.sleep(.02)
+                            continue
+                    near_unverified = 0
                     if target and abs(target.center[0] / w - .5) <= .05:
                         def still_small_centered(f):
+                            nonlocal target
                             ds = self.percept.wide(f)
-                            return any(abs(d.center[0] / w - .5) <= .05
-                                       for d in self.approach_targets(f, ds))
+                            matched = follow_target(self.approach_targets(f, ds), target)
+                            if matched is None:
+                                return False
+                            target = matched
+                            return target.height / h < .08 and abs(target.center[0] / w - .5) <= .05
                         self.pulse({**NEUTRAL, 'ly': .5}, .25, still_small_centered)
                     else:
                         error = target.center[0] / w - .5 if target else .5

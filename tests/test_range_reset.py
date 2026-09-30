@@ -59,7 +59,7 @@ def setup(deadline=2.):
     runner = Q.ResetRunner(io, percept, guard, None, deadline, log=log,
                            sleep=lambda s: setattr(io, 't', io.t+s), arrival=arrival)
     runner.visible = lambda f, boxes: [] if f.door else boxes
-    runner.approach_targets = lambda f, ds: [] if f.door else [d for d in ds if .03 <= d.height / 720 < .08]
+    runner.approach_targets = lambda f, ds: [] if f.door else [d for d in ds if .03 <= d.height / 720 <= .55]
     return NS(io=io, flags=flags, safety=safety, runner=runner, rows=rows)
 
 
@@ -250,7 +250,7 @@ def test_native_spawn_glass_controls_and_plaza(name):
     assert bool(boxes) == (name == 'arrival-plaza-bot-ahead')
     runner = Q.ResetRunner(None, None, None, None, 30.)
     runner.size = size
-    assert not runner.approach_targets(frame, find_enemies(frame, scale=size[0]/1280))
+    assert bool(runner.approach_targets(frame, find_enemies(frame, scale=size[0]/1280))) == (name == 'arrival-plaza-bot-ahead')
 
 
 def test_sitting05_small_plaza_bot_is_approachable_not_ready_or_a_spawn_door():
@@ -268,6 +268,63 @@ def test_sitting05_small_plaza_bot_is_approachable_not_ready_or_a_spawn_door():
     targets = runner.approach_targets(frame, ds)
     assert len(targets) == 1 and targets[0].plate is False
     assert targets[0].center[0] > runner.size[0] / 2  # toward bot, not left foliage
+
+
+def sitting06_frame(name):
+    cv2 = pytest.importorskip('cv2')
+    path = Path('data/calibration/rl-sitting-20260930-06/ep-000-bc') / name
+    if not path.exists():
+        pytest.skip('authorized sitting06 frame is local')
+    return cv2.imread(str(path))
+
+
+def test_sitting06_growth_keeps_target_but_does_not_relax_readiness():
+    percept = L.default_perception()
+    runner = Q.ResetRunner(None, percept, None, None, 30.)
+    frame = sitting06_frame('000050.jpg')
+    runner.size = percept.size(frame)
+    ds = percept.wide(frame)
+    assert not runner.visible(frame, Q.eligible(ds, runner.size))
+    targets = runner.approach_targets(frame, ds)
+    assert len(targets) == 2 and all(d.height / 1440 >= .08 and d.plate is False for d in targets)
+
+
+def test_sitting06_association_does_not_switch_to_new_closest_outline():
+    percept = L.default_perception()
+    runner = Q.ResetRunner(None, percept, None, None, 30.)
+    previous = sitting06_frame('000034.jpg')
+    runner.size = percept.size(previous)
+    initial = min(runner.approach_targets(previous, percept.wide(previous)), key=lambda d: abs(d.center[0] - 1280))
+    current = sitting06_frame('000035.jpg')
+    candidates = runner.approach_targets(current, percept.wide(current))
+    nearest = min(candidates, key=lambda d: abs(d.center[0] - 1280))
+    matched = Q.follow_target(candidates, initial)
+    assert nearest.center[0] / 2560 > .5
+    assert matched.center[0] / 2560 < .4 and matched is not nearest
+    balcony = sitting06_frame('000090.jpg')
+    assert Q.follow_target(runner.approach_targets(balcony, percept.wide(balcony)), matched) is None
+
+
+@pytest.mark.parametrize('next_frame,clause', [('000050.jpg', 'reset_target_near_unverified'),
+                                            ('000090.jpg', 'reset_target_lost')])
+def test_sitting06_real_frame_reset_stops_without_blind_search_or_balcony_walk(next_frame, clause):
+    frames = [sitting06_frame('000049.jpg'), sitting06_frame('000049.jpg'), sitting06_frame(next_frame)]
+    io, percept, rows = IO(), L.default_perception(), []
+    def capture():
+        frame = frames[min(io.n, len(frames) - 1)]
+        io.n += 1
+        io.t += .01
+        return frame, io.t
+    io.next = capture
+    runner = Q.ResetRunner(io, percept, lambda f: percept.in_range(f) and not percept.idle(f), None, 2.,
+                          log=NS(write=lambda row, frame=None: rows.append(row)),
+                          sleep=lambda s: setattr(io, 't', io.t + s))
+    with pytest.raises(RangeLost, match=clause):
+        runner.reset()
+    assert len(io.calls) == 1 and io.calls[0][0]['ly'] == .5
+    assert all(pad['rx'] == 0 for pad, _ in io.calls)
+    assert io.t < .4 and io.releases >= 3
+    assert any(row['event'] == 'reset_target' for row in rows)
 
 
 def test_native_galacta_plaza_foliage_does_not_count_as_spawn_door():
