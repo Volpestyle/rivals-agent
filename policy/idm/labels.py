@@ -57,35 +57,63 @@ def model_name(ckpt):
     return Path(ckpt).stem if Path(ckpt).stem not in ("refit", "v2") else Path(ckpt).parent.name + "-" + Path(ckpt).stem
 
 
-def run(ckpt, spans_path, work, *, video=None, shard=(0, 1), device="cuda", model=None, fast=False):
+def _rects(s):
+    return [o["rect"] for o in s.get("overlays", [])] + [o["rect"] for o in s.get("facecam_rects", [])
+                                                         if isinstance(o, dict) and "rect" in o]
+
+
+def run(ckpt, spans_path, work, *, video=None, shard=(0, 1), device="cuda", model=None, fast=False, workers=1):
+    """Label each span not yet labelled. workers > 1 decodes that many spans at once in threads (ffmpeg
+    subprocesses) while this process runs the model on the GPU: several processes sharing one GPU time-slice it
+    badly on Windows. At most workers + 2 decoded spans are held in memory."""
+    from collections import deque
+    from concurrent.futures import ThreadPoolExecutor
     todo = [s for k, s in enumerate(spans(spans_path, video)) if k % shard[1] == shard[0]]
     name = model or model_name(ckpt)
     (Path(work) / name).mkdir(parents=True, exist_ok=True)
     loaded = vod.load_any(ckpt, device)
-    done = 0
-    checked = 0.0
-    for s in todo:
-        out = span_file(work, name, s)
-        if out.exists():
-            continue
-        if time.time() - checked > 30:                   # tasklist costs ~0.7 s; look at most every 30 s
-            while game_running():
-                print(json.dumps({"event": "paused_for_game"}), flush=True)
-                time.sleep(60)
-            checked = time.time()
-        t0 = time.time()
-        rects = [o["rect"] for o in s.get("overlays", [])] + [o["rect"] for o in s.get("facecam_rects", [])
-                                                               if isinstance(o, dict) and "rect" in o]
+    todo = [s for s in todo if not span_file(work, name, s).exists()]
+    done, checked, t_last = 0, 0.0, time.time()
+
+    def prep(s):
         try:
-            n = vod.label_file(ckpt, s["local_path"], str(out) + ".tmp.npz", start=s["start_s"], end=s["end_s"],
-                               rects=rects, device=device, span_id=s["span_id"], loaded=loaded, fast=fast)
-            Path(str(out) + ".tmp.npz").replace(out)
-        except Exception as e:                                          # one bad span must not stop the batch
-            print(json.dumps({"event": "span_failed", "span": s["span_id"], "error": str(e)[:300]}), flush=True)
-            continue
-        done += 1
-        print(json.dumps({"event": "span", "span": s["span_id"], "rows": n, "s": round(time.time() - t0, 1),
-                          "done": done, "of": len(todo)}), flush=True)
+            return vod.prepare_span(s["local_path"], s["start_s"], s["end_s"], rects=_rects(s), fast=fast)
+        except Exception as e:                                          # reported when the span is consumed
+            return e
+    with ThreadPoolExecutor(max(1, workers)) as pool:
+        queue, it = deque(), iter(todo)
+        while True:
+            while len(queue) < max(1, workers) + 2:
+                s = next(it, None)
+                if s is None:
+                    break
+                if time.time() - checked > 30:                     # tasklist costs ~0.7 s; look every 30 s
+                    while game_running():
+                        print(json.dumps({"event": "paused_for_game"}), flush=True)
+                        time.sleep(60)
+                    checked = time.time()
+                queue.append((s, pool.submit(prep, s)))
+            if not queue:
+                break
+            s, fut = queue.popleft()
+            out = span_file(work, name, s)
+            prepared = fut.result()
+            try:
+                if isinstance(prepared, Exception):
+                    raise prepared
+                n = vod.label_file(ckpt, s["local_path"], str(out) + ".tmp.npz", start=s["start_s"],
+                                   end=s["end_s"], rects=_rects(s), device=device, span_id=s["span_id"],
+                                   loaded=loaded, fast=fast, prepared=prepared)
+                Path(str(out) + ".tmp.npz").replace(out)
+            except Exception as e:                                      # one bad span must not stop the batch
+                print(json.dumps({"event": "span_failed", "span": s["span_id"], "error": str(e)[:300]}),
+                      flush=True)
+                continue
+            done += 1
+            now = time.time()
+            print(json.dumps({"event": "span", "span": s["span_id"], "rows": n, "s": round(now - t_last, 1),
+                              "done": done, "of": len(todo)}), flush=True)
+            t_last = now
 
 
 def _sha(path, cache):
@@ -273,6 +301,7 @@ def main(argv=None):
     r.add_argument("--device", default="cuda")
     r.add_argument("--model")
     r.add_argument("--fast", action="store_true", help="resize in YUV before RGB and decode on the GPU")
+    r.add_argument("--workers", type=int, default=1, help="spans decoded concurrently in threads")
     e = sub.add_parser("export")
     e.add_argument("ckpt")
     e.add_argument("spans")
@@ -290,7 +319,8 @@ def main(argv=None):
         print(clips(a.spans, a.out, videos=set(a.videos), remote_prefix=a.remote_prefix))
     elif a.cmd == "run":
         k, n = (int(v) for v in a.shard.split("/"))
-        run(a.ckpt, a.spans, a.work, video=a.video, shard=(k, n), device=a.device, model=a.model, fast=a.fast)
+        run(a.ckpt, a.spans, a.work, video=a.video, shard=(k, n), device=a.device, model=a.model, fast=a.fast,
+            workers=a.workers)
     else:
         print(json.dumps(export(a.ckpt, a.spans, a.work, a.out, video=a.video, model=a.model), indent=1))
     return 0

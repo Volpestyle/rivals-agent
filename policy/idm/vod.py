@@ -355,18 +355,24 @@ def mask_overlays(grey, hud, rects, fill=128):
     return grey, hud
 
 
-def label_span(model, video, start, end, *, rects=(), device="cuda", batch=32, calibration=None, fast=False):
-    """Per 60 Hz interval of [start, end] (one per decoded frame with a full +-W window): press and held
-    probabilities, camera mean/log-variance and the camera answer (None = abstain). Frames are taken at the
-    video's own rate, which must be about 60 fps."""
-    import torch
-    from policy.idm import train
+def prepare_span(video, start, end, *, rects=(), fast=False):
+    """Decode and mask one span: (grey, hud, pts). CPU and ffmpeg only, so it can run in a worker thread."""
     grey, hud, pts = decode_span(video, start, end, fast=fast)
     if len(pts) > 2:
         fps = (len(pts) - 1) / (pts[-1] - pts[0])
         if not 55 <= fps <= 65:
             raise ValueError(f"{video}: {fps:.1f} fps; the IDM's window assumes 60 Hz intervals")
-    grey, hud = mask_overlays(grey, hud, rects)
+    return (*mask_overlays(grey, hud, rects), pts)
+
+
+def label_span(model, video, start, end, *, rects=(), device="cuda", batch=32, calibration=None, fast=False,
+               prepared=None):
+    """Per 60 Hz interval of [start, end] (one per decoded frame with a full +-W window): press and held
+    probabilities, camera mean/log-variance and the camera answer (None = abstain). Frames are taken at the
+    video's own rate, which must be about 60 fps. `prepared` is prepare_span's result when decoded elsewhere."""
+    import torch
+    from policy.idm import train
+    grey, hud, pts = prepared or prepare_span(video, start, end, rects=rects, fast=fast)
     raw = getattr(model, "raw_window", False)
     cal = calibration or JAMES_CALIBRATION
     W = model.config.window
@@ -396,10 +402,11 @@ def label_span(model, video, start, end, *, rects=(), device="cuda", batch=32, c
             "cam": cam, "held": np.concatenate(helds) if helds else None, "answers": answers}
 
 
-def label_file(ckpt, video, out, *, start, end, rects=(), device="cuda", span_id=None, loaded=None, fast=False):
+def label_file(ckpt, video, out, *, start, end, rects=(), device="cuda", span_id=None, loaded=None, fast=False,
+               prepared=None):
     from policy.range_bc import vocab
     model, supported, thresholds = loaded or load_any(ckpt, device)
-    res = label_span(model, video, start, end, rects=rects, device=device, fast=fast)
+    res = label_span(model, video, start, end, rects=rects, device=device, fast=fast, prepared=prepared)
     extra = {} if res["held"] is None else {"held": res["held"]}
 
     def col(key):
