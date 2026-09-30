@@ -1,0 +1,1255 @@
+[
+  {
+    "object_id": "ap-0fRwzgw3rUuKCyKBBSVdYG",
+    "description": "rivals-yaw-dropout-fit-s3-20260928-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.71107722"
+  },
+  {
+    "object_id": "ap-0zrL46OUNnZguHuxCBKViy",
+    "description": "rivals-yaw-probe3-20260927-06",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.08614692"
+  },
+  {
+    "object_id": "ap-27tRR6OGOhYj0aFssCiizX",
+    "description": "rivals-idm-v2",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "8.64717740"
+  },
+  {
+    "object_id": "ap-2RMTItGkQ0fXwfNm68p9B7",
+    "description": "rivals-yaw-fit-grid8-s3-20260927-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.18427204"
+  },
+  {
+    "object_id": "ap-2YGsZt5kSpoQ6tIxpMpXNy",
+    "description": "rivals-idm-label",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.32979771"
+  },
+  {
+    "object_id": "ap-2ghN2b0Ezuu3NFkSaHPRZV",
+    "description": "rivals-yaw-probe3-20260927-03",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.08614680"
+  },
+  {
+    "object_id": "ap-2tMjxFgdV6CM32Uitcn7G1",
+    "description": "rivals-yaw-local-disk-probe-20260927-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.49678468"
+  },
+  {
+    "object_id": "ap-33VJIx2k53w6cEPtLnSTmQ",
+    "description": "rivals-yaw-fit-grid8-s1-20260927-03",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "2.79550995"
+  },
+  {
+    "object_id": "ap-3Ervncefz5sXUFewt0VcIu",
+    "description": "rivals-cm3-r3p1-H-0-02-478a43ed7448",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.42555097"
+  },
+  {
+    "object_id": "ap-3dkMofStzud08TKyXW8wMk",
+    "description": "rivals-idm-label",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.24736259"
+  },
+  {
+    "object_id": "ap-3uP7w13pSkfs96vm9nOZPI",
+    "description": "rivals-idm-label",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.15751708"
+  },
+  {
+    "object_id": "ap-4MdS5BLGAj2PmBvReXDlHD",
+    "description": "rivals-cm3-copy-01-293f1570970b",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.00077366"
+  },
+  {
+    "object_id": "ap-51WA8EjeO3dVW6aLZxPnJd",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.99590416"
+  },
+  {
+    "object_id": "ap-5COQNqtmKfk8pB8oCLUovj",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.07781046"
+  },
+  {
+    "object_id": "ap-5TAXGKH1UlOLvZBSqI0SZq",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.83343616"
+  },
+  {
+    "object_id": "ap-60cOeUCNdWrX64hf6R0DXv",
+    "description": "rivals-idm-label",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.39781801"
+  },
+  {
+    "object_id": "ap-62GMnyZ1PD7X5MmiizVcw8",
+    "description": "rivals-yaw-probe2-20260927-01",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.00143609"
+  },
+  {
+    "object_id": "ap-6Dl7cjGkqqQ4f3TPurjS92",
+    "description": "rivals-yaw-dropout-probe-s3-20260928-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.04881626"
+  },
+  {
+    "object_id": "ap-6J9PlRxvUIFrcNPQ114QNb",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "1.37073939"
+  },
+  {
+    "object_id": "ap-6PbiXELBTKsFOd10VNG7lH",
+    "description": "rivals-cm3-smoke-05-d4c251fc1b84",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.32472296"
+  },
+  {
+    "object_id": "ap-7LZrm9P3uPwwgtO7UpGgA6",
+    "description": "rivals-yaw-fit-grid8-s1-20260927-02",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.64897201"
+  },
+  {
+    "object_id": "ap-7jh5OiC3Dk48V4kRUgyvuC",
+    "description": "rivals-cm3-smoke-03-ad21fb12e2d1",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.33446223"
+  },
+  {
+    "object_id": "ap-88bZdIfJftMEdbXe5ikEoJ",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.00349695"
+  },
+  {
+    "object_id": "ap-8nEMH8l8Yb9JVvTR0xv5YM",
+    "description": "rivals-cm3-extract-02-79fe4120ffac",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.57814301"
+  },
+  {
+    "object_id": "ap-99oPctlczidFsAnYBPBOyc",
+    "description": "rivals-cm3-proof128-02-8c0bd5ed5d18",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.08356054"
+  },
+  {
+    "object_id": "ap-9QqYAuzBW5NeiSOJsplYDe",
+    "description": "rivals-yaw-fit-grid4-s3-20260927-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.09219226"
+  },
+  {
+    "object_id": "ap-Aed2egLWCTD3A4iYd6zOeq",
+    "description": "rivals-yaw-dropout-fit-s2-20260928-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.69188912"
+  },
+  {
+    "object_id": "ap-BH4M4Mtc3q3jwLFnJrsXiz",
+    "description": "rivals-idm-label",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.75542593"
+  },
+  {
+    "object_id": "ap-BHcmcMU8xs5PpjTsbBP74o",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "2.75907479"
+  },
+  {
+    "object_id": "ap-Bm8ykgoK7p4BBkA9endyse",
+    "description": "rivals-yaw-extract-20260927-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.05743067"
+  },
+  {
+    "object_id": "ap-Cczx81ojpGPDi536pQwqQU",
+    "description": "rivals-modal-benchmark",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.00047970"
+  },
+  {
+    "object_id": "ap-CjWEJxyEcdzRl91dqM3KDs",
+    "description": "rivals-yaw-dropout-probe-s2-20260928-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.04881690"
+  },
+  {
+    "object_id": "ap-DBRMynIvb3oHSqmD4f1Y4h",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "5.72559629"
+  },
+  {
+    "object_id": "ap-DbXYEXSXwm88yU6AkQEXI5",
+    "description": "rivals-cm3-proof128-04-cd9f2ad5b54e",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.09080426"
+  },
+  {
+    "object_id": "ap-EHQNtXc0YlNbmQAIUnZbvg",
+    "description": "rivals-idm-zoom",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "1.46575550"
+  },
+  {
+    "object_id": "ap-EM8qMLqUuIxJ290eagLNTO",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "5.39534500"
+  },
+  {
+    "object_id": "ap-EZZjS7vmTHUEbE5RECLQh5",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "3.16543024"
+  },
+  {
+    "object_id": "ap-EnmSrBotA9t3gXBsxvBbkC",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "1.24556948"
+  },
+  {
+    "object_id": "ap-FBrD9A5uFj8XBiPb5Q7g8i",
+    "description": "rivals-yaw-fit-grid8-s2-20260927-02",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.69204945"
+  },
+  {
+    "object_id": "ap-FYejAJBzMazNQBVfJUSntK",
+    "description": "rivals-rl-awr-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.20951836"
+  },
+  {
+    "object_id": "ap-FsgOzTSna2WJZd9W3cFt6B",
+    "description": "rivals-rl-awr-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.81825805"
+  },
+  {
+    "object_id": "ap-GOaMzcf9NlQJEoXTMhSxrp",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "3.91204025"
+  },
+  {
+    "object_id": "ap-H1cmBFXAF8hoM3AI1rJIbo",
+    "description": "rivals-rl-wm2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.58069143"
+  },
+  {
+    "object_id": "ap-HoraDCDZS8z6YDezc2jneo",
+    "description": "rivals-guard-v2-shake-20260928-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.07322503"
+  },
+  {
+    "object_id": "ap-IDNn5h5ae3wzHhmkVdP3Ri",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "4.80336100"
+  },
+  {
+    "object_id": "ap-ITLHxiYAjTOk5ELorrlk4d",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "3.20694181"
+  },
+  {
+    "object_id": "ap-J2YBqhdEVxPkCYu0KuZLux",
+    "description": "rivals-explore-h4-fresh-20260927",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "6.98845903"
+  },
+  {
+    "object_id": "ap-J4KO3tCkAcrALV6W2K4Klf",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "1.82184190"
+  },
+  {
+    "object_id": "ap-JCwk24Z3uyDw8s8HQSqgSg",
+    "description": "rivals-idm-label",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.04285525"
+  },
+  {
+    "object_id": "ap-Jun2ESssmjqlWZdRBqNd7O",
+    "description": "rivals-cm3-stage0-02-8ba5795f6398",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.04881641"
+  },
+  {
+    "object_id": "ap-KXUADFXfN3hOKoC8LP4ZAg",
+    "description": "rivals-yaw-fit-grid4-s2-20260927-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.08901816"
+  },
+  {
+    "object_id": "ap-Kwvl7474A9fBomqyeDqsS0",
+    "description": "rivals-cm3-stage0-01-6b82be1f8b9e",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.02777829"
+  },
+  {
+    "object_id": "ap-L86He9hBeODdi383qyBB1o",
+    "description": "rivals-rl-wm-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.01188932"
+  },
+  {
+    "object_id": "ap-LErWHyBPwZHBDFWINLRJk6",
+    "description": "rivals-rl-wm2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "18.73316542"
+  },
+  {
+    "object_id": "ap-LQhisip3XWkpcABL3tR1oX",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "1.60691807"
+  },
+  {
+    "object_id": "ap-Lyhxl1Mpx1fejJRbh76wzF",
+    "description": "rivals-rl-wm2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.57827930"
+  },
+  {
+    "object_id": "ap-M3WzgPwxkYUdYkZLp1ipPS",
+    "description": "rivals-yaw-fit-grid8-s2-20260927-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.41364946"
+  },
+  {
+    "object_id": "ap-MAQ8ytM5YvmiWflAg5nsb2",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "1.75886452"
+  },
+  {
+    "object_id": "ap-MAdUCvhfMKP7D1hbuNR3TT",
+    "description": "rivals-yaw-probe3-20260927-01",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.08614638"
+  },
+  {
+    "object_id": "ap-MBdVG1UvBj4TtV4f9ALrsU",
+    "description": "rivals-idm-expanded-20260928-full-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "2.95914269"
+  },
+  {
+    "object_id": "ap-McTxozLZtgSIkoF8rx5Kkb",
+    "description": "rivals-nitrogen-confirm-control-s2-20260927",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "1.24055393"
+  },
+  {
+    "object_id": "ap-Mq81hb3DCc1Y3530q9g4kt",
+    "description": "rivals-rl-wm2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.40895552"
+  },
+  {
+    "object_id": "ap-NI9x7ZkcGenP1lCjPwTiSo",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "1.98568595"
+  },
+  {
+    "object_id": "ap-NaP4eYKWBAVOrbP5SHuugN",
+    "description": "rivals-idm-label",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.01638171"
+  },
+  {
+    "object_id": "ap-NiTCOQbKXYlzqpLeRnVdZv",
+    "description": "rivals-rl-wm2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "16.10751731"
+  },
+  {
+    "object_id": "ap-NmNW8NkO6cmh67eYnefu8F",
+    "description": "rivals-rl-wm-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "5.00426635"
+  },
+  {
+    "object_id": "ap-Ob46TcjLMFSUWCQ3CWAq50",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.49686371"
+  },
+  {
+    "object_id": "ap-PHs9c7XwYWuP8TFIIM2mFf",
+    "description": "rivals-capture-04-9c0c91ca7b49",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.00287158"
+  },
+  {
+    "object_id": "ap-PR5gZ1baNAJ6JV6G5fXUy6",
+    "description": "rivals-nitrogen-confirm-candidate-s2-20260927",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "1.24912774"
+  },
+  {
+    "object_id": "ap-PexMexkTPcjfgxCsb3tlOH",
+    "description": "rivals-idm-label",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.86015861"
+  },
+  {
+    "object_id": "ap-Q26pzt0vt33yGuGJJ9MhQ4",
+    "description": "rivals-rl-awr-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "1.61102880"
+  },
+  {
+    "object_id": "ap-Q9nqdCQUhqTLrxf3vyP4mW",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "1.64326280"
+  },
+  {
+    "object_id": "ap-QElgTME5Sgg0rKfU2cb0UF",
+    "description": "rivals-cm3-proof128-03-c58f50f05c20",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.18122592"
+  },
+  {
+    "object_id": "ap-QVeLevoayFdWqPzS95UUaK",
+    "description": "rivals-yaw-dropout-probe-s1-20260928-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.05168800"
+  },
+  {
+    "object_id": "ap-QhaG5b0AOniBSQZSMU0v8N",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "2.47075147"
+  },
+  {
+    "object_id": "ap-RUfsHpFc94fSt7Qid64QAz",
+    "description": "rivals-explore-encoder-historyoff-nitrogen-20260927",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "1.32175805"
+  },
+  {
+    "object_id": "ap-Rw5guMQZisbYgIxIFowaYf",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "2.52806376"
+  },
+  {
+    "object_id": "ap-S6lLYCw0bpGcPfFhcMyLgy",
+    "description": "rivals-idm-expanded-20260928-full-03",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "19.55997060"
+  },
+  {
+    "object_id": "ap-TdbkYAXG4ckR1GdeRGBUuo",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.69744354"
+  },
+  {
+    "object_id": "ap-Tx2mRg0F1eAMfUIOBdVDTZ",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.06021592"
+  },
+  {
+    "object_id": "ap-U4pCzUCVkymSbTLdBZ3bMj",
+    "description": "rivals-modal-benchmark",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "1.24974541"
+  },
+  {
+    "object_id": "ap-UCpWWAvk5SD9peKDun9NcX",
+    "description": "rivals-rl-wm-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.63983798"
+  },
+  {
+    "object_id": "ap-UL78GpaWyJMJqhvoraUQa9",
+    "description": "rivals-cm3-extract-01-2929db19b917",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.59200642"
+  },
+  {
+    "object_id": "ap-UO8aRLuRGBxgZ3DjONeBiR",
+    "description": "rivals-yaw-fit-grid4-s1-20260927-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.14667481"
+  },
+  {
+    "object_id": "ap-URlc6P5zb76lUgr1fOkToa",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.22217910"
+  },
+  {
+    "object_id": "ap-UiVfG30cnNOnexA2ZbFwbg",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.63817188"
+  },
+  {
+    "object_id": "ap-UuznXHyCEqJ5zipZ4EFz5p",
+    "description": "rivals-explore-encoder-siglip-20260927",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "1.36141390"
+  },
+  {
+    "object_id": "ap-VBwJIXMrOsF6kQWEnacLNl",
+    "description": "rivals-cm3-inputs-02-94b226b5d9a9",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.09623943"
+  },
+  {
+    "object_id": "ap-VG4wMaSYtbjudeOQ7XghVn",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "5.01081306"
+  },
+  {
+    "object_id": "ap-WNRqfRavy548Z10s36cchR",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "5.68165783"
+  },
+  {
+    "object_id": "ap-WWbF5IrxWLLlmy3jYFwEjh",
+    "description": "rivals-idm-local-timing-20260928-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.03158697"
+  },
+  {
+    "object_id": "ap-WZbhoHmsPD62QkTuSpAr91",
+    "description": "rivals-idm-press-20260927-02",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "1.95054270"
+  },
+  {
+    "object_id": "ap-WwyLDrBOhQEXrCgMxX2Ape",
+    "description": "rivals-cm3-r3p1-A-2-02-3f68c687106e",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.43077166"
+  },
+  {
+    "object_id": "ap-XjpgjZqNJMMMN2MHlCi6cH",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "1.16436844"
+  },
+  {
+    "object_id": "ap-YDVYuXQ4ORIeDSAkoX7b19",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.01001927"
+  },
+  {
+    "object_id": "ap-Zbk8QmoZnEaSqHJSdTCcDy",
+    "description": "rivals-yaw-fit-grid8-s3-20260927-03",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "2.78110185"
+  },
+  {
+    "object_id": "ap-ZmSrfoTC7rMZxJJPms6zxL",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "2.32338678"
+  },
+  {
+    "object_id": "ap-Zqtoz75RPrbhQ5z8Amjv7a",
+    "description": "rivals-explore-chunks-20260927",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.00006147"
+  },
+  {
+    "object_id": "ap-ZwXMMponOGgpGdd1IgiVKa",
+    "description": "rivals-idm-press-20260927-03",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.08186226"
+  },
+  {
+    "object_id": "ap-a0TbOqllE67arU7E8CegM2",
+    "description": "rivals-cm3-smoke-01-25661ca43705",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.32195610"
+  },
+  {
+    "object_id": "ap-aR9yrvZkq12DyLQEhWyQGM",
+    "description": "rivals-yaw-fit-grid8-s1-20260927-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.17803661"
+  },
+  {
+    "object_id": "ap-aUEiiYFdTGSp0lZVJWrne1",
+    "description": "rivals-cm3-inputs-07-45339014e69e",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.11948650"
+  },
+  {
+    "object_id": "ap-afM0E01z6DYjGrc1NytULh",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.00159599"
+  },
+  {
+    "object_id": "ap-ahOxSkTySUvVHbTY5QBuvW",
+    "description": "rivals-yaw-probe3-20260927-02",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.08758201"
+  },
+  {
+    "object_id": "ap-apNcgnrEFTwkeuqFVE6UH7",
+    "description": "rivals-idm-label",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.93723926"
+  },
+  {
+    "object_id": "ap-atdZs7mZVtGfW76MRKANX9",
+    "description": "rivals-explore-chunks-20260927-attempt2",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "16.40560110"
+  },
+  {
+    "object_id": "ap-auLg5GPdcgjgjtLKlXHu91",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.00113417"
+  },
+  {
+    "object_id": "ap-b5GgJKfXqTT9I6sb3jdvqU",
+    "description": "rivals-cm3-r3p1-A-0-01-4319cd98e209",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.00574317"
+  },
+  {
+    "object_id": "ap-bOm7PMDWI8dnoLASru9vUg",
+    "description": "rivals-explore-encoder-historyoff-siglip-20260927",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "1.33929112"
+  },
+  {
+    "object_id": "ap-bnNLUCAkPwhrtf5ciSkHYt",
+    "description": "rivals-cm3-smoke-02-681efec679ba",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.33467844"
+  },
+  {
+    "object_id": "ap-ctQVW0V4AggbO7h3kbvog4",
+    "description": "rivals-cm3-inputs-01-a303d6edd532",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.00143612"
+  },
+  {
+    "object_id": "ap-dVoQmCUs6njHeJfsmo4W3h",
+    "description": "rivals-idm-label",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.73563897"
+  },
+  {
+    "object_id": "ap-dba8QFMenOh3HgqeGb0MUO",
+    "description": "rivals-idm-label",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.04603686"
+  },
+  {
+    "object_id": "ap-dlUQUitwSwNF6G0MCpnWh6",
+    "description": "rivals-idm-ssl-smoke-20260927-01",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.19205096"
+  },
+  {
+    "object_id": "ap-dvEZ6H2q1DvUEDbP3pxRMC",
+    "description": "rivals-modal-benchmark",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.01682384"
+  },
+  {
+    "object_id": "ap-eAo50S9vWLQGnAiVVVCQKX",
+    "description": "rivals-idm-v2",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "3.80946038"
+  },
+  {
+    "object_id": "ap-errDnc2RfA5XySLtxwWzfx",
+    "description": "rivals-cm3-inputs-05-c9081ca9ae53",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.01268792"
+  },
+  {
+    "object_id": "ap-euLgri5kwbkjuNBUaB7Nng",
+    "description": "rivals-idm-expanded-20260928-full-02",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "7.58576890"
+  },
+  {
+    "object_id": "ap-f5ScnD277hZK60eqCQP0E7",
+    "description": "rivals-capture-05-e3e3b43e2e5f",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.00903814"
+  },
+  {
+    "object_id": "ap-f9BsJMoLeLTpup4M2ZF6AK",
+    "description": "rivals-cm3-r3p1-H-repeat-0-02-53f710ca329b",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.23983896"
+  },
+  {
+    "object_id": "ap-fIBjx8c2S9CMG9vlhsayyq",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "1.29823336"
+  },
+  {
+    "object_id": "ap-fYWjwmQOKYWRa2PmxFRi34",
+    "description": "rivals-runtime-probe-01-fc7a6e143548",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.00717833"
+  },
+  {
+    "object_id": "ap-gTDlEtzPZA74GqaWfKyp4D",
+    "description": "rivals-idm-label",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.99322236"
+  },
+  {
+    "object_id": "ap-gVTz6IrAovktsKRVkHZbJm",
+    "description": "rivals-cm3-inputs-06-825b4462af22",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.11396796"
+  },
+  {
+    "object_id": "ap-gYIQacf7buh72jFlFoqyrr",
+    "description": "rivals-capture-06-3c038da48e68",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.00287145"
+  },
+  {
+    "object_id": "ap-gdUxXNbSz1IWzJlcjIdHYt",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "1.77292752"
+  },
+  {
+    "object_id": "ap-h4CcwFhLlh3Vi0J4ZyXvbb",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.30917662"
+  },
+  {
+    "object_id": "ap-hFuOKH827mjwF1kzAfdfbe",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "1.28227201"
+  },
+  {
+    "object_id": "ap-i85U45O1VaoGB1FeD35JEs",
+    "description": "rivals-nitrogen-confirm-control-s3-20260927",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "1.25774164"
+  },
+  {
+    "object_id": "ap-iQXDlgScKMkrfP3NuUKaA2",
+    "description": "rivals-yaw-probe3-20260927-05",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.08614686"
+  },
+  {
+    "object_id": "ap-jDkhOUCUhKl3Nijw1A6bNj",
+    "description": "rivals-rl-wm2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.46608111"
+  },
+  {
+    "object_id": "ap-jGG2e8SKqjwx1q6yCx3YUM",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.02297200"
+  },
+  {
+    "object_id": "ap-jI52rUOmiwArz6WT363Kwo",
+    "description": "rivals-idm-v2",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "8.70625444"
+  },
+  {
+    "object_id": "ap-jcD4xTKHndUFfD00zMtykN",
+    "description": "rivals-yaw-fit-grid4-s2-20260927-02",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.71986142"
+  },
+  {
+    "object_id": "ap-kPqaViHFlqwQhyy0sXI9ep",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.64022444"
+  },
+  {
+    "object_id": "ap-khEEQwovwEUrKGbfitbC6l",
+    "description": "rivals-cm3-inputs-04-c52e082e565b",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.12844451"
+  },
+  {
+    "object_id": "ap-kjQanNzNWeEfwaeVk1QpXS",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.08341276"
+  },
+  {
+    "object_id": "ap-knukQMDUgvluXxwHFKc9xg",
+    "description": "rivals-cm3-r3p1-A-0-02-f37caafcafb5",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.44080307"
+  },
+  {
+    "object_id": "ap-kwdQo3XlPttdmChbZplo8t",
+    "description": "rivals-rl-awr-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.88908027"
+  },
+  {
+    "object_id": "ap-l7jKL3FMV5RMBav4THcXNc",
+    "description": "rivals-cm3-r3p1-A-2-01-a51b152009b2",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.00574309"
+  },
+  {
+    "object_id": "ap-lGwa191q4zucYugJdl4i51",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.69786394"
+  },
+  {
+    "object_id": "ap-lqtO43XNM4waKTCEDMHl0L",
+    "description": "rivals-modal-benchmark",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.00032666"
+  },
+  {
+    "object_id": "ap-lzX9GMBhxBFZ1DHblCCA7T",
+    "description": "rivals-capture-03-942685ac04e9",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.00287151"
+  },
+  {
+    "object_id": "ap-m4OqwKYIyzLHLF2lXfjInc",
+    "description": "rivals-rl-wm2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "13.42022884"
+  },
+  {
+    "object_id": "ap-mtWfzxaiOXT9s4vYDS5OY8",
+    "description": "rivals-yaw-fit-grid8-s3-20260927-02",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.67484753"
+  },
+  {
+    "object_id": "ap-o50OUDetMJeT1QI85o6T8q",
+    "description": "rivals-cm3-copy-02-acddc42ce266",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.00084400"
+  },
+  {
+    "object_id": "ap-olu863dInuTHWIgWfXsdhG",
+    "description": "rivals-yaw-probe3-20260927-04",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.08633372"
+  },
+  {
+    "object_id": "ap-pJjKWZEP0XIjnBeWRa1E9K",
+    "description": "rivals-idm-local-timing-20260928-02",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.67194381"
+  },
+  {
+    "object_id": "ap-pczVAD3VGK5cX5adhuXLu3",
+    "description": "rivals-cm3-proof128-01-fc5dce660792",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.09045369"
+  },
+  {
+    "object_id": "ap-poEbsN4BeWnnOUMd6CLFDZ",
+    "description": "rivals-idm-expanded-20260928-probe-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.04594474"
+  },
+  {
+    "object_id": "ap-qG9re2Po0qwnHKEg4LWmwk",
+    "description": "rivals-nitrogen-confirm-candidate-s1-20260927",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "1.30514372"
+  },
+  {
+    "object_id": "ap-qan0bFQU52xnosEkv8MKMz",
+    "description": "rivals-nitrogen-confirm-control-s1-20260927",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "1.22601388"
+  },
+  {
+    "object_id": "ap-qoYesaN6NxbjwDVkuvRpVJ",
+    "description": "rivals-nitrogen-confirm-candidate-s3-20260927",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "1.27499233"
+  },
+  {
+    "object_id": "ap-qu8I6QJ2O03oHfzPibSLML",
+    "description": "rivals-idm-press-20260927-01",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.95048913"
+  },
+  {
+    "object_id": "ap-r9FdMzI6JGLQLbORSio8Vq",
+    "description": "rivals-cm3-r3p1-A-1-02-5393545814b6",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.40058164"
+  },
+  {
+    "object_id": "ap-rETlf63PTSACIl92BBp0tK",
+    "description": "rivals-cm3-smoke-04-49a688db5845",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.42643328"
+  },
+  {
+    "object_id": "ap-rzbIQE4c8uUNBVimYlMtgm",
+    "description": "rivals-idm-label",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "1.26271863"
+  },
+  {
+    "object_id": "ap-sG5Ex1RPPT9gZvCfoQSmUL",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "3.29213524"
+  },
+  {
+    "object_id": "ap-sJqIahxUS2H0HuMeJ3Di7E",
+    "description": "rivals-idm-expanded-20260928-probe-02",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.03733039"
+  },
+  {
+    "object_id": "ap-sKEKpIXEeauhlWzxAk5vxQ",
+    "description": "rivals-explore-encoder-nitrogen-20260927",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "1.33173657"
+  },
+  {
+    "object_id": "ap-sbOxnxmADtyWNSBRT1NB8Z",
+    "description": "rivals-yaw-fit-grid4-s1-20260927-02",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.80389638"
+  },
+  {
+    "object_id": "ap-ssQQeypWyniLrwDiXBeLok",
+    "description": "rivals-cm3-copy-03-c537c714eadf",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.02615613"
+  },
+  {
+    "object_id": "ap-tGSZZnostxJNKLSxa7HcY8",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "2.42579576"
+  },
+  {
+    "object_id": "ap-u1wfc88wlYjdGBRUoHlWn5",
+    "description": "rivals-expert-footage-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.00136797"
+  },
+  {
+    "object_id": "ap-uBkVfxHgeKbbkETgFWHgwu",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.82646304"
+  },
+  {
+    "object_id": "ap-uXnqtcVFg42PEfJBOnz5SJ",
+    "description": "rivals-modal-benchmark",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.00295889"
+  },
+  {
+    "object_id": "ap-vI8OJORWogCQkRRwMuA843",
+    "description": "rivals-yaw-fit-grid8-s2-20260927-03",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "2.80694539"
+  },
+  {
+    "object_id": "ap-vymzSqqcFYif3GnEc2qN4e",
+    "description": "rivals-idm-label",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.26591104"
+  },
+  {
+    "object_id": "ap-vzE0mYH1Wj34Nozd2A7skw",
+    "description": "rivals-rl-awr-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "0.70811999"
+  },
+  {
+    "object_id": "ap-wihxUdGaIOvyh9GtyREBfW",
+    "description": "rivals-yaw-extract-20260927-02",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "1.48033260"
+  },
+  {
+    "object_id": "ap-xEvd64oAamaHlYNBfEbsim",
+    "description": "rivals-idm-v2",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "4.38188160"
+  },
+  {
+    "object_id": "ap-xV8lfwUWeVjvF5jfWjCl82",
+    "description": "rivals-guard-v2-shake-20260928-02",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.02010108"
+  },
+  {
+    "object_id": "ap-xbtRzTdWlSoUKnYzLehZ7I",
+    "description": "rivals-cm3-inputs-03-82bb8287daed",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.11248684"
+  },
+  {
+    "object_id": "ap-xl5AV9TjzB0TJVjfgEHAjm",
+    "description": "rivals-yaw-fit-grid4-s3-20260927-02",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.72076028"
+  },
+  {
+    "object_id": "ap-xp8Zo6tUkkjrD6UCR4zr9T",
+    "description": "rivals-yaw-dropout-fit-s1-20260928-01",
+    "environment": "main",
+    "interval_start": "2026-09-28T00:00:00",
+    "cost": "0.65580835"
+  },
+  {
+    "object_id": "ap-yAAUbkCj0lxxFzCFghgYMm",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "2.86258694"
+  },
+  {
+    "object_id": "ap-yHoZU5QlkSlroa0lxrYqUz",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "9.28576422"
+  },
+  {
+    "object_id": "ap-yHrMlDuOogqvCntT3rKAE7",
+    "description": "rivals-policy-bc2-20260930",
+    "environment": "main",
+    "interval_start": "2026-09-30T00:00:00",
+    "cost": "3.17801579"
+  },
+  {
+    "object_id": "ap-ztnSyCVjtpm8M8kW7S2PLa",
+    "description": "rivals-runtime-probe-03-291e8948cf84",
+    "environment": "main",
+    "interval_start": "2026-09-27T00:00:00",
+    "cost": "0.01579367"
+  }
+]

@@ -1,6 +1,7 @@
 """Synthetic metadata/CLI responses only; no jobs, network or real data."""
 from dataclasses import asdict
 import json
+import io
 import subprocess
 import time
 import threading
@@ -9,6 +10,7 @@ from types import SimpleNamespace
 import pytest
 
 from scripts import job_board as board, job_status as status
+from scripts import training_lab as lab
 
 
 def receipt(root, name="decoder-audit", **fields):
@@ -235,3 +237,96 @@ def test_known_locations_include_nested_cloud_explore_and_lab_without_payload_re
     assert any(j.name == 'unregistered: ' + str(explore) for j in jobs)
     assert any(j.stage == 'running' and j.pid == '123' for j in jobs)
     assert not any(j.pid == '124' or 'secret' in j.name for j in jobs)
+
+
+@pytest.mark.parametrize('hold,turn,expected', [(.3,.2,'PASS'),(.299,.8,'FAIL'),(.8,.199,'FAIL'),
+                                               (None,.9,'Not measured'),(.9,None,'Not measured'),(0,0,'FAIL')])
+def test_live_readiness_requires_both_measured_thresholds(hold, turn, expected):
+    assert lab.readiness(hold, turn) == expected
+
+
+def test_lab_media_only_serves_small_allowlisted_images(tmp_path):
+    root = tmp_path / 'data/job-board-media'
+    root.mkdir(parents=True)
+    (root / 'safe.png').write_bytes(b'fixture')
+    data = {'media': {'safe.png': {}, '../escape.png': {}, 'private-sealed.png': {}}}
+    assert lab.media(tmp_path, data, 'safe.png') == (b'fixture', 'image/png')
+    assert lab.media(tmp_path, data, '../escape.png') is None
+    assert lab.media(tmp_path, data, 'private-sealed.png') is None
+    assert lab.media(tmp_path, data, 'unlisted.png') is None
+    with (root / 'safe.png').open('wb') as f:
+        f.truncate(16 * 1024 * 1024 + 1)
+    assert lab.media(tmp_path, data, 'safe.png') is None
+
+
+def test_lab_media_refuses_symlink_parent(tmp_path):
+    real = tmp_path / 'real'
+    real.mkdir()
+    (real / 'safe.png').write_bytes(b'fixture')
+    (tmp_path / 'data').mkdir()
+    try:
+        (tmp_path / 'data/job-board-media').symlink_to(real, target_is_directory=True)
+    except OSError:
+        pytest.skip('symlinks unavailable')
+    assert lab.media(tmp_path, {'media': {'safe.png': {}}}, 'safe.png') is None
+
+
+def test_achievement_render_escapes_data_and_distinguishes_unknown():
+    data = dict(as_of='synthetic', media={}, policy=[dict(name='<script>',seeds='one',yaw=.8)],
+                billing=dict(total=100,cap=500,as_of='now',days=[['today',100]],apps=[['app',100]]),
+                attributed_spend=dict(kept=10,discarded=20,kept_note='subset',discarded_note='subset'),
+                sittings=[],runs=[],idm=[],world_models=[],recordings=[])
+    html = lab.render(data)
+    assert '&lt;script&gt;' in html and '<script>' not in html
+    assert 'Not measured' in html and '0 / 0 tested candidates' in html
+    assert '$400.00 remaining' in html and 'must not be added together' in html
+
+
+def test_review_hooks_precede_snapshot_and_unrelated_post_is_404(tmp_path, monkeypatch):
+    captured = {}
+    def server(address, handler):
+        captured['handler'] = handler
+        return SimpleNamespace(serve_forever=lambda: None)
+    monkeypatch.setattr(board, 'ThreadingHTTPServer', server)
+    b = board.Board(tmp_path, [], jobs_root=tmp_path)
+    monkeypatch.setattr(b, 'snapshot', lambda: pytest.fail('viewer must bypass board scan'))
+    board.serve(b, 8766)
+    calls = []
+    monkeypatch.setattr(board, 'handle_review_request', lambda h, css: calls.append(h.command) or True)
+    handler = captured['handler']
+    fake = SimpleNamespace(path='/idm-review/span/test', command='GET')
+    handler.do_GET(fake)
+    fake.command = 'POST'
+    handler.do_POST(fake)
+    assert calls == ['GET', 'POST']
+    monkeypatch.setattr(board, 'handle_review_request', lambda h, css: False)
+    fake.path = '/other'
+    fake.send_error = lambda code: calls.append(code)
+    handler.do_POST(fake)
+    assert calls[-1] == 404
+
+
+def test_media_route_is_allowlisted_and_same_origin_csp(tmp_path, monkeypatch):
+    captured = {}
+    def server(address, handler):
+        assert address == ('127.0.0.1', 8766)
+        captured['handler'] = handler
+        return SimpleNamespace(serve_forever=lambda: None)
+    monkeypatch.setattr(board, 'ThreadingHTTPServer', server)
+    monkeypatch.setattr(board, 'handle_review_request', lambda *args: False)
+    root = tmp_path / 'data/job-board-media'
+    root.mkdir(parents=True)
+    (root / 'test.png').write_bytes(b'fixture')
+    b = board.Board(tmp_path, [], jobs_root=tmp_path)
+    monkeypatch.setattr(b, 'snapshot', lambda: {'achievements': {'media': {'test.png': {}}}})
+    board.serve(b, 8766)
+    headers, codes = {}, []
+    fake = SimpleNamespace(path='/lab-media/test.png', wfile=io.BytesIO(), send_response=codes.append,
+                           send_header=lambda k,v: headers.update({k:v}), end_headers=lambda: None,
+                           send_error=codes.append)
+    captured['handler'].do_GET(fake)
+    assert codes == [200] and fake.wfile.getvalue() == b'fixture'
+    assert "img-src 'self'" in headers['Content-Security-Policy']
+    fake.path = '/lab-media/../private.png'
+    captured['handler'].do_GET(fake)
+    assert codes[-1] == 404

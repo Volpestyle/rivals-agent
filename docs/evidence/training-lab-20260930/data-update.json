@@ -1,0 +1,12 @@
+{
+  "observed": "2026-09-30T21:01:13.382987+00:00",
+  "change": "Corrected RL audit fe1d795 replaces raw reward totals; one additional existing GIF copied. No service restart.",
+  "training_lab_json_sha256": "b6f75705d5fa2aed6d4adba16fb794d5ae8ca7db30ad500858bb6e31a09ad2e7",
+  "previous_snapshot_backup": "/Users/james/dev/rivals-agent/scripts/training_lab.json.20260930T2101Z.bak",
+  "media_verified": 16,
+  "screenshots": {
+    "desktop-current.png": "796990203d7258734527c7d4db537edf9251d86b5d5743ba496645b076196b0a",
+    "phone-current.png": "8d89bda529c668253f0bb81af80aa6cf751f3c0fd84cb11ee131e236de903aad",
+    "browser-check-current.json": "8d2fe77d68e340571a16f41acc821a48212a5fa235605c0f2ca10c4eb561d38e"
+  }
+}

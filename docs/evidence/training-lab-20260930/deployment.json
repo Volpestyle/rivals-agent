@@ -1,0 +1,18 @@
+{
+  "deployed_at": "20260930T205318Z",
+  "files": {
+    "job_board.py": {
+      "sha256": "1172e6d63dc752e8594bd00409a1420f36e4e0282b25df032d35a04acec89c9f",
+      "backup": "/Users/james/dev/rivals-agent/scripts/job_board.py.20260930T205318Z.bak"
+    },
+    "training_lab.py": {
+      "sha256": "44cb52a24051b5d4c1f71d90b86dfefe17c4bcff04d72a72210cd500efa00db3",
+      "backup": null
+    },
+    "training_lab.json": {
+      "sha256": "67e02bb33316c0ed0877a12ff47a1342799e7f8ea6495140ffeda835c330f305",
+      "backup": null
+    }
+  },
+  "media_verified": 15
+}

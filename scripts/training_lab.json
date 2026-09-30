@@ -1,0 +1,981 @@
+{
+  "as_of": "2026-09-30 15:59 CDT",
+  "media": {
+    "run-01.gif": {
+      "source": "D:/rivals-agent-evidence/idm-v0-demo-20260930/idm-v0-demo-a.gif",
+      "sha256": "3b0cd357f84f5ea4c99e124474ed3f9b547fc50d2fb5e2a7d8c864ca36d01b78",
+      "bytes": 6795691
+    },
+    "run-03.gif": {
+      "source": "D:/rivals-agent-evidence/idm-v2a-demo-20260930/idm-v2a-demo-a.gif",
+      "sha256": "9694a0c1ac7ff696dfcb6ec1673a0d9653973ccf8625c2123e7dd3f5e98023df",
+      "bytes": 6547684
+    },
+    "run-07.png": {
+      "source": "D:/rivals-expert-footage/metrics/corpus-progress-final.png",
+      "sha256": "4f8ee0ec80d91d0e4399a80354b775de3d727f8a3ed833bf1c1464de73ad026c",
+      "bytes": 106221
+    },
+    "run-08.gif": {
+      "source": "D:/rivals-policy/replay/ng-nohist-s1-171533/overlay-10s.gif",
+      "sha256": "1ebddf8173bafe124d1c5eed12df65215b5aaa4bb86aebf17d2b7f51d8d2f70a",
+      "bytes": 4924628
+    },
+    "run-09.gif": {
+      "source": "D:/rivals-policy/replay/bc2-a-val212646/overlay-10s.gif",
+      "sha256": "d1de9ff3129049053ae53e71ec7838dee2cc7cbf5f7d7058caa31cfff7b5d827",
+      "bytes": 5415850
+    },
+    "run-16.png": {
+      "source": "rl/out/reward_readers_20260930.png",
+      "sha256": "1e29bb7ca97313f80fd1d4c7ec44954688df36872d6c90a98e670151b2a0d0fa",
+      "bytes": 529412
+    },
+    "run-18.gif": {
+      "source": "rl/world_model/out/full-01_real_vs_imagined.gif",
+      "sha256": "638b3f9a57b629edbee7ce824fb51fae430711fc1899e139af226851dbfee8a3",
+      "bytes": 5074530
+    },
+    "wm-full-01.gif": {
+      "source": "rl/world_model/out/full-01_real_vs_imagined.gif",
+      "sha256": "638b3f9a57b629edbee7ce824fb51fae430711fc1899e139af226851dbfee8a3",
+      "bytes": 5074530
+    },
+    "wm-v2-noroll.gif": {
+      "source": "rl/world_model/out/v2-noroll/real_vs_imagined.gif",
+      "sha256": "d550fa63d42caf0c33dda5cf79159c8759eaff8896cbd34c331953610c2c8d6f",
+      "bytes": 6981217
+    },
+    "wm-v2-main.gif": {
+      "source": "rl/world_model/out/v2-main/real_vs_imagined.gif",
+      "sha256": "43c955dab6eedce048327ad95ca256416c0aaa914267e94cbe2fc762d5f28046",
+      "bytes": 7052752
+    },
+    "wm-v3-expert.gif": {
+      "source": "rl/world_model/out/v3-expert/real_vs_imagined.gif",
+      "sha256": "f49246fcec5b8f08e3f0a991fc44c062e4ced9c2416110f9b2c951acad9565c3",
+      "bytes": 7055271
+    },
+    "compat.png": {
+      "source": "data/calibration/compat-check-20260929/run-05/converged-1.png",
+      "sha256": "718665425f5e5161a5daa1edb8b493b027190d8daf70635a6bbddfa1f0203eb0",
+      "bytes": 5186715
+    },
+    "learned.jpg": {
+      "source": "data/calibration/compat-check-20260929/learned-01-a/000000.jpg",
+      "sha256": "5acb0fd61a63d7b85c5a8ee6054eee0bc353ec7424d5d136ff618fc66adfd104",
+      "bytes": 806777
+    },
+    "rl-curve.png": {
+      "source": "data/calibration/rl-sitting-20260930-01/curve.png",
+      "sha256": "215367f2b65cea65af1aa02517c9215dd6d818a1ebb41494c4930c5c15d309c7",
+      "bytes": 16398
+    },
+    "rl-takeover.jpg": {
+      "source": "data/calibration/rl-sitting-20260930-01/takeover-check-sheet.jpg",
+      "sha256": "86bc9e747923fd4e331633c58dbe5d1043079af64d4b574aa9b6bad4ec599f2e",
+      "bytes": 894028
+    },
+    "rl-events.gif": {
+      "source": "rl/out/rl-sitting-20260930-01/rl_sitting01_events.gif",
+      "sha256": "633f0d22ace071c29283686cc42066e04044a5282835a1712445112b69b5a541",
+      "bytes": 5042021
+    }
+  },
+  "runs": [
+    {
+      "id": 1,
+      "date": "30 SEP 2026",
+      "name": "IDM v0 demo",
+      "cost": "$0 (local)",
+      "result": "Moving-yaw MAE 0.63 vs 2.12 zero-motion; press F1 0.44–0.56; pitch weak; holds not predicted",
+      "verdict": "Kept",
+      "decision": "Yes, as the baseline",
+      "image": "run-01.gif"
+    },
+    {
+      "id": 2,
+      "date": "30 SEP 2026",
+      "name": "IDM VOD-domain test",
+      "cost": "$0 (Mac)",
+      "result": "Compression costs only ~3% yaw and 1–3% pitch, so streamer VODs are a viable labelling target",
+      "verdict": "Kept",
+      "decision": "Yes (decision)"
+    },
+    {
+      "id": 3,
+      "date": "30 SEP 2026",
+      "name": "IDM v2-a fit",
+      "cost": "~$3",
+      "result": "Beats full03: moving yaw −17–19%, pitch −22–26%, press F1 up to 0.85, new held-key head",
+      "verdict": "Kept",
+      "decision": "Yes (labeller for batch 1)",
+      "image": "run-03.gif"
+    },
+    {
+      "id": 4,
+      "date": "30 SEP 2026",
+      "name": "IDM v2-b, v2-c, v2-d fits",
+      "cost": "~$22 (app rivals-idm-v2 total $25.54 incl. v2-a and the input volume)",
+      "result": "The v2-c+v2-d ensemble (\"v2-cd\") is the best labeller: yaw −22/−23%, pitch −32/−29% vs full03; swing-hold F1 0.88",
+      "verdict": "Kept",
+      "decision": "Yes (v2-cd labeller)"
+    },
+    {
+      "id": 5,
+      "date": "30 SEP 2026",
+      "name": "IDM zoom/camera-scale fit",
+      "cost": "~$1",
+      "result": "All 8 creators read at James's FOV (0.993–1.000), so camera_scale = 1.0",
+      "verdict": "Kept",
+      "decision": "Yes"
+    },
+    {
+      "id": 6,
+      "date": "30 SEP 2026",
+      "name": "IDM labelling of the expert corpus",
+      "cost": "~$5.56 (app rivals-idm-label)",
+      "result": "v2-a on ~27 h; v2-cd on 24+/40 videos so far, the rest resumes on the PC at $0",
+      "verdict": "Kept",
+      "decision": "Yes"
+    },
+    {
+      "id": 7,
+      "date": "30 SEP 2026",
+      "name": "Expert footage corpus",
+      "cost": "$26.62 (actual: $12.75 + $13.88)",
+      "result": "53.3 h of verified Spider-Man gameplay, 9,350 spans, 40 videos, 8 keyboard/mouse creators, from 218 h downloaded",
+      "verdict": "Kept",
+      "decision": "Yes (VUH-1466 Done)",
+      "image": "run-07.png"
+    },
+    {
+      "id": 8,
+      "date": "30 SEP 2026",
+      "name": "Policy v0 packaging",
+      "cost": "$0",
+      "result": "p95 31 ms; buttons OK (web_swing F1 0.83); yaw at chance (47%)",
+      "verdict": "Discarded",
+      "decision": "No for live (baseline only)",
+      "image": "run-08.gif"
+    },
+    {
+      "id": 9,
+      "date": "30 SEP 2026",
+      "name": "Policy bc2 yaw fit",
+      "cost": "part of $53.02 (app rivals-policy-bc2-20260930, all policy grids)",
+      "result": "Val yaw 0.825 vs zero 1.831; moving sign 89%; onset only 53% under median decode",
+      "verdict": "Kept",
+      "decision": "Yes (base)",
+      "image": "run-09.gif"
+    },
+    {
+      "id": 10,
+      "date": "30 SEP 2026",
+      "name": "Mean-decode fix plus frame-interval input",
+      "cost": "in $53.02",
+      "result": "Onset sign 49–54% → 75–77% with no retrain; moving sign 93.5%",
+      "verdict": "Kept",
+      "decision": "Yes"
+    },
+    {
+      "id": 11,
+      "date": "30 SEP 2026",
+      "name": "Architecture grid H",
+      "cost": "in $53.02",
+      "result": "2-layer 1536: val yaw 0.779, onset 79%, F1 0.295",
+      "verdict": "Kept",
+      "decision": "Yes (base for the expert runs)"
+    },
+    {
+      "id": 12,
+      "date": "30 SEP 2026",
+      "name": "Expert-mix scaling grid i3",
+      "cost": "in $53.02",
+      "result": "Yaw 0.786 → 0.746, onset 79 → 83%, false turns 10.2 → 7.9%, F1 0.314 → 0.363; every mix seed beats every own seed on yaw. Core VPT-style result",
+      "verdict": "Kept",
+      "decision": "Yes; bundle bc2-mix399-s0 is the live model"
+    },
+    {
+      "id": 13,
+      "date": "30 SEP 2026",
+      "name": "Grid i4",
+      "cost": "~$4",
+      "result": "Camera plateaued (val yaw 0.755 vs 0.746); only buttons still gained (F1 0.381)",
+      "verdict": "Discarded",
+      "decision": "No (confirmed a plateau; could have been 1 seed or local)"
+    },
+    {
+      "id": 14,
+      "date": "30 SEP 2026",
+      "name": "Grid j",
+      "cost": "~$9 (incl. 4 startup failures)",
+      "result": "No downstream gain from the better labels (val yaw 0.797 vs 0.776)",
+      "verdict": "Discarded",
+      "decision": "No (should have been a 1-seed probe first)"
+    },
+    {
+      "id": 15,
+      "date": "30 SEP 2026",
+      "name": "Motion-dropout retrain",
+      "cost": "~$2.60 · grid k total",
+      "result": "Both dropout settings fail live readiness: hold 0.041 / 0.038; turn 0.045 / 0.045. p=.3 val yaw 0.742 and F1 0.405.",
+      "verdict": "Discarded",
+      "decision": "FAIL: hold >= 0.30 and turn >= 0.20, plus val yaw <= 0.766 and F1 >= 0.33. Source: later policy lane verdict."
+    },
+    {
+      "id": 16,
+      "date": "30 SEP 2026",
+      "name": "RL reward readers",
+      "cost": "$0 (local)",
+      "result": "Reward readers: hit precision 1.00; recall 0.981 originally, 0.969 after the live false-hit fix. KO 142/142 real; HP 67/67. James 7.0 KOs/min vs scripted 4.2.",
+      "verdict": "Kept",
+      "decision": "Yes",
+      "image": "run-16.png"
+    },
+    {
+      "id": 17,
+      "date": "30 SEP 2026",
+      "name": "Offline AWR step 0",
+      "cost": "$4.24",
+      "result": "No measurable held-out shift over 3 seeds (every CI spans 0); BC metrics intact",
+      "verdict": "Discarded",
+      "decision": "No (a clean negative; kept only as the online-RL initialiser)"
+    },
+    {
+      "id": 18,
+      "date": "30 SEP 2026",
+      "name": "World model full-01",
+      "cost": "$5.00 (plus $0.65 probe)",
+      "result": "Beats copy-last (+4.3 dB at 0.1 s); actions matter (+3.2 dB vs shuffled); dissolves by ~1 s",
+      "verdict": "Kept",
+      "decision": "Yes as a prototype",
+      "image": "wm-full-01.gif"
+    },
+    {
+      "id": 19,
+      "date": "30 SEP 2026",
+      "name": "World model v2-noroll",
+      "cost": "$13.42",
+      "result": "Ties full-01 beyond one second; sampled frames hazy from step 1. Imagined KO AUC 0.71 (later RL lane correction).",
+      "verdict": "Discarded",
+      "decision": "No",
+      "image": "wm-v2-noroll.gif"
+    },
+    {
+      "id": 20,
+      "date": "30 SEP 2026",
+      "name": "World model v2-main",
+      "cost": "$16.11",
+      "result": "Same as v2-noroll within noise; the anti-drift trick didn't help",
+      "verdict": "Discarded",
+      "decision": "No",
+      "image": "wm-v2-main.gif"
+    },
+    {
+      "id": 21,
+      "date": "30 SEP 2026",
+      "name": "World model v3-expert",
+      "cost": "$17.52",
+      "result": "+0.2 dB at 2–3 s, −0.35 dB early; imagined KO AUC 0.65; 2–3 s target not met",
+      "verdict": "Discarded",
+      "decision": "No (pixel track stopped; latent track next, local)",
+      "image": "wm-v3-expert.gif"
+    },
+    {
+      "id": 22,
+      "date": "30 SEP 2026",
+      "name": "World model probes, diagnostics and sampler sweep",
+      "cost": "~$2.70",
+      "result": "The 2–3 s error is content, not camera (Spearman 0.13); more denoising steps don't help",
+      "verdict": "Kept",
+      "decision": "Yes (diagnosis)"
+    },
+    {
+      "id": 23,
+      "date": "30 SEP 2026",
+      "name": "Learned live runner plus bundle swaps",
+      "cost": "$0",
+      "result": "Built and safety-read SAFE; mocked replays p95 45–46 ms on a quiet GPU",
+      "verdict": "Kept",
+      "decision": "Yes"
+    },
+    {
+      "id": 24,
+      "date": "30 SEP 2026",
+      "name": "Static-input augmentation · grid l",
+      "cost": "~$1.30",
+      "result": "Hold 0.178 fails; turn 0.465 passes. Val yaw 0.754 and press F1 0.369 pass. Starting from still remains unresolved.",
+      "decision": "FAIL: same four keep conditions as grid k; policy lane later verdict.",
+      "verdict": "Discarded"
+    },
+    {
+      "id": 25,
+      "date": "30 SEP 2026",
+      "name": "Online RL · first bounded sitting",
+      "cost": "$0 · PC",
+      "result": "Corrected audit: six episodes; BC 0 hits / 0 KOs, RL 1 hit / 0 KOs and a fall. Three raw-log hits were false positives used by the live updates.",
+      "decision": "Plumbing run only; no learning gain established. Corrected RL lane verdict fe1d795 supersedes raw curve.jsonl.",
+      "verdict": "Unjudged",
+      "image": "rl-events.gif"
+    }
+  ],
+  "policy": [
+    {
+      "name": "Own data",
+      "seeds": "mean · 3",
+      "yaw": 0.786,
+      "onset": 79.1,
+      "f1": 0.314,
+      "still": 10.2,
+      "hold": null,
+      "turn": null
+    },
+    {
+      "name": "+93k expert",
+      "seeds": "mean · 3",
+      "yaw": 0.776,
+      "onset": 79.7,
+      "f1": 0.333,
+      "still": 8.8,
+      "hold": null,
+      "turn": null
+    },
+    {
+      "name": "mix399 · grid i3",
+      "seeds": "mean · 3",
+      "yaw": 0.746,
+      "onset": 82.6,
+      "f1": 0.363,
+      "still": 7.9,
+      "hold": null,
+      "turn": null
+    },
+    {
+      "name": "mix469 · grid i4",
+      "seeds": "mean · 3",
+      "yaw": 0.755,
+      "onset": 80.5,
+      "f1": 0.381,
+      "still": 8.7,
+      "hold": null,
+      "turn": null
+    },
+    {
+      "name": "v2-cd · grid j",
+      "seeds": "mean · 3",
+      "yaw": 0.797,
+      "onset": 79.0,
+      "f1": 0.353,
+      "still": 8.7,
+      "hold": null,
+      "turn": null
+    },
+    {
+      "name": "mix399 · deployment pick",
+      "seeds": "seed 0",
+      "yaw": 0.736,
+      "onset": 82.0,
+      "f1": 0.346,
+      "still": 7.6,
+      "hold": 0.011,
+      "turn": 0.001
+    },
+    {
+      "name": "Dropout p=.3 · grid k",
+      "seeds": "seed 0",
+      "yaw": 0.742,
+      "onset": null,
+      "f1": 0.405,
+      "still": null,
+      "hold": 0.041,
+      "turn": 0.045
+    },
+    {
+      "name": "Dropout p=.5 · grid k",
+      "seeds": "seed 0",
+      "yaw": null,
+      "onset": null,
+      "f1": null,
+      "still": null,
+      "hold": 0.038,
+      "turn": 0.045
+    },
+    {
+      "name": "Static input · grid l",
+      "seeds": "seed 0",
+      "yaw": 0.754,
+      "onset": null,
+      "f1": 0.369,
+      "still": null,
+      "hold": 0.178,
+      "turn": 0.465
+    }
+  ],
+  "billing": {
+    "as_of": "2026-09-30 20:42 UTC",
+    "cap": 500,
+    "total": 282.12250741,
+    "days": [
+      [
+        "2026-09-27",
+        47.30433467
+      ],
+      [
+        "2026-09-28",
+        48.97544561000001
+      ],
+      [
+        "2026-09-30",
+        185.84272713
+      ]
+    ],
+    "apps": [
+      [
+        "rivals-policy-bc2-20260930",
+        64.97435751
+      ],
+      [
+        "rivals-rl-wm2-20260930",
+        50.294918929999994
+      ],
+      [
+        "rivals-expert-footage-20260930",
+        26.622838240000004
+      ],
+      [
+        "rivals-idm-v2",
+        25.544773820000003
+      ],
+      [
+        "rivals-idm-expanded-20260928-full-03",
+        19.5599706
+      ],
+      [
+        "rivals-explore-chunks-20260927-attempt2",
+        16.4056011
+      ],
+      [
+        "rivals-idm-expanded-20260928-full-02",
+        7.5857689
+      ],
+      [
+        "rivals-idm-label",
+        7.04808401
+      ],
+      [
+        "rivals-explore-h4-fresh-20260927",
+        6.98845903
+      ],
+      [
+        "rivals-rl-wm-20260930",
+        5.65599365
+      ],
+      [
+        "rivals-rl-awr-20260930",
+        4.23600547
+      ],
+      [
+        "rivals-idm-expanded-20260928-full-01",
+        2.95914269
+      ],
+      [
+        "rivals-yaw-fit-grid8-s2-20260927-03",
+        2.80694539
+      ],
+      [
+        "rivals-yaw-fit-grid8-s1-20260927-03",
+        2.79550995
+      ],
+      [
+        "rivals-yaw-fit-grid8-s3-20260927-03",
+        2.78110185
+      ],
+      [
+        "rivals-idm-press-20260927-02",
+        1.9505427
+      ],
+      [
+        "rivals-yaw-extract-20260927-02",
+        1.4803326
+      ],
+      [
+        "rivals-idm-zoom",
+        1.4657555
+      ],
+      [
+        "rivals-explore-encoder-siglip-20260927",
+        1.3614139
+      ],
+      [
+        "rivals-explore-encoder-historyoff-siglip-20260927",
+        1.33929112
+      ],
+      [
+        "rivals-explore-encoder-nitrogen-20260927",
+        1.33173657
+      ],
+      [
+        "rivals-explore-encoder-historyoff-nitrogen-20260927",
+        1.32175805
+      ],
+      [
+        "rivals-nitrogen-confirm-candidate-s1-20260927",
+        1.30514372
+      ],
+      [
+        "rivals-nitrogen-confirm-candidate-s3-20260927",
+        1.27499233
+      ],
+      [
+        "rivals-modal-benchmark",
+        1.2703345000000001
+      ],
+      [
+        "rivals-nitrogen-confirm-control-s3-20260927",
+        1.25774164
+      ],
+      [
+        "rivals-nitrogen-confirm-candidate-s2-20260927",
+        1.24912774
+      ],
+      [
+        "rivals-nitrogen-confirm-control-s2-20260927",
+        1.24055393
+      ],
+      [
+        "rivals-nitrogen-confirm-control-s1-20260927",
+        1.22601388
+      ],
+      [
+        "rivals-idm-press-20260927-01",
+        0.95048913
+      ],
+      [
+        "rivals-yaw-fit-grid4-s1-20260927-02",
+        0.80389638
+      ],
+      [
+        "rivals-yaw-fit-grid4-s3-20260927-02",
+        0.72076028
+      ],
+      [
+        "rivals-yaw-fit-grid4-s2-20260927-02",
+        0.71986142
+      ],
+      [
+        "rivals-yaw-dropout-fit-s3-20260928-01",
+        0.71107722
+      ],
+      [
+        "rivals-yaw-fit-grid8-s2-20260927-02",
+        0.69204945
+      ],
+      [
+        "rivals-yaw-dropout-fit-s2-20260928-01",
+        0.69188912
+      ],
+      [
+        "rivals-yaw-fit-grid8-s3-20260927-02",
+        0.67484753
+      ],
+      [
+        "rivals-idm-local-timing-20260928-02",
+        0.67194381
+      ],
+      [
+        "rivals-yaw-dropout-fit-s1-20260928-01",
+        0.65580835
+      ],
+      [
+        "rivals-yaw-fit-grid8-s1-20260927-02",
+        0.64897201
+      ],
+      [
+        "rivals-cm3-extract-01-2929db19b917",
+        0.59200642
+      ],
+      [
+        "rivals-cm3-extract-02-79fe4120ffac",
+        0.57814301
+      ],
+      [
+        "rivals-yaw-local-disk-probe-20260927-01",
+        0.49678468
+      ],
+      [
+        "rivals-cm3-r3p1-A-0-02-f37caafcafb5",
+        0.44080307
+      ],
+      [
+        "rivals-cm3-r3p1-A-2-02-3f68c687106e",
+        0.43077166
+      ],
+      [
+        "rivals-cm3-smoke-04-49a688db5845",
+        0.42643328
+      ],
+      [
+        "rivals-cm3-r3p1-H-0-02-478a43ed7448",
+        0.42555097
+      ],
+      [
+        "rivals-yaw-fit-grid8-s2-20260927-01",
+        0.41364946
+      ],
+      [
+        "rivals-cm3-r3p1-A-1-02-5393545814b6",
+        0.40058164
+      ],
+      [
+        "rivals-cm3-smoke-02-681efec679ba",
+        0.33467844
+      ],
+      [
+        "rivals-cm3-smoke-03-ad21fb12e2d1",
+        0.33446223
+      ],
+      [
+        "rivals-cm3-smoke-05-d4c251fc1b84",
+        0.32472296
+      ],
+      [
+        "rivals-cm3-smoke-01-25661ca43705",
+        0.3219561
+      ],
+      [
+        "rivals-cm3-r3p1-H-repeat-0-02-53f710ca329b",
+        0.23983896
+      ],
+      [
+        "rivals-idm-ssl-smoke-20260927-01",
+        0.19205096
+      ],
+      [
+        "rivals-yaw-fit-grid8-s3-20260927-01",
+        0.18427204
+      ],
+      [
+        "rivals-cm3-proof128-03-c58f50f05c20",
+        0.18122592
+      ],
+      [
+        "rivals-yaw-fit-grid8-s1-20260927-01",
+        0.17803661
+      ],
+      [
+        "rivals-yaw-fit-grid4-s1-20260927-01",
+        0.14667481
+      ],
+      [
+        "rivals-cm3-inputs-04-c52e082e565b",
+        0.12844451
+      ],
+      [
+        "rivals-cm3-inputs-07-45339014e69e",
+        0.1194865
+      ],
+      [
+        "rivals-cm3-inputs-06-825b4462af22",
+        0.11396796
+      ],
+      [
+        "rivals-cm3-inputs-03-82bb8287daed",
+        0.11248684
+      ],
+      [
+        "rivals-cm3-inputs-02-94b226b5d9a9",
+        0.09623943
+      ],
+      [
+        "rivals-yaw-fit-grid4-s3-20260927-01",
+        0.09219226
+      ],
+      [
+        "rivals-cm3-proof128-04-cd9f2ad5b54e",
+        0.09080426
+      ],
+      [
+        "rivals-cm3-proof128-01-fc5dce660792",
+        0.09045369
+      ],
+      [
+        "rivals-yaw-fit-grid4-s2-20260927-01",
+        0.08901816
+      ],
+      [
+        "rivals-yaw-probe3-20260927-02",
+        0.08758201
+      ],
+      [
+        "rivals-yaw-probe3-20260927-04",
+        0.08633372
+      ],
+      [
+        "rivals-yaw-probe3-20260927-06",
+        0.08614692
+      ],
+      [
+        "rivals-yaw-probe3-20260927-05",
+        0.08614686
+      ],
+      [
+        "rivals-yaw-probe3-20260927-03",
+        0.0861468
+      ],
+      [
+        "rivals-yaw-probe3-20260927-01",
+        0.08614638
+      ],
+      [
+        "rivals-cm3-proof128-02-8c0bd5ed5d18",
+        0.08356054
+      ],
+      [
+        "rivals-idm-press-20260927-03",
+        0.08186226
+      ],
+      [
+        "rivals-guard-v2-shake-20260928-01",
+        0.07322503
+      ],
+      [
+        "rivals-yaw-extract-20260927-01",
+        0.05743067
+      ],
+      [
+        "rivals-yaw-dropout-probe-s1-20260928-01",
+        0.051688
+      ],
+      [
+        "rivals-yaw-dropout-probe-s2-20260928-01",
+        0.0488169
+      ],
+      [
+        "rivals-cm3-stage0-02-8ba5795f6398",
+        0.04881641
+      ],
+      [
+        "rivals-yaw-dropout-probe-s3-20260928-01",
+        0.04881626
+      ],
+      [
+        "rivals-idm-expanded-20260928-probe-01",
+        0.04594474
+      ],
+      [
+        "rivals-idm-expanded-20260928-probe-02",
+        0.03733039
+      ],
+      [
+        "rivals-idm-local-timing-20260928-01",
+        0.03158697
+      ],
+      [
+        "rivals-cm3-stage0-01-6b82be1f8b9e",
+        0.02777829
+      ],
+      [
+        "rivals-cm3-copy-03-c537c714eadf",
+        0.02615613
+      ],
+      [
+        "rivals-guard-v2-shake-20260928-02",
+        0.02010108
+      ],
+      [
+        "rivals-runtime-probe-03-291e8948cf84",
+        0.01579367
+      ],
+      [
+        "rivals-cm3-inputs-05-c9081ca9ae53",
+        0.01268792
+      ],
+      [
+        "rivals-capture-05-e3e3b43e2e5f",
+        0.00903814
+      ],
+      [
+        "rivals-runtime-probe-01-fc7a6e143548",
+        0.00717833
+      ],
+      [
+        "rivals-cm3-r3p1-A-0-01-4319cd98e209",
+        0.00574317
+      ],
+      [
+        "rivals-cm3-r3p1-A-2-01-a51b152009b2",
+        0.00574309
+      ],
+      [
+        "rivals-capture-04-9c0c91ca7b49",
+        0.00287158
+      ],
+      [
+        "rivals-capture-03-942685ac04e9",
+        0.00287151
+      ],
+      [
+        "rivals-capture-06-3c038da48e68",
+        0.00287145
+      ],
+      [
+        "rivals-cm3-inputs-01-a303d6edd532",
+        0.00143612
+      ],
+      [
+        "rivals-yaw-probe2-20260927-01",
+        0.00143609
+      ],
+      [
+        "rivals-cm3-copy-02-acddc42ce266",
+        0.000844
+      ],
+      [
+        "rivals-cm3-copy-01-293f1570970b",
+        0.00077366
+      ],
+      [
+        "rivals-explore-chunks-20260927",
+        6.147e-05
+      ]
+    ]
+  },
+  "attributed_spend": {
+    "kept": 37.18,
+    "discarded": 51.29,
+    "kept_note": "Corpus $26.62 + labelling ~$5.56 + full-01 prototype $5.00. Other kept decisions share mixed app bills.",
+    "discarded_note": "World-model v2/v3 $47.05 + offline AWR $4.24. Later policy negatives and early experiments are excluded from this partial attribution."
+  },
+  "sittings": [
+    {
+      "name": "Compat · run-05",
+      "date": "30 SEP · 13:35 CDT",
+      "verdict": "PASS",
+      "image": "compat.png",
+      "result": "One bounded compatibility check; acquired and converged from both sides. Pixel response only, not a learned combat result.",
+      "stop": "passed; both sides complete",
+      "counts": "Hits / KOs: not scored (compatibility test).",
+      "source": "data/calibration/compat-check-20260929/run-05/result.json"
+    },
+    {
+      "name": "Learned-01 · A",
+      "date": "30 SEP · 13:37 CDT",
+      "verdict": "FAIL",
+      "image": "learned.jpg",
+      "result": "One 12.932 s attempt; 126 decisions, 121 dropped, five pad snapshots. The policy stayed effectively idle.",
+      "stop": "stale_or_nonmonotonic_frame",
+      "counts": "Hits / KOs: not scored in this runner record.",
+      "source": "data/calibration/compat-check-20260929/learned-01-a/README.md + result.json"
+    },
+    {
+      "name": "Online RL · sitting 01",
+      "date": "30 SEP · LIVE SITTING",
+      "verdict": "No gain demonstrated",
+      "image": "rl-curve.png",
+      "result": "Six of 20 planned episodes: three BC, three RL. BC 58.89 s; RL 47.41 s. Small unequal exposure cannot establish improvement.",
+      "stop": "Episode 5: range_lost after falling into water; no retry",
+      "counts": "Corrected audit: BC 0 hits / 0 KOs. RL 1 hit / 0 KOs and a fall. The live updates used three false-hit rewards; plumbing only.",
+      "source": "docs/lanes/rl.md §7b; rl/out/rl-sitting-20260930-01/episodes.json (fe1d795); raw KO curve remains zero",
+      "extra_image": "rl-takeover.jpg"
+    }
+  ],
+  "idm": [
+    {
+      "name": "full03",
+      "yaw": 0.631,
+      "pitch": 0.783,
+      "press": "0.48 / 0.56 / 0.44"
+    },
+    {
+      "name": "v2-a",
+      "yaw": 0.512,
+      "pitch": 0.578,
+      "press": "0.67 / 0.85 / 0.50"
+    },
+    {
+      "name": "v2-cd",
+      "yaw": 0.495,
+      "pitch": 0.531,
+      "press": "0.67 / 0.74 / 0.66"
+    }
+  ],
+  "world_models": [
+    {
+      "name": "full-01",
+      "verdict": "Kept",
+      "image": "wm-full-01.gif",
+      "db": [
+        20.1,
+        15.6,
+        14.9
+      ],
+      "note": "Short-horizon prototype. Real actions help; imagery dissolves by about one second."
+    },
+    {
+      "name": "v2-noroll",
+      "verdict": "Discarded",
+      "image": "wm-v2-noroll.gif",
+      "db": [
+        18.9,
+        15.2,
+        14.6
+      ],
+      "note": "Larger frames and longer context. Imagined KO AUC 0.71."
+    },
+    {
+      "name": "v2-main",
+      "verdict": "Discarded",
+      "image": "wm-v2-main.gif",
+      "db": [
+        18.8,
+        15.3,
+        14.6
+      ],
+      "note": "Training on own rollouts did not clear the longer-horizon goal. KO AUC 0.69."
+    },
+    {
+      "name": "v3-expert",
+      "verdict": "Discarded",
+      "image": "wm-v3-expert.gif",
+      "db": [
+        18.4,
+        15.3,
+        14.8
+      ],
+      "note": "+21.7 h of expert data: only +0.2 dB late. Imagined KO AUC 0.65."
+    }
+  ],
+  "recordings": [
+    {
+      "name": "James · range reward cohort",
+      "value": "3.10 h",
+      "note": "186 minutes across 10 non-held-back takes, as reported by the RL lane. This is a defined cohort, not all recordings."
+    },
+    {
+      "name": "James · controller reference",
+      "value": "0.26 h",
+      "note": "15.3 minutes; custom pad binds and no logged inputs. Reference only, never training."
+    },
+    {
+      "name": "James · start-from-still",
+      "value": "0.25 h",
+      "note": "15.00 minutes recorded September 30. TRAIN candidate pending intake at this snapshot."
+    },
+    {
+      "name": "James · calibration reference",
+      "value": "0.06 h",
+      "note": "Three labelled human calibration takes: about 1 + 2 minutes and 46 seconds in the recording ledger. Approximate; not training hours."
+    },
+    {
+      "name": "James · match candidates",
+      "value": "1.04 h",
+      "note": "Eight explicitly listed September 27 Quick Match candidates: 62.4 file-span minutes. Pending intake; excludes held-back families."
+    },
+    {
+      "name": "Expert corpus · separate",
+      "value": "53.3 h",
+      "note": "40 videos, eight KB/M creators; gameplay selection from 218 downloaded hours. Selection is not training admission."
+    }
+  ]
+}

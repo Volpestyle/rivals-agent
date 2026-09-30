@@ -23,10 +23,12 @@ import time
 from urllib.parse import urlsplit
 
 if __package__:
-    from .idm_board import LabellingCache, render as render_labelling
+    from . import training_lab
+    from .idm_board import LabellingCache, render as render_labelling, handle_review_request
     from .job_status import timestamp, validate as validate_status, matches_receipt
 else:
-    from idm_board import LabellingCache, render as render_labelling
+    import training_lab
+    from idm_board import LabellingCache, render as render_labelling, handle_review_request
     from job_status import timestamp, validate as validate_status, matches_receipt
 
 
@@ -555,6 +557,7 @@ class Board:
         jobs.sort(key=lambda j: (j.stage != "running", -j.updated, j.name))
         machine_health = health()
         snapshot = {"updated": stamp(time.time()), "jobs": [asdict(j) for j in jobs],
+                    "achievements": load(self.repo / "scripts/training_lab.json"),
                     "results": sorted(latest.values(), key=lambda r: -r["updated"]),
                     "waiting": waiting, **machine_health, "warnings": warnings,
                     "scan_seconds": round(time.monotonic() - started, 3)}
@@ -846,24 +849,28 @@ def render(snapshot, evidence):
         live_jobs = '<div class="idle"><span class="idle-mark">—</span><div><h3>No jobs currently reported running</h3><p>Recent results are below. Stale and unconfirmed jobs remain listed separately.</p></div></div>'
     if queues and active_runs:
         live_jobs += '<details class="fold"><summary>Queue status <span class="muted">Orchestration, separate from training runs</span></summary>' + ''.join(job_card(j) for j in queues) + '</details>'
-    headline = 'Work is in progress.' if running_count else 'The queue is moving.' if queues else 'Training, at a glance.'
-    summary = 'Follow the runs. Understand what they tested. See what is ready for the next step.'
+    headline = 'What we have learned.'
+    summary = 'The results, the cost, and the distance to autonomous play.'
+    achievements = snapshot.get('achievements', {})
+    if achievements:
+        hero_stats = (f'<div class="stat"><b class="orange">{len(achievements["runs"])}</b><span>RECORDED RESULTS</span></div>'
+                      f'<div class="stat"><b>{escape(achievements["recordings"][-1]["value"])}</b><span>EXPERT FOOTAGE SELECTED</span></div>'
+                      f'<div class="stat"><b class="mint">${achievements["billing"]["total"]:.0f}</b><span>MODAL · OF $500</span></div>')
+    else:
+        hero_stats = f'<div class="stat"><b>{running_count}</b><span>RUNNING JOBS</span></div>'
     preview = '<div class="preview-banner">LOCAL DESIGN PREVIEW · simulated running states; no training was started.</div>' if snapshot.get('preview') else ''
     warning_html = ''.join('<div class="warning-banner">' + escape(w) + '</div>' for w in snapshot['warnings'])
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-            f'<meta http-equiv="refresh" content="30"><title>Rivals · Training lab</title><style>{CSS}</style></head><body><div class="shell">'
+            f'<title>Rivals · Training lab</title><style>{CSS}{training_lab.CSS}</style></head><body><div class="shell">'
             '<header class="masthead"><div class="brand">RIVALS<span>/ TRAINING LAB</span></div><div class="live-label"><span class="dot"></span>'
-            '<span class="refresh-label">Updates every 30 seconds</span><a href="/idm-labelling">IDM labelling</a><a href="/api/status">Snapshot ↗</a></div></header>'
+            '<span class="refresh-label">Read-only results</span><a href="/">Refresh</a><a href="/idm-labelling">IDM labelling</a><a href="/api/status">Snapshot ↗</a></div></header>'
             f'<section class="overview"><div><h1>{headline}</h1><p>{summary}</p></div><div class="stats">'
-            f'<div class="stat"><b class="orange">{running_count}</b><span>RUNNING JOBS</span></div><div class="stat"><b>{sum(j["stage"] == "done" for j in recent_runs)}</b><span>FINISHED · LAST 48 H</span></div>'
-            f'<div class="stat"><b class="{"amber" if unconfirmed else "mint"}">{len(unconfirmed)}</b><span>UNCONFIRMED · CURRENT</span></div></div></section>'
-            f'{preview}{warning_html}<div class="layout"><main class="main"><section class="panel"><div class="panel-header"><h2>Running now</h2>'
+            f'{hero_stats}</div></section>'
+            f'{preview}{training_lab.render(snapshot.get("achievements", {}))}{warning_html}<div class="layout" id="operations"><main class="main"><section class="panel"><div class="panel-header"><h2>Running now</h2>'
             f'<small>{running_count} running · {queued_count} queued</small></div>{live_jobs}</section>'
-            '<div class="section-heading"><h2>Early policy experiments</h2><small>Sept 24–26 range_bc rounds · history, not current status</small></div>'
-            '<div class="panel empty-note">Newer decisions (camera calibration, compat checks, IDM and policy probes) are recorded on '
-            '<a href="https://linear.app/vuhlp/project/rivals-agent-762337b8bf64">the Linear project</a>, not on this board.</div>'
+            '<details class="panel fold"><summary>Early policy experiments<span class="muted">Sept 24–26 range_bc rounds · historical verdicts</span></summary>'
             + (''.join(experiment_card(r) for r in experiments) or '<div class="panel empty-note">No experiment decisions have been recorded yet.</div>') +
-            f'<details class="panel fold"><summary>Recent runs ({len(finished)})<span class="muted">Last 48 hours · completion is separate from acceptance</span></summary>'
+            f'</details><details class="panel fold"><summary>Recent runs ({len(finished)})<span class="muted">Last 48 hours · completion is separate from acceptance</span></summary>'
             f'{"".join(job_card(j) for j in finished)}</details>'
             f'<details class="panel fold"><summary>Unconfirmed jobs ({len(unconfirmed)})<span class="muted">No confirmed terminal state</span></summary>{"".join(job_card(j) for j in unconfirmed)}</details>'
             f'<details class="panel fold" id="history"><summary>History ({len(history)})<span class="muted">Finished or unconfirmed · older than 48 hours</span></summary>{"".join(job_card(j) for j in history)}</details>'
@@ -874,6 +881,8 @@ def render(snapshot, evidence):
 def serve(board, port):
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self):
+            if handle_review_request(self, CSS):
+                return
             path = urlsplit(self.path).path
             if path not in ("/idm-labelling", "/api/idm-labelling"):
                 snapshot = board.snapshot()
@@ -887,6 +896,12 @@ def serve(board, port):
                 body, mime = render(snapshot, board.evidence).encode(), "text/html; charset=utf-8"
             elif path == "/api/status":
                 body, mime = json.dumps(snapshot).encode(), "application/json"
+            elif path.startswith("/lab-media/"):
+                asset = training_lab.media(board.repo, snapshot.get("achievements", {}), path[len("/lab-media/"):])
+                if asset is None:
+                    self.send_error(404)
+                    return
+                body, mime = asset
             elif path.startswith("/evidence/") and path[10:] in board.evidence:
                 body = json.dumps(board.evidence[path[10:]], indent=2).encode()
                 mime = "application/json"
@@ -898,9 +913,14 @@ def serve(board, port):
             self.send_header("Content-Length", str(len(body)))
             self.send_header("Cache-Control", "no-store")
             self.send_header("X-Content-Type-Options", "nosniff")
-            self.send_header("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'")
+            self.send_header("Content-Security-Policy", "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; frame-ancestors 'none'")
             self.end_headers()
             self.wfile.write(body)
+
+        def do_POST(self):
+            if handle_review_request(self, CSS):
+                return
+            self.send_error(404)
 
         def log_message(self, *args):
             pass  # No growing access log from phone refreshes.
