@@ -5,10 +5,26 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
-from scripts.footage_corpus import exclude_review_intervals, jpeg_frames, masked_portrait_recovery, refresh, spans_from_reads, write_json
+from scripts.footage_corpus import exclude_review_intervals, import_cloud, jpeg_frames, masked_portrait_recovery, refresh, spans_from_reads, write_json
 
 
 class SpanTests(unittest.TestCase):
+    def test_cloud_timestamps_refuse_shortened_local_video(self):
+        with TemporaryDirectory() as folder:
+            root = Path(folder)
+            batch = root / "batch"
+            write_json(batch / "123.json", dict(source_id="123", info=dict(id="v123", width=1920,
+                       height=1080, duration=100), spans=[dict(start_s=10, end_s=20)]))
+            meta = dict(source_id="123", resolution=[1920, 1080], duration_s=90.03, media_path="local.mp4")
+            with patch("scripts.footage_corpus.catalogue", return_value=[meta]):
+                with self.assertRaisesRegex(ValueError, "durations differ"):
+                    import_cloud(root, batch)
+            self.assertFalse((root / "spans/123.json").exists())
+            meta["duration_s"] = 99.3  # provider rounding is compatible
+            with patch("scripts.footage_corpus.catalogue", return_value=[meta]), \
+                    patch("scripts.footage_corpus.refresh", return_value={}):
+                self.assertEqual(import_cloud(root, batch)["imported"], ["123"])
+
     def test_masked_portrait_does_not_restore_killcam_or_foreign_hp(self):
         reads = [dict(t=i/2, accepted=False, reason="unknown", hp=250, max_hp=250,
                       bar=1, icon_evidence=["swing"]) for i in range(30)]

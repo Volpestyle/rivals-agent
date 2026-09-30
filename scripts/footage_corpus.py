@@ -469,6 +469,11 @@ def import_cloud(root, folder):
         info = result["info"]
         if info["id"].removeprefix("v") != sid or [info["width"], info["height"]] != meta["resolution"]:
             raise ValueError("cloud source/geometry differs from local media")
+        # Independent downloads can lose discontinuity fragments. Cloud frame
+        # timestamps then describe a different timeline despite matching IDs.
+        # Allow provider rounding, but never export a materially shortened file.
+        if abs(info["duration"] - meta["duration_s"]) > 2:
+            raise ValueError("cloud/local video durations differ; timestamps are not interchangeable")
         previous = -1
         for span in result["spans"]:
             lo, hi = span["start_s"], span["end_s"]

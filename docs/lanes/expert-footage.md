@@ -368,3 +368,21 @@ unknown patch/cooldown provenance and one-video groups preserved. The current
 consumer catalogue and counts live only in the external README/JSONL, reached
 through the repository's ignored junction. Milestone PNGs use our aggregate
 counts only; private frame sheets remain under external `audit/`.
+
+A known Simii retry file is about ten seconds shorter than the cloud/provider
+video (27,740.028665 versus 27,750 seconds). Its native retained frames disagree
+with the cloud reads at the purported timestamps. The entire source remains
+withheld; it was never admitted. Cloud import now refuses local/provider duration
+differences above two seconds, allowing provider rounding but rejecting this
+observed discontinuity loss. The offline regression check covers refusal before
+writing spans and a valid rounded-duration control. All currently admitted
+sources differ by less than one second in the same audit. Nine offline checks
+and Ruff passed. This catches the demonstrated mismatch; matching duration alone
+is not a proof that independently downloaded streams are byte-identical.
+
+Twitch game-category changes can lag the actual switch to another game.
+Rdpaco's Wolverine tails are therefore bracketed from native frames, using
+category chapters only as supplementary evidence. Humble's later broadcasts
+include VOD reviews with top team rosters and playback controls; conservative
+tail brackets remove those reviews before another twelve retained native checks.
+These are source-provenance exclusions, separate from the hero/HUD classifier.
