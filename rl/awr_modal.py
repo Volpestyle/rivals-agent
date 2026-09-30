@@ -26,6 +26,7 @@ TRAIN = ["20260923T051828-422Z-33696-1", "20260923T200129-346Z-33696-6", "202609
 DEV = ["20260923T171533-187Z-33696-5", "20260923T205528-900Z-45572-3"]
 VAL = ["20260925T212646-322Z-49728-6"]
 LABELS = ["rl/labels/range_rewards_20260930.json", "rl/labels/range_rewards_val_20260930.json"]
+FOLDS = 4
 ARMS = {"awr": dict(beta=1.0), "awr-hot": dict(beta=.5), "uniform": dict(beta=None), "shuffled": dict(beta=1.0, shuffle=True)}
 
 image = (modal.Image.debian_slim(python_version="3.11")
@@ -75,7 +76,7 @@ def hidden_and_logp(model, s, chunk=512):
     return hid, acts, cams, logp
 
 
-def fit_value(hs, gs, valid, steps=3000, log=print):
+def fit_value(hs, gs, valid, steps=2000, log=print):
     """MLP value head on the frozen recurrent state: standardised return regression."""
     import torch
     from torch import nn
@@ -206,11 +207,21 @@ def run(root, out_dir, *, arms=ARMS, epochs=6, lr=1e-4, kl=1.0, seed=0, log=prin
         info["sessions"][s.id] = {"steps": s.n, "events": counts, "kos_in_steps": int((r >= 10).sum()),
                                   "return_mean": float(g.mean())}
         log(f"{s.id}: {counts}, return mean {g.mean():.3f}")
-    value = fit_value([per[s.id]["hid"] for s in train_s], [per[s.id]["g"] for s in train_s],
-                      [per[s.id]["valid"] for s in train_s], log=log)
+    # Cross-fitted advantages: a train session's value comes from a head fitted on the other folds, because a head
+    # fitted on all train sessions memorises their returns (smoke: train R2 0.999, dev 0.34) and leaves A as noise.
+    fit = lambda group: fit_value([per[s.id]["hid"] for s in group], [per[s.id]["g"] for s in group],
+                                  [per[s.id]["valid"] for s in group], log=log)
+    folds = [train_s[k::FOLDS] for k in range(FOLDS)] if len(train_s) >= 2 * FOLDS else [[s] for s in train_s]
+    for fold in folds:
+        others = [s for s in train_s if s not in fold] or fold
+        value = fit(others)
+        for s in fold:
+            per[s.id]["v"] = value(per[s.id]["hid"])
+    value = fit(train_s)
+    for s in dev_s + val_s:
+        per[s.id]["v"] = value(per[s.id]["hid"])
     for s in train_s + dev_s + val_s:
         p = per[s.id]
-        p["v"] = value(p["hid"])
         p["adv"] = p["g"] - p["v"]
     for part, group in (("train", train_s), ("dev", dev_s), ("val", val_s)):
         if not group:
