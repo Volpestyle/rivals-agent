@@ -202,30 +202,23 @@ def test_guard_frame_rewards_are_credited_to_the_preceding_decision():
     assert list(r) == [1., 0., 11.]          # 0.12 -> decision 0.1; 0.31 and 0.9 -> decision 0.3
 
 
-def test_after_episode_only_a_confirmed_respawn_counts_as_death_and_safety_stops_end_the_sitting():
-    from rl.online.sitting import after_episode
-    ready_plaza = {"result": "ready", "start_state": "plaza"}
-    ready_spawn = {"result": "ready", "start_state": "spawn"}
-    failed = {"result": "timeout", "start_state": "spawn"}
-    assert after_episode("deadline", None) == (True, False, None)
-    assert after_episode("deadline", ready_plaza) == (True, False, None)
-    assert after_episode("deadline", failed)[:2] == (False, False)
-    assert after_episode("range_lost", ready_spawn) == (True, True, None)
-    assert after_episode("range_lost", ready_plaza)[:2] == (False, False)      # no respawn seen: not a death
-    assert after_episode("range_lost", failed)[:2] == (False, False)
-    assert after_episode("range_lost", None)[:2] == (False, False)
+def test_after_episode_only_a_pixel_confirmed_death_continues_and_safety_stops_end_the_sitting():
+    from rl.online.sitting import after_episode, reset_status
+    assert after_episode("deadline", False) == (True, None)
+    assert after_episode("deadline", False, "ready") == (True, None)
+    assert after_episode("deadline", False, "failed")[0] is False       # a reset that is not ready stops the sitting
+    assert after_episode("range_lost", True, "ready") == (True, None)     # a fall seen on the pixels (hp 0 twice)
+    assert after_episode("range_lost", False, "ready")[0] is False        # HUD loss alone proves nothing
     for stop in ("focus_lost", "takeover", "idle", "stale_or_nonmonotonic_frame", "exception:ValueError:x", None):
-        assert after_episode(stop, ready_spawn)[:2] == (False, False)
+        assert after_episode(stop, True, "ready")[0] is False
+    assert reset_status({"reset": {"status": "ready"}}) == "ready" and reset_status({}) is None
 
 
-def test_reset_command_routes_live_and_dry():
-    from rl.online.sitting import reset_command
-    live = SimpleNamespace(reset_module="agent.range_reset", reset_s=45., live=True, game_pid=7,
-                           camera_settings_match="alt-247-124", dry=None)
-    cmd = reset_command(live, Path("o"))
-    assert cmd[1:3] == ["-m", "agent.range_reset"] and "--live" in cmd and cmd[cmd.index("--game-pid") + 1] == "7"
-    dry = SimpleNamespace(**{**vars(live), "live": False, "dry": Path("run")})
-    assert "--dry" in reset_command(dry, Path("o")) and "--live" not in reset_command(dry, Path("o"))
+@pytest.mark.skipif(not Path("data/calibration/rl-sitting-20260930-01/ep-005-rl/stop.png").exists(),
+                    reason="first live RL sitting not present")
+def test_the_live_fall_is_seen_on_the_last_frame_and_stop_png():
+    e = data.episode("data/calibration/rl-sitting-20260930-01/ep-005-rl", {"jump"})
+    assert e["events"]["death"] == 1 and e["events"]["hit"] == 1
 
 
 @pytest.mark.skipif(not (RUN / "frames.jsonl").exists(), reason="retained learned-runner run not present")
@@ -234,3 +227,43 @@ def test_confirmed_death_puts_the_penalty_on_the_last_decision():
     e1 = data.episode(RUN, {"jump"}, death=True)
     assert e1["events"]["death"] == 1 and e1["reward"][-1] == e0["reward"][-1] - 10
     assert (e1["reward"][:-1] == e0["reward"][:-1]).all()
+
+
+def test_camera_sampling_follows_the_tempered_distribution():
+    import random
+    rng = random.Random(0)
+    probs = [0.] * 31
+    probs[15], probs[20] = .75, .25
+    draws = [explore.sample_class(probs, 1., rng.random()) for _ in range(4000)]
+    assert abs(draws.count(20) / 4000 - .25) < .03 and set(draws) <= {15, 20}
+    hot = [explore.sample_class(probs, .25, rng.random()) for _ in range(4000)]
+    assert hot.count(20) / 4000 < .05                           # low temperature sharpens toward the mode
+
+
+def test_turn_options_yaw_toward_the_outline_and_stop_when_centred():
+    bearing = {"v": .4}
+    base = FakeBase(.01)
+    base.reset()
+    pol = explore.ExploringPolicy(base, seed=3, turn_rate_hz=2., bearing=lambda frame: (True, bearing["v"]))
+    pol.reset()
+    yaws = [pol.step(None, t=k / 30).yaw_deg for k in range(300)]
+    turning = [y for y in yaws if y != .1]
+    assert turning and all(.6 <= y <= 2.5 for y in turning)     # toward +bearing, within TURN_DEG
+    bearing["v"] = -.3
+    yaws = [pol.step(None, t=10 + k / 30).yaw_deg for k in range(300)]
+    assert any(y < 0 for y in yaws) and all(y <= 2.5 for y in yaws)
+    bearing["v"] = .01                                          # centred: no turn
+    pol.turn = None
+    assert all(pol.step(None, t=30 + k / 30).yaw_deg == .1 for k in range(60))
+
+
+def test_no_outline_means_no_turn_and_zero_settings_leave_the_step_alone():
+    base = FakeBase(.8)
+    base.reset()
+    pol = explore.ExploringPolicy(base, seed=1, turn_rate_hz=2., bearing=lambda frame: (False, 0.))
+    pol.reset()
+    assert all(pol.step(None, t=k / 30).yaw_deg == .1 for k in range(120))
+    plain = explore.ExploringPolicy(FakeBase(.8))
+    plain.reset()
+    s = plain.step(None, t=0.)
+    assert s.yaw_deg == .1 and s.held["move_forward"]

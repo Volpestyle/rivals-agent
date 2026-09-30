@@ -5,6 +5,10 @@ param(
     [double]$EpisodeSeconds = 20,
     [double]$ExploreTemp = 1.0,
     [double]$OptionRate = 0.5,
+    [double]$CamTemp = 1.0,
+    [double]$TurnRate = 0.5,
+    [double]$SettleSeconds = 1.5,
+    [switch]$NoReset,
     [double]$YawScale = 1.0,
     [double]$DecisionHz = 15
 )
@@ -34,8 +38,9 @@ $rlArguments = @(
     'run', '--no-project', '--python', $rlPython, 'python', '-m', 'rl.online.sitting',
     '--live', '--game-pid', "$rlGamePid", '--camera-settings-match', 'alt-247-124',
     '--base-bundle', ('"' + $BaseBundle + '"'), '--out', ('"' + $Out + '"'),
-    '--episodes', "$Episodes", '--episode-s', "$EpisodeSeconds", '--explore-temp', "$ExploreTemp", '--option-rate', "$OptionRate",
-    '--yaw-scale', "$YawScale", '--decision-hz', "$DecisionHz", '--device', 'cuda'
+    '--episodes', "$Episodes", '--episode-s', "$EpisodeSeconds", '--explore-temp', "$ExploreTemp", '--option-rate', "$OptionRate", '--cam-temp', "$CamTemp", '--turn-rate', "$TurnRate",
+    '--yaw-scale', "$YawScale", '--decision-hz', "$DecisionHz", '--device', 'cuda', '--settle-s', "$SettleSeconds"
 )
+if (-not $NoReset) { $rlArguments += '--reset' }   # the runner's integrated guarded reset before each episode
 $rlProcess = Start-Process -FilePath $rlUv -ArgumentList $rlArguments -WorkingDirectory 'C:/Users/volpe/repos/rivals-agent' -WindowStyle Hidden -PassThru -RedirectStandardOutput $rlStdout -RedirectStandardError $rlStderr
 "rl sitting process=$($rlProcess.Id) game=$rlGamePid output=$Out"

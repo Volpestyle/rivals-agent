@@ -12,14 +12,15 @@ alternate BC, RL, BC, RL, ...: BC is the frozen base bundle at temperature 0, RL
 takeover, range or HUD loss, stale capture, an exception), and never retries. Between episodes the updater uses the
 GPU for a few seconds; on the PC that is live-agent work inside a supervised sitting (docs/compute.md).
 
-Resets (--reset): before every episode `python -m agent.range_reset` (live-loop's guarded arrival from the spawn room
-and approach until eligible bots are in view) must end "ready", or the sitting stops. An episode that ends exactly
-"range_lost" is followed at once by that reset; only if it starts from a pixel-confirmed spawn room (a respawn) is the
-episode scored as a fall death (-10 on its last decision) and the sitting continues. Every other stop (focus, takeover,
-idle, stale capture, exceptions) ends the sitting with no retry. --settle-s passes to the runner, which holds a neutral,
-guarded settle after its deadline inside the same attach.
+Resets (--reset): every episode runs with the runner's integrated `--reset-before --settle-s` (live-loop): a guarded
+arrival from the spawn room and approach until eligible bots are in view before the policy phase, and a neutral guarded
+settle after it, all inside one attach and the runner's 60 s cap. A reset that is not ready ends that episode without a
+policy phase, and the sitting stops. An episode that ends exactly "range_lost" continues the sitting only when its own
+retained frames confirm a fall death from pixels (hp 0 on two reads: the last frame and stop.png); the next episode's
+integrated reset then walks out of the spawn room under fresh scope. Every other stop (focus, takeover, idle, stale
+capture, exceptions, an unconfirmed range_lost) ends the sitting with no retry.
 
-Output: ep-NNN-<arm>/ (runner output), ep-NNN-<arm>.explore.jsonl, reset-NNN/ (reset output), bundles/rl-NNN/,
+Output: ep-NNN-<arm>/ (runner output, including its reset and settle records), ep-NNN-<arm>.explore.jsonl, bundles/rl-NNN/,
 curve.jsonl, curve.png, sitting.json.
 """
 from __future__ import annotations
@@ -35,25 +36,19 @@ import time
 def episode_command(a, index, arm, bundle, out):
     runner = ["--policy-bundle", str(bundle), "--max-s", str(a.episode_s), "--out", str(out),
               "--decision-hz", str(a.decision_hz), "--yaw-scale", str(a.yaw_scale), "--device", a.device]
-    if a.settle_s > 0:
-        runner += ["--settle-s", str(a.settle_s)]    # the runner's own neutral, guarded settle after its deadline
+    if a.reset:
+        runner += ["--reset-before", "--settle-s", str(a.settle_s)]   # the runner's own guarded reset and settle
     if a.live:
         runner = ["--live", "--game-pid", str(a.game_pid), "--camera-settings-match", a.camera_settings_match] + runner
     else:
         runner = ["--dry", str(a.dry), "--async-policy"] + runner
-    temp, rate = (a.explore_temp, a.option_rate) if arm == "rl" else (0., 0.)
+    temp, rate, cam, turn = ((a.explore_temp, a.option_rate, a.cam_temp, a.turn_rate) if arm == "rl"
+                             else (0., 0., 0., 0.))
     return [sys.executable, "-m", "rl.online.episode", "--explore-temp", str(temp), "--option-rate", str(rate),
-            "--explore-seed", str(index), "--"] + runner
+            "--cam-temp", str(cam), "--turn-rate", str(turn), "--explore-seed", str(index), "--"] + runner
 
 
 NORMAL_END = ("deadline", "replay_complete")
-
-
-def reset_command(a, out):
-    base = [sys.executable, "-m", a.reset_module, "--max-s", str(a.reset_s), "--out", str(out)]
-    if a.live:
-        return base + ["--live", "--game-pid", str(a.game_pid), "--camera-settings-match", a.camera_settings_match]
-    return base + ["--dry", str(a.dry)]
 
 
 def read_result(out):
@@ -61,25 +56,27 @@ def read_result(out):
     return json.loads(path.read_text()) if path.exists() else None
 
 
-def after_episode(result, reset):
-    """Decide from an episode's runner result and the reset that followed it (None when none ran).
+def reset_status(result_json):
+    """The integrated reset's status from the runner's result.json (None when the runner ran without one)."""
+    reset = (result_json or {}).get("reset")
+    return reset.get("status") if isinstance(reset, dict) else None
 
-    Returns (go_on, death, reason). Only an exact "range_lost" can be a fall death, and only when the reset that
-    followed is ready AND started from the spawn room (a pixel-confirmed respawn under fresh scope). Anything else that
-    is not a normal end stops the sitting; so does a reset that is not ready."""
-    ready = reset is not None and reset.get("result") == "ready"
+
+def after_episode(result, died, reset=None):
+    """Decide from an episode's runner result, whether its own frames confirm a fall death, and its integrated reset.
+
+    Returns (go_on, reason). A reset that ran and was not ready stops the sitting. Only an exact "range_lost" with a
+    pixel-confirmed death may continue (the next episode's reset walks out of the spawn room under fresh scope).
+    Anything else that is not a normal end stops the sitting."""
+    if reset is not None and reset != "ready":
+        return False, f"integrated reset not ready ({reset!r}); sitting stops, no retry"
     if result in NORMAL_END:
-        if reset is None or ready:
-            return True, False, None
-        return False, False, f"reset not ready ({reset.get('result')!r}); sitting stops, no retry"
+        return True, None
     if result == "range_lost":
-        if reset is None:
-            return False, False, "range_lost with no reset to confirm a respawn; sitting stops"
-        if ready and reset.get("start_state") == "spawn":
-            return True, True, None
-        return False, False, (f"range_lost not confirmed as a respawn (reset {reset.get('result')!r}, "
-                              f"start {reset.get('start_state')!r}); sitting stops, no retry")
-    return False, False, f"episode ended with {result!r}; safety stops end the sitting, no retry"
+        if died:
+            return True, None
+        return False, "range_lost without a pixel-confirmed death; sitting stops, no retry"
+    return False, f"episode ended with {result!r}; safety stops end the sitting, no retry"
 
 
 def plot(curve, path):
@@ -90,36 +87,41 @@ def plot(curve, path):
         import matplotlib.pyplot as plt
     except ImportError:
         return _plot_cv2(curve, path)
-    fig, ax = plt.subplots(figsize=(7, 3.5), dpi=120)
-    for arm, colour in (("bc", "#888888"), ("rl", "#1f77b4")):
-        xs = [c["episode"] for c in curve if c["arm"] == arm and "kos_per_min" in c]
-        ys = [c["kos_per_min"] for c in curve if c["arm"] == arm and "kos_per_min" in c]
-        ax.plot(xs, ys, "o-", color=colour, label="frozen BC" if arm == "bc" else "RL (updated after each)")
-    ax.set_xlabel("episode")
-    ax.set_ylabel("KOs / min (pixel reader)")
-    ax.legend()
-    ax.grid(alpha=.3)
+    fig, axes = plt.subplots(2, 1, figsize=(7, 5), dpi=120, sharex=True)
+    for ax, key, label in zip(axes, ("hits_per_min", "kos_per_min"), ("hits / min", "KOs / min")):
+        for arm, colour in (("bc", "#888888"), ("rl", "#1f77b4")):
+            xs = [c["episode"] for c in curve if c["arm"] == arm and key in c]
+            ys = [c[key] for c in curve if c["arm"] == arm and key in c]
+            ax.plot(xs, ys, "o-", color=colour, label="frozen BC" if arm == "bc" else "RL (updated after each)")
+        ax.set_ylabel(label + " (pixel reader)")
+        ax.grid(alpha=.3)
+    axes[0].legend()
+    axes[1].set_xlabel("episode")
     fig.tight_layout()
     fig.savefig(path)
     plt.close(fig)
 
 
-def _plot_cv2(curve, path, w=840, h=420, pad=50):
+def _plot_cv2(curve, path, w=840, h=520, pad=50):
     import cv2
     import numpy as np
     img = np.full((h, w, 3), 255, np.uint8)
     rows = [c for c in curve if "kos_per_min" in c]
-    top = max([c["kos_per_min"] for c in rows] + [1.])
     n = max([c["episode"] for c in rows] + [1])
-    xy = lambda c: (int(pad + (w - 2 * pad) * c["episode"] / n), int(h - pad - (h - 2 * pad) * c["kos_per_min"] / top))
-    cv2.rectangle(img, (pad, pad), (w - pad, h - pad), (200, 200, 200), 1)
-    for arm, colour in (("bc", (136, 136, 136)), ("rl", (180, 119, 31))):
-        pts = [xy(c) for c in rows if c["arm"] == arm]
-        for a, b in zip(pts, pts[1:]):
-            cv2.line(img, a, b, colour, 2)
-        for p in pts:
-            cv2.circle(img, p, 4, colour, -1)
-    cv2.putText(img, f"KOs/min (max {top:.1f}) by episode; grey frozen BC, blue RL", (pad, 30), 0, .55, (0, 0, 0), 1)
+    ph = (h - 2 * pad) // 2
+    for k, (key, label) in enumerate((("hits_per_min", "hits/min"), ("kos_per_min", "KOs/min"))):
+        y0 = pad + k * ph
+        top = max([c.get(key, 0) for c in rows] + [1.])
+        xy = lambda c: (int(pad + (w - 2 * pad) * c["episode"] / n), int(y0 + ph - 10 - (ph - 30) * c.get(key, 0) / top))
+        cv2.rectangle(img, (pad, y0), (w - pad, y0 + ph - 8), (200, 200, 200), 1)
+        cv2.putText(img, f"{label} (max {top:.1f})", (pad + 4, y0 + 16), 0, .5, (0, 0, 0), 1)
+        for arm, colour in (("bc", (136, 136, 136)), ("rl", (180, 119, 31))):
+            pts = [xy(c) for c in rows if c["arm"] == arm]
+            for a, b in zip(pts, pts[1:]):
+                cv2.line(img, a, b, colour, 2)
+            for p in pts:
+                cv2.circle(img, p, 4, colour, -1)
+    cv2.putText(img, "by episode; grey frozen BC, blue RL", (pad, 30), 0, .55, (0, 0, 0), 1)
     cv2.imwrite(str(path), img)
 
 
@@ -139,14 +141,14 @@ def main(argv=None):
     ap.add_argument("--decision-hz", type=float, default=15.)
     ap.add_argument("--explore-temp", type=float, default=1.)
     ap.add_argument("--option-rate", type=float, default=.5, help="RL arm only: exploration options per second")
+    ap.add_argument("--cam-temp", type=float, default=1., help="RL arm only: camera class sampling temperature")
+    ap.add_argument("--turn-rate", type=float, default=.5, help="RL arm only: turn options per second")
     ap.add_argument("--beta", type=float, default=1.)
     ap.add_argument("--kl", type=float, default=1.)
     ap.add_argument("--update-steps", type=int, default=40)
     ap.add_argument("--device", default="cuda")
-    ap.add_argument("--reset", action="store_true", help="guarded reset before every episode (agent.range_reset)")
-    ap.add_argument("--reset-s", type=float, default=45.)
-    ap.add_argument("--settle-s", type=float, default=0., help="runner's neutral guarded settle after the deadline")
-    ap.add_argument("--reset-module", default="agent.range_reset", help=argparse.SUPPRESS)
+    ap.add_argument("--reset", action="store_true", help="runner's integrated --reset-before and --settle-s")
+    ap.add_argument("--settle-s", type=float, default=1.5, help="with --reset: the runner's guarded settle")
     a = ap.parse_args(argv)
     if not 1 <= a.episodes <= 200 or not 0 < a.episode_s <= 60:
         ap.error("episodes in [1, 200] and episode-s in (0, 60]")
@@ -181,44 +183,27 @@ def main(argv=None):
     buffer, curve = [], []
     meta = {"args": {k: str(v) for k, v in vars(a).items()}, "base_bundle_sha": files["checkpoint"]["sha256"],
             "stop": None}
-    def reset(i):
-        out = a.out / f"reset-{i:03d}"
-        say(f"reset {i}")
-        rc = subprocess.call(reset_command(a, out))
-        res = read_result(out) or {"result": f"no result (rc {rc})"}
-        if rc != 0 and res.get("result") == "ready":
-            res = {**res, "result": f"rc {rc}"}
-        say(json.dumps({"reset": i, **{k: res.get(k) for k in ("result", "start_state", "seconds")}}))
-        return res
-
     try:
-        pending = reset(0) if a.reset else None
-        if pending is not None and pending.get("result") != "ready":
-            meta["stop"] = f"first reset not ready ({pending.get('result')!r}); nothing ran"
-            say(meta["stop"])
-            return 1
         for i in range(a.episodes):
             arm = "bc" if i % 2 == 0 else "rl"
             bundle = a.base_bundle if arm == "bc" else current_bundle
             out = a.out / f"ep-{i:03d}-{arm}"
             say(f"episode {i} ({arm}) bundle={bundle}")
             rc = subprocess.call(episode_command(a, i, arm, bundle, out))
-            result = json.loads((out / "result.json").read_text()).get("result") if (out / "result.json").exists() else None
-            follow = None
-            if a.reset and (result in NORMAL_END or result == "range_lost") and i + 1 < a.episodes:
-                follow = reset(i + 1)
-            elif a.reset and result == "range_lost":
-                follow = reset(i + 1)                # the last episode's death still needs its respawn confirmed
-            go_on, death, reason = after_episode(result, follow if a.reset else None)
+            result_json = read_result(out)
+            result = (result_json or {}).get("result")
+            reset = reset_status(result_json) if a.reset else None
             if tower is None:
                 tower = load_tower(Path(files["vision"]["path"]) if Path(files["vision"]["path"]).is_absolute()
                                    else a.base_bundle / files["vision"]["path"],
                                    Path(files["vision_config"]["path"]) if Path(files["vision_config"]["path"]).is_absolute()
                                    else a.base_bundle / files["vision_config"]["path"], a.device)
-            ep = data.episode(out, live_names, tower=tower, device=a.device, death=death) \
-                if (out / "frames.jsonl").exists() else None
-            row = {"episode": i, "arm": arm, "result": result, "rc": rc, "bundle": str(bundle), "death_confirmed": death,
-                   "reset_after": None if follow is None else {k: follow.get(k) for k in ("result", "start_state", "seconds")}}
+            policy_ran = reset in (None, "ready") and (out / "frames.jsonl").exists()
+            ep = data.episode(out, live_names, tower=tower, device=a.device) if policy_ran else None
+            died = bool(ep and ep["events"]["death"])
+            go_on, reason = after_episode(result, died, reset)
+            row = {"episode": i, "arm": arm, "result": result, "rc": rc, "bundle": str(bundle), "reset": reset,
+                   "reset_detail": (result_json or {}).get("reset"), "settle": (result_json or {}).get("settle")}
             if ep is not None:
                 minutes = max(ep["seconds"], 1e-6) / 60
                 row.update(seconds=round(ep["seconds"], 2), **ep["events"],

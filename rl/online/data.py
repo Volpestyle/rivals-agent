@@ -19,15 +19,26 @@ STEP_S = 1 / 30
 
 
 def decisions(run_dir):
-    """(decision rows with a retained frame, every row with a retained frame in time order, result.json).
+    """(decision rows with a retained frame, every retained frame's row in time order, result.json).
 
     The runner retains frames on decision rows AND on 'guard' rows (fresh proofs during camera pulses), about a third
-    of them. Rewards must read all of them: a hit marker can be visible only on a guard frame (rl-sitting-20260930-01
-    episode 1, frame 000086). Targets stay on decision rows, where the executed action is recorded."""
-    rows = [json.loads(line) for line in open(Path(run_dir) / "frames.jsonl", encoding="utf-8") if line.strip()]
-    saved = sorted((r for r in rows if r.get("file") and "t" in r), key=lambda r: r["t"])
+    of them. Rewards read all of them: a hit marker can be visible only on a guard frame (rl-sitting-20260930-01
+    episode 1, frame 000086). The runner's stop.png is read too, at the stop row's time: a fall's second HP-0 read is
+    often only there (episode 5: 000053.jpg and stop.png both 0/250). Targets stay on decision rows. When the runner
+    records its policy phase (policy_start_t / policy_end_t, with --reset-before and --settle-s), frames of the reset
+    and the settle are dropped: they are not RL data."""
+    run_dir = Path(run_dir)
+    rows = [json.loads(line) for line in open(run_dir / "frames.jsonl", encoding="utf-8") if line.strip()]
+    result = json.loads((run_dir / "result.json").read_text()) if (run_dir / "result.json").exists() else {}
+    saved = [r for r in rows if r.get("file") and "t" in r]
+    stop = next((r for r in rows if r.get("event") == "stop" and "t" in r), None)
+    if stop is not None and (run_dir / "stop.png").exists():
+        saved.append({**stop, "file": "stop.png"})
+    lo, hi = result.get("policy_start_t"), result.get("policy_end_t")
+    if lo is not None:
+        saved = [r for r in saved if r["t"] >= lo and (hi is None or r["t"] <= hi or r.get("file") == "stop.png")]
+    saved.sort(key=lambda r: r["t"])
     kept = [r for r in saved if r.get("event") == "decision"]
-    result = json.loads((Path(run_dir) / "result.json").read_text()) if (Path(run_dir) / "result.json").exists() else {}
     return kept, saved, result
 
 
