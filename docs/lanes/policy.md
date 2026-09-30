@@ -281,6 +281,31 @@ press F1 0.369 (both pass); dev yaw 0.772, F1 0.342. The run is discarded. Freez
 side from a static start; hold probabilities stay below the per-action thresholds. James's start-from-still
 recordings (recipe with the lead) target the missing state directly.
 
+#### Known limitation: far bots are invisible at 256x144 (2026-09-30)
+
+Every visual input (the tower's global view and `green_profile`) is the 256x144 area view, and area averaging
+dissolves thin enemy outlines. Sampling every 5 s over five James sessions (1,585 frames; val 212646 and train
+203745, 035932, 021320, 052001) gave the following results.
+- The outline finder (`perception.outline` at 1280x720) sees an enemy in 991 frames.
+- In 31% of those frames the green mass at 256x144 is zero. At 512x288 it is 5%, and at 1280x720 1%.
+- By tallest outline height at 720p, the zero rate at 256x144 is 71% under 20 px, 55% at 20-39 px, 25-27% at
+  40-79 px and 12% at 80 px or more.
+- Raw green at 1280x720 is also nonzero in 71% of the frames without a finder enemy, so at full resolution the
+  finder, not the raw band, is the clean bearing.
+
+That limitation does not explain the idle, which the input swap above pins on the motion input. At James's yaw
+onsets (600 sampled on val, `train.evaluate`'s rule, median 0.76 deg/step), the enemy bearing barely predicts his
+turn direction, even at full resolution:
+- the finder's nearest enemy at 720p agrees on sign 57% of the time (present 80%);
+- green at 1280x720 agrees 53%, or 60% off-centre by more than 0.1;
+- green at 256x144 agrees 49-55%;
+- turns of at least 1 deg with the finder bearing off-centre by more than 0.3 agree 68% (n=47).
+
+A 512x288 green input (a re-decode of James's steps) was therefore not funded as an idle fix. A future policy
+architecture needs a view that resolves far bots, whether a higher-resolution view or the finder bearing as an
+input. rl already uses the 720p finder bearing live. The measurement
+used one-off CPU scripts (not kept), built on `views_from_bgr`, `green_profile` and `outline.find_enemies`.
+
 Latency (`LivePolicy` CUDA graph, `74ebd74`): the whole bc2 step replays as one graph, with outputs identical to
 eager. Under idm's ~60% GPU load, p50/p95 fall from 54.7/63.2 ms to 21.6/33.9 ms; with a saturating matmul
 load as well, from 75.9/89.1 to 41.0/45.2 ms.
