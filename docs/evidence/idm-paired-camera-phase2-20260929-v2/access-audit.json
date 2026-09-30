@@ -1,0 +1,164 @@
+{
+  "designation": "provisional, unadmitted development evidence",
+  "pins": {
+    "C:\\Users\\volpe\\Videos\\2026-09-25 20-06-20.mkv": "b286939f3a503a52bffa0c0a29873e8c71aac7d89dfb1b726f4818176e2efc87",
+    "C:\\Users\\volpe\\Videos\\2026-09-26 11-10-08.mkv": "4c74f388be47e44c53002005edb548cd41aa7308ecf50ac39a34625862817e7e",
+    "C:\\Users\\volpe\\Videos\\RivalsInput\\20260926T010620-721Z-63684-5\\metadata.json": "393df143b529cb90d42408a85d682e13011c7aa04bf9dece1db74c7399680b89",
+    "C:\\Users\\volpe\\Videos\\RivalsInput\\20260926T010620-721Z-63684-5\\inputs.jsonl": "e7ff727a3720320fc5f80599b6cdfa3fcdf81f4782a768b423e0fd26c08fe3a3",
+    "C:\\Users\\volpe\\Videos\\RivalsInput\\20260926T010620-721Z-63684-5\\frames.csv": "2c7102dc53ea9c2be2c2f5e16eed6917434cfa07abb1bfb66d24e6c20898653b"
+  },
+  "ledger_pin_policy": "trust-on-first-use at reviewed audit access; enforce in later packet",
+  "denylist_sha256": "09e8b9d350c89eb41c1581e1bce47548bfb855bca5805cf2e65955b9b23597b5",
+  "metadata": {
+    "schema_version": 1,
+    "logger_version": "1.0.0",
+    "control_type": "keyboard_mouse",
+    "session_id": "20260926T010620-721Z-63684-5",
+    "status": "complete",
+    "started_utc": "2026-09-26T01:06:20.721Z",
+    "start_ns": 452655299726800,
+    "end_ns": 453090450521900,
+    "complete": true,
+    "clean_stop": true,
+    "video_path": "C:/Users/volpe/Videos/2026-09-25 20-06-20.mkv",
+    "target_executable": "Marvel-Win64-Shipping.exe",
+    "obs_version": "32.0.1",
+    "width": 2560,
+    "height": 1440,
+    "fps_num": 120,
+    "fps_den": 1,
+    "input_events": 33582,
+    "video_packets": 52186,
+    "frames_without_composition_timestamp": 0,
+    "queue_dropped_events": 0,
+    "writer_failed": false,
+    "first_queue_drop_ns": 0,
+    "last_queue_drop_ns": 0,
+    "raw_input_errors": 0,
+    "events_attempted": 85782,
+    "clock": "OBS os_gettime_ns; monotonic nanoseconds",
+    "input_time_semantics": "WM_INPUT received by logger thread, not device hardware time",
+    "video_time_semantics": "OBS encoder_packet_time.cts, not original game render time",
+    "capture_latency_calibrated": false,
+    "dpi": null,
+    "game_sensitivity": null,
+    "hero": null,
+    "game_patch": null,
+    "bindings": null
+  },
+  "raw_validation": "passed",
+  "start_ns": 452655299726800,
+  "end_ns": 453090450521900,
+  "state_events": [
+    {
+      "ok": true,
+      "seq": 0,
+      "t_ns": 452655301676500,
+      "type": "raw_input_status"
+    },
+    {
+      "active": false,
+      "held_vk": [],
+      "seq": 1,
+      "t_ns": 452655301691700,
+      "type": "focus"
+    },
+    {
+      "active": true,
+      "held_vk": [
+        1
+      ],
+      "seq": 19,
+      "t_ns": 452655677640500,
+      "type": "focus"
+    },
+    {
+      "active": false,
+      "held_vk": [],
+      "seq": 3402,
+      "t_ns": 452680958501500,
+      "type": "focus"
+    },
+    {
+      "active": true,
+      "held_vk": [
+        9
+      ],
+      "seq": 3819,
+      "t_ns": 452684427454000,
+      "type": "focus"
+    },
+    {
+      "active": false,
+      "held_vk": [],
+      "seq": 4661,
+      "t_ns": 452691411169700,
+      "type": "focus"
+    },
+    {
+      "active": true,
+      "held_vk": [
+        1
+      ],
+      "seq": 5119,
+      "t_ns": 452695225444500,
+      "type": "focus"
+    },
+    {
+      "active": false,
+      "held_vk": [],
+      "seq": 11411,
+      "t_ns": 452731474645000,
+      "type": "focus"
+    },
+    {
+      "active": true,
+      "held_vk": [],
+      "seq": 11510,
+      "t_ns": 452732286622700,
+      "type": "focus"
+    },
+    {
+      "active": false,
+      "held_vk": [],
+      "seq": 11596,
+      "t_ns": 452732973787500,
+      "type": "focus"
+    },
+    {
+      "active": true,
+      "held_vk": [],
+      "seq": 13174,
+      "t_ns": 452746116158300,
+      "type": "focus"
+    },
+    {
+      "active": false,
+      "held_vk": [],
+      "seq": 13534,
+      "t_ns": 452748085997900,
+      "type": "focus"
+    },
+    {
+      "active": true,
+      "held_vk": [
+        9
+      ],
+      "seq": 13837,
+      "t_ns": 452750599987500,
+      "type": "focus"
+    },
+    {
+      "active": false,
+      "held_vk": [],
+      "seq": 85569,
+      "t_ns": 453088661533500,
+      "type": "focus"
+    }
+  ],
+  "event_count": 33596,
+  "packet_count": 52186,
+  "timing_accuracy_established": false,
+  "reason": "Packet timestamps alone do not establish an independent muxer offset or capture latency.",
+  "inference_run": false
+}

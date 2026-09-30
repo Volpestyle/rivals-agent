@@ -1,0 +1,1650 @@
+{
+  "pages": [
+    {
+      "path": "D:\\rivals-agent-evidence\\idm-paired-camera-development-20260929\\context-contact-00.png",
+      "frames": [
+        {
+          "name": "live",
+          "pts": 120.004,
+          "index": 0
+        },
+        {
+          "name": "replay",
+          "pts": 89.404,
+          "index": 1
+        },
+        {
+          "name": "live",
+          "pts": 120.246,
+          "index": 29
+        },
+        {
+          "name": "replay",
+          "pts": 89.654,
+          "index": 31
+        },
+        {
+          "name": "live",
+          "pts": 120.496,
+          "index": 59
+        },
+        {
+          "name": "replay",
+          "pts": 89.904,
+          "index": 61
+        },
+        {
+          "name": "live",
+          "pts": 120.746,
+          "index": 89
+        },
+        {
+          "name": "replay",
+          "pts": 90.154,
+          "index": 91
+        },
+        {
+          "name": "live",
+          "pts": 120.996,
+          "index": 119
+        },
+        {
+          "name": "replay",
+          "pts": 90.404,
+          "index": 121
+        },
+        {
+          "name": "live",
+          "pts": 121.246,
+          "index": 149
+        },
+        {
+          "name": "replay",
+          "pts": 90.654,
+          "index": 151
+        },
+        {
+          "name": "live",
+          "pts": 121.496,
+          "index": 179
+        },
+        {
+          "name": "replay",
+          "pts": 90.904,
+          "index": 181
+        },
+        {
+          "name": "live",
+          "pts": 121.746,
+          "index": 209
+        },
+        {
+          "name": "replay",
+          "pts": 91.154,
+          "index": 211
+        },
+        {
+          "name": "live",
+          "pts": 121.996,
+          "index": 239
+        },
+        {
+          "name": "replay",
+          "pts": 91.404,
+          "index": 241
+        },
+        {
+          "name": "live",
+          "pts": 122.246,
+          "index": 269
+        },
+        {
+          "name": "replay",
+          "pts": 91.654,
+          "index": 271
+        }
+      ]
+    },
+    {
+      "path": "D:\\rivals-agent-evidence\\idm-paired-camera-development-20260929\\context-contact-01.png",
+      "frames": [
+        {
+          "name": "live",
+          "pts": 122.496,
+          "index": 299
+        },
+        {
+          "name": "replay",
+          "pts": 91.904,
+          "index": 301
+        },
+        {
+          "name": "live",
+          "pts": 122.746,
+          "index": 329
+        },
+        {
+          "name": "replay",
+          "pts": 92.154,
+          "index": 331
+        },
+        {
+          "name": "live",
+          "pts": 122.996,
+          "index": 359
+        },
+        {
+          "name": "replay",
+          "pts": 92.404,
+          "index": 361
+        },
+        {
+          "name": "live",
+          "pts": 123.246,
+          "index": 389
+        },
+        {
+          "name": "replay",
+          "pts": 92.654,
+          "index": 391
+        },
+        {
+          "name": "live",
+          "pts": 123.496,
+          "index": 419
+        },
+        {
+          "name": "replay",
+          "pts": 92.904,
+          "index": 421
+        },
+        {
+          "name": "live",
+          "pts": 123.746,
+          "index": 449
+        },
+        {
+          "name": "replay",
+          "pts": 93.154,
+          "index": 451
+        },
+        {
+          "name": "live",
+          "pts": 123.996,
+          "index": 479
+        },
+        {
+          "name": "replay",
+          "pts": 93.404,
+          "index": 481
+        },
+        {
+          "name": "live",
+          "pts": 124.246,
+          "index": 509
+        },
+        {
+          "name": "replay",
+          "pts": 93.654,
+          "index": 511
+        },
+        {
+          "name": "live",
+          "pts": 124.496,
+          "index": 539
+        },
+        {
+          "name": "replay",
+          "pts": 93.904,
+          "index": 541
+        },
+        {
+          "name": "live",
+          "pts": 124.746,
+          "index": 569
+        },
+        {
+          "name": "replay",
+          "pts": 94.154,
+          "index": 571
+        }
+      ]
+    },
+    {
+      "path": "D:\\rivals-agent-evidence\\idm-paired-camera-development-20260929\\context-contact-02.png",
+      "frames": [
+        {
+          "name": "live",
+          "pts": 124.996,
+          "index": 599
+        },
+        {
+          "name": "replay",
+          "pts": 94.404,
+          "index": 601
+        },
+        {
+          "name": "live",
+          "pts": 125.246,
+          "index": 629
+        },
+        {
+          "name": "replay",
+          "pts": 94.654,
+          "index": 631
+        },
+        {
+          "name": "live",
+          "pts": 125.496,
+          "index": 659
+        },
+        {
+          "name": "replay",
+          "pts": 94.904,
+          "index": 661
+        },
+        {
+          "name": "live",
+          "pts": 125.746,
+          "index": 689
+        },
+        {
+          "name": "replay",
+          "pts": 95.154,
+          "index": 691
+        },
+        {
+          "name": "live",
+          "pts": 125.996,
+          "index": 719
+        },
+        {
+          "name": "replay",
+          "pts": 95.404,
+          "index": 721
+        },
+        {
+          "name": "live",
+          "pts": 126.246,
+          "index": 749
+        },
+        {
+          "name": "replay",
+          "pts": 95.654,
+          "index": 751
+        },
+        {
+          "name": "live",
+          "pts": 126.496,
+          "index": 779
+        },
+        {
+          "name": "replay",
+          "pts": 95.904,
+          "index": 781
+        },
+        {
+          "name": "live",
+          "pts": 126.746,
+          "index": 809
+        },
+        {
+          "name": "replay",
+          "pts": 96.154,
+          "index": 811
+        },
+        {
+          "name": "live",
+          "pts": 126.996,
+          "index": 839
+        },
+        {
+          "name": "replay",
+          "pts": 96.404,
+          "index": 841
+        },
+        {
+          "name": "live",
+          "pts": 127.246,
+          "index": 869
+        },
+        {
+          "name": "replay",
+          "pts": 96.654,
+          "index": 871
+        }
+      ]
+    },
+    {
+      "path": "D:\\rivals-agent-evidence\\idm-paired-camera-development-20260929\\context-contact-03.png",
+      "frames": [
+        {
+          "name": "live",
+          "pts": 127.496,
+          "index": 899
+        },
+        {
+          "name": "replay",
+          "pts": 96.904,
+          "index": 901
+        },
+        {
+          "name": "live",
+          "pts": 127.746,
+          "index": 929
+        },
+        {
+          "name": "replay",
+          "pts": 97.154,
+          "index": 931
+        },
+        {
+          "name": "live",
+          "pts": 128.004,
+          "index": 960
+        },
+        {
+          "name": "replay",
+          "pts": 97.404,
+          "index": 961
+        },
+        {
+          "name": "live",
+          "pts": 128.246,
+          "index": 989
+        },
+        {
+          "name": "replay",
+          "pts": 97.654,
+          "index": 991
+        },
+        {
+          "name": "live",
+          "pts": 128.496,
+          "index": 1019
+        },
+        {
+          "name": "replay",
+          "pts": 97.904,
+          "index": 1021
+        },
+        {
+          "name": "live",
+          "pts": 128.746,
+          "index": 1049
+        },
+        {
+          "name": "replay",
+          "pts": 98.154,
+          "index": 1051
+        },
+        {
+          "name": "live",
+          "pts": 128.996,
+          "index": 1079
+        },
+        {
+          "name": "replay",
+          "pts": 98.404,
+          "index": 1081
+        },
+        {
+          "name": "live",
+          "pts": 129.246,
+          "index": 1109
+        },
+        {
+          "name": "replay",
+          "pts": 98.654,
+          "index": 1111
+        },
+        {
+          "name": "live",
+          "pts": 129.496,
+          "index": 1139
+        },
+        {
+          "name": "replay",
+          "pts": 98.904,
+          "index": 1141
+        },
+        {
+          "name": "live",
+          "pts": 129.746,
+          "index": 1169
+        },
+        {
+          "name": "replay",
+          "pts": 99.154,
+          "index": 1171
+        }
+      ]
+    },
+    {
+      "path": "D:\\rivals-agent-evidence\\idm-paired-camera-development-20260929\\context-contact-04.png",
+      "frames": [
+        {
+          "name": "live",
+          "pts": 129.996,
+          "index": 1199
+        },
+        {
+          "name": "replay",
+          "pts": 99.404,
+          "index": 1201
+        },
+        {
+          "name": "live",
+          "pts": 130.246,
+          "index": 1229
+        },
+        {
+          "name": "replay",
+          "pts": 99.654,
+          "index": 1231
+        },
+        {
+          "name": "live",
+          "pts": 130.496,
+          "index": 1259
+        },
+        {
+          "name": "replay",
+          "pts": 99.904,
+          "index": 1261
+        },
+        {
+          "name": "live",
+          "pts": 130.746,
+          "index": 1289
+        },
+        {
+          "name": "replay",
+          "pts": 100.154,
+          "index": 1291
+        },
+        {
+          "name": "live",
+          "pts": 130.996,
+          "index": 1319
+        },
+        {
+          "name": "replay",
+          "pts": 100.404,
+          "index": 1321
+        },
+        {
+          "name": "live",
+          "pts": 131.246,
+          "index": 1349
+        },
+        {
+          "name": "replay",
+          "pts": 100.654,
+          "index": 1351
+        },
+        {
+          "name": "live",
+          "pts": 131.496,
+          "index": 1379
+        },
+        {
+          "name": "replay",
+          "pts": 100.904,
+          "index": 1381
+        },
+        {
+          "name": "live",
+          "pts": 131.746,
+          "index": 1409
+        },
+        {
+          "name": "replay",
+          "pts": 101.154,
+          "index": 1411
+        },
+        {
+          "name": "live",
+          "pts": 131.996,
+          "index": 1439
+        },
+        {
+          "name": "replay",
+          "pts": 101.404,
+          "index": 1441
+        },
+        {
+          "name": "live",
+          "pts": 132.246,
+          "index": 1469
+        },
+        {
+          "name": "replay",
+          "pts": 101.654,
+          "index": 1471
+        }
+      ]
+    },
+    {
+      "path": "D:\\rivals-agent-evidence\\idm-paired-camera-development-20260929\\context-contact-05.png",
+      "frames": [
+        {
+          "name": "live",
+          "pts": 132.496,
+          "index": 1499
+        },
+        {
+          "name": "replay",
+          "pts": 101.904,
+          "index": 1501
+        },
+        {
+          "name": "live",
+          "pts": 132.746,
+          "index": 1529
+        },
+        {
+          "name": "replay",
+          "pts": 102.154,
+          "index": 1531
+        },
+        {
+          "name": "live",
+          "pts": 132.996,
+          "index": 1559
+        },
+        {
+          "name": "replay",
+          "pts": 102.404,
+          "index": 1561
+        },
+        {
+          "name": "live",
+          "pts": 133.246,
+          "index": 1589
+        },
+        {
+          "name": "replay",
+          "pts": 102.654,
+          "index": 1591
+        },
+        {
+          "name": "live",
+          "pts": 133.496,
+          "index": 1619
+        },
+        {
+          "name": "replay",
+          "pts": 102.904,
+          "index": 1621
+        },
+        {
+          "name": "live",
+          "pts": 133.746,
+          "index": 1649
+        },
+        {
+          "name": "replay",
+          "pts": 103.154,
+          "index": 1651
+        },
+        {
+          "name": "live",
+          "pts": 133.996,
+          "index": 1679
+        },
+        {
+          "name": "replay",
+          "pts": 103.404,
+          "index": 1681
+        },
+        {
+          "name": "live",
+          "pts": 134.246,
+          "index": 1709
+        },
+        {
+          "name": "replay",
+          "pts": 103.654,
+          "index": 1711
+        },
+        {
+          "name": "live",
+          "pts": 134.496,
+          "index": 1739
+        },
+        {
+          "name": "replay",
+          "pts": 103.904,
+          "index": 1741
+        },
+        {
+          "name": "live",
+          "pts": 134.746,
+          "index": 1769
+        },
+        {
+          "name": "replay",
+          "pts": 104.154,
+          "index": 1771
+        }
+      ]
+    },
+    {
+      "path": "D:\\rivals-agent-evidence\\idm-paired-camera-development-20260929\\context-contact-06.png",
+      "frames": [
+        {
+          "name": "live",
+          "pts": 134.996,
+          "index": 1799
+        },
+        {
+          "name": "replay",
+          "pts": 104.404,
+          "index": 1801
+        },
+        {
+          "name": "live",
+          "pts": 135.246,
+          "index": 1829
+        },
+        {
+          "name": "replay",
+          "pts": 104.654,
+          "index": 1831
+        },
+        {
+          "name": "live",
+          "pts": 135.496,
+          "index": 1859
+        },
+        {
+          "name": "replay",
+          "pts": 104.904,
+          "index": 1861
+        },
+        {
+          "name": "live",
+          "pts": 135.746,
+          "index": 1889
+        },
+        {
+          "name": "replay",
+          "pts": 105.154,
+          "index": 1891
+        },
+        {
+          "name": "live",
+          "pts": 135.996,
+          "index": 1919
+        },
+        {
+          "name": "replay",
+          "pts": 105.404,
+          "index": 1921
+        },
+        {
+          "name": "live",
+          "pts": 136.246,
+          "index": 1949
+        },
+        {
+          "name": "replay",
+          "pts": 105.654,
+          "index": 1951
+        },
+        {
+          "name": "live",
+          "pts": 136.496,
+          "index": 1979
+        },
+        {
+          "name": "replay",
+          "pts": 105.904,
+          "index": 1981
+        },
+        {
+          "name": "live",
+          "pts": 136.746,
+          "index": 2009
+        },
+        {
+          "name": "replay",
+          "pts": 106.154,
+          "index": 2011
+        },
+        {
+          "name": "live",
+          "pts": 136.996,
+          "index": 2039
+        },
+        {
+          "name": "replay",
+          "pts": 106.404,
+          "index": 2041
+        },
+        {
+          "name": "live",
+          "pts": 137.246,
+          "index": 2069
+        },
+        {
+          "name": "replay",
+          "pts": 106.654,
+          "index": 2071
+        }
+      ]
+    },
+    {
+      "path": "D:\\rivals-agent-evidence\\idm-paired-camera-development-20260929\\context-contact-07.png",
+      "frames": [
+        {
+          "name": "live",
+          "pts": 137.496,
+          "index": 2099
+        },
+        {
+          "name": "replay",
+          "pts": 106.904,
+          "index": 2101
+        },
+        {
+          "name": "live",
+          "pts": 137.746,
+          "index": 2129
+        },
+        {
+          "name": "replay",
+          "pts": 107.154,
+          "index": 2131
+        },
+        {
+          "name": "live",
+          "pts": 137.996,
+          "index": 2159
+        },
+        {
+          "name": "replay",
+          "pts": 107.404,
+          "index": 2161
+        },
+        {
+          "name": "live",
+          "pts": 138.246,
+          "index": 2189
+        },
+        {
+          "name": "replay",
+          "pts": 107.654,
+          "index": 2191
+        },
+        {
+          "name": "live",
+          "pts": 138.496,
+          "index": 2219
+        },
+        {
+          "name": "replay",
+          "pts": 107.904,
+          "index": 2221
+        },
+        {
+          "name": "live",
+          "pts": 138.746,
+          "index": 2249
+        },
+        {
+          "name": "replay",
+          "pts": 108.154,
+          "index": 2251
+        },
+        {
+          "name": "live",
+          "pts": 138.996,
+          "index": 2279
+        },
+        {
+          "name": "replay",
+          "pts": 108.404,
+          "index": 2281
+        },
+        {
+          "name": "live",
+          "pts": 139.246,
+          "index": 2309
+        },
+        {
+          "name": "replay",
+          "pts": 108.654,
+          "index": 2311
+        },
+        {
+          "name": "live",
+          "pts": 139.496,
+          "index": 2339
+        },
+        {
+          "name": "replay",
+          "pts": 108.904,
+          "index": 2341
+        },
+        {
+          "name": "live",
+          "pts": 139.746,
+          "index": 2369
+        },
+        {
+          "name": "replay",
+          "pts": 109.154,
+          "index": 2371
+        }
+      ]
+    },
+    {
+      "path": "D:\\rivals-agent-evidence\\idm-paired-camera-development-20260929\\context-contact-08.png",
+      "frames": [
+        {
+          "name": "live",
+          "pts": 139.996,
+          "index": 2399
+        },
+        {
+          "name": "replay",
+          "pts": 109.404,
+          "index": 2401
+        },
+        {
+          "name": "live",
+          "pts": 140.246,
+          "index": 2429
+        },
+        {
+          "name": "replay",
+          "pts": 109.654,
+          "index": 2431
+        },
+        {
+          "name": "live",
+          "pts": 140.496,
+          "index": 2459
+        },
+        {
+          "name": "replay",
+          "pts": 109.904,
+          "index": 2461
+        },
+        {
+          "name": "live",
+          "pts": 140.746,
+          "index": 2489
+        },
+        {
+          "name": "replay",
+          "pts": 110.154,
+          "index": 2491
+        },
+        {
+          "name": "live",
+          "pts": 140.996,
+          "index": 2519
+        },
+        {
+          "name": "replay",
+          "pts": 110.404,
+          "index": 2521
+        },
+        {
+          "name": "live",
+          "pts": 141.246,
+          "index": 2549
+        },
+        {
+          "name": "replay",
+          "pts": 110.654,
+          "index": 2551
+        },
+        {
+          "name": "live",
+          "pts": 141.496,
+          "index": 2579
+        },
+        {
+          "name": "replay",
+          "pts": 110.904,
+          "index": 2581
+        },
+        {
+          "name": "live",
+          "pts": 141.746,
+          "index": 2609
+        },
+        {
+          "name": "replay",
+          "pts": 111.154,
+          "index": 2611
+        },
+        {
+          "name": "live",
+          "pts": 141.996,
+          "index": 2639
+        },
+        {
+          "name": "replay",
+          "pts": 111.404,
+          "index": 2641
+        },
+        {
+          "name": "live",
+          "pts": 142.246,
+          "index": 2669
+        },
+        {
+          "name": "replay",
+          "pts": 111.654,
+          "index": 2671
+        }
+      ]
+    },
+    {
+      "path": "D:\\rivals-agent-evidence\\idm-paired-camera-development-20260929\\context-contact-09.png",
+      "frames": [
+        {
+          "name": "live",
+          "pts": 142.496,
+          "index": 2699
+        },
+        {
+          "name": "replay",
+          "pts": 111.904,
+          "index": 2701
+        },
+        {
+          "name": "live",
+          "pts": 142.746,
+          "index": 2729
+        },
+        {
+          "name": "replay",
+          "pts": 112.154,
+          "index": 2731
+        },
+        {
+          "name": "live",
+          "pts": 142.996,
+          "index": 2759
+        },
+        {
+          "name": "replay",
+          "pts": 112.404,
+          "index": 2761
+        },
+        {
+          "name": "live",
+          "pts": 143.246,
+          "index": 2789
+        },
+        {
+          "name": "replay",
+          "pts": 112.654,
+          "index": 2791
+        },
+        {
+          "name": "live",
+          "pts": 143.496,
+          "index": 2819
+        },
+        {
+          "name": "replay",
+          "pts": 112.904,
+          "index": 2821
+        },
+        {
+          "name": "live",
+          "pts": 143.746,
+          "index": 2849
+        },
+        {
+          "name": "replay",
+          "pts": 113.154,
+          "index": 2851
+        },
+        {
+          "name": "live",
+          "pts": 143.996,
+          "index": 2879
+        },
+        {
+          "name": "replay",
+          "pts": 113.404,
+          "index": 2881
+        },
+        {
+          "name": "live",
+          "pts": 144.246,
+          "index": 2909
+        },
+        {
+          "name": "replay",
+          "pts": 113.654,
+          "index": 2911
+        },
+        {
+          "name": "live",
+          "pts": 144.496,
+          "index": 2939
+        },
+        {
+          "name": "replay",
+          "pts": 113.904,
+          "index": 2941
+        },
+        {
+          "name": "live",
+          "pts": 144.746,
+          "index": 2969
+        },
+        {
+          "name": "replay",
+          "pts": 114.154,
+          "index": 2971
+        }
+      ]
+    },
+    {
+      "path": "D:\\rivals-agent-evidence\\idm-paired-camera-development-20260929\\context-contact-10.png",
+      "frames": [
+        {
+          "name": "live",
+          "pts": 144.996,
+          "index": 2999
+        },
+        {
+          "name": "replay",
+          "pts": 114.404,
+          "index": 3001
+        },
+        {
+          "name": "live",
+          "pts": 145.246,
+          "index": 3029
+        },
+        {
+          "name": "replay",
+          "pts": 114.654,
+          "index": 3031
+        },
+        {
+          "name": "live",
+          "pts": 145.496,
+          "index": 3059
+        },
+        {
+          "name": "replay",
+          "pts": 114.904,
+          "index": 3061
+        },
+        {
+          "name": "live",
+          "pts": 145.746,
+          "index": 3089
+        },
+        {
+          "name": "replay",
+          "pts": 115.154,
+          "index": 3091
+        },
+        {
+          "name": "live",
+          "pts": 145.996,
+          "index": 3119
+        },
+        {
+          "name": "replay",
+          "pts": 115.404,
+          "index": 3121
+        },
+        {
+          "name": "live",
+          "pts": 146.246,
+          "index": 3149
+        },
+        {
+          "name": "replay",
+          "pts": 115.654,
+          "index": 3151
+        },
+        {
+          "name": "live",
+          "pts": 146.496,
+          "index": 3179
+        },
+        {
+          "name": "replay",
+          "pts": 115.904,
+          "index": 3181
+        },
+        {
+          "name": "live",
+          "pts": 146.746,
+          "index": 3209
+        },
+        {
+          "name": "replay",
+          "pts": 116.154,
+          "index": 3211
+        },
+        {
+          "name": "live",
+          "pts": 146.996,
+          "index": 3239
+        },
+        {
+          "name": "replay",
+          "pts": 116.404,
+          "index": 3241
+        },
+        {
+          "name": "live",
+          "pts": 147.246,
+          "index": 3269
+        },
+        {
+          "name": "replay",
+          "pts": 116.654,
+          "index": 3271
+        }
+      ]
+    },
+    {
+      "path": "D:\\rivals-agent-evidence\\idm-paired-camera-development-20260929\\context-contact-11.png",
+      "frames": [
+        {
+          "name": "live",
+          "pts": 147.496,
+          "index": 3299
+        },
+        {
+          "name": "replay",
+          "pts": 116.904,
+          "index": 3301
+        },
+        {
+          "name": "live",
+          "pts": 147.746,
+          "index": 3329
+        },
+        {
+          "name": "replay",
+          "pts": 117.154,
+          "index": 3331
+        },
+        {
+          "name": "live",
+          "pts": 147.996,
+          "index": 3359
+        },
+        {
+          "name": "replay",
+          "pts": 117.404,
+          "index": 3361
+        },
+        {
+          "name": "live",
+          "pts": 148.246,
+          "index": 3389
+        },
+        {
+          "name": "replay",
+          "pts": 117.654,
+          "index": 3391
+        },
+        {
+          "name": "live",
+          "pts": 148.496,
+          "index": 3419
+        },
+        {
+          "name": "replay",
+          "pts": 117.904,
+          "index": 3421
+        },
+        {
+          "name": "live",
+          "pts": 148.746,
+          "index": 3449
+        },
+        {
+          "name": "replay",
+          "pts": 118.154,
+          "index": 3451
+        },
+        {
+          "name": "live",
+          "pts": 148.996,
+          "index": 3479
+        },
+        {
+          "name": "replay",
+          "pts": 118.404,
+          "index": 3481
+        },
+        {
+          "name": "live",
+          "pts": 149.246,
+          "index": 3509
+        },
+        {
+          "name": "replay",
+          "pts": 118.654,
+          "index": 3511
+        },
+        {
+          "name": "live",
+          "pts": 149.496,
+          "index": 3539
+        },
+        {
+          "name": "replay",
+          "pts": 118.904,
+          "index": 3541
+        },
+        {
+          "name": "live",
+          "pts": 149.746,
+          "index": 3569
+        },
+        {
+          "name": "replay",
+          "pts": 119.154,
+          "index": 3571
+        }
+      ]
+    },
+    {
+      "path": "D:\\rivals-agent-evidence\\idm-paired-camera-development-20260929\\context-contact-12.png",
+      "frames": [
+        {
+          "name": "live",
+          "pts": 149.996,
+          "index": 3599
+        },
+        {
+          "name": "replay",
+          "pts": 119.404,
+          "index": 3601
+        },
+        {
+          "name": "live",
+          "pts": 150.246,
+          "index": 3629
+        },
+        {
+          "name": "replay",
+          "pts": 119.654,
+          "index": 3631
+        },
+        {
+          "name": "live",
+          "pts": 150.496,
+          "index": 3659
+        },
+        {
+          "name": "replay",
+          "pts": 119.904,
+          "index": 3661
+        },
+        {
+          "name": "live",
+          "pts": 150.746,
+          "index": 3689
+        },
+        {
+          "name": "replay",
+          "pts": 120.154,
+          "index": 3691
+        },
+        {
+          "name": "live",
+          "pts": 150.996,
+          "index": 3719
+        },
+        {
+          "name": "replay",
+          "pts": 120.404,
+          "index": 3721
+        },
+        {
+          "name": "live",
+          "pts": 151.246,
+          "index": 3749
+        },
+        {
+          "name": "replay",
+          "pts": 120.654,
+          "index": 3751
+        },
+        {
+          "name": "live",
+          "pts": 151.496,
+          "index": 3779
+        },
+        {
+          "name": "replay",
+          "pts": 120.904,
+          "index": 3781
+        },
+        {
+          "name": "live",
+          "pts": 151.746,
+          "index": 3809
+        },
+        {
+          "name": "replay",
+          "pts": 121.154,
+          "index": 3811
+        },
+        {
+          "name": "live",
+          "pts": 151.996,
+          "index": 3839
+        },
+        {
+          "name": "replay",
+          "pts": 121.404,
+          "index": 3841
+        },
+        {
+          "name": "live",
+          "pts": 152.246,
+          "index": 3869
+        },
+        {
+          "name": "replay",
+          "pts": 121.654,
+          "index": 3871
+        }
+      ]
+    },
+    {
+      "path": "D:\\rivals-agent-evidence\\idm-paired-camera-development-20260929\\context-contact-13.png",
+      "frames": [
+        {
+          "name": "live",
+          "pts": 152.496,
+          "index": 3899
+        },
+        {
+          "name": "replay",
+          "pts": 121.904,
+          "index": 3901
+        },
+        {
+          "name": "live",
+          "pts": 152.746,
+          "index": 3929
+        },
+        {
+          "name": "replay",
+          "pts": 122.154,
+          "index": 3931
+        },
+        {
+          "name": "live",
+          "pts": 152.996,
+          "index": 3959
+        },
+        {
+          "name": "replay",
+          "pts": 122.404,
+          "index": 3961
+        },
+        {
+          "name": "live",
+          "pts": 153.246,
+          "index": 3989
+        },
+        {
+          "name": "replay",
+          "pts": 122.654,
+          "index": 3991
+        },
+        {
+          "name": "live",
+          "pts": 153.496,
+          "index": 4019
+        },
+        {
+          "name": "replay",
+          "pts": 122.904,
+          "index": 4021
+        },
+        {
+          "name": "live",
+          "pts": 153.746,
+          "index": 4049
+        },
+        {
+          "name": "replay",
+          "pts": 123.154,
+          "index": 4051
+        },
+        {
+          "name": "live",
+          "pts": 153.996,
+          "index": 4079
+        },
+        {
+          "name": "replay",
+          "pts": 123.404,
+          "index": 4081
+        },
+        {
+          "name": "live",
+          "pts": 154.246,
+          "index": 4109
+        },
+        {
+          "name": "replay",
+          "pts": 123.654,
+          "index": 4111
+        },
+        {
+          "name": "live",
+          "pts": 154.496,
+          "index": 4139
+        },
+        {
+          "name": "replay",
+          "pts": 123.904,
+          "index": 4141
+        },
+        {
+          "name": "live",
+          "pts": 154.746,
+          "index": 4169
+        },
+        {
+          "name": "replay",
+          "pts": 124.154,
+          "index": 4171
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "live": {
+      "frames": 4199,
+      "minimum_rgb_mean": 61.3539452239229,
+      "min_mean_pts": 152.563,
+      "largest_adjacent_changes": [
+        {
+          "pts": 130.629,
+          "mean_abs_rgb_change": 32.60178099017385
+        },
+        {
+          "pts": 130.613,
+          "mean_abs_rgb_change": 31.300193688586546
+        },
+        {
+          "pts": 130.579,
+          "mean_abs_rgb_change": 31.017730182350718
+        },
+        {
+          "pts": 130.563,
+          "mean_abs_rgb_change": 30.68452380952381
+        },
+        {
+          "pts": 145.613,
+          "mean_abs_rgb_change": 30.07402092781557
+        },
+        {
+          "pts": 130.64600000000002,
+          "mean_abs_rgb_change": 30.055263251133788
+        },
+        {
+          "pts": 130.588,
+          "mean_abs_rgb_change": 29.649143164210127
+        },
+        {
+          "pts": 130.621,
+          "mean_abs_rgb_change": 29.556399990551775
+        },
+        {
+          "pts": 145.563,
+          "mean_abs_rgb_change": 29.232042469765684
+        },
+        {
+          "pts": 145.546,
+          "mean_abs_rgb_change": 28.07962785808768
+        },
+        {
+          "pts": 145.52100000000002,
+          "mean_abs_rgb_change": 27.981818074452004
+        },
+        {
+          "pts": 129.954,
+          "mean_abs_rgb_change": 27.84967580782313
+        },
+        {
+          "pts": 145.47899999999998,
+          "mean_abs_rgb_change": 27.78257275132275
+        },
+        {
+          "pts": 130.554,
+          "mean_abs_rgb_change": 27.401989441609977
+        },
+        {
+          "pts": 145.538,
+          "mean_abs_rgb_change": 27.25011219765684
+        },
+        {
+          "pts": 145.554,
+          "mean_abs_rgb_change": 27.195610709561603
+        },
+        {
+          "pts": 145.529,
+          "mean_abs_rgb_change": 27.023626464474678
+        },
+        {
+          "pts": 145.513,
+          "mean_abs_rgb_change": 27.000209632464095
+        },
+        {
+          "pts": 128.463,
+          "mean_abs_rgb_change": 26.953523596938776
+        },
+        {
+          "pts": 130.638,
+          "mean_abs_rgb_change": 26.81750165343915
+        }
+      ]
+    },
+    "replay": {
+      "frames": 4199,
+      "minimum_rgb_mean": 64.59333959278156,
+      "min_mean_pts": 102.154,
+      "largest_adjacent_changes": [
+        {
+          "pts": 121.838,
+          "mean_abs_rgb_change": 32.333173894557824
+        },
+        {
+          "pts": 100.021,
+          "mean_abs_rgb_change": 31.50827310090703
+        },
+        {
+          "pts": 100.121,
+          "mean_abs_rgb_change": 30.494322208049887
+        },
+        {
+          "pts": 114.904,
+          "mean_abs_rgb_change": 29.228142124905517
+        },
+        {
+          "pts": 100.038,
+          "mean_abs_rgb_change": 28.47193582294029
+        },
+        {
+          "pts": 114.946,
+          "mean_abs_rgb_change": 28.06953597411187
+        },
+        {
+          "pts": 100.096,
+          "mean_abs_rgb_change": 27.855876204648528
+        },
+        {
+          "pts": 114.979,
+          "mean_abs_rgb_change": 27.489037107898714
+        },
+        {
+          "pts": 100.054,
+          "mean_abs_rgb_change": 27.41600824357521
+        },
+        {
+          "pts": 100.104,
+          "mean_abs_rgb_change": 26.99767928004535
+        },
+        {
+          "pts": 115.096,
+          "mean_abs_rgb_change": 26.978136219765684
+        },
+        {
+          "pts": 115.07900000000001,
+          "mean_abs_rgb_change": 26.963786729969765
+        },
+        {
+          "pts": 115.088,
+          "mean_abs_rgb_change": 26.862433862433864
+        },
+        {
+          "pts": 114.92099999999999,
+          "mean_abs_rgb_change": 26.862371858465607
+        },
+        {
+          "pts": 114.938,
+          "mean_abs_rgb_change": 26.7471625803099
+        },
+        {
+          "pts": 114.929,
+          "mean_abs_rgb_change": 26.483985260770975
+        },
+        {
+          "pts": 114.963,
+          "mean_abs_rgb_change": 26.34760015117158
+        },
+        {
+          "pts": 99.429,
+          "mean_abs_rgb_change": 26.21918107520786
+        },
+        {
+          "pts": 121.863,
+          "mean_abs_rgb_change": 26.13642939814815
+        },
+        {
+          "pts": 100.013,
+          "mean_abs_rgb_change": 25.666619425547996
+        }
+      ]
+    }
+  }
+}

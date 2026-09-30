@@ -1,0 +1,39 @@
+{
+  "designation": "provisional, unadmitted development evidence",
+  "reviewer": "idm-owner (own semi-manual context review; not independent or human verification)",
+  "reviewed_at": "2026-09-29T19:13:58.3457269-05:00",
+  "prepared_sha256": "8b1c97e8ce38607d73644f319be0fcac51bd6cc4d837cd191595f94962ca9b85",
+  "same_identity": true,
+  "continuous_pov": true,
+  "replay_1x": true,
+  "focused": true,
+  "ui_excluded": true,
+  "valid_live_intervals": [
+    [
+      120,
+      155
+    ]
+  ],
+  "evidence": [
+    "Owner viewed all 14 quarter-second paired contacts 00..13 (140 live and 140 replay samples), plus fine-context native neighbours at span edges, 128.463, 130.629, 132.754, 145.613, 152.438, 152.563. Same Spider-Man route, actions, camera directions and combat events throughout; replay cowboyboopbop identity corroborated by native HUD packet context and five matched feed arrivals. No observed death, follow change, menu, scoreboard or discontinuity.",
+    "All 4199 PTS per rendering are strictly increasing with 7..10 ms native steps. Largest changes inspect as camera turns or combat effects; darkest samples are roof/rock shading, not a fade. No post-155 samples admitted.",
+    "1x is corroborated by the 35 displayed-value paired ticks, free slope 0.9999556252110986, and matching sampled action/scenery progression. Speed controls are hidden; no direct visible 1x control reading is claimed.",
+    "Recorder focus active from 95.3002607 to 433.3618067 s relative to recorder start; no pause or focus transition near broad 118..157 logged-packet window. Its only nearby UI edges are Tab at approximate logged packet PTS 155.192..156.200, outside retained span. These are QC corroboration, not independent absolute video/input timing.",
+    "Native context live154.804/replay124.204 and prior context annotations prove the later live fade is scoreboard overlay. Original conservative live[155,160)/replay[124.39,129.39) exclusion remains.",
+    "Inspection is sampled (quarter-second and selected native neighbours), not every-frame visual certification; all-frame timing and luminance/change summaries assist but do not automatically establish eligibility."
+  ],
+  "unknowns": [
+    "Independent video-to-input offset and capture/display/input-delivery latency not established; agreement only.",
+    "Session-specific counts-to-degrees truth calibration not established; original reference gain only reproduces predictor masks.",
+    "Exact equality of live/replay game states and sub-quarter-second hidden interruptions cannot be proven by sampled review. No observed identity/POV/continuity ambiguity remains on retained evidence.",
+    "Windows swscale versus accepted Mac-built stores is not bit-identical evidence. No accuracy/Gate2/transfer claim."
+  ],
+  "evidence_hashes": {
+    "context-contacts.json": "34f2495f13bbccdd0e6abf9b30f00aedf7402018bfddeddf3d0ba657ecde1cc1",
+    "fine-context.json": "190383054ec8568bf0e8ddd1cc7f8ed1e973e86bc745b91561af6892265f0170",
+    "fine-context.png": "f5727fd8b2f2f7def516c04a4a05cc6ad054be196a746fe1d0bebc9bcc160a77",
+    "timing-qc.json": "367e8a9b384944eea8a1cfc1e60db685e11829a51c44789fb43ce1615d1a5df9"
+  },
+  "supersedes_review_sha256": "f6ae7929acaca4f05576bdc0d4f07bcb49a64c0832a8d3b20d53cf34907f0d5d",
+  "correction": "JSON nesting only: unchanged inspection, eligibility and exclusions. Prior failed gate ran no checkpoint/inference."
+}

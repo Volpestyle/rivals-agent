@@ -1,0 +1,242 @@
+[
+  {
+    "name": "live",
+    "pts": 120.004,
+    "index": 0
+  },
+  {
+    "name": "live",
+    "pts": 120.004,
+    "index": 0
+  },
+  {
+    "name": "live",
+    "pts": 120.013,
+    "index": 1
+  },
+  {
+    "name": "replay",
+    "pts": 89.396,
+    "index": 0
+  },
+  {
+    "name": "replay",
+    "pts": 89.404,
+    "index": 1
+  },
+  {
+    "name": "replay",
+    "pts": 89.413,
+    "index": 2
+  },
+  {
+    "name": "live",
+    "pts": 128.454,
+    "index": 1014
+  },
+  {
+    "name": "live",
+    "pts": 128.463,
+    "index": 1015
+  },
+  {
+    "name": "live",
+    "pts": 128.471,
+    "index": 1016
+  },
+  {
+    "name": "replay",
+    "pts": 97.854,
+    "index": 1015
+  },
+  {
+    "name": "replay",
+    "pts": 97.863,
+    "index": 1016
+  },
+  {
+    "name": "replay",
+    "pts": 97.871,
+    "index": 1017
+  },
+  {
+    "name": "live",
+    "pts": 130.621,
+    "index": 1274
+  },
+  {
+    "name": "live",
+    "pts": 130.629,
+    "index": 1275
+  },
+  {
+    "name": "live",
+    "pts": 130.638,
+    "index": 1276
+  },
+  {
+    "name": "replay",
+    "pts": 100.021,
+    "index": 1275
+  },
+  {
+    "name": "replay",
+    "pts": 100.029,
+    "index": 1276
+  },
+  {
+    "name": "replay",
+    "pts": 100.038,
+    "index": 1277
+  },
+  {
+    "name": "live",
+    "pts": 132.746,
+    "index": 1529
+  },
+  {
+    "name": "live",
+    "pts": 132.754,
+    "index": 1530
+  },
+  {
+    "name": "live",
+    "pts": 132.763,
+    "index": 1531
+  },
+  {
+    "name": "replay",
+    "pts": 102.146,
+    "index": 1530
+  },
+  {
+    "name": "replay",
+    "pts": 102.154,
+    "index": 1531
+  },
+  {
+    "name": "replay",
+    "pts": 102.163,
+    "index": 1532
+  },
+  {
+    "name": "live",
+    "pts": 145.60399999999998,
+    "index": 3072
+  },
+  {
+    "name": "live",
+    "pts": 145.613,
+    "index": 3073
+  },
+  {
+    "name": "live",
+    "pts": 145.621,
+    "index": 3074
+  },
+  {
+    "name": "replay",
+    "pts": 115.004,
+    "index": 3073
+  },
+  {
+    "name": "replay",
+    "pts": 115.013,
+    "index": 3074
+  },
+  {
+    "name": "replay",
+    "pts": 115.021,
+    "index": 3075
+  },
+  {
+    "name": "live",
+    "pts": 152.429,
+    "index": 3891
+  },
+  {
+    "name": "live",
+    "pts": 152.438,
+    "index": 3892
+  },
+  {
+    "name": "live",
+    "pts": 152.446,
+    "index": 3893
+  },
+  {
+    "name": "replay",
+    "pts": 121.82900000000001,
+    "index": 3892
+  },
+  {
+    "name": "replay",
+    "pts": 121.838,
+    "index": 3893
+  },
+  {
+    "name": "replay",
+    "pts": 121.846,
+    "index": 3894
+  },
+  {
+    "name": "live",
+    "pts": 152.554,
+    "index": 3906
+  },
+  {
+    "name": "live",
+    "pts": 152.563,
+    "index": 3907
+  },
+  {
+    "name": "live",
+    "pts": 152.571,
+    "index": 3908
+  },
+  {
+    "name": "replay",
+    "pts": 121.95400000000001,
+    "index": 3907
+  },
+  {
+    "name": "replay",
+    "pts": 121.963,
+    "index": 3908
+  },
+  {
+    "name": "replay",
+    "pts": 121.971,
+    "index": 3909
+  },
+  {
+    "name": "live",
+    "pts": 154.97899999999998,
+    "index": 4197
+  },
+  {
+    "name": "live",
+    "pts": 154.988,
+    "index": 4198
+  },
+  {
+    "name": "live",
+    "pts": 154.988,
+    "index": 4198
+  },
+  {
+    "name": "replay",
+    "pts": 124.37100000000001,
+    "index": 4197
+  },
+  {
+    "name": "replay",
+    "pts": 124.37899999999999,
+    "index": 4198
+  },
+  {
+    "name": "replay",
+    "pts": 124.37899999999999,
+    "index": 4198
+  }
+]
