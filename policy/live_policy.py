@@ -21,6 +21,7 @@ import time
 
 STEP_S = 1 / 30
 TRAIN_SIZE = (2560, 1440)       # every admitted recording; the crop view is 256x256 native pixels at this size
+MAX_GAP_S = .5                  # a longer gap between frames carries no usable motion for bc2
 
 
 @dataclass
@@ -164,7 +165,7 @@ class LivePolicy:
         from policy.range_bc import vocab
         if self.predict is not None:
             self.predict.state = None
-        self.state, self.gray_prev, self.buttons_state = None, None, None
+        self.state, self.gray_prev, self.buttons_state, self.t_prev = None, None, None, None
         self.prev = {"held": [0] * vocab.N, "press": [0] * vocab.N, "release": [0] * vocab.N,
                      "known": [True] * vocab.N, "cy": vocab.ZERO_CLASS, "cp": vocab.ZERO_CLASS}
         self.index = 0
@@ -201,7 +202,7 @@ class LivePolicy:
                                (128, 128), mode="area")]
         return [v.round().clamp(0, 255) for v in views]
 
-    def _bc2_predict(self, frame):
+    def _bc2_predict(self, frame, t=None):
         """policy.bc2: tower features of both views plus motion observed since the previous step's frame."""
         import torch
         from policy.bc2.features import tower_features
@@ -210,14 +211,21 @@ class LivePolicy:
             rgb = [v.permute(0, 2, 3, 1).to(torch.uint8) for v in self._views(frame)]
             feats = tower_features(self.tower, rgb)[None, None]      # both views in one tower batch
             gray = [gray_small(v) for v in rgb]
-            prev = self.gray_prev or gray
+            now = time.perf_counter() if t is None else t
+            gap = None if self.t_prev is None else now - self.t_prev
+            if gap is None or gap > MAX_GAP_S:        # no usable previous frame: no motion this step
+                prev = gray
+            else:
+                prev = self.gray_prev
+            dt = torch.full((1, 1), min(3., max(1., (gap or STEP_S) / STEP_S)), device=feats.device)
+            self.t_prev = now
             green = None
             if self.model.config.use_green:
                 from policy.bc2.model import green_profile
                 green = green_profile(rgb[0]).to(torch.float16)[None]
             with torch.autocast("cuda", dtype=torch.bfloat16):
                 acts, cams, self.state = self.model(feats, prev[0][None], gray[0][None], prev[1][None],
-                                                    gray[1][None], self.state, green)
+                                                    gray[1][None], self.state, green, dt)
             self.gray_prev = gray
             acts, cams = acts.float(), cams.float()
             if self.buttons is not None:          # hybrid: incumbent action head on the same tower features
@@ -250,11 +258,13 @@ class LivePolicy:
                 raise ValueError("nonfinite model outputs")
             return torch.sigmoid(acts[0, 0]).tolist(), torch.softmax(cams[0, 0], -1).tolist()
 
-    def step(self, frame_bgr):
+    def step(self, frame_bgr, t=None):
+        """t: the frame's capture time in seconds (any monotonic clock); default the call time. bc2 models use the
+        interval between consecutive frames (clamped to 1-3 steps of 33 ms); after MAX_GAP_S they see no motion."""
         from policy.range_bc import executor, vocab
         started = time.perf_counter()
         if self.kind == "bc2":
-            probs, cameras = self._bc2_predict(self._check(frame_bgr))
+            probs, cameras = self._bc2_predict(self._check(frame_bgr), t)
         elif self.preprocess == "torch":
             probs, cameras = self._torch_predict(self._check(frame_bgr))
         else:

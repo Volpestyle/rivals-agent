@@ -125,6 +125,7 @@ class Config:
     use_feats: bool = True
     use_motion: bool = True
     use_green: bool = False
+    use_dt: bool = False       # frame interval input, in 30 Hz steps (1 = 33 ms)
 
     def as_dict(self):
         return asdict(self)
@@ -141,7 +142,7 @@ class Policy2(nn.Module):
             width += 2 * c.embed
         if c.use_motion:
             self.mot_g, self.mot_c = PairCNN(GRAY_G, c.motion), PairCNN(GRAY_C, c.motion)
-            self.mot_s = nn.Sequential(nn.Linear(6, 64), nn.GELU())
+            self.mot_s = nn.Sequential(nn.Linear(6 + int(c.use_dt), 64), nn.GELU())
             width += 2 * c.motion + 64
         if c.use_green:
             self.green = nn.Sequential(nn.Linear(GREEN_DIM, 64), nn.GELU())
@@ -151,7 +152,7 @@ class Policy2(nn.Module):
         self.actions = nn.Linear(c.hidden, 3 * vocab.N)
         self.camera = nn.Linear(c.hidden, 2 * vocab.CAMERA_CLASSES)
 
-    def step_inputs(self, feats, gp, gc, cp, cc, green=None):
+    def step_inputs(self, feats, gp, gc, cp, cc, green=None, dt=None):
         """Per-step features [B, T, D]. feats [B, T, 2, FEAT]; gray pairs uint8 [B, T, H, W]."""
         b, t = gc.shape[:2]
         parts = []
@@ -162,6 +163,9 @@ class Policy2(nn.Module):
         if c.use_motion:
             flat = lambda x: x.reshape(b * t, *x.shape[2:])
             s = motion_scalars(flat(gp), flat(gc), flat(cp), flat(cc))
+            if c.use_dt:
+                d = torch.ones(b * t, 1, device=s.device) if dt is None else dt.reshape(b * t, 1).float()
+                s = torch.cat((s, d), 1)
             parts += [self.mot_g(flat(gp), flat(gc)).reshape(b, t, -1),
                       self.mot_c(flat(cp), flat(cc)).reshape(b, t, -1),
                       self.mot_s(s).reshape(b, t, -1)]
@@ -169,8 +173,8 @@ class Policy2(nn.Module):
             parts.append(self.green(green.float()))
         return self.norm(torch.cat(parts, -1))
 
-    def forward(self, feats, gp, gc, cp, cc, state=None, green=None):
-        x = self.step_inputs(feats, gp, gc, cp, cc, green)
+    def forward(self, feats, gp, gc, cp, cc, state=None, green=None, dt=None):
+        x = self.step_inputs(feats, gp, gc, cp, cc, green, dt)
         out, state = self.core(x, state)
         b, t = out.shape[:2]
         return (self.actions(out).reshape(b, t, 3, vocab.N),

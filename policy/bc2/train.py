@@ -20,6 +20,7 @@ from policy.range_bc import train as rtrain, vocab
 from policy.range_bc.metrics import match_window
 
 WINDOW, BURN_IN = 128, 16
+STRIDES, STRIDE_P = (1, 2, 3), (.6, .25, .15)     # frame-interval jitter: 30, 15, 10 Hz windows
 ONSET_STILL = 3
 REPS = torch.tensor([vocab.class_degrees(k) for k in range(vocab.CAMERA_CLASSES)])
 
@@ -41,6 +42,7 @@ class Session:
         prev = np.arange(n) - 1
         prev[self.t["run_start"]] = np.flatnonzero(self.t["run_start"])
         self.prev = torch.from_numpy(np.maximum(prev, 0)).to(dev)
+        self.run_first = torch.from_numpy(np.maximum.accumulate(np.where(self.t["run_start"], np.arange(n), 0))).to(dev)
         starts = np.flatnonzero(self.t["run_start"]).tolist()
         self.runs = list(zip(starts, starts[1:] + [n]))
         valid = torch.from_numpy(self.t["valid"]).to(dev)
@@ -50,15 +52,16 @@ class Session:
         self.cam_mask = torch.from_numpy(self.t["cam_known"]).to(dev) & valid[:, None]
         self.n = n
 
-    def inputs(self, idx):
-        """idx LongTensor [B, T] of rows -> model inputs."""
-        p = self.prev[idx]
+    def inputs(self, idx, k=1):
+        """idx LongTensor [B, T] of rows (k rows apart) -> (feats, gray pairs, None, green, dt)."""
+        p = self.prev[idx] if k == 1 else torch.maximum(idx - k, self.run_first[idx])
         return (self.feats[idx], self.gray_g[p], self.gray_g[idx], self.gray_c[p], self.gray_c[idx], None,
-                None if self.green is None else self.green[idx])
+                None if self.green is None else self.green[idx], torch.full(idx.shape, float(k), device=idx.device))
 
 
-def windows(sessions, generator):
-    """(session, start, length, starts_run) tiles: each run's start plus a random-phase stride of WINDOW/2."""
+def windows(sessions, generator, jitter=False):
+    """(session, start, length, starts_run, k) tiles: each run's start plus a random-phase stride of WINDOW/2.
+    With jitter, a window samples every k-th row (k from STRIDES), as a slower live cadence would."""
     out = []
     for si, s in enumerate(sessions):
         for a, b in s.runs:
@@ -66,17 +69,22 @@ def windows(sessions, generator):
                 continue
             phase = int(torch.randint(0, WINDOW // 2, (1,), generator=generator))
             starts = sorted({a} | set(range(a + phase, b - 32, WINDOW // 2)))
-            out += [(si, st, min(WINDOW, b - st), st == a) for st in starts]
+            for st in starts:
+                k = int(torch.multinomial(torch.tensor(STRIDE_P), 1, generator=generator)) + 1 if jitter else 1
+                n = min(WINDOW, (b - st - 1) // k + 1)
+                if n >= 16:
+                    out.append((si, st, n, st == a, k))
     return out
 
 
 def batch(sessions, items, device):
-    t = max(n for _, _, n, _ in items)
-    parts = {k: [] for k in ("feats", "gp", "gc", "cp", "cc", "green", "act", "act_mask", "camera", "camera_mask")}
-    for si, st, n, at_start in items:
+    t = max(item[2] for item in items)
+    parts = {k: [] for k in ("feats", "gp", "gc", "cp", "cc", "green", "dt", "act", "act_mask", "camera", "camera_mask")}
+    for si, st, n, at_start, k in items:
         s = sessions[si]
-        idx = torch.arange(st, st + t, device=device).clamp_max(s.n - 1)
-        inputs = s.inputs(idx[None])
+        idx = (st + k * torch.arange(t, device=device)).clamp_max(s.n - 1)
+        inputs = s.inputs(idx[None], k)
+        parts["dt"].append(inputs[7][0])
         for k, v in zip(("feats", "gp", "gc", "cp", "cc"), inputs[:5]):
             parts[k].append(v[0])
         if inputs[6] is not None:
@@ -112,7 +120,7 @@ def predict(model, s, *, incumbent=False, chunk=512):
                     x, y, state = model(f[:, :, 0], f[:, :, 1], None, prev, state)
                 else:
                     inp = s.inputs(idx)
-                    x, y, state = model(*inp[:5], state, inp[6])
+                    x, y, state = model(*inp[:5], state, inp[6], inp[7])
             acts[idx[0]], cams[idx[0]] = torch.sigmoid(x[0].float()), torch.softmax(y[0].float(), -1)
     return acts, cams
 
@@ -183,6 +191,7 @@ def evaluate(acts, cams, s, thresholds, live):
                                 "held_f1": 2 * htp / max(1, hden), "pred_presses": tp + fp, "human_presses": tp + fn}
     out["press_macro_f1"] = float(np.mean([out["actions"][n]["press_f1"] for n in vocab.EDGE_ACTIONS]))
     deg = camera_degrees(cams)
+    mean_deg = (cams * REPS.to(cams.device)).sum(-1)          # expectation decode, for comparison
     for axis, key in ((0, "yaw"), (1, "pitch")):
         y = torch.from_numpy(t[key]).to(dev)
         prev = torch.full_like(y, float("nan"))
@@ -211,6 +220,7 @@ def evaluate(acts, cams, s, thresholds, live):
                     "onset_zero_mae": mae(torch.zeros_like(p), onset),
                     "onset_sign_agree": float((torch.sign(p) == torch.sign(y))[onset].float().mean()) if onset.any() else None,
                     "onset_turned": float((p.abs() >= .5)[onset].float().mean()) if onset.any() else None,
+                    "onset_committed": int((onset & (p.abs() >= .05)).sum()),
                     "sums": {"abs_err": float((p - y).abs()[ok].sum()), "abs_zero": float(y.abs()[ok].sum()),
                              "abs_persist": float((prev - y).abs()[ok].sum()),
                              "moving_abs_err": float((p - y).abs()[moving].sum()),
@@ -220,7 +230,13 @@ def evaluate(acts, cams, s, thresholds, live):
                              "still_false": float((p.abs() >= .5)[still].float().sum()),
                              "onset_abs_err": float((p - y).abs()[onset].sum()), "onset_abs_zero": float(y.abs()[onset].sum()),
                              "onset_sign": float((torch.sign(p) == torch.sign(y))[onset].float().sum()),
-                             "onset_turned": float((p.abs() >= .5)[onset].float().sum())}}
+                             "onset_turned": float((p.abs() >= .5)[onset].float().sum()),
+                             "onset_committed": float((onset & (p.abs() >= .05)).sum()),
+                             "onset_committed_sign": float(((torch.sign(p) == torch.sign(y)) & onset & (p.abs() >= .05)).sum()),
+                             "mean_abs_err": float((mean_deg[:, axis] - y).abs()[ok].sum()),
+                             "mean_moving_sign": float((torch.sign(mean_deg[:, axis]) == torch.sign(y))[moving].float().sum()),
+                             "mean_still_false": float((mean_deg[:, axis].abs() >= .5)[still].float().sum()),
+                             "mean_onset_sign": float((torch.sign(mean_deg[:, axis]) == torch.sign(y))[onset].float().sum())}}
     return out
 
 
@@ -246,7 +262,12 @@ def pooled(results):
                      "moving_sign_agree": S("moving_sign") / max(1, mv), "still_false_turn": S("still_false") / max(1, st),
                      "onset_steps": on, "onset_mae": S("onset_abs_err") / max(1, on),
                      "onset_zero_mae": S("onset_abs_zero") / max(1, on), "onset_sign_agree": S("onset_sign") / max(1, on),
-                     "onset_turned": S("onset_turned") / max(1, on)}
+                     "onset_turned": S("onset_turned") / max(1, on),
+                     "onset_committed_share": S("onset_committed") / max(1, on),
+                     "onset_sign_when_committed": S("onset_committed_sign") / max(1, S("onset_committed")),
+                     "mean_decode": {"mae": S("mean_abs_err") / n, "moving_sign": S("mean_moving_sign") / max(1, mv),
+                                     "still_false_turn": S("mean_still_false") / max(1, st),
+                                     "onset_sign": S("mean_onset_sign") / max(1, on)}}
     return out
 
 
@@ -277,19 +298,19 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
     model = Policy2(config).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=wd)
     gen = torch.Generator().manual_seed(seed)
-    per_epoch = len(windows(train_s, gen)) // batch_size
+    per_epoch = len(windows(train_s, gen, config.use_dt)) // batch_size
     total = per_epoch * epochs
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda k: min(1, k / 300) * .5 * (1 + math.cos(math.pi * min(k, total) / total)))
     history, best = [], (math.inf, -1)
     for epoch in range(epochs):
         model.train()
-        items = windows(train_s, gen)
+        items = windows(train_s, gen, config.use_dt)
         order = torch.randperm(len(items), generator=gen).tolist()
         started, running = time.monotonic(), 0.
         for k in range(per_epoch):
             b = batch(train_s, [items[i] for i in order[k * batch_size:(k + 1) * batch_size]], device)
             with torch.autocast("cuda", dtype=torch.bfloat16, enabled=device == "cuda"):
-                x, y, _ = model(b["feats"], b["gp"], b["gc"], b["cp"], b["cc"], green=b.get("green"))
+                x, y, _ = model(b["feats"], b["gp"], b["gc"], b["cp"], b["cc"], green=b.get("green"), dt=b["dt"])
             terms = rtrain.loss_terms(x.float(), y.float(), b, pw)
             loss = sum(terms.values())
             opt.zero_grad(set_to_none=True)

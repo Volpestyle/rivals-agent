@@ -54,7 +54,7 @@ def test_tiny_fit_and_evaluate(tmp_path):
     feats.mkdir()
     tr = [make_session(feats, "a", seed=1), make_session(feats, "b", seed=2)]
     dv = [make_session(feats, "c", seed=3)]
-    config = bc2_model.Config(embed=16, motion=16, hidden=32, use_green=True)
+    config = bc2_model.Config(embed=16, motion=16, hidden=32, use_green=True, use_dt=True)
     report = bc2_train.fit(tr, dv, dv, tmp_path / "out", config=config,
                            epochs=1, batch_size=4, device="cpu", log=lambda *_: None)
     assert report["selected_epoch"] == 1
