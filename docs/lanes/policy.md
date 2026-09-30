@@ -1,6 +1,107 @@
+# Policy: the learned range policy
+
+**Status (2026-09-30): CURRENT.** Owner: policy ([VUH-1346](https://linear.app/vuhlp/issue/VUH-1346); status lives there).
+This section is the live-policy lane (2026-09-30 onward). Everything from "Policy: the learned chooser" down is HISTORY:
+the MLX chooser and the VUH-1311 offline consumer. The earlier `policy/range_bc/` work is in
+[end-to-end fit](end-to-end-fit.md) and [explore-policy](explore-policy.md).
+
+## Live inference API (`policy/live_policy.py`)
+
+`LivePolicy(bundle_dir, device="cuda")`, `reset()` per episode, `step(native BGR frame) -> Step`, `close()`.
+`Step` carries semantic `held/press/release` dicts (only live-mask actions set), `yaw_deg`/`pitch_deg` per 1/30 s
+step (yaw +right, pitch +down) and the same as deg/s, raw probabilities and latency. A bundle directory's
+`bundle.json` names its files with sha256, the TRAIN-calibrated thresholds and the live mask; `kind` is
+`encoder_h1` (the confirmed NitroGen no-history head) or `bc2` (below, optionally hybrid with the encoder_h1
+action head on the same tower features). The live runner is live-loop's `agent/learned_runner.py`.
+
+The cache views (global 144x256, crop 128x128) are computed on the GPU: 2560x1440 area scaling is exact average
+pooling. Against the FFmpeg cache graph on real held-out frames: views within 1 grey level, 100% identical decoded
+actions, 93% identical camera bins (near-boundary medians). The capture is full-range BGR, so the graph's YUV
+conversion is skipped (`compact_bgr`). Frames of another size are resized to 2560x1440 on the GPU first.
+
+Latency, RTX 4080 SUPER, game closed, 2 CPU threads: encoder_h1 p50 25.5 ms / p95 31.4 ms (the FFmpeg CPU path
+was 42/50 idle and 75/144 under CPU load); 1920x1080 input p50 32 / p95 38 ms under concurrent FFmpeg load.
+live-loop measured p50 31 / p95 43 ms inside its runner.
+
+## Step 1 result: encoder_h1 through the live API (2026-09-30)
+
+Bundle `D:/rivals-policy/bundles/ng-nohist-s1` (confirm seed 1). `policy/live_replay.py` on frozen-dev 171533,
+60 s (1800 steps), James vs model: held F1 web_swing 0.83, amazing_combo 0.68, move_right 0.65, jump 0.55,
+web_cluster 0.53, W/A/S about 0.3, spider_power 0.06 (3 presses vs 12). Yaw MAE 1.66 vs zero 1.42, moving-yaw
+sign agreement 47%; pitch 0.41 vs zero 0.51. This reproduces the confirmation's "yaw worse than zero".
+Overlay: `D:/rivals-policy/replay/ng-nohist-s1-171533/overlay-h264.mp4`, `overlay-10s.gif`.
+
+## Step 2: observed ego-motion (`policy/bc2/`)
+
+No earlier policy had an explicit motion input; the only "motion" any had was its own previous action, which
+collapses when self-fed. bc2 adds motion observed between the previous and current frame: a small CNN over
+grayscale frame pairs (global 72x128, crop 64x64) and phase-correlation shifts (global top band, crop). This is
+James's camera offline and the pad's camera live, so offline and live see the same quantity. Frozen NitroGen
+features stay; no previous-action input; LSTM 512; heads unchanged (3x15 action BCE, 2x31 camera classes, median
+decode).
+
+Timing check: a step's frame is the last one at or before the anchor, and its inputs fall in (anchor, anchor+33 ms],
+so motion between frames t-1 and t cannot contain step t's input. Measured correlation of the global
+phase-correlation x shift with James's yaw: r = -0.74 at step t-1, -0.70 at t (yaw autocorrelation), -0.63 at t+1
+(session 025230; 171533 and 205528 agree).
+
+Data: the ten cohort sessions' existing u8 caches on Modal volume `rivals-explore-chunks-20260927` (read-only);
+features, runs and assets in `rivals-policy-bc2-20260930`. Extraction is about 1 GPU-minute per session (L40S).
+Training holds the cohort on one H100; an epoch is about 7 s. The val session 212646 (registry split `val`) was
+cached on the PC and is never used for selection; the frozen-dev pair selects the epoch by loss.
+
+First sweep (seed 0, 12 epochs, dev 171533+205528 pooled, 24,556 steps):
+
+| Arm | Press macro F1 | Yaw MAE (zero 1.735, persistence 0.597) | Moving-yaw sign | False turn when still | Pitch MAE (zero 0.714) |
+|---|---:|---:|---:|---:|---:|
+| full (features + motion) | 0.131 | 0.924 | 84.8% | 8.6% | 0.485 |
+| motion only | 0.099 | 0.917 | 85.1% | 7.8% | 0.519 |
+| features only | 0.137 | 1.690 | 52.5% | 13.3% | 0.595 |
+| incumbent (ng-nohist-s1) | 0.288 | 1.773 | 58.1% | 24.8% | 0.597 |
+
+The motion input accounts for the entire yaw gain. The buttons regressed because the fit was short: about 1.8k
+updates against the incumbent's 15k.
+
+### Clean val and onset (2026-09-30)
+
+Val 212646 (28,048 steps) is never used for selection; the epoch with the lowest dev loss is taken, which lands at
+5-10 in every run. Longer fits only overfit: 60 and 120 epochs also select about epoch 10. Batch 8 gives the most
+updates per epoch and the best buttons. Numbers are for the selected epoch on val:
+
+| Run | Press F1 | Yaw MAE (zero 1.831, persistence 0.645) | Moving sign | Still false turn | Onset sign / turned | Pitch MAE (zero 0.752) |
+|---|---:|---:|---:|---:|---:|---:|
+| bs8 seed 0 (`b-full-e30-bs8-s0`, bundle `bc2-bs8`) | 0.258 | 0.825 | 89.3% | 8.3% | 53.5% / 26.6% | 0.433 |
+| bs8 seed 1 | 0.251 | 0.825 | 89.1% | 7.8% | 51.7% / 24.3% | 0.433 |
+| bs8 seed 2 | 0.222 | 0.834 | 89.0% | 7.4% | 48.9% / 25.3% | 0.432 |
+| bs32 seeds 0-2, 60 epochs | 0.18-0.20 | 0.86-0.89 | 88-89% | 7-9% | 47-49% / 16-20% | 0.46 |
+| bs8 + green bearing, seeds 0-2 | 0.23-0.24 | 0.82-0.83 | 89-90% | 7% | 48-52% / 21-26% | 0.43 |
+| incumbent `ng-nohist-s1` | 0.325 | 1.800 | 58.6% | 23.5% | 46.6% / 32.0% | 0.584 |
+
+Onset means a step that turns (|yaw| >= 0.5 deg/step) after 3 still steps in the same run: 1,166 on val. Sign
+agreement counts a zero prediction as a miss. By that measure onset stays near chance: the model continues and
+tracks turns but rarely starts one. On the live-path replay (3 min of val, below) it nudges (|pred| >= 0.05) on 119
+of 228 onsets, and on those its direction is right 74%.
+
+The enemy-bearing input (`green_profile`: the enemy-green HSV band on the global view, with the finder's dead
+zones, as column and row histograms plus bearings) finds nameplate bars cleanly at 256x144. It adds nothing at onset
+over 3 seeds, so it is off by default.
+
+Live-path replay (`policy/live_replay.py --targets`, bundle `bc2-a-full-s0`, val 212646, 5,400 steps from 30 s into
+the longest run): yaw 0.92 vs zero 1.69, moving sign 83.6%. When an enemy is off-centre and James turns, he turns
+toward it 69% of the time (594 of 866). On those toward-target turns the model agrees 82% overall, but only 32% at
+onset (n=57, mostly zero predictions). Overlay: `D:/rivals-policy/replay/bc2-a-val212646/overlay-h264.mp4`,
+`overlay-10s.gif`.
+
+Bundles: `D:/rivals-policy/bundles/bc2-bs8`, and `bc2-bs8-hybrid` (bc2 camera with the incumbent's action head
+and thresholds). Both run p50 40 ms / p95 46 ms on the 4080.
+
+Live caveat: the motion input assumes about 33 ms between consecutive frames. A slower live cadence shows more
+motion per step, which a closed loop could amplify. Callers reset() after gaps. The next fit trains with
+frame-interval jitter and an interval input.
+
 # Policy: the learned chooser (steps 1-3)
 
-**Status (2026-09-29): HISTORY.** The MLX chooser and the VUH-1311 offline consumer (`policy/behaviour.py`); this note stays their record. Current policy work is `policy/range_bc/` ([end-to-end fit](end-to-end-fit.md), [interim](end-to-end-fit-interim.md), [explore-policy](explore-policy.md)).
+**Status (2026-09-29): HISTORY.** The MLX chooser and the VUH-1311 offline consumer (`policy/behaviour.py`); this part stays their record.
 
 ## Expert future-behaviour offline consumer (VUH-1311)
 
