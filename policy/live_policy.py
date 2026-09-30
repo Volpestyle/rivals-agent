@@ -74,17 +74,19 @@ def write_bundle(directory, *, checkpoint, vision, vision_config, evaluation, na
 
 def write_bc2_bundle(directory, *, checkpoint, report, tag="selected", name, notes="",
                      vision="vision.safetensors", vision_config="siglip2-large-config.json",
-                     buttons=None, buttons_evaluation=None):
+                     buttons=None, buttons_evaluation=None, camera_decode="mean"):
     """A policy.bc2 bundle: Policy2 checkpoint, the NitroGen tower, and report.json's TRAIN-calibrated thresholds.
     Hybrid: `buttons` (an encoder_h1 checkpoint on the same tower features) and its evaluation.json replace the
-    action head and thresholds; the camera stays bc2's."""
+    action head and thresholds; the camera stays bc2's. camera_decode: "mean" (expectation; the better onset
+    direction on val) or "median"."""
     from policy.range_bc import vocab
     directory = Path(directory)
     rep = json.loads((directory / report).read_text())
     live = vocab.live_mask([10 ** 6] * vocab.N)
     bundle = {"format": "rivals-live-policy-bundle-v1", "name": name, "kind": "bc2", "notes": notes,
               "step_s": STEP_S, "train_size": list(TRAIN_SIZE), "actions": list(vocab.NAMES), "files": {},
-              "thresholds": rep[tag]["thresholds"], "live": dict(zip(vocab.NAMES, map(bool, live)))}
+              "thresholds": rep[tag]["thresholds"], "live": dict(zip(vocab.NAMES, map(bool, live))),
+              "camera_decode": camera_decode}
     entries = [("checkpoint", checkpoint), ("vision", vision), ("vision_config", vision_config), ("report", report)]
     if buttons:
         calibration = json.loads((directory / buttons_evaluation).read_text())["threshold_calibration"]["actions"]
@@ -114,7 +116,8 @@ def load_encoder_checkpoint(path, sha256):
 
 
 class LivePolicy:
-    def __init__(self, bundle_dir, *, device="cuda", thresholds="train", resize=True, preprocess="torch"):
+    def __init__(self, bundle_dir, *, device="cuda", thresholds="train", resize=True, preprocess="torch",
+                 camera_decode=None):
         """thresholds: "train" (per-action, TRAIN-calibrated to human press counts) or a float for all actions.
         resize: scale frames that are not 2560x1440 to it (area) first, so the crop view keeps its training field
         of view. Otherwise a different size is refused.
@@ -158,6 +161,9 @@ class LivePolicy:
         self.levels = tuple(float(self.bundle["thresholds"][n]) if thresholds == "train" else float(thresholds)
                             for n in self.names)
         self.resize, self.device = resize, device
+        self.camera_decode = camera_decode or self.bundle.get("camera_decode", "median")
+        if self.camera_decode not in ("median", "mean"):
+            raise ValueError("camera_decode is median or mean")
         self.reset()
 
     def reset(self):
@@ -277,7 +283,12 @@ class LivePolicy:
             held.append(h[i]), press.append(p[i]), release.append(r[i])
         yaw_p, pitch_p = cameras if len(cameras) == 2 else (cameras[:vocab.CAMERA_CLASSES], cameras[vocab.CAMERA_CLASSES:])
         cy, cp = vocab.median_class(yaw_p), vocab.median_class(pitch_p)
-        yaw, pitch = vocab.class_degrees(cy), vocab.class_degrees(cp)
+        if self.camera_decode == "mean":      # expectation: commits to the likelier side at turn onsets
+            reps = [vocab.class_degrees(k) for k in range(vocab.CAMERA_CLASSES)]
+            yaw, pitch = (sum(p * r for p, r in zip(axis, reps)) for axis in (yaw_p, pitch_p))
+            cy, cp = vocab.camera_class(yaw), vocab.camera_class(pitch)
+        else:
+            yaw, pitch = vocab.class_degrees(cy), vocab.class_degrees(cp)
         self.prev = {"held": held, "press": press, "release": release, "known": [True] * vocab.N, "cy": cy, "cp": cp}
         self.index += 1
         named = lambda bits: {n: bool(b) for n, b in zip(self.names, bits)}
