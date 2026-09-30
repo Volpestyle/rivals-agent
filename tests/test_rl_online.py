@@ -297,3 +297,12 @@ def test_camera_sampling_on_the_real_two_row_shape():
     s = pol.step(None, t=0.)
     assert s.yaw_deg == vocab.class_degrees(vocab.ZERO_CLASS + 5) and s.pitch_deg == vocab.class_degrees(vocab.ZERO_CLASS - 2)
     assert math.isfinite(s.yaw_deg_s) and abs(s.yaw_deg) <= vocab.CLAMP_DEG
+
+
+@pytest.mark.skipif(not Path("data/calibration/rl-sitting-20260930-04/ep-001-rl/stop.png").exists(),
+                    reason="sitting 04 not present")
+def test_a_fall_seen_only_on_stop_png_is_a_death():
+    e = data.episode("data/calibration/rl-sitting-20260930-04/ep-001-rl", {"jump"})
+    assert e["events"]["death"] == 1 and e["reward"][-1] <= -10
+    from rl.online.sitting import after_episode
+    assert after_episode(e["result"], bool(e["events"]["death"]), "ready") == (True, None)

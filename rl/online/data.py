@@ -141,6 +141,14 @@ def episode(run_dir, live_names, tower=None, device="cpu", weights=None, death=F
     per_frame, events = rewards(list(zip(all_frames, all_times)), weights)
     r = credit(all_times, per_frame, times)
     events["frames_read"] = len(saved)
+    if not events["death"] and saved and saved[-1].get("file") == "stop.png":
+        # A fall shows hp 0 only on the stop frame: the retained frames before it are ~0.15 s apart and still read full
+        # hp, then the death screen drops the HUD and the runner stops (rl-sitting-20260930-04 ep 1: 000077-000079 read
+        # 250/250, stop.png 0/250). The two-read confirmation cannot see that, so one exact 0/N read on stop.png counts.
+        from rl.rewards import own_hp
+        hp, max_hp = own_hp(all_frames[-1])
+        if hp == 0 and max_hp:
+            death = True
     if death and not events["death"]:
         from rl.rewards import Weights
         r[-1] += (weights or Weights()).death
