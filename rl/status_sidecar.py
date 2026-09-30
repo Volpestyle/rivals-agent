@@ -29,7 +29,7 @@ def main():
     name, host, log, exit_file = sys.argv[1:5]
     total = int(sys.argv[sys.argv.index("--total") + 1]) if "--total" in sys.argv else None
     step_re = re.compile(sys.argv[sys.argv.index("--step-regex") + 1]) if "--step-regex" in sys.argv else None
-    started = time.time()
+    started = int(time.time())  # job_status truncates "updated" to whole seconds
     job_status.write(name, owner="rl (VUH-1321)", stage="running", host=host, started=started,
                      progress="starting", eta=None, evidence=log)
     while True:
