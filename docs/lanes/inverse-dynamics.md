@@ -119,6 +119,13 @@ Linear). Input spans: the `footage` lane's `D:/rivals-expert-footage/idm-spans.j
   On a 48 s expert span it is 3.7x faster than the frame-store graph. Predictions differ by 0.002 deg in camera
   (MAE is about 0.5), at most 0.05 in press probability, and 99.7 % of held states agree. The npz meta records
   `fast_decode`.
+- **Runs (2026-09-30).** v2-a covered 29.3 of 53.3 footage hours before it was stopped; v2-cd supersedes it and is
+  labelling everything. On the 4080, one process with a decode thread pool labels about 9.7x realtime with one model
+  and about 7x with the two-model ensemble, and the GPU is the limit. Several processes help only while the GPU has
+  headroom, and overfilling its memory made Windows page and crawl. Spans whose effective frame rate falls outside
+  55-65 fps are refused (6 spans of Rdpaco 2875184846 drop to 30-43 fps). `D:/rivals-agent-local/idm-labels-work/`
+  holds the span npz files, logs, `clip-sync.sh` (export plus mirror of clips and tables to the Mac for `policy`) and
+  `job-status-sidecar.py` (board receipts).
 - **Where it runs.** The PC labels from the original VODs. Offloaded videos go to the Mac as stream-copied per-span
   mkv clips (`labels.py clips`: `-ss` and `-t` before `-i` with `-copyts` keep the source timestamps; an output-side
   `-t` or a trim with output seeking loses them). Mac results are pulled back and exported on the PC. OBS mkv
