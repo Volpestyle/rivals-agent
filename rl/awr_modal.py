@@ -184,6 +184,7 @@ def run(root, out_dir, *, arms=ARMS, epochs=6, lr=1e-4, kl=1.0, seed=0, log=prin
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     device = "cuda"
+    torch.manual_seed(seed)
     raw = Path(BASE_RUN).read_bytes()
     sha = hashlib.sha256(raw).hexdigest()
     if sha != BASE_SHA:
@@ -278,6 +279,7 @@ def run(root, out_dir, *, arms=ARMS, epochs=6, lr=1e-4, kl=1.0, seed=0, log=prin
             d = torch.cat(delta).cpu().numpy()
             v = torch.cat(valid).cpu().numpy()
             res[part] = awr.quintile_table(a, d, v)
+            res[part]["top_minus_bottom_ci95"] = awr.bootstrap_gap(a, d, v, seed=seed)
             res[part]["mean_press_prob"] = dict(zip(vocab.NAMES, torch.cat(press_all).mean(0).tolist()))
         res["seconds"] = time.monotonic() - started
         path.write_text(json.dumps(res, indent=2) + "\n")

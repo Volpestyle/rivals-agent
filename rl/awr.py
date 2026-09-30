@@ -114,3 +114,23 @@ def load_labels(paths):
     for p in paths:
         out.update(json.loads(Path(p).read_text(encoding="utf-8"))["sessions"])
     return out
+
+
+def bootstrap_gap(adv, delta, valid, block=300, n=1000, seed=0):
+    """95% interval of the top-minus-bottom quintile gap by resampling contiguous blocks of `block` steps (10 s at
+    30 Hz), which keeps the within-engagement correlation that a per-step bootstrap would ignore. Quintile edges are
+    fixed from the full sample."""
+    a, d = adv[valid], delta[valid]
+    edges = np.quantile(a, [.2, .8])
+    top, bot = a >= edges[1], a <= edges[0]
+    nb = max(1, len(a) // block)
+    blocks = [slice(k * block, (k + 1) * block if k < nb - 1 else len(a)) for k in range(nb)]
+    st = np.array([[d[b][top[b]].sum(), top[b].sum(), d[b][bot[b]].sum(), bot[b].sum()] for b in blocks])
+    rng = np.random.default_rng(seed)
+    gaps = []
+    for _ in range(n):
+        s = st[rng.integers(0, nb, nb)].sum(0)
+        if s[1] and s[3]:
+            gaps.append(s[0] / s[1] - s[2] / s[3])
+    lo, hi = np.percentile(gaps, [2.5, 97.5])
+    return float(lo), float(hi)

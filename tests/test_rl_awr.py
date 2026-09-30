@@ -46,3 +46,13 @@ def test_anchors_reads_header_and_rows(tmp_path):
                                                                   for k in range(3)) + "\n")
     anc, step = awr.anchors(p)
     assert step == STEP and anc[2] == 5 + 2 * STEP
+
+
+def test_bootstrap_interval_excludes_zero_only_for_a_real_shift():
+    rng = np.random.default_rng(1)
+    a = rng.normal(size=6000)
+    ok = np.ones(6000, bool)
+    lo, hi = awr.bootstrap_gap(a, .05 * a + rng.normal(scale=.05, size=6000), ok, n=300)
+    assert lo > 0
+    lo, hi = awr.bootstrap_gap(a, rng.normal(scale=.05, size=6000), ok, n=300)
+    assert lo < 0 < hi
