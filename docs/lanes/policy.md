@@ -221,6 +221,33 @@ grid i4 cost about $4. On Mac MPS the same step takes 0.45 s, about 10 min per e
 
 With i4 flat on camera and j flat on labels, BC on this corpus has reached diminishing returns.
 
+### Own vs expert-mix on James's held-out matches (2026-09-30)
+
+James's Quick Matches `20260927T061107-953Z-150600-11` and `...061900-143Z-150600-12` (5.1 and 6.8 eligible
+minutes) were never in any training: their step tables carry the `idm_train` split, which the range loader refuses,
+and `local_eval.load_any_split` keeps the row and sealed checks. `policy/bc2/local_eval.py` builds their features
+locally from the original videos, then evaluates the unchanged i3 checkpoints (inference only, $0). Mean
+[min-max over 3 seeds]:
+
+| | own (i1/i2) | mix399 (i3) |
+|---|---|---|
+| Yaw MAE (zero 1.922) | 1.586 [1.573-1.610] | 1.286 [1.264-1.305] |
+| Moving sign | 74.5% [73.7-75.7] | 88.5% [88.0-89.3] |
+| Onset sign | 61.1% [59.0-62.2] | 69.3% [68.1-71.0] |
+| Still false turn | 13.9% [11.0-16.2] | 12.5% [10.4-14.2] |
+| Press F1 | 0.152 [0.135-0.161] | 0.154 [0.121-0.175] |
+| Pitch MAE | 0.572 | 0.519 |
+
+On matches the expert labels cut yaw error by 19%, against 5% on the range, and the seed ranges do not overlap on
+yaw, moving sign, onset or pitch. Buttons are unchanged and far below range levels on both arms.
+
+idm's expert-footage label audit (docs/lanes/inverse-dynamics.md) has two findings for later expert runs:
+- DayMR's camera degrees may read about 25% low.
+- amazing_combo, get_over_here and web_cluster presses are unreliable for creators whose ability-row order differs
+  from James's (DayMR, LuckyZeal, Rekriot, Simii).
+
+`train.fit(expert_mask=)` makes those channels unknown per creator, keyed by the shard's `expert_context.player`.
+
 ### learned-01 A live idle: a copycat on observed motion (2026-09-30)
 
 In the first live run with `bc2-mix399-s0` (`data/calibration/compat-check-20260929/learned-01-a/`, 126 decisions),
