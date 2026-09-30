@@ -173,3 +173,18 @@ def test_yaw_diag_quartiles():
     out = yaw_diag(wm, pool, torch.arange(0, 200, 25), 2, 21, 1)
     assert set(out) >= {"mean", "sample", "copy_last", "yaw_deg_edges", "n_per_quartile"}
     assert sum(out["n_per_quartile"]) == 8 and len(out["mean"]) == 4
+
+
+def test_tokenizer_shapes_and_smoke(tmp_path):
+    torch = pytest.importorskip("torch")
+    pytest.importorskip("torchvision")
+    pytest.importorskip("PIL")
+    from rl.world_model import tokenizer as T
+    tok = T.Tokenizer(chs=(8, 16, 16))
+    x = torch.zeros(2, 3, 144, 256)
+    y, mean, logvar = tok(x)
+    assert y.shape == x.shape and mean.shape == (2, T.LATENT, 18, 32)
+    gate = T.main(["--synthetic", "--out", str(tmp_path), "--steps", "2", "--batch", "2", "--gan-start", "0",
+                   "--gate-n", "4"])
+    assert set(gate["keep"]) >= {"psnr>=28", "contrast>=0.95", "all"}
+    assert (tmp_path / "recon_vs_real.png").exists()
