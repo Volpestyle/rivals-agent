@@ -1,0 +1,278 @@
+{
+ "what": "Hand labels (by the rl agent, from 96 px thumbnails of 140x140 native crops round the crosshair, blind to reader output). H = white hit-marker strokes visible; K = red KO marker (diamond in a circle); U = uncertain, excluded from scoring. Frame i = i/30 s after start.",
+ "windows": {
+  "a": {
+   "video": "2026-09-23 00-18-28.mkv",
+   "session": "20260923T051828-422Z-33696-1",
+   "start_s": 100,
+   "fps": 30,
+   "n": 300,
+   "H": [
+    [
+     145,
+     158
+    ],
+    [
+     176,
+     190
+    ],
+    [
+     277,
+     278
+    ],
+    [
+     280,
+     281
+    ],
+    [
+     283,
+     283
+    ],
+    [
+     286,
+     297
+    ]
+   ],
+   "K": [
+    [
+     193,
+     207
+    ]
+   ],
+   "U": [
+    [
+     144,
+     144
+    ],
+    [
+     175,
+     175
+    ],
+    [
+     191,
+     192
+    ],
+    [
+     276,
+     276
+    ],
+    [
+     279,
+     279
+    ],
+    [
+     282,
+     282
+    ],
+    [
+     284,
+     285
+    ],
+    [
+     298,
+     299
+    ]
+   ]
+  },
+  "b": {
+   "video": "2026-09-25 15-37-45.mkv",
+   "session": "20260925T203745-207Z-49728-2",
+   "start_s": 1985,
+   "fps": 30,
+   "n": 300,
+   "H": [
+    [
+     17,
+     23
+    ],
+    [
+     39,
+     63
+    ],
+    [
+     70,
+     71
+    ],
+    [
+     168,
+     172
+    ],
+    [
+     204,
+     207
+    ],
+    [
+     215,
+     225
+    ],
+    [
+     239,
+     240
+    ],
+    [
+     243,
+     247
+    ]
+   ],
+   "K": [
+    [
+     74,
+     89
+    ],
+    [
+     249,
+     263
+    ]
+   ],
+   "U": [
+    [
+     16,
+     16
+    ],
+    [
+     24,
+     24
+    ],
+    [
+     64,
+     64
+    ],
+    [
+     72,
+     73
+    ],
+    [
+     167,
+     167
+    ],
+    [
+     212,
+     214
+    ],
+    [
+     241,
+     242
+    ],
+    [
+     248,
+     248
+    ]
+   ]
+  },
+  "c": {
+   "video": "2026-09-25 23-57-29.mkv",
+   "session": "20260926T045729-166Z-79780-1",
+   "start_s": 410,
+   "fps": 30,
+   "n": 300,
+   "H": [
+    [
+     12,
+     17
+    ],
+    [
+     48,
+     55
+    ],
+    [
+     66,
+     67
+    ],
+    [
+     253,
+     259
+    ],
+    [
+     295,
+     299
+    ]
+   ],
+   "K": [
+    [
+     70,
+     84
+    ]
+   ],
+   "U": [
+    [
+     47,
+     47
+    ],
+    [
+     68,
+     69
+    ],
+    [
+     252,
+     252
+    ],
+    [
+     260,
+     260
+    ],
+    [
+     294,
+     294
+    ]
+   ]
+  }
+ },
+ "adjudication": {
+  "how": "Every frame where the reader and the thumbnail label disagreed (30 reader-yes/label-no, 7 reader-no/label-yes) was re-viewed at 2-3x native zoom. Agreements were not re-checked.",
+  "label_was_wrong_marker_present": [
+   "a193",
+   "a194",
+   "a195",
+   "a196",
+   "a197",
+   "b74",
+   "b75",
+   "b76",
+   "b77",
+   "b78",
+   "b173",
+   "b174",
+   "b175",
+   "b176",
+   "b208",
+   "b209",
+   "b210",
+   "b211",
+   "b249",
+   "b250",
+   "b251",
+   "b252",
+   "b253",
+   "c46",
+   "c65",
+   "c70",
+   "c71",
+   "c72",
+   "c73",
+   "c261"
+  ],
+  "label_was_wrong_no_marker": [
+   "a185",
+   "a186"
+  ],
+  "now_uncertain": [
+   "a286",
+   "a287"
+  ],
+  "true_reader_misses_faded_tail": [
+   "a158",
+   "a184",
+   "b225"
+  ],
+  "note": "White hit strokes overlay the first ~5 frames of the red KO marker (the killing hit), so those frames are hits too.",
+  "result_frames": {
+   "tp": 158,
+   "fp": 0,
+   "fn": 3,
+   "tn": 708,
+   "excluded_uncertain": 31,
+   "precision": 1.0,
+   "recall": 0.981
+  }
+ }
+}
