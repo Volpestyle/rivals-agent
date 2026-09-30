@@ -114,3 +114,11 @@ Biggest apps today: policy bc2 grids $53.02, world model v2 $42.70 (+ full-01 $5
 IDM v2 fits $25.54 (+ labelling $5.56), offline AWR $4.24. James hit his Modal GPU limit at about 13:00 CDT; new
 Modal GPU launches are paused pending his decision. Defaults from now on: 1 seed for exploration, 3 seeds only to adopt a
 bundle, PC 4080 or Mac first, and no world-model training without a stated cost and a result that justifies it.
+
+## 2026-09-30 still-start retrain (policy, 1 seed)
+
+| Experiment | Cost | Answer | Lesson lives in |
+|---|---:|---|---|
+| Still-start take + static_aug, Modal H100 app ap-Ieh24THky7rxDjsUrgRPSq | $2.01522618 (actual app line) | DISCARD: 3/4 keep checks fail (val yaw 0.834 vs ≤ 0.766; F1 0.318; live hold 0.171); incumbent bc2-mix399-s0 retained | `D:/rivals-policy/runs/still-start-193113-s0/README.md`; VUH-1346 |
+
+Month to date after this run: **$284.13773359**; remaining under the $500 budget: **$215.86**.
