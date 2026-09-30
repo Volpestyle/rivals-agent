@@ -43,3 +43,22 @@ def train(run: str, args: list[str]):
 def main(run: str, steps: int = 600, minutes: int = 60, extra: str = ""):
     fn = train.with_options(timeout=minutes * 60)
     fn.remote(run, ["--steps", str(steps), "--max-minutes", str(minutes - 20), *extra.split()])
+
+
+@app.function(image=image, gpu="H100", cpu=12, memory=110000, timeout=60 * 60,
+              volumes={"/src": src.read_only(), "/out": out})
+def imagine(run: str, args: list[str]):
+    """Phase C: rl.world_model.imagine_rl on world models already in the output volume."""
+    import sys
+    sys.path.insert(0, "/root")
+    from rl.world_model import imagine_rl
+    imagine_rl.main(["--steps-root", "/src/steps", "--cache-root", "/src/caches",
+                     "--labels", "/root/rl/labels/range_rewards_20260930.json",
+                     "--denylist", "/root/sealed-denylist.v2.json", "--out", f"/out/{run}", *args], commit=out.commit)
+    out.commit()
+
+
+@app.local_entrypoint()
+def rl(run: str, minutes: int = 120, extra: str = ""):
+    """modal run --detach rl/world_model/modal_v2.py::rl --run irl-01 --extra "--wm /out/v2-main/model.pt ..." """
+    imagine.with_options(timeout=minutes * 60).remote(run, extra.split())

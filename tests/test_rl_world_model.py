@@ -148,3 +148,14 @@ def test_v3_smoke_with_expert_shard(tmp_path):
     log = [json.loads(line) for line in (tmp_path / "out" / "log.jsonl").read_text().splitlines()]
     data = next(r for r in log if r["event"] == "data")
     assert data["expert"]["shards"] == 1 and data["expert"]["sources"] == ["james", "reqmr"]
+
+
+def test_imagination_rl_smoke(tmp_path):
+    pytest.importorskip("numpy")
+    pytest.importorskip("torch")
+    from rl.world_model import imagine_rl
+    res = imagine_rl.main(["--synthetic", "--out", str(tmp_path), "--ctx", "4", "--bc-steps", "2", "--rl-iters", "1",
+                           "--starts", "2", "--k", "2", "--horizon", "2", "--eval-n", "2", "--eval-horizon", "2",
+                           "--sample-steps", "1"])
+    assert set(res) == {"bc", "rl"}
+    assert {"real", "logged_A", "logged_B", "policy_A", "policy_B"} <= set(res["rl"])
