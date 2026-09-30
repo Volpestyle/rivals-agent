@@ -1,12 +1,44 @@
 # Inverse dynamics — inferring inputs from frames (VUH-1353)
 
-**Status (2026-09-29): PARKED.** New IDM refits and reader work are parked ([decision](../research/policy-next-bet-scripted-baseline-20260928.md)); full03 stays frozen; results in [idm-expanded-full03-result-20260928](../evidence/idm-expanded-full03-result-20260928/) and [idm-match-refit-mac-result-20260928](../evidence/idm-match-refit-mac-result-20260928/).
+**Status (2026-09-30): ACTIVE, lean mode.** Unparked by the lead: v0 (full03) demo, VOD-domain test, IDM v2, then expert-footage labels. Current results are in "2026-09-30 restart" below; the 2026-09-29 PARKED decision is history ([decision](../research/policy-next-bet-scripted-baseline-20260928.md)).
 
-Lane owner and single writer: `scoreboard-fix` (2026-09-23). This file holds design and measured facts. Status and
+Lane owner and single writer: `idm` (2026-09-30; previously `scoreboard-fix`, then idm-owner). This file holds design and measured facts. Status and
 acceptance go on VUH-1353. Nothing here sends input to the game.
 
 The design was reviewed by `fit-review` (`review-idm-design.md`, 2026-09-23): approve with required changes F1–F11,
 all adopted by the lead. Each change is folded in below and tagged with its finding.
+
+## 2026-09-30 restart (idm, lean mode)
+
+Tools: `policy/idm/vod.py` runs a checkpoint over any video (original or re-encode) by streaming ffmpeg through the
+frame-store pixel graph (`decode.GRAPH`) and matching target rows to frames **by pts**, so a 120 fps original (window
+step 2 frames) and a 60 fps VOD (step 1) share one path; it also scores camera MAE (moving = |truth| >= 0.5 deg per
+60 Hz interval) and press F1 (runs above threshold collapse to their argmax, greedy one-to-one within +-2 intervals).
+`policy/idm/demo_overlay.py` renders truth vs prediction. The PC and the Mac give identical -11 numbers.
+Note: OBS mkv originals have no seek index, so input `-ss` does not seek; decoding a span starts from the file start.
+
+**Demo A** (full03 unchanged, held-out live match -11, 160-220 s; James's footage): MP4/GIF/still under
+`D:/rivals-agent-evidence/idm-v0-demo-20260930/` on the PC. Clip moving-yaw MAE 0.63 deg vs 2.00 zero-motion, 98 %
+yaw sign agreement. The IDM row shows press onsets only; full03 has no hold head.
+
+**VOD-domain test.** x264 high, `fps=60`, 1080p60 at 7 Mbps and 720p60 at 4.5 Mbps (typical YouTube/Twitch delivery),
+timestamps kept on the original timeline. Whole held-out sessions, all usable rows, full03, Mac MPS. Scores:
+`D:/rivals-agent-evidence/idm-vod-domain-20260930/vod-scores.json`.
+
+| Session | Video | Yaw moving MAE | Yaw still | Pitch moving | Pitch corr | F1 combo / jump / cluster |
+|---|---|---:|---:|---:|---:|---|
+| -11 (18,216 rows) | original 1440p120 | 0.631 | 0.184 | 0.783 | 0.61 | 0.56 / 0.48 / 0.44 |
+| -11 | 1080p60 7 Mbps | 0.650 | 0.192 | 0.805 | 0.59 | 0.53 / 0.44 / 0.46 |
+| -11 | 720p60 4.5 Mbps | 0.652 | 0.195 | 0.807 | 0.58 | 0.54 / 0.45 / 0.46 |
+| -12 (24,364 rows) | original | 0.669 | 0.189 | 0.750 | 0.58 | 0.43 / 0.51 / 0.51 |
+| -12 | 1080p60 | 0.692 | 0.196 | 0.760 | 0.57 | 0.45 / 0.49 / 0.49 |
+| -12 | 720p60 | 0.689 | 0.198 | 0.760 | 0.57 | 0.45 / 0.50 / 0.48 |
+
+Zero-motion moving MAE is 2.13 / 1.17 (-11) and 2.19 / 1.12 (-12) for yaw / pitch. Re-encoding costs about 3 % on
+moving yaw, 1-3 % on moving pitch, and moves press F1 by at most 0.04 either way (small counts: 22-170 onsets per
+action). **Compression, 60 fps and 1080p/720p scaling are not the blocker for labelling streamer VODs.** What this
+test does not cover: 30 fps VODs (the 60 Hz window needs a retrained model), the expert's FOV (camera degrees scale
+with it), HUD scale/layout and overlays over the HUD crop, other heroes' and skins' pixels, and pad players.
 
 ## Why
 

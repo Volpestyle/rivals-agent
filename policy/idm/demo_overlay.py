@@ -44,11 +44,11 @@ def text(img, s, xy, scale=0.6, color=WHITE, thick=1):
     cv2.putText(img, s, xy, cv2.FONT_HERSHEY_SIMPLEX, scale, rgb(color), thick, cv2.LINE_AA)
 
 
-def thresholds(z, meta):
+def thresholds(z, meta, ckpt=None):
     """Per-action onset thresholds: full03's TRAIN-rate ones where published, else the quantile of this span's
     probabilities at the TRAIN press rate (rate matching, no truth used)."""
     from policy.idm import train
-    _, payload = train.load_checkpoint(meta["ckpt"], device="cpu")
+    _, payload = train.load_checkpoint(ckpt or meta["ckpt"], device="cpu")
     counts = payload["meta"]["train_press_counts"]
     out = {}
     for c, a in enumerate(meta["actions"]):
@@ -70,7 +70,7 @@ def decode_frames(video, ordinals, pts, size=(GW, GH), ffmpeg="ffmpeg"):
     want = set(ordinals)
     graph = (f"select='between(t\\,{(a - 0.5) / 1000:.4f}\\,{(b + 0.5) / 1000:.4f})',{cache.CONVERT},"
              f"scale={size[0]}:{size[1]}:flags=area")
-    proc = subprocess.Popen([ffmpeg, "-v", "fatal", "-nostdin", "-hwaccel", "cuda", "-ss", f"{max(0, a / 1000 - 3):.3f}",
+    proc = subprocess.Popen([ffmpeg, "-v", "fatal", "-nostdin", "-hwaccel", "auto", "-ss", f"{max(0, a / 1000 - 3):.3f}",
                              "-copyts", "-i", str(video), "-map", "0:v:0", "-vf", graph, "-fps_mode", "passthrough",
                              "-an", "-pix_fmt", "rgb24", "-f", "rawvideo", "-"], stdout=subprocess.PIPE)
     n = size[0] * size[1] * 3
@@ -127,10 +127,11 @@ def key(img, xy, wh, label, fill, flash, supported=True):
     text(img, label, (x + (w - tw) // 2, y + h // 2 + 6), 0.55, WHITE if supported else GREY)
 
 
-def render(pred, video, out, *, start, end, pts_table=None, title="", truth=True, ffmpeg="ffmpeg", gif=None):
+def render(pred, video, out, *, start, end, pts_table=None, title="", truth=True, ffmpeg="ffmpeg", gif=None,
+           targets=None, ckpt=None):
     z = np.load(pred, allow_pickle=False)
     meta = json.loads(str(z["meta"]))
-    header, rows = vod.load_targets(meta["targets"]) if truth else (None, None)
+    header, rows = vod.load_targets(targets or meta["targets"]) if truth else (None, None)
     actions = meta["actions"]
     by_i = {r["i"]: r for r in rows} if truth else {}
     ids = [int(i) for i in z["i"]]
@@ -140,7 +141,7 @@ def render(pred, video, out, *, start, end, pts_table=None, title="", truth=True
     prob = z["prob"][order]
     cam = z["cam"][order]
     n = len(ids)
-    thr = thresholds(z, meta)
+    thr = thresholds(z, meta, ckpt)
     ci = {a: c for c, a in enumerate(actions)}
     pred_on = np.zeros((n, len(actions)), bool)
     for a, t in thr.items():
@@ -265,9 +266,11 @@ def main(argv=None):
     ap.add_argument("--gif")
     ap.add_argument("--pts", help="imported-demo.jsonl whose decoded pts table is the video's (the original)")
     ap.add_argument("--no-truth", action="store_true")
+    ap.add_argument("--targets", help="override the targets path recorded in PRED")
+    ap.add_argument("--ckpt", help="override the checkpoint path recorded in PRED")
     a = ap.parse_args(argv)
     render(a.pred, a.video, a.out, start=a.start, end=a.end, title=a.title, truth=not a.no_truth, gif=a.gif,
-           pts_table=a.pts)
+           pts_table=a.pts, targets=a.targets, ckpt=a.ckpt)
     return 0
 
 
