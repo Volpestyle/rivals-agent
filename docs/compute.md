@@ -70,7 +70,9 @@ number; before planning a PC fit, check that it fits in the card's 16 GB (round 
   **$10**, the owner sends the lead the estimate and the question it answers; the lead tracks the running total in the
   spend ledger. Use 1 seed to explore and 3 seeds to adopt a bundle. Modal parallel-GPU shares: policy 3, rl 2, idm 2
   (James's account caps concurrent GPUs). Milestone posts on Linear state their cost. Live inference and live RL
-  episodes run on the PC.
+  episodes run on the PC. **Paid runs only:** before launch, state in one line what result would make the run worth
+  keeping; afterwards, say whether it met that. No throwaway paid models. Free local work stays fast and ungated
+  (James: "don't let perfection slow progress, but don't burn cash we can avoid").
 - **Keep the Mac usable for James.** Every Mac process runs at `nice -n 10` (plus `taskpolicy -b` for background
   work), with decoders at `-threads 2` and torch/OMP at 2 threads. All lanes together stay within about 4–6 cores.
   On 2026-09-30, ten uncapped labellers and an 8-thread decode maxed the fans; slower is fine.
