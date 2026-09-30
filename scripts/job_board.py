@@ -875,6 +875,8 @@ def serve(board, port):
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self):
             path = urlsplit(self.path).path
+            if path not in ("/idm-labelling", "/api/idm-labelling"):
+                snapshot = board.snapshot()
             if path in ("/idm-labelling", "/api/idm-labelling"):
                 data, warning = board.labelling.snapshot()
                 if path == "/idm-labelling":
@@ -882,10 +884,8 @@ def serve(board, port):
                 else:
                     body, mime = json.dumps(dict(data, warning=warning)).encode(), "application/json"
             elif path == "/":
-                snapshot = board.snapshot()
                 body, mime = render(snapshot, board.evidence).encode(), "text/html; charset=utf-8"
             elif path == "/api/status":
-                snapshot = board.snapshot()
                 body, mime = json.dumps(snapshot).encode(), "application/json"
             elif path.startswith("/evidence/") and path[10:] in board.evidence:
                 body = json.dumps(board.evidence[path[10:]], indent=2).encode()
