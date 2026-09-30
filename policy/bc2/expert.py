@@ -211,6 +211,69 @@ def shard(labels, out_dir, rows_per_shard=30000):
     return paths
 
 
+def free_ram_gb():
+    """Available physical memory (Windows GlobalMemoryStatusEx; elsewhere /proc/meminfo)."""
+    import ctypes
+    import sys
+    if sys.platform != "win32":
+        for line in open("/proc/meminfo"):
+            if line.startswith("MemAvailable:"):
+                return int(line.split()[1]) / 2 ** 20
+    class Status(ctypes.Structure):
+        _fields_ = [("dwLength", ctypes.c_ulong), ("dwMemoryLoad", ctypes.c_ulong),
+                    ("ullTotalPhys", ctypes.c_ulonglong), ("ullAvailPhys", ctypes.c_ulonglong),
+                    ("ullTotalPageFile", ctypes.c_ulonglong), ("ullAvailPageFile", ctypes.c_ulonglong),
+                    ("ullTotalVirtual", ctypes.c_ulonglong), ("ullAvailVirtual", ctypes.c_ulonglong),
+                    ("ullAvailExtendedVirtual", ctypes.c_ulonglong)]
+    status = Status(dwLength=ctypes.sizeof(Status))
+    ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(status))
+    return status.ullAvailPhys / 2 ** 30
+
+
+def pipeline(labels, views_root, features_root, *, floor_gb=6., poll=60, log=print):
+    """Shared-PC supervisor: at most one views worker and one feature process; every `poll` seconds, if free RAM
+    is under floor_gb or the game is running, stop both (a stopped session simply reruns later). Returns when
+    every session has features."""
+    import subprocess
+    import sys
+    base = [sys.executable, "-m", "policy.bc2.expert"]
+    sid = lambda p: json.loads(open(p, encoding="utf-8").readline())["session_id"]
+    ids = {p: sid(p) for p in labels}
+    views_done = lambda p: (Path(views_root) / ids[p] / "views.json").exists()
+    feats_done = lambda p: (Path(features_root) / ids[p] / "meta.json").exists()
+    running = {}
+
+    def stop(reason):
+        for name, proc in running.items():
+            if proc.poll() is None:
+                proc.kill()
+                proc.wait()
+                log(f"stopped {name}: {reason}")
+        running.clear()
+
+    while not all(feats_done(p) for p in labels):
+        for name in [k for k, proc in running.items() if proc.poll() is not None]:
+            log(f"{name} exited {running.pop(name).returncode}")
+        free = free_ram_gb()
+        if game_running() or free < floor_gb:
+            stop("game running" if game_running() else f"free RAM {free:.1f} GB < {floor_gb} GB")
+            time.sleep(poll)
+            continue
+        pending_views = [p for p in labels if not views_done(p)]
+        if "views" not in running and pending_views:
+            running["views"] = subprocess.Popen(base + ["views", pending_views[0], "--out", str(views_root),
+                                                        "--jobs", "1"])
+            log(f"views {ids[pending_views[0]]} (free {free:.1f} GB)")
+        ready = [p for p in labels if views_done(p) and not feats_done(p)]
+        if "features" not in running and ready:
+            running["features"] = subprocess.Popen(base + ["features", *ready, "--views", str(views_root),
+                                                           "--out", str(features_root)])
+            log(f"features for {len(ready)} sessions (free {free:.1f} GB)")
+        time.sleep(poll)
+    stop("done")
+    log("pipeline complete")
+
+
 def game_running():
     import subprocess
     out = subprocess.run(["tasklist", "/FI", "IMAGENAME eq Marvel-Win64-Shipping.exe", "/NH"], capture_output=True,
@@ -230,7 +293,9 @@ def _views_job(args):
 
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("stage", choices=("shard", "views", "features"))
+    p.add_argument("stage", choices=("shard", "views", "features", "pipeline"))
+    p.add_argument("--features-out", help="features root (pipeline stage)")
+    p.add_argument("--floor-gb", type=float, default=6.)
     p.add_argument("labels", nargs="+")
     p.add_argument("--out", required=True)
     p.add_argument("--views", help="views root (features stage)")
@@ -238,6 +303,9 @@ def main(argv=None):
     p.add_argument("--vision", default="D:/rivals-policy/bundles/ng-nohist-s1/vision.safetensors")
     p.add_argument("--vision-config", default="D:/rivals-policy/bundles/ng-nohist-s1/siglip2-large-config.json")
     a = p.parse_args(argv)
+    if a.stage == "pipeline":
+        pipeline(a.labels, a.out, a.features_out, floor_gb=a.floor_gb, log=lambda m: print(time.strftime("%H:%M:%S"), m, flush=True))
+        return 0
     if a.stage == "shard":
         for labels in a.labels:
             for path in shard(labels, a.out):
