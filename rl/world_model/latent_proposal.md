@@ -67,13 +67,14 @@ Phase C starts only if all three hold.
 
 ## Compute: local first
 
-| Stage | Where | Estimate |
-|---|---|---|
-| Stage the 3 caches the Mac lacks (203745, 035932, 045729; about 20 GB) from rivals-explore-chunks | Mac | ~0.5 h transfer, Modal egress only |
-| Tokenizer, ~20M params, batch 32, 60k steps | Mac MPS (nice 10, taskpolicy -b) | ~4-5 h (an estimate: first timed on a 500-step probe) |
-| Encode every frame to fp16 latents (about 450k frames, ~8 GB) | Mac MPS | ~0.5 h |
-| Latent dynamics, ~40M params, 32-frame context, batch 64, 60k steps | PC 4080, game closed, polls `Marvel-Win64-Shipping`, checkpoints every 2k steps and yields | ~2-3 h, in one or two windows |
-| Eval and video on held-out own footage | PC 4080 or Mac | ~0.5 h |
+| Stage | Question it answers | Where | Estimate |
+|---|---|---|---|
+| Stage the 3 caches the Mac lacks (203745, 035932, 045729; about 20 GB) from rivals-explore-chunks | – | Mac | ~0.5 h transfer, Modal egress only |
+| Tokenizer probe, 500 steps | How fast is the Mac really, so the estimates below can be fixed? | Mac MPS (nice 10, taskpolicy -b) | ~10 min |
+| Tokenizer, ~20M params, batch 32, 60k steps | Can a compact latent keep the scene and the KO/hit cues? (the tokenizer keep line below) | Mac MPS | ~4-5 h |
+| Encode every frame to fp16 latents (about 450k frames, ~8 GB) | – | Mac MPS | ~0.5 h |
+| Latent dynamics, ~40M params, 32-frame context, batch 64, 60k steps | Does a 3.2 s latent context hold the scene at 2-3 s? (the dynamics keep line below) | PC 4080, game closed, polls `Marvel-Win64-Shipping`, checkpoints every 2k steps and yields | ~2-3 h, in one or two windows |
+| Eval and video on held-out own footage | The success criteria above, against full-01 and v2/v3 | PC 4080 or Mac | ~0.5 h |
 
 That is about 5-6 h on the Mac and 3-4 h on the PC, with $0 of cloud spend.
 
