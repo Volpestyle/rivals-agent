@@ -66,8 +66,8 @@ def reencode(src, out, preset, *, ffmpeg="ffmpeg", start=None, duration=None):
 def probe_pts(video, *, ffprobe="ffprobe"):
     """Every frame's pts in ms, in presentation order (packet pts sorted; mkv's timebase is 1/1000)."""
     out = subprocess.run([ffprobe, "-v", "error", "-select_streams", "v:0", "-show_entries", "packet=pts",
-                          "-of", "csv=p=0", str(video)], check=True, capture_output=True, text=True).stdout
-    return sorted(int(x) for x in out.split() if x.strip() and x.strip() != "N/A")
+                          "-of", "json", str(video)], check=True, capture_output=True, text=True).stdout
+    return sorted(int(p["pts"]) for p in json.loads(out)["packets"] if p.get("pts") not in (None, "N/A"))
 
 
 def demo_pts(path):

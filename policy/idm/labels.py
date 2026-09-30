@@ -164,9 +164,7 @@ def _video_index(video, cache_dir):
     tb = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=time_base",
                          "-of", "csv=p=0", str(video)], check=True, capture_output=True, text=True).stdout.strip()
     num, den = (int(v) for v in tb.split("/"))
-    out = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "packet=pts",
-                          "-of", "csv=p=0", str(video)], check=True, capture_output=True, text=True).stdout
-    pts = np.sort(np.array([int(x) for x in out.split() if x.strip() and x.strip() != "N/A"], np.int64)) * num / den
+    pts = np.array(vod.probe_pts(video), np.int64) * num / den
     np.savez(cache, pts=pts, tb=np.array([num, den]))
     return pts, [num, den]
 

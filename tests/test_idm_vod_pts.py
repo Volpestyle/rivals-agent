@@ -39,3 +39,32 @@ def test_span_pts_malformed_timestamp_still_fails(monkeypatch):
         stdout='{"packets": [{"pts_time": "broken"}]}'))
     with pytest.raises(ValueError):
         vod.span_pts("vod.mp4", 1, 2)
+
+
+def test_export_index_packet_metadata_and_timebase(monkeypatch, tmp_path):
+    from policy.idm import labels
+
+    def probe(command, **kwargs):
+        entries = command[command.index("-show_entries") + 1]
+        if entries == "stream=time_base":
+            return SimpleNamespace(stdout="1/90000\n")
+        assert entries == "packet=pts"
+        assert command[command.index("-of") + 1] == "json"
+        return SimpleNamespace(stdout=json.dumps({"packets": [
+            {"pts": 90000, "side_data_list": [{"id": 224}]},
+            {"pts": 3000, "side_data_list": [{}]},
+            {"pts": 6000}, {"pts": "N/A"}, {},
+        ]}))
+
+    monkeypatch.setattr(vod.subprocess, "run", probe)
+    pts, tb = labels._video_index("vod.mp4", tmp_path)
+    assert pts.tolist() == [3000 / 90000, 6000 / 90000, 1.0]
+    assert tb == [1, 90000]
+
+    def no_reprobe(*args, **kwargs):
+        pytest.fail("the completed index should be reused")
+
+    monkeypatch.setattr(vod.subprocess, "run", no_reprobe)
+    cached, cached_tb = labels._video_index("vod.mp4", tmp_path)
+    assert cached.tolist() == pts.tolist()
+    assert cached_tb == tb
