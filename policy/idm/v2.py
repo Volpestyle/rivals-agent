@@ -375,7 +375,7 @@ def fit(a):
     pos_weight = torch.tensor(np.where(pos > 0, np.clip(neg / np.maximum(pos, 1), 1, POS_WEIGHT_MAX), 1.0),
                               dtype=torch.float32, device=device)
     counts = {act: int(pos[c]) for c, act in enumerate(ACTIONS)}
-    model = IDM2(Config(window=a.window)).to(device)
+    model = IDM2(Config(window=a.window, channels=tuple(a.channels))).to(device)
     if a.init:
         model.load_state_dict(torch.load(a.init, map_location="cpu", weights_only=False)["model"])
     say(event="model", params=sum(p.numel() for p in model.parameters()), counts=counts)
@@ -449,6 +449,7 @@ def main(argv=None):
     f.add_argument("--threshold-chunks", type=int, default=300)
     f.add_argument("--init", help="start from this v2 checkpoint's weights")
     f.add_argument("--window", type=int, default=8, help="60 Hz intervals either side")
+    f.add_argument("--channels", type=int, nargs=4, default=list(Config.channels))
     a = ap.parse_args(argv)
     fit(a)
     return 0
