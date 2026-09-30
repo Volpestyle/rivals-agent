@@ -126,6 +126,127 @@ def test_camera_exact_knots_sign_clamps_and_no_interpolation(axis, degrees):
     assert abs(pulse['estimated_deg']) <= abs(degrees)
 
 
+@pytest.mark.parametrize('axis,part', [('yaw', .04), ('pitch', .02)])
+@pytest.mark.parametrize('sign', [-1, 1])
+def test_camera_accumulates_signed_subfloor_requests_and_consumes_once(axis, part, sign):
+    camera = R.CameraPulses()
+    assert camera.pulse(axis, sign * part) is None
+    assert camera.pulse(axis, -sign * part) is None  # sign flip discards old intent
+    assert camera.residual[axis] == -sign * part
+    camera.reset()
+    for _ in range(2):
+        assert camera.pulse(axis, sign * part) is None
+    pulse = camera.pulse(axis, sign * part)
+    assert pulse['accumulated_deg'] == pytest.approx(sign * part * 3)
+    assert pulse['requested_deg'] == sign * part
+    assert pulse['estimated_deg'] == pytest.approx(sign * part * 3)
+    assert R.MIN_PULSE_S <= pulse['duration_s'] <= R.AXIS_S
+    assert math.copysign(1, pulse['stick']) == sign * (1 if axis == 'yaw' else -1)
+    assert camera.residual[axis] == 0
+    assert camera.pulse(axis, 0) is None
+
+
+@pytest.mark.parametrize('axis,part', [('yaw', .04), ('pitch', .02)])
+def test_camera_flip_never_fires_against_new_request(axis, part):
+    camera = R.CameraPulses()
+    for _ in range(2):
+        assert camera.pulse(axis, part) is None
+    assert camera.pulse(axis, -part / 10) is None
+    assert camera.residual[axis] == -part / 10
+    pulse = camera.pulse(axis, -part * 3)
+    assert pulse['estimated_deg'] < 0
+
+
+@pytest.mark.parametrize('axis', ['yaw', 'pitch'])
+@pytest.mark.parametrize('sign', [-1, 1])
+def test_camera_residual_is_bounded_to_one_floor_pulse(axis, sign):
+    camera = R.CameraPulses()
+    stick_sign = sign if axis == 'yaw' else -sign
+    floor = camera.camera.points('yaw', stick_sign)[0][1].value * R.MIN_PULSE_S
+    floor *= 1 if axis == 'yaw' else 124 / 247
+    for _ in range(100):
+        camera.pulse(axis, sign * floor / 7)
+        assert abs(camera.residual[axis]) <= floor
+
+
+def test_camera_residual_age_expires_even_in_continuous_fresh_stream():
+    camera = R.CameraPulses()
+    for stamp in (0., .06, .12, .18, .24):
+        camera.begin(stamp, stamp + .01)
+        assert camera.pulse('yaw', .001) is None
+    assert camera.residual['yaw'] == pytest.approx(.005)
+    assert camera.residual_since['yaw'] == 0.
+    camera.begin(.28, .3)  # age includes processing, not just capture interval
+    assert camera.pulse('yaw', .001) is None
+    assert camera.residual['yaw'] == .001
+    assert camera.residual_since['yaw'] == .28
+
+
+def test_camera_residual_axes_are_independent_and_caps_never_create_debt():
+    camera = R.CameraPulses()
+    camera.pulse('yaw', .04)
+    camera.pulse('pitch', -.02)
+    assert camera.residual == {'yaw': .04, 'pitch': -.02}
+    for axis, cap in [('yaw', .45), ('pitch', .2)]:
+        pulse = camera.pulse(axis, 100.)
+        assert pulse['clamped'] and abs(pulse['stick']) <= cap
+        assert pulse['duration_s'] == R.AXIS_S
+        assert camera.pulse(axis, 0) is None
+    assert camera.residual == {'yaw': 0., 'pitch': 0.}
+
+
+@pytest.mark.parametrize('stamp', [.101, 0., -.01])
+def test_camera_residual_clears_after_gap_repeat_or_regression(stamp):
+    camera = R.CameraPulses()
+    camera.begin(0.)
+    camera.pulse('yaw', .08)
+    camera.begin(stamp)
+    assert camera.pulse('yaw', .04) is None
+    assert camera.residual['yaw'] == .04
+
+
+def test_runner_accumulates_across_fresh_decisions_and_resets_on_pulse_release_and_end():
+    f = setup(latency=.01, step=decision(yaw_deg=.04, pitch_deg=.005), yaw_scale=1.)
+    f.runner.run()
+    sends = [row for row in f.log.rows if row['event'] == 'send' and row['pad']['rx']]
+    assert sends and sends[0]['tick'] == 2
+    assert all(row['tick'] % 3 == 2 for row in sends)
+    assert all(row['t'] - row['policy_frame_t'] < R.FRESH_S for row in sends)
+    assert not any(pad['ry'] for _, pad, _ in f.io.calls)  # yaw release clears pitch remainder
+    assert f.runner.camera.residual == {'yaw': 0., 'pitch': 0.}
+    assert f.io.pad == NEUTRAL
+
+
+@pytest.mark.parametrize('drop', ['stale', 'actuator'])
+def test_dropped_decision_cannot_contribute_to_later_camera_pulse(drop):
+    f = setup(latency=.01, step=decision(yaw_deg=.04, pitch_deg=0.), yaw_scale=1.)
+    original = f.policy.step
+    def step(frame, *, t):
+        output = original(frame, t=t)
+        if f.policy.calls == 2 and drop == 'stale':
+            f.io.t += .1
+        f.io.expire = f.policy.calls == 2 and drop == 'actuator'
+        return output
+    f.policy.step = step
+    f.runner.run()
+    sends = [row for row in f.log.rows if row['event'] == 'send' and row['pad']['rx']]
+    assert sends and sends[0]['tick'] == 4  # three fresh decisions AFTER the drop
+    assert f.runner.dropped == 1
+    assert f.runner.camera.residual == {'yaw': 0., 'pitch': 0.}
+
+
+def test_explicit_release_clears_both_axes_before_io_even_if_release_raises():
+    f = setup()
+    f.runner.camera.pulse('yaw', .04)
+    f.runner.camera.pulse('pitch', .02)
+    def fail():
+        assert f.runner.camera.residual == {'yaw': 0., 'pitch': 0.}
+        raise OSError('release')
+    f.io.release = fail
+    with pytest.raises(OSError, match='release'):
+        f.runner.release()
+
+
 @pytest.mark.parametrize('bad', [float('nan'),float('inf'),None,True,'2'])
 def test_invalid_camera_degrees_refuse_before_any_input(bad):
     f = setup(step=decision(yaw_deg=bad))

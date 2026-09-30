@@ -22,6 +22,7 @@ from .pad_bindings import ALIASES, BINDINGS, combat_controls
 STEP_S = 1 / 30
 AXIS_S = STEP_S / 2
 MIN_PULSE_S = .005
+RESIDUAL_MAX_S = .3
 ACTION_LEASE_S = .1
 MASKED = frozenset({'ultimate', 'team_up', 'team_up_b', 'goh_targeting',
                     'environmental_interaction', 'simple_swing'})
@@ -56,10 +57,32 @@ class CameraPulses:
     """No off-knot interpolation or focal/latency assumptions; axes run separately."""
     def __init__(self):
         self.camera = load_camera_map('alt-247-124')
+        self.reset()
+
+    def reset(self):
+        self.residual = {'yaw': 0., 'pitch': 0.}
+        self.residual_since = {'yaw': None, 'pitch': None}
+        self.last_stamp = None
+
+    def begin(self, stamp, now=None):
+        # Quantization error survives only a continuous stream of fresh decisions.
+        if self.last_stamp is not None and not 0 < stamp - self.last_stamp <= FRESH_S:
+            self.reset()
+        self.last_stamp = stamp
+        for axis, since in self.residual_since.items():
+            if since is not None and (stamp if now is None else now) - since >= RESIDUAL_MAX_S:
+                self.residual[axis], self.residual_since[axis] = 0., None
 
     def pulse(self, axis, degrees):
+        if axis not in self.residual:
+            raise ValueError('unknown camera axis')
         if type(degrees) not in (int, float) or not math.isfinite(degrees):
             raise ValueError('finite numeric camera degrees required')
+        requested = degrees
+        if degrees * self.residual[axis] < 0:
+            self.residual[axis], self.residual_since[axis] = 0., None
+        degrees += self.residual[axis]
+        self.residual[axis] = 0.
         if degrees == 0:
             return None
         sign = math.copysign(1., degrees if axis == 'yaw' else -degrees)
@@ -72,9 +95,14 @@ class CameraPulses:
         stick, rate = next(((s, r) for s, r in points if r * AXIS_S >= wanted), points[-1])
         duration = min(AXIS_S, wanted / rate)
         if duration < MIN_PULSE_S:
-            return None  # no unbounded tiny-pulse accumulation or extrapolation
+            self.residual[axis] = math.copysign(min(wanted, points[0][1] * MIN_PULSE_S), degrees)
+            if self.residual_since[axis] is None:
+                self.residual_since[axis] = self.last_stamp
+            return None
+        self.residual_since[axis] = None
         return {'axis': axis, 'stick': sign * stick, 'duration_s': duration,
-                'requested_deg': degrees, 'estimated_deg': math.copysign(rate * duration, degrees),
+                'requested_deg': requested, 'accumulated_deg': degrees,
+                'estimated_deg': math.copysign(rate * duration, degrees),
                 'approximate': axis == 'pitch', 'clamped': wanted > rate * AXIS_S}
 
     def metadata(self):
@@ -82,6 +110,8 @@ class CameraPulses:
                 'yaw': 'signed measured knots only; max |rx|=.45',
                 'pitch': 'UNMEASURED rate approximation: signed yaw rate * 124/247; max |ry|=.2; down is negative ry',
                 'axis_max_s': AXIS_S, 'min_pulse_s': MIN_PULSE_S,
+                'residual': 'signed sub-floor degrees; max one floor pulse; reset on sign flip/release/drop/end or decision gap >100 ms; capped excess discarded',
+                'residual_max_s': RESIDUAL_MAX_S,
                 'action_lease_s': ACTION_LEASE_S, 'frame_age_s': FRESH_S,
                 'note': 'Experimental feedforward, not whole-map acceptance or measured rotation/latency.'}
 
@@ -183,6 +213,10 @@ class LearnedRunner:
             raise RangeLost('deadline')
         return now
 
+    def release(self):
+        self.camera.reset()
+        self.io.release()
+
     def observe(self):
         self.now()
         obs = self.io.next()
@@ -215,7 +249,7 @@ class LearnedRunner:
         elif stamp == self.last_t:
             clause = 'repeated_frame'
         if clause:
-            self.io.release()
+            self.release()
             fatal = clause in {'invalid_frame_timestamp', 'future_frame_timestamp',
                                'frame_timestamp_regressed', 'capture_stalled'}
             self.write({'event': 'observation_refusal' if fatal else 'observation_discard',
@@ -269,7 +303,7 @@ class LearnedRunner:
     def run(self):
         reason = 'exception'
         try:
-            self.io.release()
+            self.release()
             self.policy.reset()
             if self.threaded:
                 self.worker = LatestPolicy(self.policy, self.io.now, hz=self.decision_hz)
@@ -279,24 +313,28 @@ class LearnedRunner:
                 if type(step.yaw_deg) not in (int, float) or not math.isfinite(step.yaw_deg):
                     raise ValueError('finite numeric camera degrees required')
                 scaled_yaw = step.yaw_deg * self.yaw_scale
-                pulses = [p for axis, degrees in (('yaw', scaled_yaw), ('pitch', step.pitch_deg))
-                          if (p := self.camera.pulse(axis, degrees)) is not None]
+                if type(step.pitch_deg) not in (int, float) or not math.isfinite(step.pitch_deg):
+                    raise ValueError('finite numeric camera degrees required')
                 row = {'event': 'decision', 't': stamp, 'tick': self.ticks, 'size': list(self.size),
                        'inference_s': finished - started, 'age_s': self.now() - stamp,
                        'policy_latency_ms': getattr(step, 'latency_ms', None), 'queue_wait_s': started - stamp,
                        'held': step.held, 'press': step.press, 'release': step.release,
                        'active': active, 'masked': masked, 'yaw_deg': step.yaw_deg,
                        'yaw_scale': self.yaw_scale, 'scaled_yaw_deg': scaled_yaw,
-                       'pitch_deg': step.pitch_deg, 'pulses': pulses,
+                       'pitch_deg': step.pitch_deg, 'pulses': [],
                        **(timing[0] if timing else {})}
                 self.ticks += 1
                 if not self.guard(frame):
                     raise RangeLost('range_or_scope_lost_after_inference')
                 if self.now() - stamp > FRESH_S:
-                    self.io.release()
+                    self.release()
                     self.dropped += 1
                     self.write({**row, 'disposition': 'stale_after_inference'}, frame)
                     continue
+                self.camera.begin(stamp, self.now())
+                pulses = [p for axis, degrees in (('yaw', scaled_yaw), ('pitch', step.pitch_deg))
+                          if (p := self.camera.pulse(axis, degrees)) is not None]
+                row.update(pulses=pulses, residual_deg=dict(self.camera.residual))
                 self.write({**row, 'disposition': 'ready'}, frame)
                 try:
                     for pulse in pulses:
@@ -318,14 +356,14 @@ class LearnedRunner:
                                     raise InputExpired('no fresh observation during camera pulse')
                                 proof_frame, proof_stamp = obs
                                 self.write({'event': 'guard', 't': proof_stamp, 'tick': self.ticks - 1}, proof_frame)
-                        self.io.release()  # never extend a camera pulse through inference
+                        self.release()  # never extend a camera pulse through inference
                     sent = self.now()
                     end = min(sent + ACTION_LEASE_S, self.deadline)
                     self.send(pad, stamp, end)  # right stick neutral; holds may span the next inference
                     self.write({'event': 'send', 't': sent, 'tick': self.ticks - 1,
                                 'policy_frame_t': stamp, 'pad': pad, 'release_at': end})
                 except InputExpired as e:
-                    self.io.release()
+                    self.release()
                     self.dropped += 1
                     self.write({'event': 'discard', 't': self.io.now(), 'tick': self.ticks - 1,
                                 'clause': 'policy_frame_expired_before_input', 'detail': str(e)})
@@ -335,7 +373,7 @@ class LearnedRunner:
             reason = f'exception:{type(e).__name__}:{e}'
             raise
         finally:
-            self.io.release()
+            self.release()
             self.write({'event': 'stop', 't': self.io.now(), 'clause': reason}, self.last_frame)
         return {'result': reason, 'ticks': self.ticks, 'sends': self.sends, 'dropped_decisions': self.dropped,
                 'camera': self.camera.metadata(), 'native_size': self.size}
