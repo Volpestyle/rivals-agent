@@ -185,3 +185,53 @@ calibration constant with acceleration on; actions are pooled over three 30 Hz s
 Next, in order: longer context (4 frames is 0.4 s); a bigger model and more steps (loss still falling); the newer
 admitted sessions; training on its own rollouts so errors do not compound; reward and termination heads on the §1
 labels; then BC-policy rollouts in imagination with the KL anchor, checked against real footage.
+
+## 6. Offline AWR step 0 on bc2 (2026-09-30, EXPLORATORY)
+
+**Result: the pipeline works and the shift points the right way, but it is tiny.** Advantage weighting raises the
+held-out likelihood of James's high-advantage steps relative to his low-advantage ones, on dev and on val, for both
+betas; the controls do not. BC metrics do not collapse. Effect size is ~0.01-0.04 nats with a rank correlation of
+~0.014 and no confidence interval yet, so this is a working step 0, not a better policy.
+
+Setup (`rl/awr.py`, `rl/awr_modal.py`, commit `3cb83f3`; run `step0-01` on one H100, ~17 min):
+- Base: policy's `bc2-dt-s1-hybrid` camera model, run `d-dt-bs8-s1` (sha256 `728dadbe…`, checked against the bundle).
+  Same train/dev/val split as `policy/bc2/cloud.py`; nothing selected on val (212646).
+- Rewards from the §1 labels: KO +10, hit +1, fall -10; 99.4% of events land on an eligible step. Returns use a 2 s
+  half-life inside each run.
+- Value head: an MLP on the frozen bc2 LSTM state, cross-fitted over 4 session folds. Out-of-fold R² 0.39 on train,
+  0.46 on dev, 0.47 on val; advantage std 2.8. The smoke run showed why cross-fitting is needed: a head fitted on its
+  own sessions reached R² 0.999 and left advantages as noise.
+- Fine-tune: 6 epochs from bc2, lr 1e-4, weights `exp(A/beta)` clipped at 20 with mean 1, plus KL 1.0 to the frozen
+  bc2 outputs.
+- Arms: awr (beta = 1 std of A), awr-hot (0.5 std), uniform (weights 1, same KL: fine-tuning alone), shuffled (awr
+  weights permuted within each session: same distribution, no signal).
+
+| Arm | val: high-minus-low A, Δ log-lik | val Spearman(A, Δ) | dev: high-minus-low | val press macro F1 | val yaw MAE (median / mean decode) | val onset sign (mean decode) |
+|---|---|---|---|---|---|---|
+| bc2 (base) | 0 | – | 0 | 0.267 | 0.845 / 0.833 | 0.763 |
+| awr | **+0.011** | +0.014 | **+0.030** | 0.279 | 0.846 / 0.829 | 0.764 |
+| awr-hot | **+0.012** | +0.013 | **+0.043** | 0.273 | 0.841 / 0.827 | 0.753 |
+| uniform | -0.005 | +0.003 | +0.006 | 0.275 | 0.838 / 0.818 | 0.772 |
+| shuffled | +0.002 | +0.005 | +0.002 | 0.280 | 0.838 / 0.821 | 0.768 |
+
+"High-minus-low A" is the change in log-likelihood (arm minus bc2) of James's actual held, press and camera targets,
+averaged over the top advantage quintile minus the bottom one. The quintile means are not monotonic.
+
+Action-level shift (val, mean predicted press probability versus bc2): awr raises jump (+4%), web swing (+3%) and
+Spider-Power (+3%), and lowers Web-Cluster (-5%) and Amazing Combo (-4%). The controls also lower Web-Cluster and
+Amazing Combo (uniform -5% and -3%; shuffled -13% on Amazing Combo), so only the mobility rise (jump, swing) is
+specific to the advantage weighting.
+
+Why the effect is small: one expert's advantages mostly measure the situation (a bot in reach), not a choice between
+his own better and worse actions; the value head explains under half of the return. There is also no exploration
+offline, so AWR can only re-weight what James already did.
+
+Limits and next steps:
+1. **Uncertainty:** block bootstrap over runs, and 3 seeds. Neither is done yet.
+2. **The live hybrid bundle takes its buttons from the incumbent NitroGen head, not bc2.** A button shift here only
+   reaches play if policy adopts the Policy2 buttons, or if AWR is applied to the buttons head. Policy has a stronger
+   base coming (hidden 1024, val yaw ~0.81, press F1 0.29-0.31); rerun on it.
+3. **The real test is online:** KOs/min against bc2 in the range, collecting on-policy data with the same readers
+   (§2, §3). Offline AWR is the initialisation for that, not the product.
+
+Cost: about $1.5 on Modal (smoke plus step0-01, ~20 H100-minutes). No containers left running.
