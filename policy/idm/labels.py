@@ -127,6 +127,7 @@ def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0):
     rows = []
     step_s = STEP_NS / 1e9
     base_ns = int(round(float(t[0]) * 1e9))
+    prev = None                                                    # (grid step, held_end) of the last row written
     for k in range(int((t[-1] - t[0]) / step_s)):
         anchor_ns = base_ns + k * STEP_NS                          # the nominal 30 Hz grid (steps.check_sequence)
         anchor = anchor_ns / 1e9
@@ -156,6 +157,9 @@ def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0):
             for name in HELD_ACTIONS:
                 c = actions.index(name)
                 hs[c], he[c] = int(held[a, c] >= 0.5), int(held[js[-1], c] >= 0.5)
+            if prev is not None and prev[0] == k - 1:              # holds continue across consecutive steps
+                hs = list(prev[1])
+            prev = (k, he)
         std = (None if np.isnan(ystd[js]).any() else
                [round(float(np.sqrt((ystd[js] ** 2).sum())), 4), round(float(np.sqrt((pstd[js] ** 2).sum())), 4)])
         rows.append({

@@ -168,7 +168,7 @@ def render(pred, video, out, *, start, end, pts_table=None, title="", truth=True
     py, pp = cam[:, 0], cam[:, 1]
 
     enc = subprocess.Popen([ffmpeg, "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", f"{W}x{H}",
-                            "-r", "60", "-i", "-", "-c:v", "libx264", "-preset", "medium", "-crf", "20",
+                            "-r", "60", "-i", "-", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
                             "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(out)], stdin=subprocess.PIPE)
     last_t = np.full(len(actions), -99)
     last_p = np.full(len(actions), -99)
