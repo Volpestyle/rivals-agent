@@ -160,15 +160,18 @@ class ExploringPolicy:
         yaw, pitch = step.yaw_deg, step.pitch_deg
         if self.cam_temperature > 0 and self._cams is not None:
             c = vocab.CAMERA_CLASSES
-            cy = sample_class(self._cams[:c], self.cam_temperature, self.rng.random())
-            cp = sample_class(self._cams[c:2 * c], self.cam_temperature, self.rng.random())
+            # LivePolicy's bc2 path returns [2, C] (one row per axis); a flat [2C] list is split the same way
+            # LivePolicy.step does.
+            yaw_p, pitch_p = self._cams if len(self._cams) == 2 else (self._cams[:c], self._cams[c:2 * c])
+            cy = sample_class(yaw_p, self.cam_temperature, self.rng.random())
+            cp = sample_class(pitch_p, self.cam_temperature, self.rng.random())
             yaw, pitch = vocab.class_degrees(cy), vocab.class_degrees(cp)
         if turn is not None:
             yaw = turn
+        if not (math.isfinite(float(yaw)) and math.isfinite(float(pitch))):
+            yaw, pitch = step.yaw_deg, step.pitch_deg          # never clamp a NaN into a full-range request
         yaw = max(-vocab.CLAMP_DEG, min(vocab.CLAMP_DEG, float(yaw)))
         pitch = max(-vocab.CLAMP_DEG, min(vocab.CLAMP_DEG, float(pitch)))
-        if not (math.isfinite(yaw) and math.isfinite(pitch)):
-            yaw, pitch = step.yaw_deg, step.pitch_deg
         named = lambda bits: {n: bool(b) for n, b in zip(names, bits)}
         explored = type(step)(**{**step.as_dict(), "held": named(held), "press": named(press),
                                  "release": named(release), "yaw_deg": yaw, "pitch_deg": pitch,

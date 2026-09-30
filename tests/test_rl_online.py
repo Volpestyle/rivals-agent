@@ -267,3 +267,33 @@ def test_no_outline_means_no_turn_and_zero_settings_leave_the_step_alone():
     plain.reset()
     s = plain.step(None, t=0.)
     assert s.yaw_deg == .1 and s.held["move_forward"]
+
+
+class CamBase(FakeBase):
+    """FakeBase whose step goes through _bc2_predict, returning camera probs shaped [2, C] like LivePolicy's bc2 path."""
+    def __init__(self, probs, cam_rows):
+        super().__init__(probs)
+        self.cam_rows = cam_rows
+
+    def _bc2_predict(self, frame, t=None):
+        return [], self.cam_rows
+
+    def step(self, frame, t=None):
+        _, cams = self._bc2_predict(frame, t)
+        s = super().step(frame, t)
+        assert len(cams) == 2
+        return s
+
+
+def test_camera_sampling_on_the_real_two_row_shape():
+    from policy.range_bc import vocab
+    yaw = [0.] * vocab.CAMERA_CLASSES
+    pitch = [0.] * vocab.CAMERA_CLASSES
+    yaw[vocab.ZERO_CLASS + 5], pitch[vocab.ZERO_CLASS - 2] = 1., 1.
+    base = CamBase(.01, [yaw, pitch])
+    base.reset()
+    pol = explore.ExploringPolicy(base, cam_temperature=1., seed=0)
+    pol.reset()
+    s = pol.step(None, t=0.)
+    assert s.yaw_deg == vocab.class_degrees(vocab.ZERO_CLASS + 5) and s.pitch_deg == vocab.class_degrees(vocab.ZERO_CLASS - 2)
+    assert math.isfinite(s.yaw_deg_s) and abs(s.yaw_deg) <= vocab.CLAMP_DEG
