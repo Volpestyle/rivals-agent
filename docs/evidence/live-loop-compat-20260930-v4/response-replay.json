@@ -1,0 +1,1232 @@
+{
+  "assumptions": {
+    "fine_pitch_responses": [
+      2.75,
+      6.25,
+      6.75,
+      5.0,
+      4.0,
+      4.75,
+      4.0,
+      4.75,
+      4.5,
+      5.0,
+      6.0,
+      5.25,
+      3.5,
+      5.25,
+      3.0,
+      5.0,
+      5.5,
+      5.75,
+      4.25,
+      4.0,
+      4.5,
+      4.25,
+      4.0,
+      4.5,
+      5.0
+    ],
+    "response_delay_s": 0.20420910004759207,
+    "recorded_cycle_overhead_s": 0.35283350001554936,
+    "alias_overhead_fraction": 0.5,
+    "coarse_threshold_px_1280": 39.0,
+    "coarse_gain_unmeasured": true,
+    "freshness_and_tracking_not_simulated_here": true
+  },
+  "baseline_v3": {
+    "sides": [
+      {
+        "target": 2,
+        "initial_error": [
+          -30.5,
+          -163.25
+        ],
+        "pulses": [
+          {
+            "axis": 0,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 20.25,
+            "before": [
+              -30.5,
+              -163.25
+            ],
+            "after": [
+              -10.25,
+              -163.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 2.75,
+            "before": [
+              -10.25,
+              -163.25
+            ],
+            "after": [
+              -10.25,
+              -160.5
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 6.25,
+            "before": [
+              -10.25,
+              -160.5
+            ],
+            "after": [
+              -10.25,
+              -154.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 6.75,
+            "before": [
+              -10.25,
+              -154.25
+            ],
+            "after": [
+              -10.25,
+              -147.5
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 5.0,
+            "before": [
+              -10.25,
+              -147.5
+            ],
+            "after": [
+              -10.25,
+              -142.5
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 4.0,
+            "before": [
+              -10.25,
+              -142.5
+            ],
+            "after": [
+              -10.25,
+              -138.5
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 4.75,
+            "before": [
+              -10.25,
+              -138.5
+            ],
+            "after": [
+              -10.25,
+              -133.75
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 4.0,
+            "before": [
+              -10.25,
+              -133.75
+            ],
+            "after": [
+              -10.25,
+              -129.75
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 4.75,
+            "before": [
+              -10.25,
+              -129.75
+            ],
+            "after": [
+              -10.25,
+              -125.0
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 4.5,
+            "before": [
+              -10.25,
+              -125.0
+            ],
+            "after": [
+              -10.25,
+              -120.5
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 5.0,
+            "before": [
+              -10.25,
+              -120.5
+            ],
+            "after": [
+              -10.25,
+              -115.5
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 6.0,
+            "before": [
+              -10.25,
+              -115.5
+            ],
+            "after": [
+              -10.25,
+              -109.5
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 5.25,
+            "before": [
+              -10.25,
+              -109.5
+            ],
+            "after": [
+              -10.25,
+              -104.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 3.5,
+            "before": [
+              -10.25,
+              -104.25
+            ],
+            "after": [
+              -10.25,
+              -100.75
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 5.25,
+            "before": [
+              -10.25,
+              -100.75
+            ],
+            "after": [
+              -10.25,
+              -95.5
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 3.0,
+            "before": [
+              -10.25,
+              -95.5
+            ],
+            "after": [
+              -10.25,
+              -92.5
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 5.0,
+            "before": [
+              -10.25,
+              -92.5
+            ],
+            "after": [
+              -10.25,
+              -87.5
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 5.5,
+            "before": [
+              -10.25,
+              -87.5
+            ],
+            "after": [
+              -10.25,
+              -82.0
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 5.75,
+            "before": [
+              -10.25,
+              -82.0
+            ],
+            "after": [
+              -10.25,
+              -76.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 4.25,
+            "before": [
+              -10.25,
+              -76.25
+            ],
+            "after": [
+              -10.25,
+              -72.0
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 4.0,
+            "before": [
+              -10.25,
+              -72.0
+            ],
+            "after": [
+              -10.25,
+              -68.0
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 4.5,
+            "before": [
+              -10.25,
+              -68.0
+            ],
+            "after": [
+              -10.25,
+              -63.5
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 4.25,
+            "before": [
+              -10.25,
+              -63.5
+            ],
+            "after": [
+              -10.25,
+              -59.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 4.0,
+            "before": [
+              -10.25,
+              -59.25
+            ],
+            "after": [
+              -10.25,
+              -55.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 4.5,
+            "before": [
+              -10.25,
+              -55.25
+            ],
+            "after": [
+              -10.25,
+              -50.75
+            ]
+          }
+        ],
+        "stop": "insufficient_response_budget",
+        "pulse_count": 25,
+        "elapsed_s": 13.926065001578536,
+        "reserved_input_s": 1.2500000000000004,
+        "final_error": [
+          -10.25,
+          -50.75
+        ]
+      }
+    ],
+    "pulse_count": 25,
+    "reserved_input_s": 1.2500000000000004,
+    "elapsed_s": 13.926065001578536,
+    "passed": false
+  },
+  "v4_coarse_ratio_4": {
+    "sides": [
+      {
+        "target": 2,
+        "initial_error": [
+          -30.5,
+          -163.25
+        ],
+        "pulses": [
+          {
+            "axis": 0,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 20.25,
+            "before": [
+              -30.5,
+              -163.25
+            ],
+            "after": [
+              -10.25,
+              -163.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 11.0,
+            "before": [
+              -10.25,
+              -163.25
+            ],
+            "after": [
+              -10.25,
+              -152.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 25.0,
+            "before": [
+              -10.25,
+              -152.25
+            ],
+            "after": [
+              -10.25,
+              -127.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 27.0,
+            "before": [
+              -10.25,
+              -127.25
+            ],
+            "after": [
+              -10.25,
+              -100.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 20.0,
+            "before": [
+              -10.25,
+              -100.25
+            ],
+            "after": [
+              -10.25,
+              -80.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 16.0,
+            "before": [
+              -10.25,
+              -80.25
+            ],
+            "after": [
+              -10.25,
+              -64.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 19.0,
+            "before": [
+              -10.25,
+              -64.25
+            ],
+            "after": [
+              -10.25,
+              -45.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 16.0,
+            "before": [
+              -10.25,
+              -45.25
+            ],
+            "after": [
+              -10.25,
+              -29.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 4.75,
+            "before": [
+              -10.25,
+              -29.25
+            ],
+            "after": [
+              -10.25,
+              -24.5
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 4.5,
+            "before": [
+              -10.25,
+              -24.5
+            ],
+            "after": [
+              -10.25,
+              -20.0
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 5.0,
+            "before": [
+              -10.25,
+              -20.0
+            ],
+            "after": [
+              -10.25,
+              -15.0
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 6.0,
+            "before": [
+              -10.25,
+              -15.0
+            ],
+            "after": [
+              -10.25,
+              -9.0
+            ]
+          }
+        ],
+        "pulse_count": 12,
+        "elapsed_s": 5.037510200664401,
+        "reserved_input_s": 0.9500000000000001,
+        "final_error": [
+          -10.25,
+          -9.0
+        ]
+      },
+      {
+        "target": 1,
+        "initial_error": [
+          279.25,
+          5.0
+        ],
+        "pulses": [
+          {
+            "axis": 0,
+            "magnitude": 0.3,
+            "duration_s": 0.05,
+            "change_px_1280": 101.36619632232423,
+            "before": [
+              279.25,
+              5.0
+            ],
+            "after": [
+              177.88380367767576,
+              5.0
+            ]
+          },
+          {
+            "axis": 0,
+            "magnitude": 0.3,
+            "duration_s": 0.05,
+            "change_px_1280": 101.36619632232423,
+            "before": [
+              177.88380367767576,
+              5.0
+            ],
+            "after": [
+              76.51760735535153,
+              5.0
+            ]
+          },
+          {
+            "axis": 0,
+            "magnitude": 0.2,
+            "duration_s": 0.05,
+            "change_px_1280": 60.25800606735797,
+            "before": [
+              76.51760735535153,
+              5.0
+            ],
+            "after": [
+              16.25960128799356,
+              5.0
+            ]
+          },
+          {
+            "axis": 0,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 20.249569350263602,
+            "before": [
+              16.25960128799356,
+              5.0
+            ],
+            "after": [
+              -3.989968062270041,
+              5.0
+            ]
+          }
+        ],
+        "pulse_count": 4,
+        "elapsed_s": 1.6425034002214671,
+        "reserved_input_s": 0.20000000000000007,
+        "final_error": [
+          -3.989968062270041,
+          5.0
+        ]
+      }
+    ],
+    "pulse_count": 16,
+    "reserved_input_s": 1.1500000000000001,
+    "elapsed_s": 6.680013600885868,
+    "passed": true
+  },
+  "v4_coarse_ratio_2": {
+    "sides": [
+      {
+        "target": 2,
+        "initial_error": [
+          -30.5,
+          -163.25
+        ],
+        "pulses": [
+          {
+            "axis": 0,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 20.25,
+            "before": [
+              -30.5,
+              -163.25
+            ],
+            "after": [
+              -10.25,
+              -163.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 5.5,
+            "before": [
+              -10.25,
+              -163.25
+            ],
+            "after": [
+              -10.25,
+              -157.75
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 12.5,
+            "before": [
+              -10.25,
+              -157.75
+            ],
+            "after": [
+              -10.25,
+              -145.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 13.5,
+            "before": [
+              -10.25,
+              -145.25
+            ],
+            "after": [
+              -10.25,
+              -131.75
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 10.0,
+            "before": [
+              -10.25,
+              -131.75
+            ],
+            "after": [
+              -10.25,
+              -121.75
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 8.0,
+            "before": [
+              -10.25,
+              -121.75
+            ],
+            "after": [
+              -10.25,
+              -113.75
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 9.5,
+            "before": [
+              -10.25,
+              -113.75
+            ],
+            "after": [
+              -10.25,
+              -104.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 8.0,
+            "before": [
+              -10.25,
+              -104.25
+            ],
+            "after": [
+              -10.25,
+              -96.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 9.5,
+            "before": [
+              -10.25,
+              -96.25
+            ],
+            "after": [
+              -10.25,
+              -86.75
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 9.0,
+            "before": [
+              -10.25,
+              -86.75
+            ],
+            "after": [
+              -10.25,
+              -77.75
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 10.0,
+            "before": [
+              -10.25,
+              -77.75
+            ],
+            "after": [
+              -10.25,
+              -67.75
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 12.0,
+            "before": [
+              -10.25,
+              -67.75
+            ],
+            "after": [
+              -10.25,
+              -55.75
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 10.5,
+            "before": [
+              -10.25,
+              -55.75
+            ],
+            "after": [
+              -10.25,
+              -45.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 7.0,
+            "before": [
+              -10.25,
+              -45.25
+            ],
+            "after": [
+              -10.25,
+              -38.25
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 5.25,
+            "before": [
+              -10.25,
+              -38.25
+            ],
+            "after": [
+              -10.25,
+              -33.0
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 3.0,
+            "before": [
+              -10.25,
+              -33.0
+            ],
+            "after": [
+              -10.25,
+              -30.0
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 5.0,
+            "before": [
+              -10.25,
+              -30.0
+            ],
+            "after": [
+              -10.25,
+              -25.0
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 5.5,
+            "before": [
+              -10.25,
+              -25.0
+            ],
+            "after": [
+              -10.25,
+              -19.5
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 5.75,
+            "before": [
+              -10.25,
+              -19.5
+            ],
+            "after": [
+              -10.25,
+              -13.75
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 4.25,
+            "before": [
+              -10.25,
+              -13.75
+            ],
+            "after": [
+              -10.25,
+              -9.5
+            ]
+          }
+        ],
+        "pulse_count": 20,
+        "elapsed_s": 8.382517001107333,
+        "reserved_input_s": 1.6500000000000004,
+        "final_error": [
+          -10.25,
+          -9.5
+        ]
+      },
+      {
+        "target": 1,
+        "initial_error": [
+          279.25,
+          4.5
+        ],
+        "pulses": [
+          {
+            "axis": 0,
+            "magnitude": 0.3,
+            "duration_s": 0.05,
+            "change_px_1280": 101.36619632232423,
+            "before": [
+              279.25,
+              4.5
+            ],
+            "after": [
+              177.88380367767576,
+              4.5
+            ]
+          },
+          {
+            "axis": 0,
+            "magnitude": 0.3,
+            "duration_s": 0.05,
+            "change_px_1280": 101.36619632232423,
+            "before": [
+              177.88380367767576,
+              4.5
+            ],
+            "after": [
+              76.51760735535153,
+              4.5
+            ]
+          },
+          {
+            "axis": 0,
+            "magnitude": 0.2,
+            "duration_s": 0.05,
+            "change_px_1280": 60.25800606735797,
+            "before": [
+              76.51760735535153,
+              4.5
+            ],
+            "after": [
+              16.25960128799356,
+              4.5
+            ]
+          },
+          {
+            "axis": 0,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 20.249569350263602,
+            "before": [
+              16.25960128799356,
+              4.5
+            ],
+            "after": [
+              -3.989968062270041,
+              4.5
+            ]
+          }
+        ],
+        "pulse_count": 4,
+        "elapsed_s": 1.6425034002214662,
+        "reserved_input_s": 0.20000000000000018,
+        "final_error": [
+          -3.989968062270041,
+          4.5
+        ]
+      }
+    ],
+    "pulse_count": 24,
+    "reserved_input_s": 1.8500000000000005,
+    "elapsed_s": 10.0250204013288,
+    "passed": true
+  },
+  "v4_from_failure": {
+    "sides": [
+      {
+        "target": 2,
+        "initial_error": [
+          -7.0,
+          -45.75
+        ],
+        "pulses": [
+          {
+            "axis": 1,
+            "magnitude": 0.2,
+            "duration_s": 0.1,
+            "change_px_1280": 11.0,
+            "before": [
+              -7.0,
+              -45.75
+            ],
+            "after": [
+              -7.0,
+              -34.75
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 6.25,
+            "before": [
+              -7.0,
+              -34.75
+            ],
+            "after": [
+              -7.0,
+              -28.5
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 6.75,
+            "before": [
+              -7.0,
+              -28.5
+            ],
+            "after": [
+              -7.0,
+              -21.75
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 5.0,
+            "before": [
+              -7.0,
+              -21.75
+            ],
+            "after": [
+              -7.0,
+              -16.75
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 4.0,
+            "before": [
+              -7.0,
+              -16.75
+            ],
+            "after": [
+              -7.0,
+              -12.75
+            ]
+          },
+          {
+            "axis": 1,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 4.75,
+            "before": [
+              -7.0,
+              -12.75
+            ],
+            "after": [
+              -7.0,
+              -8.0
+            ]
+          }
+        ],
+        "pulse_count": 6,
+        "elapsed_s": 2.4537551003322005,
+        "reserved_input_s": 0.35,
+        "final_error": [
+          -7.0,
+          -8.0
+        ]
+      },
+      {
+        "target": 1,
+        "initial_error": [
+          278.0,
+          -8.0
+        ],
+        "pulses": [
+          {
+            "axis": 0,
+            "magnitude": 0.3,
+            "duration_s": 0.05,
+            "change_px_1280": 101.36619632232423,
+            "before": [
+              278.0,
+              -8.0
+            ],
+            "after": [
+              176.63380367767576,
+              -8.0
+            ]
+          },
+          {
+            "axis": 0,
+            "magnitude": 0.3,
+            "duration_s": 0.05,
+            "change_px_1280": 101.36619632232423,
+            "before": [
+              176.63380367767576,
+              -8.0
+            ],
+            "after": [
+              75.26760735535153,
+              -8.0
+            ]
+          },
+          {
+            "axis": 0,
+            "magnitude": 0.2,
+            "duration_s": 0.05,
+            "change_px_1280": 60.25800606735797,
+            "before": [
+              75.26760735535153,
+              -8.0
+            ],
+            "after": [
+              15.009601287993561,
+              -8.0
+            ]
+          },
+          {
+            "axis": 0,
+            "magnitude": 0.1,
+            "duration_s": 0.05,
+            "change_px_1280": 20.249569350263602,
+            "before": [
+              15.009601287993561,
+              -8.0
+            ],
+            "after": [
+              -5.239968062270041,
+              -8.0
+            ]
+          }
+        ],
+        "pulse_count": 4,
+        "elapsed_s": 1.6425034002214671,
+        "reserved_input_s": 0.19999999999999996,
+        "final_error": [
+          -5.239968062270041,
+          -8.0
+        ]
+      }
+    ],
+    "pulse_count": 10,
+    "reserved_input_s": 0.5499999999999999,
+    "elapsed_s": 4.096258500553668,
+    "passed": true
+  }
+}

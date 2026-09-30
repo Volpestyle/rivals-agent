@@ -53,9 +53,8 @@ def test_two_sides_converge_with_only_knots_and_neutral_between_pulses():
     assert not io.pad
     for t, pad, bound in io.calls:
         assert pad['buttons'] == () and not any(pad[k] for k in ('lx','ly','lt','rt'))
-        assert (abs(pad['rx']) in (0., .1, .2, .3) and abs(pad['ry']) in (0., .1, .2)
-                and bool(pad['rx']) != bool(pad['ry']))
-        assert bound['release_at'] - t <= (.1 if pad['ry'] else .05) + 1e-9
+        assert sorted((abs(pad['rx']),abs(pad['ry']))) == [0., .1]
+        assert bound['release_at'] - t <= .05 + 1e-9
         assert bound['scope_not_after'] == 60
     pulses = [e for e in check.events if e['event']=='pulse']
     responses = [e for e in check.events if e['event']=='response']
@@ -221,162 +220,6 @@ def test_screenshot_preflight_requires_detected_targets_outside_left_hero_zone()
     assert not module.placement([det(680,700)], (2560,1440))['pass']
 
 
-@pytest.mark.parametrize('error,axis,value,duration', [
-    ((97,0),0,.3,.05), ((96,0),0,.2,.05), ((49,0),0,.2,.05),
-    ((48,0),0,.1,.05), ((-97,0),0,-.3,.05),
-    ((0,-40),1,.2,.1), ((0,-39),1,.1,.05), ((0,40),1,-.2,.1)])
-def test_coarse_fine_commands_use_fixed_reviewed_policy(error,axis,value,duration):
-    check,_ = setup()
-    assert check.command(error) == (axis,value,duration)
-
-
-def test_coarse_pitch_reserves_actual_duration_without_raising_total_cap():
-    check,io = setup()
-    io.positions[0] = [640.,200.]
-    obs = check.observe()
-    check.used_s = 1.95
-    with pytest.raises(C.CompatStop,match='cumulative_input_limit'):
-        check.pulse(obs,obs[2][0],1,.1,15.)
-    assert not io.calls and check.used_s == 1.95
-
-
-def test_native_retention_alias_preserves_bytes_and_failure_is_explicit(tmp_path):
-    retain = C.NativeRetention(tmp_path)
-    (tmp_path/'source.png').write_bytes(b'native frame bytes')
-    retain.alias('before','source')
-    assert (tmp_path/'before.png').read_bytes() == b'native frame bytes'
-    import os
-    assert os.path.samefile(tmp_path/'before.png',tmp_path/'source.png')
-    with pytest.raises(FileNotFoundError):
-        retain.alias('bad','missing')
-
-
-@pytest.mark.parametrize('codec', ['fake', 'opencv'])
-def test_reretain_hardlinked_before_does_not_change_prior_response(tmp_path,monkeypatch,codec):
-    import os
-    import sys
-    from pathlib import Path
-    if codec=='opencv':
-        cv2=pytest.importorskip('cv2')
-        np=pytest.importorskip('numpy')
-        original=np.zeros((8,8,3),dtype=np.uint8)
-        later=np.full((8,8,3),255,dtype=np.uint8)
-    else:
-        def imwrite(path,frame):
-            Path(path).write_bytes(frame)
-            return True
-        monkeypatch.setitem(sys.modules,'cv2',SimpleNamespace(imwrite=imwrite))
-        original,later=b'original response',b'later before'
-    retain=C.NativeRetention(tmp_path)
-    retain('pulse-0-response',original)
-    response=tmp_path/'pulse-0-response.png'
-    pinned=response.read_bytes()
-    retain.alias('pulse-1-before','pulse-0-response')
-    before=tmp_path/'pulse-1-before.png'
-    assert os.path.samefile(response,before)
-    retain('pulse-1-before',later)
-    assert response.read_bytes()==pinned
-    assert not os.path.samefile(response,before)
-    assert before.read_bytes()!=pinned
-    if codec=='opencv':
-        assert np.array_equal(cv2.imread(str(before)),later)
-        assert np.array_equal(cv2.imread(str(response)),original)
-    assert not list(tmp_path.glob('.*.png'))
-
-
-@pytest.mark.parametrize('failure', ['encode_false','encode_raise','replace'])
-def test_failed_reretain_keeps_linked_evidence_and_removes_temporary(tmp_path,monkeypatch,failure):
-    import sys
-    from pathlib import Path
-    retain=C.NativeRetention(tmp_path)
-    source=tmp_path/'response.png'
-    source.write_bytes(b'original')
-    retain.alias('before','response')
-    def imwrite(path,frame):
-        Path(path).write_bytes(b'partial new frame')
-        if failure=='encode_raise':
-            raise OSError('encode')
-        return failure!='encode_false'
-    monkeypatch.setitem(sys.modules,'cv2',SimpleNamespace(imwrite=imwrite))
-    if failure=='replace':
-        monkeypatch.setattr(C.os,'replace',lambda *a: (_ for _ in ()).throw(OSError('replace')))
-    with pytest.raises(OSError):
-        retain('before',b'new')
-    assert source.read_bytes()==b'original'
-    assert (tmp_path/'before.png').read_bytes()==b'original'
-    assert not list(tmp_path.glob('.*.png'))
-
-
-def test_deadband_early_return_reuses_index_without_corrupting_response(tmp_path,monkeypatch):
-    import sys
-    from pathlib import Path
-    def imwrite(path,frame):
-        Path(path).write_bytes(repr(frame).encode())
-        return True
-    monkeypatch.setitem(sys.modules,'cv2',SimpleNamespace(imwrite=imwrite))
-    check,io=setup()
-    io.positions[0]=[625.,360.]
-    check.save=C.NativeRetention(tmp_path)
-    obs=check.observe();target=obs[2][0]
-    check.pulses=1
-    check.retain('pulse-0-response',obs)
-    response=tmp_path/'pulse-0-response.png'
-    pinned=response.read_bytes()
-    io.positions[0][0]=640.  # settles inside deadband after the retained frame
-    returned,_=check.pulse(obs,target,0,-.1,15.)
-    assert check.pulses==1 and not io.calls
-    assert (tmp_path/'pulse-1-before.png').read_bytes()==pinned
-    # A later drift returns to pulse() with index 1, retaining that same name.
-    io.positions[0][0]=600.
-    later=check.observe()
-    check.retain('pulse-1-before',later)
-    assert later[1]>returned[1]
-    assert response.read_bytes()==pinned
-    assert (tmp_path/'pulse-1-before.png').read_bytes()!=pinned
-
-
-def test_alias_only_reuses_exact_observation_then_reproves_before_input():
-    check,io = setup()
-    calls=[]
-    class Save:
-        def __call__(self,name,frame):
-            calls.append(('save',name))
-            io.advance(.15)
-        def alias(self,name,previous):
-            calls.append(('alias',name,previous))
-            io.advance(.001)
-    check.save=Save()
-    obs=check.observe();target=obs[2][0]
-    check.retain('response',obs)
-    check.pulse(obs,target,0,-.1,15.)
-    assert calls[1]==('alias','pulse-0-before','response')
-    pulse=next(e for e in check.events if e['event']=='pulse')
-    assert pulse['proof_t']>obs[1]+.15
-    other=(obs[0],obs[1]+1,obs[2])
-    check.retain('different-stamp',other)
-    assert calls[-1]==('save','different-stamp')
-
-
-def test_large_vertical_error_converges_both_sides_without_cap_increase():
-    check,io = setup(speed=100.)
-    io.positions = [[609.5,196.75],[800.,196.75]]
-    class Save:
-        def __call__(self,name,frame):
-            io.advance(.1 if name.startswith('acquire') else .15)
-        def alias(self,*args):
-            io.advance(.0002)
-    check.save = Save()
-    result = check.run()
-    assert result['result']=='passed',result['result']
-    assert result['completed_sides']==[-1,1]
-    assert io.t<15 and result['reserved_input_s']<=2 and result['pulses']<=40
-    assert any(abs(pad['ry'])==.2 and bound['release_at']-t==pytest.approx(.1)
-               for t,pad,bound in io.calls)
-    assert any(abs(pad['ry'])==.1 and bound['release_at']-t==pytest.approx(.05)
-               for t,pad,bound in io.calls)
-    assert not io.pad
-
-
 @pytest.mark.parametrize('save_s', [.09, .1, .12])
 def test_slow_retention_converges_with_full_pulses_from_fresh_proofs(save_s):
     check, io = setup()
@@ -493,7 +336,7 @@ def test_invalid_observation_contract_stops(mutation):
 def test_convergence_timeout_and_axis_whitelist():
     check, io=setup()
     obs, target=check.acquire(-1)
-    for axis,value in [(2,.1),(1,.3),(0,.45)]:
+    for axis,value in [(2,.1),(1,.2),(0,.2)]:
         with pytest.raises(C.CompatStop):
             check.pulse(obs,target,axis,value,20)
     assert not io.calls
@@ -642,8 +485,7 @@ def test_mode_with_real_live_actuator_and_synthetic_capture():
         assert result['result']=='passed', result['result']
         assert pad.neutral() and safety.status['stop_reason'] is None
         assert all(not buttons for buttons,axes in pad.reports)
-        assert all(abs(axes.get('r',(0,0))[0])<=.3 and abs(axes.get('r',(0,0))[1])<=.2
-                   for buttons,axes in pad.reports)
+        assert all(all(abs(v)<=.1 for v in axes.get('r',(0,0))) for buttons,axes in pad.reports)
     finally:
         watch.cancel();source.close();safety.close()
     assert live._dead and pad.neutral()

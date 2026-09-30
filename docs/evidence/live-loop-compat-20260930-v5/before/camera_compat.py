@@ -3,7 +3,6 @@ import argparse
 import json
 import math
 import os
-import tempfile
 import time
 import threading
 from dataclasses import asdict, dataclass
@@ -37,21 +36,14 @@ PULSE_POLICY = {"yaw_knots": [.1, .2, .3], "yaw_thresholds_px_1280": [48., 96.],
 
 
 class NativeRetention:
-    """Alias identical PNGs; replace a reused name without writing through links."""
+    """Keep native PNG names; identical observations share one immutable inode."""
     def __init__(self, out):
         self.out = out
 
     def __call__(self, name, frame):
         import cv2
-        fd, temporary = tempfile.mkstemp(prefix=f'.{name}-', suffix='.png', dir=self.out)
-        os.close(fd)
-        temporary = Path(temporary)
-        try:
-            if not cv2.imwrite(str(temporary), frame):
-                raise OSError("native frame retention failed")
-            os.replace(temporary, self.out / (name + '.png'))
-        finally:
-            temporary.unlink(missing_ok=True)
+        if not cv2.imwrite(str(self.out / (name + '.png')), frame):
+            raise OSError("native frame retention failed")
 
     def alias(self, name, previous):
         os.link(self.out / (previous + '.png'), self.out / (name + '.png'))

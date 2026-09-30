@@ -1,0 +1,250 @@
+--- before/agent/camera_compat.py
++++ agent/camera_compat.py
+@@ -2,6 +2,7 @@
+ import argparse
+ import json
+ import math
++import os
+ import time
+ import threading
+ from dataclasses import asdict, dataclass
+@@ -28,6 +29,24 @@
+ 
+ 
+ LIMITS = Limits()  # fixed review inputs, not CLI-tunable
++PULSE_POLICY = {"yaw_knots": [.1, .2, .3], "yaw_thresholds_px_1280": [48., 96.],
++                # 12 px deadband + 4 * run-02's largest fine pitch response (6.75).
++                "coarse_pitch_error_px_1280": 39., "coarse_pitch_strength": .2,
++                "coarse_pitch_s": .1, "fine_strength": .1}
++
++
++class NativeRetention:
++    """Keep native PNG names; identical observations share one immutable inode."""
++    def __init__(self, out):
++        self.out = out
++
++    def __call__(self, name, frame):
++        import cv2
++        if not cv2.imwrite(str(self.out / (name + '.png')), frame):
++            raise OSError("native frame retention failed")
++
++    def alias(self, name, previous):
++        os.link(self.out / (previous + '.png'), self.out / (name + '.png'))
+ 
+ 
+ class CompatStop(RangeLost):
+@@ -44,6 +63,7 @@
+         self.last_frame, self.last_stamp, self.stage = None, None, "before_capture"
+         self.observation = {}
+         self.stop_record = None
++        self.last_retained = None
+ 
+     def record_stop(self, reason):
+         """Called only after release; diagnostic retention cannot authorize input."""
+@@ -127,7 +147,32 @@
+ 
+     def retain(self, name, observation):
+         if self.save:
+-            self.save(name, observation[0])
++            started = self.io.now()
++            previous = self.last_retained
++            alias = getattr(self.save, "alias", None)
++            same = (previous is not None and previous[0] == observation[1]
++                    and previous[1] is observation[0] and callable(alias))
++            if same:
++                alias(name, previous[2])
++            else:
++                self.save(name, observation[0])
++            self.last_retained = (observation[1], observation[0], name)
++            self.events.append({"event": "retain", "name": name, "frame_t": observation[1],
++                                "alias_of": previous[2] if same else None,
++                                "elapsed_s": self.io.now() - started})
++
++    def command(self, errors):
++        axis = 0 if abs(errors[0]) > LIMITS.deadband_px_1280 else 1
++        magnitude, duration = .1, LIMITS.pulse_s
++        if axis == 0:
++            magnitude = .3 if abs(errors[0]) > 96 else .2 if abs(errors[0]) > 48 else .1
++        elif abs(errors[1]) > PULSE_POLICY["coarse_pitch_error_px_1280"]:
++            magnitude = PULSE_POLICY["coarse_pitch_strength"]
++            duration = PULSE_POLICY["coarse_pitch_s"]
++        value = math.copysign(magnitude, errors[axis]) * (1 if axis == 0 else -1)
++        if axis == 0:
++            value = self.admission.yaw_command(value)
++        return axis, value, duration
+ 
+     def acquire(self, sign):
+         until = min(self.deadline, self.check_time() + LIMITS.acquire_s)
+@@ -160,9 +205,9 @@
+             raise CompatStop("cumulative_input_limit")
+         if axis == 0:
+             value = self.admission.yaw_command(value)
+-        elif axis != 1 or value not in (-.1, .1):
++        elif axis != 1 or value not in (-.1, .1, -.2, .2):
+             raise CompatStop("forbidden_compat_command")
+-        if abs(value) != .1:
++        if abs(value) not in ((.1, .2, .3) if axis == 0 else (.1, .2)):
+             raise CompatStop("compat_pulse_strength_limit")
+         retained_t = obs[1]
+         self.retain(f"pulse-{self.pulses}-before", obs)
+@@ -173,20 +218,20 @@
+         errors = self.error(target)
+         if max(abs(v) for v in errors) <= LIMITS.deadband_px_1280:
+             return obs, target
+-        axis = 0 if abs(errors[0]) > LIMITS.deadband_px_1280 else 1
+-        value = math.copysign(.1, errors[axis]) * (1 if axis == 0 else -1)
+-        if axis == 0:
+-            value = self.admission.yaw_command(value)
++        axis, value, duration = self.command(errors)
++        if self.used_s + duration > LIMITS.cumulative_s + 1e-9:
++            raise CompatStop("cumulative_input_limit")
+         before = errors[axis]
+         sent_at = self.check_time()
+-        release_at = sent_at + LIMITS.pulse_s
++        release_at = sent_at + duration
+         response_until = sent_at + LIMITS.response_s
++        self.stage = "pulse_response_budget"
+         if response_until >= min(self.deadline, converge_until):
+             raise CompatStop("insufficient_response_budget")
+         if sent_at - obs[1] > LIMITS.frame_age_s:
+             raise CompatStop("stale_before_input")
+         self.pulses += 1
+-        self.used_s += LIMITS.pulse_s
++        self.used_s += duration
+         self.events.append({"event": "pulse", "t": sent_at, "axis": axis, "value": value,
+                             "release_at": release_at, "response_until": response_until, "target": target.track,
+                             "proof_t": obs[1], "retained_before_t": retained_t})
+@@ -261,7 +306,8 @@
+                 self.record_stop(reason)
+         return {"result": reason, "completed_sides": self.completed, "pulses": self.pulses,
+                 "reserved_input_s": self.used_s, "limits": asdict(LIMITS), "camera": self.admission.receipt,
+-                "events": self.events, "latency_claim": "observed pixel response only; no guaranteed latency"}
++                "events": self.events, "pulse_policy": PULSE_POLICY,
++                "latency_claim": "observed pixel response only; no guaranteed latency"}
+ 
+ 
+ class ResponseWatch:
+@@ -335,10 +381,7 @@
+     try:
+         source = L._open_live_io(safety, percept, lambda f: False, lambda f: False)
+         guard = safety.proof(percept.in_range, percept.idle, range_required=True)
+-        import cv2
+-        def save(name, frame):
+-            if not cv2.imwrite(str(a.out / (name + '.png')), frame):
+-                raise OSError("native frame retention failed")
++        save = NativeRetention(a.out)
+         watch = ResponseWatch(safety, source.t0)
+         check = CompatibilityCheck(source, percept, guard, admission, safety.deadline - source.t0, save=save, response_watch=watch)
+         result = check.run()
+--- before/tests/test_camera_compat.py
++++ tests/test_camera_compat.py
+@@ -53,8 +53,9 @@
+     assert not io.pad
+     for t, pad, bound in io.calls:
+         assert pad['buttons'] == () and not any(pad[k] for k in ('lx','ly','lt','rt'))
+-        assert sorted((abs(pad['rx']),abs(pad['ry']))) == [0., .1]
+-        assert bound['release_at'] - t <= .05 + 1e-9
++        assert (abs(pad['rx']) in (0., .1, .2, .3) and abs(pad['ry']) in (0., .1, .2)
++                and bool(pad['rx']) != bool(pad['ry']))
++        assert bound['release_at'] - t <= (.1 if pad['ry'] else .05) + 1e-9
+         assert bound['scope_not_after'] == 60
+     pulses = [e for e in check.events if e['event']=='pulse']
+     responses = [e for e in check.events if e['event']=='response']
+@@ -220,6 +221,78 @@
+     assert not module.placement([det(680,700)], (2560,1440))['pass']
+ 
+ 
++@pytest.mark.parametrize('error,axis,value,duration', [
++    ((97,0),0,.3,.05), ((96,0),0,.2,.05), ((49,0),0,.2,.05),
++    ((48,0),0,.1,.05), ((-97,0),0,-.3,.05),
++    ((0,-40),1,.2,.1), ((0,-39),1,.1,.05), ((0,40),1,-.2,.1)])
++def test_coarse_fine_commands_use_fixed_reviewed_policy(error,axis,value,duration):
++    check,_ = setup()
++    assert check.command(error) == (axis,value,duration)
++
++
++def test_coarse_pitch_reserves_actual_duration_without_raising_total_cap():
++    check,io = setup()
++    io.positions[0] = [640.,200.]
++    obs = check.observe()
++    check.used_s = 1.95
++    with pytest.raises(C.CompatStop,match='cumulative_input_limit'):
++        check.pulse(obs,obs[2][0],1,.1,15.)
++    assert not io.calls and check.used_s == 1.95
++
++
++def test_native_retention_alias_preserves_bytes_and_failure_is_explicit(tmp_path):
++    retain = C.NativeRetention(tmp_path)
++    (tmp_path/'source.png').write_bytes(b'native frame bytes')
++    retain.alias('before','source')
++    assert (tmp_path/'before.png').read_bytes() == b'native frame bytes'
++    import os
++    assert os.path.samefile(tmp_path/'before.png',tmp_path/'source.png')
++    with pytest.raises(FileNotFoundError):
++        retain.alias('bad','missing')
++
++
++def test_alias_only_reuses_exact_observation_then_reproves_before_input():
++    check,io = setup()
++    calls=[]
++    class Save:
++        def __call__(self,name,frame):
++            calls.append(('save',name))
++            io.advance(.15)
++        def alias(self,name,previous):
++            calls.append(('alias',name,previous))
++            io.advance(.001)
++    check.save=Save()
++    obs=check.observe();target=obs[2][0]
++    check.retain('response',obs)
++    check.pulse(obs,target,0,-.1,15.)
++    assert calls[1]==('alias','pulse-0-before','response')
++    pulse=next(e for e in check.events if e['event']=='pulse')
++    assert pulse['proof_t']>obs[1]+.15
++    other=(obs[0],obs[1]+1,obs[2])
++    check.retain('different-stamp',other)
++    assert calls[-1]==('save','different-stamp')
++
++
++def test_large_vertical_error_converges_both_sides_without_cap_increase():
++    check,io = setup(speed=100.)
++    io.positions = [[609.5,196.75],[800.,196.75]]
++    class Save:
++        def __call__(self,name,frame):
++            io.advance(.1 if name.startswith('acquire') else .15)
++        def alias(self,*args):
++            io.advance(.0002)
++    check.save = Save()
++    result = check.run()
++    assert result['result']=='passed',result['result']
++    assert result['completed_sides']==[-1,1]
++    assert io.t<15 and result['reserved_input_s']<=2 and result['pulses']<=40
++    assert any(abs(pad['ry'])==.2 and bound['release_at']-t==pytest.approx(.1)
++               for t,pad,bound in io.calls)
++    assert any(abs(pad['ry'])==.1 and bound['release_at']-t==pytest.approx(.05)
++               for t,pad,bound in io.calls)
++    assert not io.pad
++
++
+ @pytest.mark.parametrize('save_s', [.09, .1, .12])
+ def test_slow_retention_converges_with_full_pulses_from_fresh_proofs(save_s):
+     check, io = setup()
+@@ -336,7 +409,7 @@
+ def test_convergence_timeout_and_axis_whitelist():
+     check, io=setup()
+     obs, target=check.acquire(-1)
+-    for axis,value in [(2,.1),(1,.2),(0,.2)]:
++    for axis,value in [(2,.1),(1,.3),(0,.45)]:
+         with pytest.raises(C.CompatStop):
+             check.pulse(obs,target,axis,value,20)
+     assert not io.calls
+@@ -485,7 +558,8 @@
+         assert result['result']=='passed', result['result']
+         assert pad.neutral() and safety.status['stop_reason'] is None
+         assert all(not buttons for buttons,axes in pad.reports)
+-        assert all(all(abs(v)<=.1 for v in axes.get('r',(0,0))) for buttons,axes in pad.reports)
++        assert all(abs(axes.get('r',(0,0))[0])<=.3 and abs(axes.get('r',(0,0))[1])<=.2
++                   for buttons,axes in pad.reports)
+     finally:
+         watch.cancel();source.close();safety.close()
+     assert live._dead and pad.neutral()

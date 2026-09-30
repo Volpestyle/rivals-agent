@@ -2,8 +2,6 @@
 import argparse
 import json
 import math
-import os
-import tempfile
 import time
 import threading
 from dataclasses import asdict, dataclass
@@ -30,31 +28,6 @@ class Limits:
 
 
 LIMITS = Limits()  # fixed review inputs, not CLI-tunable
-PULSE_POLICY = {"yaw_knots": [.1, .2, .3], "yaw_thresholds_px_1280": [48., 96.],
-                # 12 px deadband + 4 * run-02's largest fine pitch response (6.75).
-                "coarse_pitch_error_px_1280": 39., "coarse_pitch_strength": .2,
-                "coarse_pitch_s": .1, "fine_strength": .1}
-
-
-class NativeRetention:
-    """Alias identical PNGs; replace a reused name without writing through links."""
-    def __init__(self, out):
-        self.out = out
-
-    def __call__(self, name, frame):
-        import cv2
-        fd, temporary = tempfile.mkstemp(prefix=f'.{name}-', suffix='.png', dir=self.out)
-        os.close(fd)
-        temporary = Path(temporary)
-        try:
-            if not cv2.imwrite(str(temporary), frame):
-                raise OSError("native frame retention failed")
-            os.replace(temporary, self.out / (name + '.png'))
-        finally:
-            temporary.unlink(missing_ok=True)
-
-    def alias(self, name, previous):
-        os.link(self.out / (previous + '.png'), self.out / (name + '.png'))
 
 
 class CompatStop(RangeLost):
@@ -71,7 +44,6 @@ class CompatibilityCheck:
         self.last_frame, self.last_stamp, self.stage = None, None, "before_capture"
         self.observation = {}
         self.stop_record = None
-        self.last_retained = None
 
     def record_stop(self, reason):
         """Called only after release; diagnostic retention cannot authorize input."""
@@ -155,32 +127,7 @@ class CompatibilityCheck:
 
     def retain(self, name, observation):
         if self.save:
-            started = self.io.now()
-            previous = self.last_retained
-            alias = getattr(self.save, "alias", None)
-            same = (previous is not None and previous[0] == observation[1]
-                    and previous[1] is observation[0] and callable(alias))
-            if same:
-                alias(name, previous[2])
-            else:
-                self.save(name, observation[0])
-            self.last_retained = (observation[1], observation[0], name)
-            self.events.append({"event": "retain", "name": name, "frame_t": observation[1],
-                                "alias_of": previous[2] if same else None,
-                                "elapsed_s": self.io.now() - started})
-
-    def command(self, errors):
-        axis = 0 if abs(errors[0]) > LIMITS.deadband_px_1280 else 1
-        magnitude, duration = .1, LIMITS.pulse_s
-        if axis == 0:
-            magnitude = .3 if abs(errors[0]) > 96 else .2 if abs(errors[0]) > 48 else .1
-        elif abs(errors[1]) > PULSE_POLICY["coarse_pitch_error_px_1280"]:
-            magnitude = PULSE_POLICY["coarse_pitch_strength"]
-            duration = PULSE_POLICY["coarse_pitch_s"]
-        value = math.copysign(magnitude, errors[axis]) * (1 if axis == 0 else -1)
-        if axis == 0:
-            value = self.admission.yaw_command(value)
-        return axis, value, duration
+            self.save(name, observation[0])
 
     def acquire(self, sign):
         until = min(self.deadline, self.check_time() + LIMITS.acquire_s)
@@ -213,9 +160,9 @@ class CompatibilityCheck:
             raise CompatStop("cumulative_input_limit")
         if axis == 0:
             value = self.admission.yaw_command(value)
-        elif axis != 1 or value not in (-.1, .1, -.2, .2):
+        elif axis != 1 or value not in (-.1, .1):
             raise CompatStop("forbidden_compat_command")
-        if abs(value) not in ((.1, .2, .3) if axis == 0 else (.1, .2)):
+        if abs(value) != .1:
             raise CompatStop("compat_pulse_strength_limit")
         retained_t = obs[1]
         self.retain(f"pulse-{self.pulses}-before", obs)
@@ -226,20 +173,20 @@ class CompatibilityCheck:
         errors = self.error(target)
         if max(abs(v) for v in errors) <= LIMITS.deadband_px_1280:
             return obs, target
-        axis, value, duration = self.command(errors)
-        if self.used_s + duration > LIMITS.cumulative_s + 1e-9:
-            raise CompatStop("cumulative_input_limit")
+        axis = 0 if abs(errors[0]) > LIMITS.deadband_px_1280 else 1
+        value = math.copysign(.1, errors[axis]) * (1 if axis == 0 else -1)
+        if axis == 0:
+            value = self.admission.yaw_command(value)
         before = errors[axis]
         sent_at = self.check_time()
-        release_at = sent_at + duration
+        release_at = sent_at + LIMITS.pulse_s
         response_until = sent_at + LIMITS.response_s
-        self.stage = "pulse_response_budget"
         if response_until >= min(self.deadline, converge_until):
             raise CompatStop("insufficient_response_budget")
         if sent_at - obs[1] > LIMITS.frame_age_s:
             raise CompatStop("stale_before_input")
         self.pulses += 1
-        self.used_s += duration
+        self.used_s += LIMITS.pulse_s
         self.events.append({"event": "pulse", "t": sent_at, "axis": axis, "value": value,
                             "release_at": release_at, "response_until": response_until, "target": target.track,
                             "proof_t": obs[1], "retained_before_t": retained_t})
@@ -314,8 +261,7 @@ class CompatibilityCheck:
                 self.record_stop(reason)
         return {"result": reason, "completed_sides": self.completed, "pulses": self.pulses,
                 "reserved_input_s": self.used_s, "limits": asdict(LIMITS), "camera": self.admission.receipt,
-                "events": self.events, "pulse_policy": PULSE_POLICY,
-                "latency_claim": "observed pixel response only; no guaranteed latency"}
+                "events": self.events, "latency_claim": "observed pixel response only; no guaranteed latency"}
 
 
 class ResponseWatch:
@@ -389,7 +335,10 @@ def main(argv):
     try:
         source = L._open_live_io(safety, percept, lambda f: False, lambda f: False)
         guard = safety.proof(percept.in_range, percept.idle, range_required=True)
-        save = NativeRetention(a.out)
+        import cv2
+        def save(name, frame):
+            if not cv2.imwrite(str(a.out / (name + '.png')), frame):
+                raise OSError("native frame retention failed")
         watch = ResponseWatch(safety, source.t0)
         check = CompatibilityCheck(source, percept, guard, admission, safety.deadline - source.t0, save=save, response_watch=watch)
         result = check.run()

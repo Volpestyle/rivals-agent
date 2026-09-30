@@ -1,0 +1,232 @@
+{
+  "pulses": [
+    {
+      "pulse": 0,
+      "axis": 0,
+      "response_s": 0.23675429995637387,
+      "cycle_s": 0.616612899932079,
+      "response_to_next_proof_s": 0.34593189996667206,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 1,
+      "axis": 1,
+      "response_s": 0.1859187000663951,
+      "cycle_s": 0.4909400000469759,
+      "response_to_next_proof_s": 0.2701985000167042,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 2,
+      "axis": 1,
+      "response_s": 0.2142267000162974,
+      "cycle_s": 0.5661892000352964,
+      "response_to_next_proof_s": 0.319817699957639,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 3,
+      "axis": 1,
+      "response_s": 0.22168769990094006,
+      "cycle_s": 0.5750791999744251,
+      "response_to_next_proof_s": 0.31958260003011674,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 4,
+      "axis": 1,
+      "response_s": 0.20967449992895126,
+      "cycle_s": 0.5628518000012264,
+      "response_to_next_proof_s": 0.3192613000283018,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 5,
+      "axis": 1,
+      "response_s": 0.20215080003254116,
+      "cycle_s": 0.5631391999777406,
+      "response_to_next_proof_s": 0.3267857999308035,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 6,
+      "axis": 1,
+      "response_s": 0.2149447000119835,
+      "cycle_s": 0.6102238999446854,
+      "response_to_next_proof_s": 0.360115599934943,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 7,
+      "axis": 1,
+      "response_s": 0.21483740000985563,
+      "cycle_s": 0.572982200072147,
+      "response_to_next_proof_s": 0.3245640000095591,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 8,
+      "axis": 1,
+      "response_s": 0.2098843000130728,
+      "cycle_s": 0.5604518000036478,
+      "response_to_next_proof_s": 0.3184836999280378,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 9,
+      "axis": 1,
+      "response_s": 0.20415080001112074,
+      "cycle_s": 0.5631718999939039,
+      "response_to_next_proof_s": 0.3214947999222204,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 10,
+      "axis": 1,
+      "response_s": 0.20413820003159344,
+      "cycle_s": 0.5653521999483928,
+      "response_to_next_proof_s": 0.324886699905619,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 11,
+      "axis": 1,
+      "response_s": 0.2042674000840634,
+      "cycle_s": 0.5634721000678837,
+      "response_to_next_proof_s": 0.3207800999516621,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 12,
+      "axis": 1,
+      "response_s": 0.22269359999336302,
+      "cycle_s": 0.5783642999595031,
+      "response_to_next_proof_s": 0.3194523999700323,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 13,
+      "axis": 1,
+      "response_s": 0.1532078000018373,
+      "cycle_s": 0.5059925999958068,
+      "response_to_next_proof_s": 0.318061999976635,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 14,
+      "axis": 1,
+      "response_s": 0.2275319000473246,
+      "cycle_s": 0.6041654000291601,
+      "response_to_next_proof_s": 0.32870810001622885,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 15,
+      "axis": 1,
+      "response_s": 0.21158589993137866,
+      "cycle_s": 0.5642731999978423,
+      "response_to_next_proof_s": 0.31660750007722527,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 16,
+      "axis": 1,
+      "response_s": 0.19009960000403225,
+      "cycle_s": 0.5429331000195816,
+      "response_to_next_proof_s": 0.32109809992834926,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 17,
+      "axis": 1,
+      "response_s": 0.20475119992624968,
+      "cycle_s": 0.5499704999383539,
+      "response_to_next_proof_s": 0.3097098000580445,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 18,
+      "axis": 1,
+      "response_s": 0.18797610001638532,
+      "cycle_s": 0.531917400076054,
+      "response_to_next_proof_s": 0.3142784000374377,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 19,
+      "axis": 1,
+      "response_s": 0.18998259992804378,
+      "cycle_s": 0.5408131999429315,
+      "response_to_next_proof_s": 0.3188019000226632,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 20,
+      "axis": 1,
+      "response_s": 0.18610399996396154,
+      "cycle_s": 0.5328720000106841,
+      "response_to_next_proof_s": 0.31726979999803007,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 21,
+      "axis": 1,
+      "response_s": 0.170237599988468,
+      "cycle_s": 0.5239708999870345,
+      "response_to_next_proof_s": 0.3228166999761015,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 22,
+      "axis": 1,
+      "response_s": 0.18787879997398704,
+      "cycle_s": 0.5388760999776423,
+      "response_to_next_proof_s": 0.3206021999940276,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 23,
+      "axis": 1,
+      "response_s": 0.20554059999994934,
+      "cycle_s": 0.5555103999795392,
+      "response_to_next_proof_s": 0.31615030008833855,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 24,
+      "axis": 1,
+      "response_s": 0.1781680000713095,
+      "cycle_s": 0.5194851000560448,
+      "response_to_next_proof_s": 0.3098135000327602,
+      "identical_response_next_before": true
+    },
+    {
+      "pulse": 25,
+      "axis": 1,
+      "response_s": 0.17909550003241748,
+      "cycle_s": null,
+      "response_to_next_proof_s": null,
+      "identical_response_next_before": true
+    }
+  ],
+  "stop": {
+    "event": "stop",
+    "clause": "insufficient_response_budget",
+    "stage": "post_perception_scope",
+    "frame_t": 15.038733099936508,
+    "observation": {
+      "capture_age_s": 0.004205100005492568,
+      "initial_scope_s": 0.002064600004814565,
+      "finder_s": 0.021364999935030937,
+      "detection_count": 2,
+      "tracker_s": 0.0001311999512836337,
+      "post_perception_age_s": 0.027783700032159686
+    },
+    "frame": "stop.png"
+  },
+  "safety": {
+    "stop_reason": null,
+    "close_returned": true,
+    "errors": []
+  }
+}
