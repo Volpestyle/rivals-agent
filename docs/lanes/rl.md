@@ -320,9 +320,20 @@ Code `rl/online/` (tests `tests/test_rl_online.py`, 9 passing). Launch: `rl/onli
 - The quick safety read (another agent, 2026-09-30) passed guards, masks, lifecycle and the orchestrator, and found one
   fail-closed bug (live warm-up calls `step` before `reset`). Fixed, with a test, before any live run.
 
+- **The readers work on the runner's JPEG q90 frames.** On the 900 labelled crosshair frames (§1), re-read after a q90
+  round trip, hit is identical on 135/135. The only changes elsewhere are 7 flips between unknown and no, and one
+  fading KO ring (0.20 to 0.16 against a 0.20 line); no positive appears or vanishes.
+- **VRAM (dry sitting, 2026-09-30):** the sitting adds up to ~3.8 GB at peak over the GPU's baseline (9.6 to 13.4 GB
+  with idm's labellers resident). That is the episode's policy plus the sitting's own tower copy overlapping during
+  featurisation.
+  So **a live sitting cannot share the 16 GB card with idm's v2-cd labellers (~9.6 GB) and the game.** Schedule it
+  with the labellers stopped.
+
 **Open:**
-- VRAM and game-FPS cost: the sitting process holds a tower copy while each episode loads another. Measure it at the
-  first sitting.
+- Game-FPS cost with the sitting's between-episode update: measure it at the first sitting.
+- The next base is policy's motion-dropout fix (`bc2-mdrop<30|50>-s0`): plain bc2, hidden 1536, 2 layers, no green or
+  hires. The update handles that config. Each RL episode loads its bundle fresh, so LivePolicy's CUDA graph is
+  captured per episode and never sees weights change in place.
 - ~20 RL episodes per sitting is ~400 s of RL data, so the first curve tests the plumbing and the direction, not
   convergence.
 - Hit-count shaping is uncapped per episode here; the §3 cap of 20 per 20 s encounter is rarely reached at the
