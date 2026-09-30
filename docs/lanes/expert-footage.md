@@ -386,3 +386,12 @@ category chapters only as supplementary evidence. Humble's later broadcasts
 include VOD reviews with top team rosters and playback controls; conservative
 tail brackets remove those reviews before another twelve retained native checks.
 These are source-provenance exclusions, separate from the hero/HUD classifier.
+
+The 50-hour export uses the same twelve retained native midpoint checks per
+source, followed by the external export validator and the repository manifest
+loader. New batches are sent to IDM immediately after the atomic refresh. The
+counts-only milestone chart and measured totals live in external
+`metrics/corpus-progress-50h.png` and `metrics/milestone-50h.json`; subsequent
+completed sources appear in the current README/export without rewriting that
+milestone snapshot. Source masks are measured separately: the final white-shirt
+Rdpaco broadcast places its facecam lower than the black-shirt broadcast.

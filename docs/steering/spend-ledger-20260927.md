@@ -85,3 +85,21 @@ has timeout=7200; public download/reference/decode subprocesses also have
 explicit timeouts. Ephemeral CPU apps, no GPU or persistent volume. Completed
 cohorts stop automatically; the final entry will record remaining usage and
 verified teardown. No other lane's apps are stopped.
+
+
+Final session update after the last scan stopped (2026-09-30 09:40 CDT):
+
+| Experiment | Cost | Answer | Lesson lives in |
+|---|---:|---|---|
+| Expert footage expansion, completed 50-hour delivery | $13.87555519 reported expansion usage | Crossed the target at 50.8507 hours; completed already-running final source reaches 53.2943 admitted hours / 9,350 spans / 40 videos / eight KBM creators. Each batch sent to IDM | `docs/lanes/expert-footage.md`; `D:/rivals-expert-footage/README.md` |
+
+This final reported session total **replaces**, rather than adds to, the
+$11.5431 interim figure above. The first delivery's $12.74728305 remains
+separate; combined reported footage usage is $26.62283824. Filtered source:
+`D:/rivals-expert-footage/metrics/billing-at-50h.json`, queried after teardown;
+the hourly report can lag. It includes all twelve expansion app IDs, failed
+scans and withheld sources, excluding the eleven first-delivery IDs and every
+other lane's app. `metrics/modal-apps-at-50h.json` verifies all twelve expansion
+apps stopped with zero tasks. All were ephemeral CPU jobs with timeout=7200,
+no GPU or persistent volume; local download processes also completed. No
+other lane's resources were stopped.
