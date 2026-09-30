@@ -148,6 +148,36 @@ def features(labels, views_root, out_root, tower, *, device="cuda", batch=256, l
     return meta
 
 
+def shard(labels, out_dir, rows_per_shard=30000):
+    """Split one video's label file into ~rows_per_shard sessions by run (whole runs only), for parallel views.
+    Each shard is its own session (steps.check_header wants session_group == session_id); the source video
+    stays in `source_video_group`, which is the unit for any expert hold-out."""
+    import zlib
+    labels = Path(labels)
+    with labels.open(encoding="utf-8") as stream:
+        header = json.loads(stream.readline())
+        rows = [json.loads(line) for line in stream if line.strip()]
+    n = max(1, round(len(rows) / rows_per_shard))
+    parts = [[] for _ in range(n)]
+    for r in rows:
+        parts[zlib.crc32(r["run"].encode()) % n].append(r)
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    paths = []
+    for i, part in enumerate(parts):
+        if not part:
+            continue
+        h = dict(header, session_id=f"{header['session_id']}-s{i}", source_video_group=header["session_id"])
+        h["session_group"] = h["session_id"]
+        path = out_dir / f"{h['session_id']}.steps.jsonl"
+        with path.open("w", encoding="utf-8") as f:
+            f.write(json.dumps(h) + "\n")
+            for k, r in enumerate(part):
+                f.write(json.dumps(dict(r, i=k)) + "\n")
+        paths.append(str(path))
+    return paths
+
+
 def game_running():
     import subprocess
     out = subprocess.run(["tasklist", "/FI", "IMAGENAME eq Marvel-Win64-Shipping.exe", "/NH"], capture_output=True,
@@ -167,7 +197,7 @@ def _views_job(args):
 
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("stage", choices=("views", "features"))
+    p.add_argument("stage", choices=("shard", "views", "features"))
     p.add_argument("labels", nargs="+")
     p.add_argument("--out", required=True)
     p.add_argument("--views", help="views root (features stage)")
@@ -175,6 +205,11 @@ def main(argv=None):
     p.add_argument("--vision", default="D:/rivals-policy/bundles/ng-nohist-s1/vision.safetensors")
     p.add_argument("--vision-config", default="D:/rivals-policy/bundles/ng-nohist-s1/siglip2-large-config.json")
     a = p.parse_args(argv)
+    if a.stage == "shard":
+        for labels in a.labels:
+            for path in shard(labels, a.out):
+                print(path)
+        return 0
     if a.stage == "views":
         from concurrent.futures import ProcessPoolExecutor
         with ProcessPoolExecutor(a.jobs) as pool:
