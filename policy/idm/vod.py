@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import bisect
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -23,6 +24,9 @@ import numpy as np
 from policy.idm import decode as D
 
 WINDOW = D.WINDOW
+# ffmpeg threads per decode. The Mac is James's workstation: run there with IDM_FFMPEG_THREADS=2, nice -n 10 and
+# taskpolicy -b, and keep all idm processes to about 4 cores in total (lead, 2026-09-30).
+FFMPEG_THREADS = int(os.environ.get("IDM_FFMPEG_THREADS", "8"))
 PRESETS = {  # typical YouTube / Twitch delivery: H.264 high, 60 fps, CBR-ish
     "1080p60": {"size": (1920, 1080), "bitrate": "7M", "maxrate": "8M", "bufsize": "12M"},
     "720p60": {"size": (1280, 720), "bitrate": "4500k", "maxrate": "5M", "bufsize": "8M"},
@@ -99,7 +103,7 @@ def plan(rows, pts, *, start_ms=None, end_ms=None, window=WINDOW):
     return out, step
 
 
-def stream_predict(model, video, planned, *, device="cuda", batch=64, ffmpeg="ffmpeg", threads=8, progress=None):
+def stream_predict(model, video, planned, *, device="cuda", batch=64, ffmpeg="ffmpeg", threads=None, progress=None):
     """{row i: (press probs [N], camera [4])} over planned rows, decoding only the ordinals they need."""
     import torch
     need = sorted({o for _, _, w, h in planned for o in (*w, *h)})
@@ -137,7 +141,7 @@ def stream_predict(model, video, planned, *, device="cuda", batch=64, ffmpeg="ff
         if progress and pos % 2000 == 0:
             progress(pos, len(need))
 
-    D._decode(video, need, sink, ffmpeg, threads)
+    D._decode(video, need, sink, ffmpeg, threads or FFMPEG_THREADS)
     flush()
     return results
 
@@ -147,9 +151,35 @@ def camera_answers(r, cam, cal):
     return train._camera(float(cam[0]), float(cam[1]), cam[2:], r, cal)
 
 
+class Ensemble:
+    """Several v2 checkpoints as one raw-window model: each reads its own window from the centre of the widest,
+    probabilities (press, held) and camera outputs are averaged."""
+    raw_window = True
+
+    def __init__(self, models):
+        from types import SimpleNamespace
+        self.models = models
+        self.config = SimpleNamespace(window=max(m.config.window for m in models))
+
+    def __call__(self, frames, hud):
+        import torch
+        W, outs = self.config.window, []
+        for m in self.models:
+            w = m.config.window
+            outs.append(m(frames[:, W - w:W + w + 1], hud))
+        prob = lambda k: torch.logit(torch.stack([torch.sigmoid(o[k].float()) for o in outs]).mean(0), eps=1e-6)
+        return prob(0), torch.stack([o[1].float() for o in outs]).mean(0), prob(2)
+
+
 def load_any(ckpt, device):
-    """(model, supported, thresholds or None) for a v1 (full03) or v2 checkpoint."""
+    """(model, supported, thresholds or None) for a v1 (full03) or v2 checkpoint, or several v2 checkpoints joined
+    with '+' (an Ensemble; its thresholds are the members' mean)."""
     import torch
+    if "+" in str(ckpt):
+        members = [load_any(c, device) for c in str(ckpt).split("+")]
+        assert all(getattr(m[0], "raw_window", False) for m in members), "ensembles are of v2 checkpoints"
+        thr = {a: sum(m[2][a] for m in members) / len(members) for a in members[0][2]}
+        return Ensemble([m[0] for m in members]), members[0][1], thr
     fmt = torch.load(ckpt, map_location="cpu", weights_only=False).get("format")
     if fmt == "rivals-idm-v2":
         from policy.idm import v2
@@ -298,7 +328,7 @@ def _fast_graph():
             f",pad=200:30[wb];[ab][wb]vstack,pad={D.MOTION[1]}:80[hd];[g][hd]vstack")
 
 
-def decode_span(video, start, end, *, ffmpeg="ffmpeg", threads=8, fast=False):
+def decode_span(video, start, end, *, ffmpeg="ffmpeg", threads=None, fast=False):
     """(grey [n, 252, 448] uint8, hud [n, 80, 200, 3] uint8, pts seconds [n]) for every frame in [start, end], through
     the frame-store pixel graph (policy.idm.decode.GRAPH), seeking by timestamp (mp4 / indexed containers)."""
     import tempfile
@@ -318,7 +348,7 @@ def decode_span(video, start, end, *, ffmpeg="ffmpeg", threads=8, fast=False):
         # -t bounds the read: select alone would keep decoding to the end of a multi-hour VOD
         # VideoToolbox on the Mac; on the PC, CUDA's per-launch init costs more than a short span's CPU decode
         hw = ["-hwaccel", "videotoolbox"] if fast and sys.platform == "darwin" else []
-        proc = subprocess.Popen([ffmpeg, "-v", "error", "-nostdin", "-threads", str(threads), *hw, "-ss", f"{seek:.3f}",
+        proc = subprocess.Popen([ffmpeg, "-v", "error", "-nostdin", "-threads", str(threads or FFMPEG_THREADS), *hw, "-ss", f"{seek:.3f}",
                                  "-t", f"{end - t0 - seek + 1:.3f}", "-copyts", "-i", str(video), "-map", "0:v:0",
                                  "-filter_script:v", str(script), "-fps_mode", "passthrough", "-an", "-sn",
                                  "-pix_fmt", "rgb24", "-f", "rawvideo", "-"], stdout=subprocess.PIPE)
