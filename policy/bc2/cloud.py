@@ -66,7 +66,7 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
         eval_sessions: list = None, batch_size: int = 32, lr: float = 3e-4, wd: float = .05,
         feat_dropout: float = .3, hidden: int = 512, use_green: bool = False, use_dt: bool = False,
         chunk: int = 0, onset_weight: float = 1., chunk_weight: float = .5, expert: bool = False,
-        expert_epochs: int = None, expert_share: float = None, hires: bool = False):
+        expert_epochs: int = None, expert_share: float = None, hires: bool = False, layers: int = 1):
     _setup()
     import shutil
     from policy.bc2 import model, train
@@ -83,7 +83,7 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
                 experts.append(local / d.name)
     run = Path("/tmp/run") / name
     config = model.Config(use_feats=use_feats, use_motion=use_motion, feat_dropout=feat_dropout, hidden=hidden,
-                          use_green=use_green, use_dt=use_dt, chunk=chunk, hires=hires)
+                          use_green=use_green, use_dt=use_dt, chunk=chunk, hires=hires, layers=layers)
     report = train.fit([local / s for s in TRAIN], [local / s for s in DEV], [local / s for s in evals], run,
                        config=config, seed=seed, epochs=epochs, batch_size=batch_size, lr=lr, wd=wd,
                        onset_weight=onset_weight, chunk_weight=chunk_weight, expert_dirs=experts,
