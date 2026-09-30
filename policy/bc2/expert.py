@@ -290,7 +290,10 @@ def pipeline(labels, views_root, features_root, *, floor_gb=6., poll=60, log=pri
     def stop(reason):
         for name, proc in running.items():
             if proc.poll() is None:
-                proc.kill()
+                if sys.platform == "win32":           # the whole tree, not just the parent
+                    subprocess.run(["taskkill", "/T", "/F", "/PID", str(proc.pid)], capture_output=True)
+                else:
+                    proc.kill()
                 proc.wait()
                 log(f"stopped {name}: {reason}")
         running.clear()
@@ -366,6 +369,10 @@ def main(argv=None):
         for labels in a.labels:
             for path in shard(labels, a.out):
                 print(path)
+        return 0
+    if a.stage == "views" and a.jobs == 1:      # inline: no pool worker to outlive a killed parent
+        for x in a.labels:
+            print(_views_job((x, a.out)), flush=True)
         return 0
     if a.stage == "views":
         from concurrent.futures import ProcessPoolExecutor
