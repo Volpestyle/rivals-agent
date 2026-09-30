@@ -20,6 +20,7 @@ from policy.range_bc import train as rtrain, vocab
 from policy.range_bc.metrics import match_window
 
 WINDOW, BURN_IN = 128, 16
+ONSET_STILL = 3
 REPS = torch.tensor([vocab.class_degrees(k) for k in range(vocab.CAMERA_CLASSES)])
 
 
@@ -184,6 +185,14 @@ def evaluate(acts, cams, s, thresholds, live):
         ok = s.cam_mask[:, axis] & torch.isfinite(y) & torch.isfinite(prev)
         p = deg[:, axis]
         moving, still = ok & (y.abs() >= .5), ok & (y.abs() < .05)
+        # Onset: this step turns (|y| >= .5) after ONSET_STILL still steps (|y| < .5) in the same run. Observed
+        # motion carries no information about these turns, so they test initiation rather than continuation.
+        run_id = torch.from_numpy(np.cumsum(t["run_start"])).to(dev)
+        onset = moving.clone()
+        for k in range(1, ONSET_STILL + 1):
+            back = torch.zeros_like(onset)
+            back[k:] = (run_id[k:] == run_id[:-k]) & torch.isfinite(y[:-k]) & (y[:-k].abs() < .5)
+            onset &= back
         mae = lambda pred, sel: float((pred[sel] - y[sel]).abs().mean()) if sel.any() else None
         out[key] = {"steps": int(ok.sum()), "mae": mae(p, ok), "zero_mae": mae(torch.zeros_like(p), ok),
                     "persistence_mae": mae(prev, ok),
@@ -192,13 +201,20 @@ def evaluate(acts, cams, s, thresholds, live):
                     "moving_sign_agree": float((torch.sign(p) == torch.sign(y))[moving].float().mean()) if moving.any() else None,
                     "still_steps": int(still.sum()),
                     "still_false_turn": float((p.abs() >= .5)[still].float().mean()) if still.any() else None,
+                    "onset_steps": int(onset.sum()), "onset_mae": mae(p, onset),
+                    "onset_zero_mae": mae(torch.zeros_like(p), onset),
+                    "onset_sign_agree": float((torch.sign(p) == torch.sign(y))[onset].float().mean()) if onset.any() else None,
+                    "onset_turned": float((p.abs() >= .5)[onset].float().mean()) if onset.any() else None,
                     "sums": {"abs_err": float((p - y).abs()[ok].sum()), "abs_zero": float(y.abs()[ok].sum()),
                              "abs_persist": float((prev - y).abs()[ok].sum()),
                              "moving_abs_err": float((p - y).abs()[moving].sum()),
                              "moving_abs_zero": float(y.abs()[moving].sum()),
                              "moving_abs_persist": float((prev - y).abs()[moving].sum()),
                              "moving_sign": float((torch.sign(p) == torch.sign(y))[moving].float().sum()),
-                             "still_false": float((p.abs() >= .5)[still].float().sum())}}
+                             "still_false": float((p.abs() >= .5)[still].float().sum()),
+                             "onset_abs_err": float((p - y).abs()[onset].sum()), "onset_abs_zero": float(y.abs()[onset].sum()),
+                             "onset_sign": float((torch.sign(p) == torch.sign(y))[onset].float().sum()),
+                             "onset_turned": float((p.abs() >= .5)[onset].float().sum())}}
     return out
 
 
@@ -216,11 +232,15 @@ def pooled(results):
         n = sum(r[axis]["steps"] for r in results)
         mv = sum(r[axis]["moving_steps"] for r in results)
         st = sum(r[axis]["still_steps"] for r in results)
+        on = sum(r[axis]["onset_steps"] for r in results)
         out[axis] = {"steps": n, "mae": S("abs_err") / n, "zero_mae": S("abs_zero") / n,
                      "persistence_mae": S("abs_persist") / n, "moving_steps": mv,
                      "moving_mae": S("moving_abs_err") / max(1, mv), "moving_zero_mae": S("moving_abs_zero") / max(1, mv),
                      "moving_persistence_mae": S("moving_abs_persist") / max(1, mv),
-                     "moving_sign_agree": S("moving_sign") / max(1, mv), "still_false_turn": S("still_false") / max(1, st)}
+                     "moving_sign_agree": S("moving_sign") / max(1, mv), "still_false_turn": S("still_false") / max(1, st),
+                     "onset_steps": on, "onset_mae": S("onset_abs_err") / max(1, on),
+                     "onset_zero_mae": S("onset_abs_zero") / max(1, on), "onset_sign_agree": S("onset_sign") / max(1, on),
+                     "onset_turned": S("onset_turned") / max(1, on)}
     return out
 
 

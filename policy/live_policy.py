@@ -72,8 +72,11 @@ def write_bundle(directory, *, checkpoint, vision, vision_config, evaluation, na
 
 
 def write_bc2_bundle(directory, *, checkpoint, report, tag="selected", name, notes="",
-                     vision="vision.safetensors", vision_config="siglip2-large-config.json"):
-    """A policy.bc2 bundle: Policy2 checkpoint, the NitroGen tower, and report.json's TRAIN-calibrated thresholds."""
+                     vision="vision.safetensors", vision_config="siglip2-large-config.json",
+                     buttons=None, buttons_evaluation=None):
+    """A policy.bc2 bundle: Policy2 checkpoint, the NitroGen tower, and report.json's TRAIN-calibrated thresholds.
+    Hybrid: `buttons` (an encoder_h1 checkpoint on the same tower features) and its evaluation.json replace the
+    action head and thresholds; the camera stays bc2's."""
     from policy.range_bc import vocab
     directory = Path(directory)
     rep = json.loads((directory / report).read_text())
@@ -81,8 +84,12 @@ def write_bc2_bundle(directory, *, checkpoint, report, tag="selected", name, not
     bundle = {"format": "rivals-live-policy-bundle-v1", "name": name, "kind": "bc2", "notes": notes,
               "step_s": STEP_S, "train_size": list(TRAIN_SIZE), "actions": list(vocab.NAMES), "files": {},
               "thresholds": rep[tag]["thresholds"], "live": dict(zip(vocab.NAMES, map(bool, live)))}
-    for key, file in (("checkpoint", checkpoint), ("vision", vision), ("vision_config", vision_config),
-                      ("report", report)):
+    entries = [("checkpoint", checkpoint), ("vision", vision), ("vision_config", vision_config), ("report", report)]
+    if buttons:
+        calibration = json.loads((directory / buttons_evaluation).read_text())["threshold_calibration"]["actions"]
+        bundle["thresholds"] = {n: calibration[n]["threshold"] for n in vocab.NAMES}
+        entries += [("buttons", buttons), ("buttons_evaluation", buttons_evaluation)]
+    for key, file in entries:
         bundle["files"][key] = {"path": file, "sha256": _sha256(directory / file)}
     (directory / "bundle.json").write_text(json.dumps(bundle, indent=2) + "\n")
     return bundle
@@ -135,6 +142,9 @@ class LivePolicy:
             self.model.to(device).eval()
             self.tower = load_tower(files["vision"][0], files["vision_config"][0], device)
             self.predict = None
+            self.buttons = None
+            if "buttons" in files:
+                self.buttons = load_encoder_checkpoint(*files["buttons"])[0].to(device).eval()
         else:
             model, self.recipe = load_encoder_checkpoint(*files["checkpoint"])
             # Training cache frames were full-range RGB decoded from YUV; the capture is already full-range BGR.
@@ -154,7 +164,7 @@ class LivePolicy:
         from policy.range_bc import vocab
         if self.predict is not None:
             self.predict.state = None
-        self.state, self.gray_prev = None, None
+        self.state, self.gray_prev, self.buttons_state = None, None, None
         self.prev = {"held": [0] * vocab.N, "press": [0] * vocab.N, "release": [0] * vocab.N,
                      "known": [True] * vocab.N, "cy": vocab.ZERO_CLASS, "cp": vocab.ZERO_CLASS}
         self.index = 0
@@ -206,6 +216,11 @@ class LivePolicy:
                                                     gray[1][None], self.state)
             self.gray_prev = gray
             acts, cams = acts.float(), cams.float()
+            if self.buttons is not None:          # hybrid: incumbent action head on the same tower features
+                from policy.range_bc import steps
+                zero = torch.zeros(1, 1, steps.PREV_DIM, device=feats.device)
+                acts, _, self.buttons_state = self.buttons(feats[:, :, 0], feats[:, :, 1], None, zero,
+                                                           self.buttons_state)
             if not (bool(torch.isfinite(acts).all()) and bool(torch.isfinite(cams).all())):
                 raise ValueError("nonfinite model outputs")
             return torch.sigmoid(acts[0, 0]).tolist(), torch.softmax(cams[0, 0], -1).tolist()

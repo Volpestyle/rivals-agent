@@ -18,12 +18,19 @@ SHORT = {"move_forward": "W", "move_left": "A", "move_back": "S", "move_right": 
          "web_cluster": "RMB"}
 
 
-def frames_for(video, rows):
-    """Yield (row, BGR frame) for rows whose frame pts appear in order in the video."""
+def frames_for(video, rows, hwaccel=True):
+    """Yield (row, BGR frame) for rows whose frame pts appear in order in the video (NVDEC when available)."""
     import av
     wanted = {r["frame"]["pts"]: r for r in rows}
     first = rows[0]["frame"]["pts"]
-    with av.open(video) as container:
+    accel = None
+    if hwaccel:
+        try:
+            from av.codec.hwaccel import HWAccel
+            accel = HWAccel(device_type="cuda", allow_software_fallback=True)
+        except Exception:
+            accel = None
+    with av.open(video, hwaccel=accel) if accel else av.open(video) as container:
         stream = container.streams.video[0]
         stream.thread_type = "AUTO"
         tb = rows[0]["frame"]["timebase"]
@@ -55,6 +62,32 @@ def pick_run(session, seconds, start_s=None):
     return a, min(b, a + n)
 
 
+def target_bearing(frame):
+    """Horizontal bearing of the enemy nearest the crosshair, as a fraction of frame width from centre (None if no
+    green-outline enemy is found). Finder on a 1280x720 copy, where its thresholds were measured."""
+    import cv2
+    from perception.outline import find_enemies
+    small = cv2.resize(frame, (1280, 720), interpolation=cv2.INTER_AREA)
+    xs = [((d.bbox[0] + d.bbox[2]) / 2) / 1280 - .5 for d in find_enemies(small, 1.0)]
+    return min(xs, key=abs) if xs else None
+
+
+def target_check(records, min_dx=.05):
+    """On steps where James turns (|yaw| >= .5) and an enemy sits off-centre: how often he turns toward it, and
+    how often the model's yaw sign matches his on those toward-target turns (overall and at onsets)."""
+    import numpy as np
+    out = {}
+    for label, pick in (("all", lambda i: True), ("onset", lambda i: i >= 3 and all(
+            records[i - k]["human_yaw"] is not None and abs(records[i - k]["human_yaw"]) < .5 for k in (1, 2, 3)))):
+        turns = [i for i, r in enumerate(records) if r.get("target_dx") is not None and abs(r["target_dx"]) >= min_dx
+                 and r["human_yaw"] is not None and abs(r["human_yaw"]) >= .5 and pick(i)]
+        toward = [i for i in turns if np.sign(records[i]["human_yaw"]) == np.sign(records[i]["target_dx"])]
+        agree = [i for i in toward if np.sign(records[i]["pred_yaw"]) == np.sign(records[i]["human_yaw"])]
+        out[label] = {"turns_with_offcentre_target": len(turns), "james_toward_share": len(toward) / max(1, len(turns)),
+                      "toward_turns": len(toward), "model_sign_agree_on_toward": len(agree) / max(1, len(toward))}
+    return out
+
+
 def summarize(records):
     """Per-action held accuracy/F1 and press counts; camera MAE against zero and persistence."""
     import numpy as np
@@ -73,6 +106,14 @@ def summarize(records):
         pred, human = map(np.array, zip(*pairs))
         persist = np.abs(human[1:] - human[:-1]).mean()
         moving = np.abs(human) > 0.5
+        steps_ = [r for r in records]
+        onset = np.array([i >= 3 and r["human_" + axis] is not None and abs(r["human_" + axis]) >= .5 and all(
+            steps_[i - k]["human_" + axis] is not None and abs(steps_[i - k]["human_" + axis]) < .5 for k in (1, 2, 3))
+            for i, r in enumerate(steps_) if r["human_" + axis] is not None])
+        out[axis + "_onset"] = {"steps": int(onset.sum()),
+                                "sign_agree": float((np.sign(pred) == np.sign(human))[onset].mean()) if onset.any() else None,
+                                "mae": float(np.abs(pred - human)[onset].mean()) if onset.any() else None,
+                                "zero_mae": float(np.abs(human)[onset].mean()) if onset.any() else None}
         out[axis] = {"mae": float(np.abs(pred - human).mean()), "zero_mae": float(np.abs(human).mean()),
                      "persistence_mae": float(persist),
                      "moving_mae": float(np.abs(pred - human)[moving].mean()) if moving.any() else None,
@@ -127,6 +168,7 @@ def main(argv=None):
     p.add_argument("--device", default="cuda")
     p.add_argument("--out", required=True)
     p.add_argument("--video", action="store_true", help="write overlay.mp4 (960x540, 30 fps)")
+    p.add_argument("--targets", action="store_true", help="also run the green-outline finder for the target check")
     a = p.parse_args(argv)
     from policy.live_policy import LivePolicy
     from policy.range_bc import steps, vocab
@@ -151,6 +193,8 @@ def main(argv=None):
                  "pred_held": {n: s.held[n] for n in SHOWN}, "pred_press": {n: s.press[n] for n in SHOWN},
                  "human_held": named(t["held"]), "human_press": named(t["press"]),
                  "pred_yaw": s.yaw_deg, "pred_pitch": s.pitch_deg, "human_yaw": t["yaw"], "human_pitch": t["pitch"]}
+            if a.targets:
+                r["target_dx"] = target_bearing(frame)
             records.append(r)
             log.write(json.dumps(r) + "\n")
             if writer is not None:
@@ -160,6 +204,8 @@ def main(argv=None):
     policy.close()
     summary = {"session": session.session_id, "rows": [lo, hi], "bundle": a.bundle, "decoded": len(records),
                "expected": len(rows), **summarize(records)}
+    if a.targets:
+        summary["target_check"] = target_check(records)
     (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     print(json.dumps(summary, indent=2))
     return 0
