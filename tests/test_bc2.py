@@ -33,6 +33,7 @@ def make_session(root, sid, n=300, seed=0):
     np.save(d / "feats.npy", rng.standard_normal((n, 2, bc2_model.FEAT)).astype(np.float16))
     np.save(d / "gray_g.npy", rng.integers(0, 255, (n, 72, 128), dtype=np.uint8))
     np.save(d / "gray_c.npy", rng.integers(0, 255, (n, 64, 64), dtype=np.uint8))
+    np.save(d / "gray_g1.npy", rng.integers(0, 255, (n, 144, 256), dtype=np.uint8))
     np.save(d / "green.npy", rng.standard_normal((n, bc2_model.GREEN_DIM)).astype(np.float16))
     act = np.zeros((n, 3, vocab.N), np.uint8)
     act[::10, 1, vocab.INDEX["jump"]] = 1
@@ -54,7 +55,7 @@ def test_tiny_fit_and_evaluate(tmp_path):
     feats.mkdir()
     tr = [make_session(feats, "a", seed=1), make_session(feats, "b", seed=2)]
     dv = [make_session(feats, "c", seed=3)]
-    config = bc2_model.Config(embed=16, motion=16, hidden=32, use_green=True, use_dt=True, chunk=4)
+    config = bc2_model.Config(embed=16, motion=16, hidden=32, use_green=True, use_dt=True, chunk=4, hires=True)
     report = bc2_train.fit(tr, dv, dv, tmp_path / "out", config=config,
                            epochs=2, batch_size=4, device="cpu", log=lambda *_: None, onset_weight=3.,
                            expert_dirs=[make_session(feats, "x", seed=4)], expert_epochs=1, expert_share=.5)

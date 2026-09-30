@@ -210,6 +210,9 @@ class LivePolicy:
             rgb = [v.permute(0, 2, 3, 1).to(torch.uint8) for v in self._views(frame)]
             feats = tower_features(self.tower, rgb)[None, None]      # both views in one tower batch
             gray = [gray_small(v) for v in rgb]
+            if self.model.config.hires:
+                from policy.bc2.model import gray_full
+                gray[0] = gray_full(rgb[0])
             now = time.perf_counter() if t is None else t
             gap = None if self.t_prev is None else now - self.t_prev
             if gap is None or gap > MAX_GAP_S:        # no usable previous frame: no motion this step

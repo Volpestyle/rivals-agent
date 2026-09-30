@@ -64,6 +64,12 @@ def green_profile(rgb_u8):
                       nearest[:, None]), 1)
 
 
+def gray_full(rgb_u8):
+    """[..., H, W, 3] uint8 RGB -> [..., H, W] uint8 luma at full view resolution (hires motion)."""
+    x = rgb_u8.float()
+    return (x[..., 0] * .299 + x[..., 1] * .587 + x[..., 2] * .114).round().clamp(0, 255).to(torch.uint8)
+
+
 def phase_corr(prev, cur):
     """Integer+parabolic sub-pixel shift of cur relative to prev, [N, H, W] float -> [N, 3] (dx, dy, peak).
     dx, dy are in pixels of the given image; peak is the normalized correlation height (confidence)."""
@@ -89,11 +95,13 @@ def phase_corr(prev, cur):
     return torch.stack((dx, dy, peak), 1)
 
 
-def motion_scalars(gp, gc, cp, cc):
+def motion_scalars(gp, gc, cp, cc, hires=False):
     """Explicit shifts for the global top band and the crop, scaled to roughly unit range: [N, 6]."""
-    g = phase_corr(gp[:, :PC_ROWS].float(), gc[:, :PC_ROWS].float())
+    rows = PC_ROWS * (2 if hires else 1)
+    g = phase_corr(gp[:, :rows].float(), gc[:, :rows].float())
     c = phase_corr(cp.float(), cc.float())
-    scale = torch.tensor([1 / 8, 1 / 8, 4., 1 / 8, 1 / 8, 4.], device=g.device)
+    gs = 1 / 16 if hires else 1 / 8
+    scale = torch.tensor([gs, gs, 4., 1 / 8, 1 / 8, 4.], device=g.device)
     return torch.cat((g, c), 1) * scale
 
 
@@ -126,6 +134,7 @@ class Config:
     use_motion: bool = True
     use_green: bool = False
     use_dt: bool = False       # frame interval input, in 30 Hz steps (1 = 33 ms)
+    hires: bool = False        # global motion frames at the view's full 144x256 instead of 72x128
     chunk: int = 0             # auxiliary camera heads for the next `chunk` steps (training signal only)
 
     def as_dict(self):
@@ -142,7 +151,8 @@ class Policy2(nn.Module):
             self.proj_c = nn.Sequential(nn.Dropout(c.feat_dropout), nn.Linear(FEAT, c.embed), nn.GELU())
             width += 2 * c.embed
         if c.use_motion:
-            self.mot_g, self.mot_c = PairCNN(GRAY_G, c.motion), PairCNN(GRAY_C, c.motion)
+            self.mot_g = PairCNN((144, 256) if c.hires else GRAY_G, c.motion)
+            self.mot_c = PairCNN(GRAY_C, c.motion)
             self.mot_s = nn.Sequential(nn.Linear(6 + int(c.use_dt), 64), nn.GELU())
             width += 2 * c.motion + 64
         if c.use_green:
@@ -165,7 +175,7 @@ class Policy2(nn.Module):
             parts += [self.proj_g(f[:, :, 0]), self.proj_c(f[:, :, 1])]
         if c.use_motion:
             flat = lambda x: x.reshape(b * t, *x.shape[2:])
-            s = motion_scalars(flat(gp), flat(gc), flat(cp), flat(cc))
+            s = motion_scalars(flat(gp), flat(gc), flat(cp), flat(cc), c.hires)
             if c.use_dt:
                 d = torch.ones(b * t, 1, device=s.device) if dt is None else dt.reshape(b * t, 1).float()
                 s = torch.cat((s, d), 1)

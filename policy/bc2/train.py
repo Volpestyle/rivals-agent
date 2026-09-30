@@ -27,7 +27,7 @@ REPS = torch.tensor([vocab.class_degrees(k) for k in range(vocab.CAMERA_CLASSES)
 
 
 class Session:
-    def __init__(self, root, device):
+    def __init__(self, root, device, gray_file="gray_g.npy"):
         root = Path(root)
         self.meta = json.loads((root / "meta.json").read_text())
         self.id = self.meta["session"]
@@ -36,7 +36,7 @@ class Session:
         n = len(self.t["frame"])
         dev = torch.device(device)
         self.feats = torch.from_numpy(np.load(root / "feats.npy")).to(dev)
-        self.gray_g = torch.from_numpy(np.load(root / "gray_g.npy")).to(dev)
+        self.gray_g = torch.from_numpy(np.load(root / gray_file)).to(dev)
         self.gray_c = torch.from_numpy(np.load(root / "gray_c.npy")).to(dev)
         green = root / "green.npy"
         self.green = torch.from_numpy(np.load(green)).to(dev) if green.exists() else None
@@ -350,7 +350,8 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     torch.manual_seed(seed)
-    load = lambda dirs: [Session(d, device) for d in dirs]
+    gray_file = "gray_g1.npy" if config.hires else "gray_g.npy"
+    load = lambda dirs: [Session(d, device, gray_file) for d in dirs]
     train_s, dev_s, eval_s = load(train_dirs), load(dev_dirs), load(eval_dirs)
     expert_s = load(expert_dirs)
     all_s = train_s + expert_s

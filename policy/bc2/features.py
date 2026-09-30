@@ -15,7 +15,7 @@ import torch
 from torch.nn import functional as F
 
 from policy.bc2 import data
-from policy.bc2.model import FEAT, GREEN_DIM, gray_small, green_profile, motion_scalars
+from policy.bc2.model import FEAT, GREEN_DIM, gray_full, gray_small, green_profile, motion_scalars
 from policy.range_bc import cache, steps
 
 
@@ -132,5 +132,19 @@ def add_green(cache_dir, feature_dir, *, batch=2048):
     out = np.lib.format.open_memmap(feature_dir / "green.npy", "w+", np.float16, (len(frames), GREEN_DIM))
     for s in range(0, len(frames), batch):
         out[s:s + batch] = green_profile(torch.from_numpy(np.ascontiguousarray(g[frames[s:s + batch]]))).numpy()
+    out.flush()
+    return len(frames)
+
+
+def add_gray_full(cache_dir, feature_dir, *, batch=4096):
+    """gray_g1.npy (full-resolution global luma, for Config.hires) for an already extracted session."""
+    import json as _json
+    feature_dir = Path(feature_dir)
+    frames = np.load(feature_dir / "targets.npz")["frame"]
+    n_cache = _json.loads((Path(cache_dir) / "cache.json").read_text())["frames"]
+    g = np.memmap(Path(cache_dir) / "global.u8", np.uint8, "r", shape=(n_cache, 144, 256, 3))
+    out = np.lib.format.open_memmap(feature_dir / "gray_g1.npy", "w+", np.uint8, (len(frames), 144, 256))
+    for s in range(0, len(frames), batch):
+        out[s:s + batch] = gray_full(torch.from_numpy(np.ascontiguousarray(g[frames[s:s + batch]]))).numpy()
     out.flush()
     return len(frames)
