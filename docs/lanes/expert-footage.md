@@ -348,3 +348,23 @@ titles claim One Above All / rank 1 Spider-Man peak. That is a creator claim,
 not independent rank verification. Tephrite's explicitly controller-titled day
 is excluded from acquisition; other available titles emphasize different heroes
 or tournaments. Source metadata and claim links remain in external `experts.json`.
+
+The expansion uses creator diversity before more Day/Simii volume. Rdpaco's
+first generic retained sample exposed an other-hero false positive and a
+scoreboard. A native portrait rescan, explicit exclusion of those intervals
+and a fresh twelve-frame retained sample passed; the generic result was never
+admitted. Rdpaco has both facecam and camera-free broadcasts, so masks are
+reviewed per video rather than copied across the channel blindly. RekRiot's
+French UI and own gameplay are checked against explicit playback controls;
+conservative brackets remove observed secondary-video intervals. Luckyzeal's
+mixed broadcasts have low admitted yield: Fortnite duration and other heroes
+are withheld even when their archive titles claim Spider-Man-only play.
+
+The external export check verifies unique timestamp IDs, ordered nonoverlapping
+spans, complete local media, native geometry/FPS, keyboard/mouse-only admission,
+classifier/review agreement, normalized rectangles, interval exclusions and
+manifest/video membership. `agent.demos` loaded all milestone manifests with
+unknown patch/cooldown provenance and one-video groups preserved. The current
+consumer catalogue and counts live only in the external README/JSONL, reached
+through the repository's ignored junction. Milestone PNGs use our aggregate
+counts only; private frame sheets remain under external `audit/`.

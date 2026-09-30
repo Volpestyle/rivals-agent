@@ -67,3 +67,21 @@ resource ceiling was an estimate for seven then-visible apps, not actual spend.
 The hourly billing command supports today's completed intervals; this supersedes
 the older complete-days-only description above for that command. Billing can
 lag, so later corrections belong in this dated section.
+
+## 2026-09-30 expert footage expansion toward 50 hours
+
+| Experiment | Cost | Answer | Lesson lives in |
+|---|---:|---|---|
+| Public expert CPU screening, 35-hour milestone of the expansion session | $11.5431 reported so far, additional to the first delivery | 35.7703 admitted hours / 6,378 spans / 28 videos / eight creators, versus 21.7285 hours / four creators. Each landed source batch was sent to IDM; expansion continues toward 50 hours | `docs/lanes/expert-footage.md`; `D:/rivals-expert-footage/README.md` |
+
+This is the expansion session's app usage returned by the `rivals` profile /
+`volpestyle` workspace hourly billing report at the 35-hour milestone, including
+failed and retried scans. The eleven earlier-delivery app IDs are excluded to
+avoid counting their $12.7473 twice. Source:
+`D:/rivals-expert-footage/metrics/billing-at-35h.json`; the full workspace response
+is `metrics/billing-50h-session.json` in that same external root. This is an
+interim figure while additional CPU scans run, not a final bill. Every function
+has timeout=7200; public download/reference/decode subprocesses also have
+explicit timeouts. Ephemeral CPU apps, no GPU or persistent volume. Completed
+cohorts stop automatically; the final entry will record remaining usage and
+verified teardown. No other lane's apps are stopped.
