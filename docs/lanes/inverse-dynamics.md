@@ -277,6 +277,18 @@ labels are consistently too small under masking. The correction would be camera_
 per axis (DayMR yaw x1.22, pitch x1.54), for spans whose mask set is the dominant one. It is not applied yet (see the
 handoff). The better fix is to shrink conservative masks at the source and relabel.
 
+**Deferred and open (idm, 2026-09-30 evening).**
+- **Mask shrink:** the decision is deferred by the lead. Labels are unchanged (camera_scale 1.0; DayMR flagged).
+- **Swing false positives on aerial overheads (James):** these are v2-a errors. v2-cd rejects them on the flagged span, and
+  on held-out -11/-12 v2-cd shows no swing-held false positive after airborne LMB clicks (0/29; v2-a 1/29). v2-a
+  over-labels swing holds: 4.8 % of expert rows are held versus 3.0 % for v2-cd, and 68 % of v2-a's held rows are
+  not held under v2-cd. Take swing holds from v2-cd.
+- **spider_power (LMB):** the press-onset target is ill-posed. On held-out -11/-12, LMB is held on 12.3 % of rows but
+  has only 78 onsets in 14.6 min (84 % of held time sits in holds longer than 1 s). The v2-cd press head scores
+  P 0.44 / R 0.09. The held head scores P 0.64 / R 0.43 / F1 0.51, rising to 0.61-0.63 with a 0.35-0.7 s moving
+  average at threshold 0.4 (settings chosen on the same sessions, so optimistic). Use held_end[spider_power], not
+  LMB presses.
+
 ### Cached-feature anchor alignment (IDM relief, 2026-09-30)
 
 Changing the IDM context window moved the first labelled timestamp and therefore the exporter's nominal 30 Hz
