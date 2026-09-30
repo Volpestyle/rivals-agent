@@ -181,6 +181,19 @@ reproduces the earlier run exactly):
 | expert camera labels only | 0.775 | 80.9% | 8.1% | 0.317 | 0.401 | 0.789 | 0.271 |
 | pretrain on expert + own, then own only | 0.780 | 79.5% | 8.4% | 0.306 | 0.399 | 0.793 | 0.284 |
 
+Three seeds, Req s0-s2 as expert data (92,793 steps, +31%), means over seeds 0-2:
+
+| | Val yaw | Val onset | Val still false turn | Val press F1 | Dev yaw | Dev onset | Dev still false turn | Dev press F1 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| own | 0.786 | 79.1% | 10.2% | 0.314 | 0.809 | 76.6% | 11.2% | 0.290 |
+| mix | 0.776 | 79.7% | 8.8% | 0.333 | 0.797 | 75.1% | 9.5% | 0.304 |
+
+The gain is modest; the one-shard seed-0 preview overstated it. False turns and buttons improve on both sets, yaw
+improves slightly, and onset is flat on val and 1.5 points lower on dev. Views for later videos are built on the
+Mac from idm's per-span clips, which keep the original timestamps; rows match clip frames within 1 ms. Bundle
+`bc2-mix-s1` (dev's pick by press F1): val press F1 0.364, above the incumbent head's 0.325, so it needs no
+hybrid. It runs p50 38 / p95 46 ms.
+
 # Policy: the learned chooser (steps 1-3)
 
 **Status (2026-09-29): HISTORY.** The MLX chooser and the VUH-1311 offline consumer (`policy/behaviour.py`); this part stays their record.
