@@ -122,7 +122,8 @@ to it instead of adding a third statement.
 ## Agent delivery protocol
 
 Use `herdr-lead` for swarm coordination and `herdr` for pane operations. An idle Codex worker receives nothing
-through Swarm, and `codex queue` does not wake the `--no-daemon` panes (tested 2026-09-28). So the lead sends a
+through Swarm, and `codex queue` does not wake the `--no-daemon` panes (tested 2026-09-28). An idle Claude worker
+missed a Swarm message too (2026-09-30), so the lead prompts any idle worker through Herdr. So the lead sends a
 message to a Codex worker as one Herdr prompt carrying the whole message, confirms it was submitted, and sends no
 Swarm copy. Workers reply to the lead with `swarm_send`, which reaches a Claude lead on its own. Nobody polls an idle
 model in a loop (`~/dotfiles/docs/agents/swarm-launch.md`). Keep one
