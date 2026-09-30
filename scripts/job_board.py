@@ -856,7 +856,9 @@ def render(snapshot, evidence):
             f'<div class="stat"><b class="{"amber" if unconfirmed else "mint"}">{len(unconfirmed)}</b><span>UNCONFIRMED · CURRENT</span></div></div></section>'
             f'{preview}{warning_html}<div class="layout"><main class="main"><section class="panel"><div class="panel-header"><h2>Running now</h2>'
             f'<small>{running_count} running · {queued_count} queued</small></div>{live_jobs}</section>'
-            '<div class="section-heading"><h2>What the experiments tested</h2><small>Recorded decisions</small></div>'
+            '<div class="section-heading"><h2>Early policy experiments</h2><small>Sept 24–26 range_bc rounds · history, not current status</small></div>'
+            '<div class="panel empty-note">Newer decisions (camera calibration, compat checks, IDM and policy probes) are recorded on '
+            '<a href="https://linear.app/vuhlp/project/rivals-agent-762337b8bf64">the Linear project</a>, not on this board.</div>'
             + (''.join(experiment_card(r) for r in experiments) or '<div class="panel empty-note">No experiment decisions have been recorded yet.</div>') +
             f'<details class="panel fold"><summary>Recent runs ({len(finished)})<span class="muted">Last 48 hours · completion is separate from acceptance</span></summary>'
             f'{"".join(job_card(j) for j in finished)}</details>'
