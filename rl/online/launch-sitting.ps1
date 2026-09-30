@@ -24,8 +24,9 @@ $rlUv = 'C:/Users/volpe/AppData/Local/Programs/Python/Python311/Scripts/uv.exe'
 $rlPython = 'C:/Users/volpe/.venvs/rivals-live-cu128/Scripts/python.exe'
 if (-not (Test-Path -LiteralPath (Join-Path $BaseBundle 'bundle.json'))) { throw 'Base bundle is missing; do not launch' }
 if (Test-Path -LiteralPath $Out) { throw 'Sitting output exists; preserve it and return to the lead' }
-& $rlUv run --no-project --python $rlPython python scripts/capture.py preflight
-if ($LASTEXITCODE -ne 0) { throw 'Capture preflight refused; do not launch' }
+# Bounded capture-rate check (scripts/capture.py, live-loop dee8c23): at least 60 fps within 3 attempts, else refuse.
+& $rlUv run --no-project --python $rlPython python scripts/capture.py preflight --min-fps 60 --attempts 3
+if ($LASTEXITCODE -ne 0) { throw 'Capture preflight refused (need 60 fps within 3 attempts); do not launch' }
 $rlGames = @(Get-Process -Name 'Marvel-Win64-Shipping' -ErrorAction Stop)
 if ($rlGames.Count -ne 1) { throw 'Expected exactly one game process; inspect before launch' }
 $rlGamePid = [int]$rlGames[0].Id
