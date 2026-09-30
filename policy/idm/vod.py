@@ -337,8 +337,12 @@ def span_pts(video, start, end, *, ffprobe="ffprobe"):
     """Presentation times (seconds) of every frame with start <= t <= end, from the container index."""
     out = subprocess.run([ffprobe, "-v", "error", "-select_streams", "v:0", "-read_intervals",
                           f"{max(0.0, start - 3):.3f}%{end + 1:.3f}", "-show_entries", "packet=pts_time",
-                          "-of", "csv=p=0", str(video)], check=True, capture_output=True, text=True).stdout
-    return sorted(t for t in (float(x) for x in out.split() if x.strip() and x.strip() != "N/A")
+                          "-of", "json", str(video)], check=True, capture_output=True, text=True).stdout
+    # Packet side data adds CSV columns (e.g. "213.516000,"). Read the named
+    # timestamp so metadata cannot be mistaken for another presentation time.
+    packets = json.loads(out)["packets"]
+    times = (float(p["pts_time"]) for p in packets if p.get("pts_time") not in (None, "N/A"))
+    return sorted(t for t in times
                   if start - 1e-4 <= t <= end + 1e-4)
 
 
