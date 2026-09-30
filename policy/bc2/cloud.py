@@ -67,7 +67,10 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
         feat_dropout: float = .3, hidden: int = 512, use_green: bool = False, use_dt: bool = False,
         chunk: int = 0, onset_weight: float = 1., chunk_weight: float = .5, expert: bool = False,
         expert_epochs: int = None, expert_share: float = None, hires: bool = False, layers: int = 1,
-        expert_actions: bool = True, expert_sessions: list = None, expert_label_source: str = None):
+        expert_actions: bool = True, expert_sessions: list = None, expert_label_source: str = None,
+        expert_targets: str = None):
+    """expert_targets: a volume directory of target-only overlays (<shard>/{targets.npz, meta.json}, from
+    expert.relabel) that replace each staged expert shard's targets; the original features are unchanged."""
     _setup()
     import shutil
     from policy.bc2 import model, train
@@ -81,9 +84,25 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
         raise ValueError("expert_sessions requires expert=True")
     if expert:
         from policy.bc2.cohort import expert_dirs
-        for d in expert_dirs("/out/expert-features", expert_sessions, expert_label_source):
+        base_source = None if expert_targets else expert_label_source
+        for d in expert_dirs("/out/expert-features", expert_sessions, base_source):
             shutil.copytree(d, local / d.name)
             experts.append(local / d.name)
+        if expert_targets:
+            import json
+            sources = set()
+            for d in experts:
+                src = Path(expert_targets) / d.name
+                if not (src / "targets.npz").is_file() or not (src / "meta.json").is_file():
+                    raise ValueError(f"no target overlay for {d.name} in {expert_targets}")
+                meta = json.loads((src / "meta.json").read_text())
+                if meta["session"] != d.name:
+                    raise ValueError(f"overlay session mismatch: {d.name}")
+                sources.add(meta.get("relabel", {}).get("calibration", {}).get("source"))
+                shutil.copy(src / "targets.npz", d / "targets.npz")
+                shutil.copy(src / "meta.json", d / "meta.json")
+            if None in sources or len(sources) != 1 or (expert_label_source and sources != {expert_label_source}):
+                raise ValueError(f"overlay label sources {sources} differ from {expert_label_source}")
     run = Path("/tmp/run") / name
     config = model.Config(use_feats=use_feats, use_motion=use_motion, feat_dropout=feat_dropout, hidden=hidden,
                           use_green=use_green, use_dt=use_dt, chunk=chunk, hires=hires, layers=layers)
