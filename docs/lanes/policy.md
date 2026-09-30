@@ -131,6 +131,21 @@ Live path check: `live_replay` of `bc2-dt-s1-hybrid` on 2 min of val gives yaw 0
 (`D:/rivals-policy/replay/bc2-dt-s1-hybrid-val-t/`). Without capture times the interval input saw replay
 wall-clock gaps and yaw degraded to 1.29, so a caller must pass each frame's own capture time to `step`.
 
+### Capacity (2026-09-30)
+
+Frame-interval base, batch 8, clean val, mean decode:
+
+| Core | Seeds | Press F1 | Yaw MAE | Moving sign | Onset sign | Pitch MAE |
+|---|---|---:|---:|---:|---:|---:|
+| LSTM 512 x1 | 0-2 | 0.25-0.27 | 0.828-0.836 | 93.5-93.7% | 75-77% | 0.435-0.439 |
+| LSTM 1024 x1 | 0-2 | 0.29-0.31 | 0.805-0.816 | 93.8-94.4% | 76-78% | 0.417-0.429 |
+| LSTM 1024 x2 | 0-2 | 0.28 | 0.776-0.813 | 93.4-94.1% | 78-79% | 0.401-0.406 |
+| LSTM 1536 x2 (`h-l2-h1536-s0`) | 0 | 0.295 | 0.779 | 94.3% | 79.0% | 0.406 |
+
+3 layers did not train: dev loss stayed near 3.8 for 25 epochs. Full-resolution global motion frames
+(`Config.hires`) are worse on 3 seeds (yaw 0.87-0.90) and select epoch 3-4, so they are off.
+Bundles `bc2-l2h1536` (p50 39 / p95 46 ms) and `bc2-l2h1536-hybrid` (44 / 52 ms).
+
 ## Step 3: IDM-labelled expert footage (`policy/bc2/expert.py`)
 
 The idm lane labels footage's expert spans with full03 as REPLAY step tables (format agreed 2026-09-30): 30 Hz
