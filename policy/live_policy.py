@@ -71,6 +71,23 @@ def write_bundle(directory, *, checkpoint, vision, vision_config, evaluation, na
     return bundle
 
 
+def write_bc2_bundle(directory, *, checkpoint, report, tag="selected", name, notes="",
+                     vision="vision.safetensors", vision_config="siglip2-large-config.json"):
+    """A policy.bc2 bundle: Policy2 checkpoint, the NitroGen tower, and report.json's TRAIN-calibrated thresholds."""
+    from policy.range_bc import vocab
+    directory = Path(directory)
+    rep = json.loads((directory / report).read_text())
+    live = vocab.live_mask([10 ** 6] * vocab.N)
+    bundle = {"format": "rivals-live-policy-bundle-v1", "name": name, "kind": "bc2", "notes": notes,
+              "step_s": STEP_S, "train_size": list(TRAIN_SIZE), "actions": list(vocab.NAMES), "files": {},
+              "thresholds": rep[tag]["thresholds"], "live": dict(zip(vocab.NAMES, map(bool, live)))}
+    for key, file in (("checkpoint", checkpoint), ("vision", vision), ("vision_config", vision_config),
+                      ("report", report)):
+        bundle["files"][key] = {"path": file, "sha256": _sha256(directory / file)}
+    (directory / "bundle.json").write_text(json.dumps(bundle, indent=2) + "\n")
+    return bundle
+
+
 def load_encoder_checkpoint(path, sha256):
     """An H1 encoder-head checkpoint (EXPLORATORY or CONFIRM tag) from the chunk trainer."""
     import torch
@@ -100,15 +117,31 @@ class LivePolicy:
         root = Path(bundle_dir)
         self.bundle = json.loads((root / "bundle.json").read_text())
         files = {k: (root / v["path"], v["sha256"]) for k, v in self.bundle["files"].items()}
-        model, self.recipe = load_encoder_checkpoint(*files["checkpoint"])
-        # Training cache frames were full-range RGB decoded from YUV; the capture is already full-range BGR.
         if preprocess not in ("torch", "ffmpeg"):
             raise ValueError("preprocess is torch or ffmpeg")
-        self.preprocess = preprocess
-        self.predict = EncoderPredictor(model, InProcessCachePreprocessor(compact_bgr=True) if preprocess == "ffmpeg"
-                                        else None, vision_path=files["vision"][0],
-                                        vision_sha256=files["vision"][1], config_path=files["vision_config"][0],
-                                        config_sha256=files["vision_config"][1], device=device)
+        self.kind, self.preprocess = self.bundle.get("kind", "encoder_h1"), preprocess
+        if self.kind == "bc2":
+            import torch
+            from policy.bc2.features import load_tower
+            from policy.bc2.model import Config, Policy2
+            if preprocess != "torch" or device != "cuda":
+                raise ValueError("bc2 bundles run with preprocess='torch' on cuda")
+            for key in ("checkpoint", "vision", "vision_config"):
+                if _sha256(files[key][0]) != files[key][1]:
+                    raise ValueError(f"{files[key][0]}: hash differs from bundle.json")
+            payload = torch.load(files["checkpoint"][0], map_location="cpu", weights_only=True)
+            self.model = Policy2(Config(**payload["config"]))
+            self.model.load_state_dict(payload["model"], strict=True)
+            self.model.to(device).eval()
+            self.tower = load_tower(files["vision"][0], files["vision_config"][0], device)
+            self.predict = None
+        else:
+            model, self.recipe = load_encoder_checkpoint(*files["checkpoint"])
+            # Training cache frames were full-range RGB decoded from YUV; the capture is already full-range BGR.
+            self.predict = EncoderPredictor(model, InProcessCachePreprocessor(compact_bgr=True)
+                                            if preprocess == "ffmpeg" else None, vision_path=files["vision"][0],
+                                            vision_sha256=files["vision"][1], config_path=files["vision_config"][0],
+                                            config_sha256=files["vision_config"][1], device=device)
         self.names = vocab.NAMES
         self.mask = tuple(bool(self.bundle["live"][n]) for n in self.names)
         self.levels = tuple(float(self.bundle["thresholds"][n]) if thresholds == "train" else float(thresholds)
@@ -119,7 +152,9 @@ class LivePolicy:
     def reset(self):
         """Start a new episode: clear the recurrent state and the held-action memory."""
         from policy.range_bc import vocab
-        self.predict.state = None
+        if self.predict is not None:
+            self.predict.state = None
+        self.state, self.gray_prev = None, None
         self.prev = {"held": [0] * vocab.N, "press": [0] * vocab.N, "release": [0] * vocab.N,
                      "known": [True] * vocab.N, "cy": vocab.ZERO_CLASS, "cp": vocab.ZERO_CLASS}
         self.index = 0
@@ -141,6 +176,40 @@ class LivePolicy:
         import cv2
         return cv2.resize(frame, TRAIN_SIZE, interpolation=cv2.INTER_AREA if w > TRAIN_SIZE[0] else cv2.INTER_LINEAR)
 
+    def _views(self, frame):
+        """The cache's global (144x256) and crop (128x128) views: RGB float [1, 3, H, W] holding uint8 values."""
+        import torch
+        from torch.nn import functional as F
+        x = torch.from_numpy(frame).to(self.device, non_blocking=True).permute(2, 0, 1)[None].flip(1).float()
+        if tuple(x.shape[-2:]) != TRAIN_SIZE[::-1]:
+            if not self.resize:
+                raise ValueError(f"frame {tuple(x.shape[-2:])} differs from training {TRAIN_SIZE[::-1]}")
+            x = F.interpolate(x, TRAIN_SIZE[::-1], mode="area" if x.shape[-1] > TRAIN_SIZE[0] else "bilinear")
+        h, w = x.shape[-2:]
+        views = [F.interpolate(x, (144, 256), mode="area"),
+                 F.interpolate(x[..., (h - 256) // 2:(h - 256) // 2 + 256, (w - 256) // 2:(w - 256) // 2 + 256],
+                               (128, 128), mode="area")]
+        return [v.round().clamp(0, 255) for v in views]
+
+    def _bc2_predict(self, frame):
+        """policy.bc2: tower features of both views plus motion observed since the previous step's frame."""
+        import torch
+        from policy.bc2.features import tower_features
+        from policy.bc2.model import gray_small
+        with torch.inference_mode():
+            rgb = [v.permute(0, 2, 3, 1).to(torch.uint8) for v in self._views(frame)]
+            feats = torch.stack([tower_features(self.tower, v)[0] for v in rgb])[None, None]
+            gray = [gray_small(v) for v in rgb]
+            prev = self.gray_prev or gray
+            with torch.autocast("cuda", dtype=torch.bfloat16):
+                acts, cams, self.state = self.model(feats, prev[0][None], gray[0][None], prev[1][None],
+                                                    gray[1][None], self.state)
+            self.gray_prev = gray
+            acts, cams = acts.float(), cams.float()
+            if not (bool(torch.isfinite(acts).all()) and bool(torch.isfinite(cams).all())):
+                raise ValueError("nonfinite model outputs")
+            return torch.sigmoid(acts[0, 0]).tolist(), torch.softmax(cams[0, 0], -1).tolist()
+
     def _torch_predict(self, frame):
         """EncoderPredictor.__call__ with the cache views computed on the device."""
         import torch
@@ -149,18 +218,8 @@ class LivePolicy:
         from policy.range_bc.explore_encoder import pool_tokens
         p = self.predict
         with torch.inference_mode():
-            x = torch.from_numpy(frame).to(p.device, non_blocking=True).permute(2, 0, 1)[None].flip(1).float()
-            if tuple(x.shape[-2:]) != TRAIN_SIZE[::-1]:
-                if not self.resize:
-                    raise ValueError(f"frame {tuple(x.shape[-2:])} differs from training {TRAIN_SIZE[::-1]}")
-                x = F.interpolate(x, TRAIN_SIZE[::-1], mode="area" if x.shape[-1] > TRAIN_SIZE[0] else "bilinear")
-            h, w = x.shape[-2:]
-            views = [F.interpolate(x, (144, 256), mode="area"),
-                     F.interpolate(x[..., (h - 256) // 2:(h - 256) // 2 + 256, (w - 256) // 2:(w - 256) // 2 + 256],
-                                   (128, 128), mode="area")]
             pixels = []
-            for v in views:
-                v = v.round().clamp(0, 255)
+            for v in self._views(frame):
                 v = F.interpolate(v, (256, 256), mode="bilinear", align_corners=False, antialias=True)
                 pixels.append((v / 127.5 - 1).to(p.tower_dtype))
             tokens = p.tower(pixel_values=torch.cat(pixels)).last_hidden_state
@@ -175,7 +234,9 @@ class LivePolicy:
     def step(self, frame_bgr):
         from policy.range_bc import executor, vocab
         started = time.perf_counter()
-        if self.preprocess == "torch":
+        if self.kind == "bc2":
+            probs, cameras = self._bc2_predict(self._check(frame_bgr))
+        elif self.preprocess == "torch":
             probs, cameras = self._torch_predict(self._check(frame_bgr))
         else:
             probs, cameras = self.predict(self._frame(frame_bgr), self.prev)
@@ -197,7 +258,7 @@ class LivePolicy:
                     latency_ms=(time.perf_counter() - started) * 1000, index=self.index - 1)
 
     def close(self):
-        if self.predict.preprocess is not None:
+        if self.predict is not None and self.predict.preprocess is not None:
             self.predict.close()
 
 

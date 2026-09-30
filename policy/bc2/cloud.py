@@ -22,7 +22,8 @@ image = (modal.Image.debian_slim(python_version="3.11")
          .add_local_dir(CODE / "policy", "/repo/policy", ignore=["**/__pycache__", "idm/**"])
          .add_local_dir(CODE / "agent", "/repo/agent", ignore=["**/__pycache__"]))
 for relative in ("data/human/sealed-denylist.v2.json", "data/human/patch-equivalence.json"):
-    image = image.add_local_file(CODE / relative, "/repo/" + relative)
+    for root in ("/repo/", "/root/"):     # modal run -m executes the package from /root
+        image = image.add_local_file(CODE / relative, root + relative)
 src = modal.Volume.from_name("rivals-explore-chunks-20260927")
 out = modal.Volume.from_name("rivals-policy-bc2-20260930", create_if_missing=True)
 app = modal.App("rivals-policy-bc2-20260930")
@@ -46,7 +47,7 @@ def extract_session(session: str, cache_root: str = "/src/caches", steps_root: s
     (local / "hud.u8").symlink_to(f"{cache_root}/{session}/hud.u8")
     tower = features.load_tower("/out/assets/vision.safetensors", "/out/assets/siglip2-large-config.json", "cuda")
     dest = Path("/tmp/features") / session
-    meta = features.extract(f"{steps_root}/{session}.steps.jsonl", local, dest, tower,
+    meta = features.extract(f"{steps_root}/{session}.jsonl", local, dest, tower,
                             log=lambda m: print(m, flush=True))
     final = Path("/out/features") / session
     if final.exists():
