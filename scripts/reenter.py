@@ -915,10 +915,12 @@ def _scene(f):
     return cv2.resize(g, (160, 68), interpolation=cv2.INTER_AREA)
 
 
-def arrival_step(f, m):
+def arrival_step(f, m, camera_turn=None):
     """The arrival's decision on one frame: ("plaza?", why) a second look standing still, ("done", why), ("turn", stick, secs, why),
     ("walk", secs, why), ("strafe", stick x, secs, why) sideways off something walked into, or ("give up", why). Pure: it reads only the
-    frame and `m`, which it updates; it sends nothing."""
+    frame and `m`, which it updates; it sends nothing. Optional camera_turn maps
+    normalized horizontal error to (stick, seconds), replacing legacy camera
+    rates/focal prediction for the bounded alt-247-124 reset."""
     # The last step's walk is judged here, once, before anything can return: what it changed in the view counts toward (or clears) the
     # stall, and the step is marked done, so a pause that follows (the plaza's second look) is never taken for a walk. Review of cac94bd:
     # an advancing walk seen on a plaza-looking frame was skipped, and the 0.15 s pause after it counted as a second failed walk.
@@ -941,7 +943,8 @@ def arrival_step(f, m):
         if m.sweeps >= OUT_SWEEPS:
             return ("give up", f"out, but no bot in view after {OUT_SWEEPS} look-around turns")
         m.sweeps += 1
-        return ("turn", -YAW_STICK, SWEEP_S, f"out: look around left, rstick {-YAW_STICK:+.2f} for {SWEEP_S:.2f} s")
+        stick, secs = camera_turn(-0.5) if camera_turn else (-YAW_STICK, SWEEP_S)
+        return ("turn", stick, secs, "out: look around left")
     if m.still >= STILL_WALKS:                        # walking into something: the view does not change
         m.still = 0
         if m.sidesteps >= SIDESTEP_TRIES:
@@ -963,8 +966,13 @@ def arrival_step(f, m):
     m.started = m.started or x is not None
     if x is None:  # nothing to walk toward (a wall, the plaza with no bot in view): look around, do not walk blind
         m.chosen = None
-        return ("turn", YAW_STICK, SWEEP_S, f"no door: look around, rstick {YAW_STICK:+.2f} for {SWEEP_S:.2f} s")
+        stick, secs = camera_turn(0.5) if camera_turn else (YAW_STICK, SWEEP_S)
+        return ("turn", stick, secs, "no door: look around")
     if abs(x - HERO_X) > DOOR_TOL:  # the pane is off his column: turn it onto his column first, no walking
+        if camera_turn:
+            stick, secs = camera_turn(x - HERO_X)
+            m.chosen = x  # reacquire nearest pane; no unmeasured focal prediction
+            return ("turn", stick, secs, "door off hero column: bounded visual correction")
         deg = math.degrees(math.atan((x - HERO_X) * 1280.0 / FOCAL))
         secs = min(0.6, abs(deg) / YAW_DEG_S)
         m.chosen = x - math.copysign(secs * YAW_DEG_S, deg) * math.pi / 180 * FOCAL / 1280.0   # where our turn moves it

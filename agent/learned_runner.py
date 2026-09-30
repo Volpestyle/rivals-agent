@@ -1,6 +1,6 @@
 """Experimental learned range runner: native BGR -> semantic actions/degrees -> guarded pad.
 
-No navigation, scripted fallback, scoreboard or keepalive inputs. LiveSafety and
+Optional bounded range reset; no lobby navigation, scoreboard or keepalive inputs. LiveSafety and
 LiveIO are reused unchanged. Camera requests use signed measured yaw knots;
 pitch rates are explicitly approximate (yaw rate * 124/247), capped at ry=.2.
 """
@@ -462,6 +462,48 @@ def limit_cpu_threads(real_policy):
         torch.set_num_interop_threads(2)
 
 
+def run_phases(runner, *, max_s, reset_before=False, settle_s=0., reset_factory=None):
+    """One pad and unchanged safety scope; no policy history from setup/settle."""
+    from .range_reset import ResetRunner
+    factory = reset_factory or ResetRunner
+    scope_end = runner.deadline
+    result = {'reset': {'status': 'skipped', 'reason': 'not_requested'}}
+    if reset_before:
+        start = runner.io.now()
+        reset = factory(runner.io, runner.percept, runner.guard, None,
+                        min(start + 30., scope_end - max_s - settle_s),
+                        log=runner.log, sleep=runner.sleep)
+        try:
+            result['reset'] = reset.reset()
+            runner.last_t, runner.size = reset.last_t, reset.size
+        except RangeLost as exc:
+            runner.last_frame = reset.last_frame
+            result.update(result='reset_failed', reset={
+                'status': 'failed', 'reason': str(exc), 'start_state': getattr(reset, 'start_state', 'other'),
+                'seconds': runner.io.now() - start, 'frames': getattr(reset, 'frames', 0),
+                'spawn_confirmed': False})
+            return result
+    result['policy_start_t'] = runner.io.now()
+    runner.deadline = min(scope_end - settle_s, result['policy_start_t'] + max_s)
+    runner.write({'event': 'policy_start', 't': result['policy_start_t']})
+    result.update(runner.run())
+    result['policy_end_t'] = runner.io.now()
+    runner.write({'event': 'policy_end', 't': result['policy_end_t']})
+    if result['result'] == 'deadline' and settle_s:
+        monitor = factory(runner.io, runner.percept, runner.guard, None, scope_end,
+                          log=runner.log, sleep=runner.sleep)
+        monitor.last_t, monitor.size = runner.last_t, runner.size
+        start = runner.io.now()
+        try:
+            result['settle'] = monitor.settle(settle_s)
+        except RangeLost as exc:
+            result['settle'] = {'result': str(exc)}
+            result['result'] = str(exc)
+        result['settle'].update(seconds=runner.io.now() - start, grounded_known=False)
+        runner.last_frame, runner.last_stamp = monitor.last_frame, monitor.last_stamp
+    return result
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     mode = ap.add_mutually_exclusive_group(required=True)
@@ -477,6 +519,8 @@ def main(argv=None):
     ap.add_argument('--camera-settings-match')
     ap.add_argument('--game-pid', type=int)
     ap.add_argument('--max-s', type=float, default=60.)
+    ap.add_argument('--reset-before', action='store_true', help='up to 30 s guarded arrival/outline placement before policy')
+    ap.add_argument('--settle-s', type=float, default=0., help='neutral guarded monitoring after episode deadline [0,5]')
     ap.add_argument('--yaw-scale', type=float, default=0., help='default 0 disables learned yaw; pitch/actions unchanged')
     ap.add_argument('--save-fps', type=float, default=10.)
     ap.add_argument('--out', type=Path, required=True)
@@ -484,6 +528,11 @@ def main(argv=None):
     a = ap.parse_args(argv)
     if not math.isfinite(a.max_s) or not 0 < a.max_s <= 60:
         ap.error('max-s must be in (0,60]')
+    if not math.isfinite(a.settle_s) or not 0 <= a.settle_s <= 5:
+        ap.error('settle-s must be in [0,5]')
+    scope_s = a.max_s + a.settle_s + (30. if a.reset_before else 0.)
+    if scope_s > 60:
+        ap.error('reset + policy + settle must fit the unchanged 60 s total scope cap')
     if not math.isfinite(a.save_fps) or not 0 < a.save_fps <= 30:
         ap.error('save-fps must be in (0,30]')
     if not math.isfinite(a.yaw_scale) or not 0 <= a.yaw_scale <= 1:
@@ -535,7 +584,7 @@ def main(argv=None):
                                            size=percept.size, wide=warm_finder)
             result['warmup'] = warm_perception(warm_readers, focus, takeover, capture=warm_capture)
             policy.reset()  # warm-up observations are never episode history or input
-            safety = L.LiveSafety(focus, takeover, time.perf_counter() + a.max_s)
+            safety = L.LiveSafety(focus, takeover, time.perf_counter() + scope_s)
             log = L.RunLog(a.out, save_fps=a.save_fps)
             source = L._open_live_io(safety, percept, lambda f: False, lambda f: False, attach_opener=True)
             result['attach_opener'] = source.live.attach_opener
@@ -561,11 +610,11 @@ def main(argv=None):
             result['replay'] = {'predecoded_frames': len(source.decoded),
                                 'predecoded_bytes': source.decoded_bytes,
                                 'simulated_capture_hz': 60 if a.async_policy else None}
-            deadline, sleep = a.max_s, source.sleep
+            deadline, sleep = scope_s, source.sleep
             log = L.RunLog(a.out, save_fps=a.save_fps)
         runner = LearnedRunner(source, percept, guard, policy, deadline, log=log, sleep=sleep,
                                threaded=a.live or a.async_policy, yaw_scale=a.yaw_scale, decision_hz=a.decision_hz)
-        result.update(runner.run())
+        result.update(run_phases(runner, max_s=a.max_s, reset_before=a.reset_before, settle_s=a.settle_s))
         if safety is not None and safety.status['stop_reason']:
             result['result'] = safety.status['stop_reason']
         return 0 if result['result'] in ('deadline', 'replay_complete') else 1
