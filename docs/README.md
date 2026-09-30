@@ -13,6 +13,7 @@ line here.
 | `learning-plan.md` | Current for gates and design; passages about option/intent policies and web-start heads are marked superseded (lead) |
 | `recording-protocol.md`, `recording-log.md` | Current: what James records; the ledger of every take |
 | `compute.md` | Current: machines for jobs, Modal rules, the spend process |
+| `runs-ledger.md` | Current: one row per run (cost, result, keep verdict, visual); the training lab board reads it |
 | `machines.md` | Current: machine contract, access, transfers, job board |
 | `spiderman-kit.md`, `pad-bindings.md` | Current and frozen (pinned by receipts; `spiderman-kit.md` is read at run time) |
 | `human-demo-schema.md`, `execution-training.md` | History: the keyboard/mouse importer and baseline contract; superseded as the product on 2026-09-23 |

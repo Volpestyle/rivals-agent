@@ -64,6 +64,19 @@ needs a concise replacement update; preserve its historical predecessor. Do not
 post a project update for every issue or routine retry. Keep caps, counts and
 volatile status in their canonical records, not copied into skill summaries.
 
+## Runs ledger and visuals
+
+When a run finishes, paid or free, add its row to `docs/runs-ledger.md`: cost, one-line result, whether its
+stated keep criterion was met, and its best visual. The training lab board reads that table, and project updates
+draw from it, so the board needs no separate upkeep. Load `result-visuals` to make the visual. Rivals sources:
+- **Live episodes:** the retained frames and `frames.jsonl` under `data/calibration/<sitting>/`.
+- **Sittings:** James's OBS MKV named in `SITTING.md`.
+- **Training runs:** eval reports and curves.
+- **World model:** `rl/world_model/out/*/real_vs_imagined.gif`.
+
+Decode recordings on the CPU only while the game and OBS are closed (`docs/compute.md`). Expert-creator footage
+may appear on the private board only, never on Linear or the blog.
+
 ## Read back and hand off
 
 Read each changed Linear object back. Check the intended text, state and actual

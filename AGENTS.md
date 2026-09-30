@@ -67,6 +67,7 @@ to it instead of adding a third statement.
 | Gates, milestones, reward contract | `docs/learning-plan.md` (lead) | |
 | Recording takes and James's settings statements | `docs/recording-log.md` | |
 | Compute rules, caps, the spend process; spend actuals | `docs/compute.md`; `docs/steering/spend-ledger-20260927.md` | Skills and plans link them |
+| A run's cost, one-line result, keep verdict and best visual (paid or free) | `docs/runs-ledger.md`: add the row when the run finishes | The training lab board reads it; Linear updates and posts draw from it. Visual craft: the `result-visuals` skill |
 | How to operate a tool (live game, compute, Linear) | The skill in `.agents/skills/` | `AGENTS.md` names the skill and keeps only a safety rule and its reason |
 | Kit, bindings, patch | `docs/spiderman-kit.md`, `docs/pad-bindings.md` | |
 

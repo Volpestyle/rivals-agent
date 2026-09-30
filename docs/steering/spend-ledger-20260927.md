@@ -1,5 +1,7 @@
 # What the weekend's GPU money bought (2026-09-26/27)
 
+*From 2026-09-30, per-run lines (cost, result, keep verdict, visual) live in [`docs/runs-ledger.md`](../runs-ledger.md). This file keeps billing snapshots and the lessons from wasted money.*
+
 Steering keeps this file. Costs are Modal's own billing report (`modal billing report --for "this month"`), grouped by
 app name, as of 22:15 CDT on 09-27: **$66.13 of apps** ($68.35 metered with storage; $38.15 billed after $30 of
 credits). Each paid run gets one line: what it cost, what it taught, and where the lesson now lives so no one pays
