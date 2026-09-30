@@ -39,6 +39,10 @@ STEP_NS = 33_333_333
 FRAME_PERIOD_NS = 16_666_667
 PAD_ENVELOPE = {"yaw_deg_per_s": 415.0, "pitch_deg_per_s": 99.0}      # the targets headers' pad_envelope
 HELD_ACTIONS = ("move_forward", "move_left", "move_back", "move_right", "web_swing", "spider_power")
+# Press onsets exported as null (unknown). spider_power (LMB) is mostly held (auto-fire): on James's held-out -11/-12
+# the press head scores P 0.44 / R 0.09 while the held head scores F1 0.51, so LMB comes from held_* (lead, 2026-09-30;
+# docs/lanes/inverse-dynamics.md "Deferred and open").
+PRESS_UNKNOWN = ("spider_power",)
 
 
 GAME = os.environ.get("IDM_GAME_PROCESS", "Marvel-Win64-Shipping.exe")    # overridable for testing only
@@ -248,7 +252,7 @@ def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0, anchor_ro
 def export(ckpt, spans_path, work, out_dir, *, video=None, model=None, anchor_dir=None, camera_scale=None):
     from policy.range_bc import vocab
     _, supported, thresholds = vod.load_any(ckpt, "cpu")
-    thresholds = {a: t for a, t in (thresholds or vod.FULL03_THRESHOLDS).items() if t < 1.0}
+    thresholds = {a: t for a, t in (thresholds or vod.FULL03_THRESHOLDS).items() if t < 1.0 and a not in PRESS_UNKNOWN}
     name = model or model_name(ckpt)
     out_dir = Path(out_dir) / name
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -317,7 +321,8 @@ def export(ckpt, spans_path, work, out_dir, *, video=None, model=None, anchor_di
                                "replay_source": ss[0].get("source_url") or vid},
             "hud_layout": "mk", "swing_mode": {"automatic_swing": None, "hold_to_swing": None},
             "video_size": [ss[0]["width"], ss[0]["height"]], "patch": "unknown",
-            "idm": {"checkpoint": str(ckpt), "thresholds": thresholds, "spans": len(ss),
+            "idm": {"checkpoint": str(ckpt), "thresholds": thresholds, "press_unknown": list(PRESS_UNKNOWN),
+                    "spans": len(ss),
                     "labelled_spans": sum(span_file(work, name, s).exists() for s in ss)}}
         if camera_scale is not None:
             # true_deg ~= yaw_deg * camera_scale. Applied values come from the scale file; degrees are never rewritten.
