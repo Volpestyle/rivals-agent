@@ -74,6 +74,36 @@ def views_of(bgr):
     return g[..., ::-1], c[..., ::-1]
 
 
+class NpyRows:
+    """Row-range reads/writes of a .npy file through plain file IO, not a memmap: pages touched through a memmap
+    stay in the process working set, which broke the PC's per-process memory cap. With dtype and shape, creates
+    the file (header plus sized body); otherwise opens an existing one read-only."""
+
+    def __init__(self, path, dtype=None, shape=None):
+        if dtype is not None:
+            m = np.lib.format.open_memmap(path, "w+", dtype, shape)
+            mode = "r+b"
+        else:
+            m = np.load(path, mmap_mode="r")
+            mode = "rb"
+        self.offset, self.dtype, self.shape = m.offset, m.dtype, m.shape
+        self.row = int(np.prod(self.shape[1:])) * self.dtype.itemsize
+        del m
+        self.file = open(path, mode)
+
+    def read(self, start, count):
+        count = max(0, min(count, self.shape[0] - start))
+        self.file.seek(self.offset + start * self.row)
+        return np.frombuffer(self.file.read(count * self.row), self.dtype).reshape(count, *self.shape[1:]).copy()
+
+    def write(self, start, rows):
+        self.file.seek(self.offset + start * self.row)
+        self.file.write(np.ascontiguousarray(rows, self.dtype).tobytes())
+
+    def close(self):
+        self.file.close()
+
+
 def views(labels, out_root, *, log=print):
     import cv2
     cv2.setNumThreads(1)
@@ -119,25 +149,28 @@ def features(labels, views_root, out_root, tower, *, device="cuda", batch=256, l
     vmeta = json.loads((src / "views.json").read_text())
     if vmeta["steps_sha256"] != session.sha256 or vmeta["decoded"] != n:
         raise ValueError(f"{src}: views do not match these labels")
-    g_all, c_all = np.load(src / "global.npy", mmap_mode="r"), np.load(src / "crop.npy", mmap_mode="r")
+    g_in, c_in = NpyRows(src / "global.npy"), NpyRows(src / "crop.npy")
     out = Path(out_root) / session.session_id
     out.mkdir(parents=True, exist_ok=True)
-    feats = np.lib.format.open_memmap(out / "feats.npy", "w+", np.float16, (n, 2, FEAT))
-    gray_g = np.lib.format.open_memmap(out / "gray_g.npy", "w+", np.uint8, (n, 72, 128))
-    gray_c = np.lib.format.open_memmap(out / "gray_c.npy", "w+", np.uint8, (n, 64, 64))
-    green = np.lib.format.open_memmap(out / "green.npy", "w+", np.float16, (n, GREEN_DIM))
+    outs = {"feats": NpyRows(out / "feats.npy", np.float16, (n, 2, FEAT)),
+            "gray_g": NpyRows(out / "gray_g.npy", np.uint8, (n, 72, 128)),
+            "gray_c": NpyRows(out / "gray_c.npy", np.uint8, (n, 64, 64)),
+            "green": NpyRows(out / "green.npy", np.float16, (n, GREEN_DIM))}
     started = time.monotonic()
-    with torch.no_grad():
-        for s in range(0, n, batch):
-            g = torch.from_numpy(np.ascontiguousarray(g_all[s:s + batch])).to(device)
-            c = torch.from_numpy(np.ascontiguousarray(c_all[s:s + batch])).to(device)
-            f = tower_features(tower, [g, c])
-            m = len(g)
-            feats[s:s + m, 0], feats[s:s + m, 1] = f[:m].cpu().numpy(), f[m:].cpu().numpy()
-            gray_g[s:s + m], gray_c[s:s + m] = gray_small(g).cpu().numpy(), gray_small(c).cpu().numpy()
-            green[s:s + m] = green_profile(g).cpu().numpy()
-    for a in (feats, gray_g, gray_c, green):
-        a.flush()
+    try:
+        with torch.no_grad():
+            for s in range(0, n, batch):
+                g = torch.from_numpy(g_in.read(s, batch)).to(device)
+                c = torch.from_numpy(c_in.read(s, batch)).to(device)
+                f = tower_features(tower, [g, c])
+                m = len(g)
+                outs["feats"].write(s, torch.stack((f[:m], f[m:]), 1).cpu().numpy())
+                outs["gray_g"].write(s, gray_small(g).cpu().numpy())
+                outs["gray_c"].write(s, gray_small(c).cpu().numpy())
+                outs["green"].write(s, green_profile(g).cpu().numpy().astype(np.float16))
+    finally:
+        for a in (g_in, c_in, *outs.values()):
+            a.close()
     np.savez(out / "targets.npz", **data.session_arrays(session, list(range(n))))
     meta = {"session": session.session_id, "split": session.split, "source_kind": "replay",
             "steps_sha256": session.sha256, "steps": n, "runs": len({r["run"] for r in session.rows}),
