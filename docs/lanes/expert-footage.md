@@ -464,3 +464,48 @@ third-party footage and must not be attached to Linear or the blog. No media or
 label projections enter git. Restart the persistent PC queue worker with
 `uv run python scripts/idm_clip_renderer.py worker --sync` if it exits; its
 singleton lock prevents two workers from rendering concurrently.
+
+## DayMR mask inspection (2026-09-30, VUH-1353 prerequisite)
+
+**Decision: propose an alert-only candidate for the small paired local test;
+leave production masks unchanged.** The current `[.46,0,.73,.48]` rectangle
+hides excess scene structure, players and native objective HUD when no follower
+alert is present. Its top edge is necessary: the real upside-down Spider-Man
+alert and web reach y=0. It is also too narrow on the left for the observed
+`madarauchiha3280` text (about x=840, versus the old boundary at x=883).
+
+Candidate normalized xyxy rectangles are `[.455,0,.625,.34]` for the animated
+sprite/web and `[.40,.37,.65,.465]` for follower text. At 1920x1080, outward-rounded
+bounds are `[873,0,1200,368]` and `[768,399,1248,503]`. These retain the observed
+sprite, extended arm and four follower names with padding. Nominal alert area
+falls from **12.960% to 8.155%** of the frame (4.805 percentage points; 37.1% less).
+Holding the other five rectangles fixed gives **27.600% to 22.795%** total area.
+This geometry is not evidence of improved IDM camera accuracy; the prior mask
+test and its measured slopes remain in the inverse-dynamics lane note.
+
+Private artifacts are under
+`D:/rivals-expert-footage/private-review/daymr-mask-inspection/`: `index.html`
+links native originals and existing/candidate comparisons; `alert-comparison.png`
+shows the alert cases; `candidate.json` holds the proposed coordinates and limits.
+`samples.json` identifies 21 admitted-span midpoints, three each from all seven
+admitted DayMR broadcasts (September 11–28). All have the same basic stream layout,
+with varying maps, camera poses, sponsor/music cards and chat lengths. There are
+also 48 native frames at 2 Hz around 12690–12714s of 2872282230, showing two
+successive follower names, plus two byte-preserved earlier native audit JPEGs
+from 2871149954 and 2881098402. The latter timestamps were not independently
+reverified: additional decode yielded to the process guard, so existing native
+frames were reused. The 24-second animation context crosses neighboring span
+boundaries and is diagnostic only, not newly admitted footage. Contact sheets
+were inspected, with eleven selected cases opened at native dimensions.
+
+**Coverage limit:** the candidate covers the sampled follower content, not every
+possible animation phase, username length or alert type. The existing full set
+already misses chat badges/text left of x=.79 and above y=.27; the bottom avatar's
+waving hand also extends left of x=.61 in `alert-20.png`. Thus neither full set
+can be claimed to cover all real overlays. Those other masks stay fixed for an
+isolated alert comparison. The music card, sponsor banner, performance counters
+and avatar body fit their existing rectangles in the detailed inspected cases.
+No models, labels, camera multipliers, action mappings, catalogue or source masks
+were changed. Decode used CPU/two threads with game/OBS and decoder guards; spend
+was $0. Lead reviews the private images before IDM's small paired test after GPU
+release; nothing from this inspection is public third-party visual evidence.
