@@ -1,0 +1,61 @@
+{
+  "designation": "provisional, prior-exposed within-pair TEACHER AGREEMENT development probe",
+  "task": "VUH-1353: one frozen-feature replay-to-live linear residual probe",
+  "task_started_local": "2026-09-29T19:37:18-05:00",
+  "deadline_utc": "2026-09-30T02:37:18Z",
+  "inputs": "Existing released prepared stores only, through unchanged reviewed v3 boundary/read/review/pairing/model-loading path. No added data paths or sources.",
+  "loader": "docs/evidence/idm-paired-camera-phase2-20260929-v3/paired.py",
+  "loader_sha256": "7fb74b0d77b0c00586b97e8f56585e9589f642eb94a90b8ffd5d5cc964699dd6",
+  "checkpoint_sha256": "f681da9f3a4b8db6f7d19566172b02db776e4bcfac3381be744786179aa55dde",
+  "review_sha256": "97230b3c68dc699ec40fb18b353b618f78471401f63f0fe63c6c5579559930e6",
+  "mapping": "replay=live-30.600 seconds, unchanged v3 nearest native-PTS pairing; no tuning or shifts",
+  "split": {
+    "fit_live_seconds": [
+      120,
+      145
+    ],
+    "report_live_seconds": [
+      145,
+      155
+    ],
+    "convention": "Half-open intervals. Both live and nominal replay complete 17-frame context footprints (replay PTS mapped by +30.600) must lie entirely in one block. Any footprint crossing 145 is purged. The label interval start/end is already contained in that footprint.",
+    "assertion": "Fit/report native frame ordinal sets must be disjoint in BOTH stores. No hidden-frame overlap. No data-driven split changes.",
+    "exposure": "The last block was previously scored/viewed. This is a temporally separated report block within an exposed pair, not blind validation or generalization."
+  },
+  "frozen_teacher": "LIVE full03 camera predictions, including original _camera reference gains, uncertainty masks and pitch-fix A. No logger truth.",
+  "features": "Replay 128-dimensional penultimate camera-head ReLU activation (model.camera[1]), obtained by hook during frozen eval/inference_mode forward. All full03 parameters requires_grad=False; no update.",
+  "masks": "Joint original known-mask intersection: LIVE and nominal REPLAY yaw and pitch all answered. Fit/report residual, affine, unchanged and zero use identical joint-known rows. Corrected methods inherit these masks; no re-masking or promotion.",
+  "normalization": "Feature mean and population standard deviation from FIT joint-known rows ONLY. Divide by max(std,1e-6). No dimension selection; all 128 features. Report block cannot change normalization.",
+  "residual": {
+    "form": "corrected replay = unchanged replay + standardized replay hidden features @ B + c",
+    "objective": "mean squared residual-target error per axis + lambda*sum(B[:,axis]^2); intercept unpenalized",
+    "lambda": 1.0,
+    "solve": "One deterministic float64 multi-output ridge normal-equation solve, (Z.T@Z/n + lambda*I)^-1@(Z.T@(LIVE-REPLAY-centered)/n). B has 128x2 parameters; c is 2-dimensional mean training residual. No optimizer, search, retry or checkpoint update.",
+    "fit_count": "One real-data multi-output residual fit; separately prespecified affine comparator only. Synthetic tests are not real-data fits."
+  },
+  "affine": "Per-axis training-only ordinary least squares LIVE=a*REPLAY+b, computed from fit means/covariance. If replay variance <=1e-12, a=0 and b=mean FIT teacher. No regularization/tuning.",
+  "baselines": [
+    "unchanged nominal replay",
+    "training-only per-axis affine",
+    "zero prediction"
+  ],
+  "metrics": [
+    "MAE and RMSE against frozen LIVE teacher",
+    "mean absolute magnitude and RMS",
+    "centered standard deviation",
+    "signed bias",
+    "movement sign recall",
+    "active-row mean-absolute magnitude ratio versus teacher",
+    "original/joint coverage and footprint-purged counts"
+  ],
+  "active_teacher_threshold_deg_per_interval": 0.1,
+  "movement_sign_recall": "On report rows with abs(teacher)>=0.1: correct sign AND abs(method)>=0.1. Zero always fails. Report both numerator and denominator.",
+  "axis_positive_gate": {
+    "agreement": "Residual MAE at least 1% lower than BOTH unchanged and affine, and strictly lower than zero. Residual RMSE no greater than EITHER unchanged or affine.",
+    "no_flattening": "Residual RMS, centered std, and active-row mean absolute magnitude each at least 80% of teacher. Active-row sign recall at least 80%, and no more than 2 percentage points below either unchanged or affine. Missing/zero teacher denominator makes this gate inconclusive, not positive.",
+    "decision": "Any failed gate: do not expand that axis. A positive axis is only within-pair teacher-agreement evidence; no expansion or new data access is authorized by this run."
+  },
+  "outputs": "D:/rivals-agent-evidence/idm-paired-camera-distillation-20260929. Aggregate report/per-second visual, parameter coefficients with non-deployment designation, input/code hashes. No feature/teacher row cache, targets or label export. No checkpoint promotion.",
+  "execution": "CPU BelowNormal, Torch intraop2/interop1, no decode/cloud/sealed data. One exclusive start record prevents retries. Check fixed deadline throughout extraction and before/after fit. Stop after one fit/report.",
+  "interpretation": "Agreement with a frozen teacher is not physical accuracy or generalization. The pre-existing discrepancy does not prove replay is worse."
+}
