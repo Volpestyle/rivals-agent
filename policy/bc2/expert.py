@@ -300,6 +300,43 @@ def unpack(views_dir, *, batch=2000):
         out.close()
 
 
+LABEL_FIELDS = ("held_start", "held_end", "held_known", "press", "press_known", "release", "release_known",
+                "yaw_deg", "pitch_deg", "beyond_pad_envelope")
+
+
+def relabel(shard_labels, video_labels, out_features_dir):
+    """Swap a shard's targets to a newer label set for the same video (frames and features unchanged).
+
+    Rows are matched by (run, anchor_ns); a shard row the new set lacks (it trims span edges differently) is
+    marked rejected, so it leaves the eligible runs but every row keeps its frame index. Writes targets.npz and a
+    note in meta.json; returns (matched, missing)."""
+    from policy.bc2 import data
+    from policy.range_bc import steps
+    shard = load_labels(shard_labels)
+    new = {}
+    with Path(video_labels).open(encoding="utf-8") as stream:
+        header = json.loads(stream.readline())
+        for line in stream:
+            r = json.loads(line)
+            new[(r["run"], r["anchor_ns"])] = r
+    rows, missing = [], 0
+    for r in shard.rows:
+        m = new.get((r["run"], r["anchor_ns"]))
+        if m is None:
+            missing += 1
+            rows.append(dict(r, suitability="rejected"))
+        else:
+            rows.append(dict(r, **{k: m[k] for k in LABEL_FIELDS}))
+    session = steps.Session(shard.path, shard.sha256, dict(shard.header, calibration=header["calibration"]), rows)
+    out = Path(out_features_dir)
+    np.savez(out / "targets.npz", **data.session_arrays(session, list(range(len(rows)))))
+    meta = json.loads((out / "meta.json").read_text())
+    meta["relabel"] = {"labels": str(video_labels), "labels_sha256": steps.sha256(video_labels),
+                       "calibration": header["calibration"], "matched": len(rows) - missing, "missing": missing}
+    (out / "meta.json").write_text(json.dumps(meta, indent=2) + "\n")
+    return len(rows) - missing, missing
+
+
 def free_ram_gb():
     """Available physical memory (Windows GlobalMemoryStatusEx; elsewhere /proc/meminfo)."""
     import ctypes
