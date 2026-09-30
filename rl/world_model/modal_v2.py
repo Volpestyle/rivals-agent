@@ -77,6 +77,7 @@ def sweep(run: str, args: list[str]):
 
 
 @app.local_entrypoint()
-def sampler(run: str, wm: str, minutes: int = 45):
-    """modal run --detach rl/world_model/modal_v2.py::sampler --run sweep-noroll --wm /out/v2-noroll/model.pt"""
-    sweep.with_options(timeout=minutes * 60).remote(run, ["--wm", wm])
+def sampler(run: str, wm: str, minutes: int = 45, extra: str = ""):
+    """modal run --detach rl/world_model/modal_v2.py::sampler --run sweep-noroll --wm /out/v2-noroll/model.pt
+    (--extra "--diag --n 384" for the camera-vs-content diagnostic)"""
+    sweep.with_options(timeout=minutes * 60).remote(run, ["--wm", wm, *extra.split()])

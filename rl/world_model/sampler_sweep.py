@@ -35,6 +35,35 @@ def roll(wm, frames, acts, horizon, steps, smax, level):
     return torch.stack(seq[ctx:], 1)
 
 
+@torch.no_grad()
+def yaw_diag(wm, pool, starts, ctx, horizon, steps):
+    """Per-window MSE over +2..3 s (mean, sampled, copy-last) against the window's total |logged yaw|, by quartile."""
+    from rl.world_model.model import rollout
+    yaw, err = [], {"mean": [], "sample": [], "copy_last": []}
+    lo, hi = 19, min(30, horizon)
+    torch.manual_seed(5)
+    for b in range(0, len(starts), 32):
+        f, acts, _ = pool.window(starts[b:b + 32], ctx + horizon)
+        real = f[:, ctx:]
+        preds = {"mean": rollout(wm, f[:, :ctx], acts, horizon, "mean"),
+                 "sample": rollout(wm, f[:, :ctx], acts, horizon, "sample", steps),
+                 "copy_last": f[:, ctx - 1:ctx].expand_as(real)}
+        for k, v in preds.items():
+            err[k].append((((v - real) / 2) ** 2)[:, lo:hi].mean(dim=(1, 2, 3, 4)).cpu())
+        yaw.append((acts[:, ctx:ctx + horizon, D.ACTION_DIM - 2].abs().sum(1) * D.DEG_SCALE).cpu())
+    yaw = torch.cat(yaw)
+    edges = torch.quantile(yaw, torch.tensor([0.25, 0.5, 0.75]))
+    q = torch.bucketize(yaw, edges)
+    out = {"yaw_deg_edges": edges.tolist(), "window": f"+{(lo + 1) / 10:.1f}..{hi / 10:.1f} s"}
+    for k, v in err.items():
+        v = torch.cat(v)
+        out[k] = {f"q{j + 1}": 10 * math.log10(1 / float(v[q == j].mean())) for j in range(4)}
+    out["n_per_quartile"] = [int((q == j).sum()) for j in range(4)]
+    out["spearman_yaw_vs_mean_mse"] = float(np.corrcoef(yaw.argsort().argsort(),
+                                                        torch.cat(err["mean"]).argsort().argsort())[0, 1])
+    return out
+
+
 def main(argv=None, commit=None):
     p = argparse.ArgumentParser()
     p.add_argument("--steps-root", required=True)
@@ -44,6 +73,8 @@ def main(argv=None, commit=None):
     p.add_argument("--out", required=True)
     p.add_argument("--n", type=int, default=128)
     p.add_argument("--horizon", type=int, default=30)
+    p.add_argument("--diag", action="store_true", help="camera vs content: PSNR at 2-3 s by |logged yaw| quartile")
+    p.add_argument("--diag-steps", type=int, default=10, help="Euler steps for the sampled rollout in --diag")
     a = p.parse_args(argv)
     commit = commit or (lambda: None)
     out = Path(a.out)
@@ -67,6 +98,12 @@ def main(argv=None, commit=None):
     g = torch.Generator().manual_seed(99)
     starts = torch.tensor(starts)[torch.randperm(len(starts), generator=g)[:a.n]]
     res = {"wm": a.wm, "n": len(starts), "load_s": round(time.time() - t0, 1), "variants": {}}
+    if a.diag:
+        res["yaw_quartiles"] = yaw_diag(wm, pool, starts, ctx, a.horizon, a.diag_steps)
+        v2.log(out, event="yaw_diag", **res["yaw_quartiles"])
+        (out / "yaw_diag.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
+        commit()
+        return res
     for steps, smax, level in VARIANTS:
         torch.manual_seed(5)
         mse, bias, contrast = 0, 0, 0

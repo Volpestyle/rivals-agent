@@ -159,3 +159,17 @@ def test_imagination_rl_smoke(tmp_path):
                            "--sample-steps", "1"])
     assert set(res) == {"bc", "rl"}
     assert {"real", "logged_A", "logged_B", "policy_A", "policy_B"} <= set(res["rl"])
+
+
+def test_yaw_diag_quartiles():
+    np = pytest.importorskip("numpy")
+    torch = pytest.importorskip("torch")
+    from rl.world_model import v2
+    from rl.world_model.model import Denoiser
+    from rl.world_model.sampler_sweep import yaw_diag
+    s = v2.synthetic("syn", n=400)
+    pool = v2.Pool(torch.from_numpy(s["frames"]), s["actions"], s["events"], "cpu", "cpu")
+    wm = Denoiser(2, D.ACTION_DIM, (8, 16, 16, 16, 16)).eval()
+    out = yaw_diag(wm, pool, torch.arange(0, 200, 25), 2, 21, 1)
+    assert set(out) >= {"mean", "sample", "copy_last", "yaw_deg_edges", "n_per_quartile"}
+    assert sum(out["n_per_quartile"]) == 8 and len(out["mean"]) == 4
