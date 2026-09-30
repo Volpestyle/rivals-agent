@@ -47,7 +47,11 @@ def test_export_index_packet_metadata_and_timebase(monkeypatch, tmp_path):
     def probe(command, **kwargs):
         entries = command[command.index("-show_entries") + 1]
         if entries == "stream=time_base":
-            return SimpleNamespace(stdout="1/90000\n")
+            assert command[command.index("-of") + 1] == "json"
+            return SimpleNamespace(stdout=json.dumps({
+                "programs": [{"streams": [{"time_base": "1/90000"}]}],
+                "streams": [{"time_base": "1/90000"}],
+            }))
         assert entries == "packet=pts"
         assert command[command.index("-of") + 1] == "json"
         return SimpleNamespace(stdout=json.dumps({"packets": [

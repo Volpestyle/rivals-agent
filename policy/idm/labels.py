@@ -161,8 +161,10 @@ def _video_index(video, cache_dir):
     if cache.exists():
         z = np.load(cache)
         return z["pts"], [int(v) for v in z["tb"]]
-    tb = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=time_base",
-                         "-of", "csv=p=0", str(video)], check=True, capture_output=True, text=True).stdout.strip()
+    info = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=time_base",
+                           "-of", "json", str(video)], check=True, capture_output=True, text=True).stdout
+    # MPEG-TS reports the stream both inside its program and at top level.
+    tb = json.loads(info)["streams"][0]["time_base"]
     num, den = (int(v) for v in tb.split("/"))
     pts = np.array(vod.probe_pts(video), np.int64) * num / den
     np.savez(cache, pts=pts, tb=np.array([num, den]))
