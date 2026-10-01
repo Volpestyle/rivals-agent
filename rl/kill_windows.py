@@ -24,6 +24,7 @@ from rl.ttk import engagements
 
 PRE_S = 2.0
 LABELS = Path("rl/labels/range_rewards_20260930.json")
+HELDOUT = Path("rl/labels/range_rewards_val_20260930.json")   # mix399's val take: evaluation only, never weighted
 SETS = ("windows", "onset_windows", "ko_windows")
 
 
@@ -39,8 +40,7 @@ def windows(times, pre=PRE_S):
     return [[round(a, 2), round(b, 2)] for a, b in out]
 
 
-def build(labels=LABELS, pre=PRE_S):
-    d = json.loads(Path(labels).read_text())
+def session_windows(d, pre=PRE_S):
     sessions = {}
     for name, s in d["sessions"].items():
         t0 = s["t0_composition_ns"]
@@ -53,11 +53,21 @@ def build(labels=LABELS, pre=PRE_S):
             row[key + "_ns"] = [[t0 + int(round(a * 1e9)), t0 + int(round(b * 1e9))] for a, b in w]
             row[key + "_covered_s"] = round(sum(b - a for a, b in w), 1)
         sessions[name] = row
+    return sessions
+
+
+def build(labels=LABELS, heldout=HELDOUT, pre=PRE_S):
+    d = json.loads(Path(labels).read_text())
+    sessions = session_windows(d, pre)
     total = sum(s["seconds"] for s in sessions.values())
     share = {k: round(sum(s[k + "_covered_s"] for s in sessions.values()) / total, 3) for k in SETS}
     return {"what": " ".join(__doc__.split("\n\n")[1].split()), "pre_s": pre, "source": str(labels),
             "reader_commit": d.get("reader_commit"), "covered_share": share, "recommended": "onset_windows",
-            "sessions": sessions}
+            "sessions": sessions,
+            "heldout_sessions": session_windows(json.loads(Path(heldout).read_text()), pre) if Path(heldout).exists()
+            else {},
+            "heldout_note": "mix399's val take (policy/bc2/cloud.py VAL): for evaluating pre-hit camera sign and MAE "
+                            "only; never weight or train on it. sessions holds TRAIN and DEV; weight TRAIN only."}
 
 
 def main(argv=None):
