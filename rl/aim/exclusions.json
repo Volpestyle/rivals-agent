@@ -1,0 +1,7 @@
+{
+  "what": "Episodes or spans excluded from aim metrics, the BC baseline and any training/DAgger dataset because a human input reached the game while the pad was attached (missed takeover; live-loop is fixing the guard). Add live-loop's flagged spans here.",
+  "episodes": {
+    "data/calibration/rl-sitting-20260930-07/ep-008-bc": "James pressed D/Space/S at 18:59:03-06 during the attached episode (lead, 2026-09-30)"
+  },
+  "spans": []
+}

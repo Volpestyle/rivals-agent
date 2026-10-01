@@ -351,3 +351,16 @@ def test_load_weights_swaps_in_place_and_clears_the_graph(tmp_path):
     (out / "bundle.json").write_text(json.dumps(spec))
     with pytest.raises(ValueError):
         update.load_weights(live, out)
+
+
+def test_aim_metrics_on_a_synthetic_approach():
+    from rl.aim import metrics as m
+    # a target 400 px right of the crosshair that the camera closes on in 1 s, overshoots once, then holds
+    xs = [400, 300, 200, 100, 0, -90, -20, 0, 0, 0]
+    series = [(k * .1, (1280 + x - 40, 680, 1280 + x + 40, 760)) for k, x in enumerate(xs)]
+    r = m.metrics(series)
+    assert r["acquired_segments"] == 1 and abs(r["median_acquire_s"] - .4) < 1e-9
+    assert r["overshoots"] == 1 and r["mean_closing_px_s"] > 0 and r["on_target_frac"] == .6
+    tracked = m.series_from_boxes([0, .1, .2], [[(1300, 700, 1340, 740), (2000, 700, 2040, 740)],
+                                                [(1310, 700, 1350, 740)], []])
+    assert tracked[1][1] == (1310, 700, 1350, 740) and tracked[2][1] is None
