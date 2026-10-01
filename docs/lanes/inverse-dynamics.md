@@ -289,6 +289,63 @@ handoff). The better fix is to shrink conservative masks at the source and relab
   average at threshold 0.4 (settings chosen on the same sessions, so optimistic). Use held_end[spider_power], not
   LMB presses.
 
+### Label-quality pass v2-cd-r1 (idm, 2026-09-30 night)
+
+This pass fixes James's screenshot findings (private review `D:/rivals-expert-footage/private-review/menu-action-check/`)
+from the saved v2-cd probabilities plus a 10 Hz HUD scan of each span. It runs no inference and costs $0. The code is
+`policy/idm/refine.py`, applied by `labels export --refine CONFIG --scan-dir DIR`. The config, tuning outputs and
+scripts are in `D:/rivals-agent-local/idm-labels-work/r1/` (`r1-config.json`, `tune.json`, `held-per-action.json`,
+`validate.json`, `thresholds-report.md`, `hudscan.py`). Everything was tuned on James's -11 and checked on the
+untouched -12.
+
+- **Presses:** per-action thresholds chosen for the best F1 on -11, replacing the train-rate ones (about 0.98).
+  Results on -12, F1 old->new:
+
+  | action | threshold | F1 |
+  |---|---|---|
+  | jump | .981->.89 | .71->.75 |
+  | web_swing | .990->.94 | .75->.86 |
+  | web_cluster | .986->.93 | .68->.73 |
+  | amazing_combo | .987->.88 | .62->.63 |
+  | team_up | .976->.89 | .75->.78 |
+
+  Precision falls by about .1-.25 in exchange. GOH (n=4-6) and melee (no presses) keep their thresholds. Movement
+  presses stay below F1 .2 at any threshold. `press_p`, the raw step maximum, is the soft target.
+- **Holds:** per-action hysteresis (on / off / gap fill), chosen on -11 under two guards: the false-hold rate may rise
+  at most 1.5x, and the median release error may be at most 0.1 s. Results on -12 (swing .70/.25/12 rows: F1 .88->.89):
+
+  | key | share of true holds covered by one predicted island |
+  |---|---|
+  | swing | .67->.84 |
+  | forward | .30->.63 |
+  | right | .48->.73 |
+  | fire | .15->.27 |
+
+  The suggested 0.5/0.3/12 was rejected: forward false holds rose .30->.48 and releases came 0.37 s late. A gap fill
+  is a modelling choice; `held_p` keeps the raw probability.
+- **HUD evidence (expert_hud plus replay_hud.cast_events, no durations, so patch-independent):** measured against
+  James's logged presses.
+  - Amazing Combo charge drops follow the press by a median of 0.11-0.13 s, and team-up cooldown starts by
+    0.66-0.89 s. These two are used to add or confirm presses: combo F1 -11 .87->.89 (-12 .632->.633); team_up
+    -12 .78->.81 (-11 unchanged).
+  - Unused, because they made labels worse:
+    - Web-Cluster ammo drops: 40-50 % have no press within 1.5 s.
+    - GOH and ult cues: they did not line up with presses.
+    - Swing: no gain after recalibration.
+  - "No cast seen, so null the press" is off. The HUD misses casts, and the rule nulled 13-15 true team-up presses.
+  - The HUD dates the cast, not the key edge. An added press takes the IDM's most probable interval in the window.
+- **Admission:** a sampled frame with the scoreboard rule (>= .85), no HUD or a dead hero rejects rows within 0.2 s of
+  it. Rows are kept, marked suitability "rejected" with an admission_reason.
+  - On James: 0.3 % (-11) and 0.7 % (-12) of the truth's usable rows are rejected, against 26 % and 59 % of its
+    unusable rows.
+  - The no-HUD and dead reasons apply only where the readers read the source's HUD (no-HUD share at most 0.2). On
+    the other sources only the scoreboard rule runs, because their HUD layout is not read: no ability icon read on rdpaco, simii_exe, necros and 2 of 3 luckyzeal sources.
+- **Schema additions:** `held_p` and `press_basis` (null | idm | hud_added:<kind> | hud_confirmed:<kind>); header
+  `idm.refine` (config, patch_regime, no_hud_share, hud_admission, rejected_rows). Output root:
+  `D:/rivals-agent-local/idm-labels-r1/v2-cd-r1/`.
+- **Patch:** every expert hour is S10+ by the catalogue dates. The only borderline is DayMR 2871149954, dated
+  2026-09-11 itself.
+
 ### Cached-feature anchor alignment (IDM relief, 2026-09-30)
 
 Changing the IDM context window moved the first labelled timestamp and therefore the exporter's nominal 30 Hz

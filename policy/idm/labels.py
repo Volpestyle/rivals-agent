@@ -33,7 +33,7 @@ from pathlib import Path
 
 import numpy as np
 
-from policy.idm import vod
+from policy.idm import refine, vod
 
 STEP_NS = 33_333_333
 FRAME_PERIOD_NS = 16_666_667
@@ -175,8 +175,11 @@ def _video_index(video, cache_dir):
     return pts, [num, den]
 
 
-def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0, anchor_rows=None):
-    """The span's 30 Hz replay rows, numbered from i0."""
+def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0, anchor_rows=None, refine_cfg=None,
+              scan=None, span_start=None, hud_admission=True):
+    """The span's 30 Hz replay rows, numbered from i0. With `refine_cfg` (policy.idm.refine), holds use per-action
+    hysteresis and rows carry held_p and press_basis; with a HUD `scan` of the span too, admission rejects rows and HUD
+    casts correct ability onsets."""
     t, cam = z["t"], z["cam"]
     prob = z["prob"]
     held = z["held"] if "held" in z else None
@@ -187,6 +190,24 @@ def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0, anchor_ro
     for a, thr in thresholds.items():
         c = actions.index(a)
         onset[vod.onsets(prob[:, c], thr), c] = True
+    held_on = None if held is None else held >= 0.5
+    basis = windows = None
+    if refine_cfg is not None:
+        if held is not None:
+            for name, h in refine_cfg["hysteresis"].items():
+                c = actions.index(name)
+                held_on[:, c] = refine.hysteresis(held[:, c], h["on"], h["off"], h["gap_rows"])
+        if scan is not None:
+            hc = refine_cfg["hud"]
+            events, coverage = refine.hud_evidence(scan, max_gap_s=hc["max_gap_s"])
+            hud = [a for a in refine.HUD_ACTION.values() if a in thresholds]
+            onset_hud, basis = refine.apply_hud(onset, prob, t - span_start, actions,
+                                                [e for e in events if refine.HUD_ACTION[e.ability] in hud],
+                                                coverage if hud else {}, lead_s=hc["lead_s"], lag_s=hc["lag_s"],
+                                                quiet_s=hc["quiet_s"], use=hc.get("use"),
+                                                contradict=hc.get("contradict"))
+            onset = onset_hud
+            windows = refine.bad_windows(scan, refine_cfg["admission"]["margin_s"], hud_reasons=hud_admission)
     rows = []
     step_s = STEP_NS / 1e9
     base_ns = int(round(float(t[0]) * 1e9))
@@ -217,22 +238,31 @@ def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0, anchor_ro
         p = None if np.isnan(pitch[js]).any() else float(pitch[js].sum())
         press = [None] * len(actions)
         press_p = [None] * len(actions)
+        press_basis = [None] * len(actions)
         for name in thresholds:
             c = actions.index(name)
             press[c] = int(onset[js, c].any())
             press_p[c] = round(float(prob[js, c].max()), 4)
+            if basis is not None and name in refine.HUD_ACTION.values():
+                marks = sorted(b for b in basis[js, c] if b)
+                press_basis[c] = next((m for p in ("hud_contradicted", "hud_added", "hud_confirmed") for m in marks
+                                       if m.startswith(p)), "idm" if press[c] else None)
+                if press_basis[c] == "hud_contradicted":
+                    press[c] = None                      # a press the HUD shows no cast for: unknown, not 0
         hs = he = [None] * len(actions)
+        held_p = [None] * len(actions)
         if held is not None:
             hs, he = list(hs), list(he)
             for name in HELD_ACTIONS:
                 c = actions.index(name)
-                hs[c], he[c] = int(held[a, c] >= 0.5), int(held[js[-1], c] >= 0.5)
+                hs[c], he[c] = int(held_on[a, c]), int(held_on[js[-1], c])
+                held_p[c] = round(float(held[js[-1], c]), 4)
             if prev is not None and prev[0] + STEP_NS == anchor_ns:  # holds continue across consecutive steps
                 hs = list(prev[1])
             prev = (anchor_ns, he)
         std = (None if np.isnan(ystd[js]).any() else
                [round(float(np.sqrt((ystd[js] ** 2).sum())), 4), round(float(np.sqrt((pstd[js] ** 2).sum())), 4)])
-        rows.append({
+        row = {
             "i": i0 + len(rows), "run": run_id, "anchor_ns": anchor_ns,
             "frame": {"video_path": str(video_path), "frame_index": ordinal,
                       "pts": pts, "timebase": tb,
@@ -245,16 +275,29 @@ def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0, anchor_ro
             "beyond_pad_envelope": bool((y is not None and abs(y) / step_s > PAD_ENVELOPE["yaw_deg_per_s"])
                                         or (p is not None and abs(p) / step_s > PAD_ENVELOPE["pitch_deg_per_s"])),
             "press_p": press_p, "camera_std": std,
-            "camera_conf": None if std is None else round(float(np.exp(-std[0])), 4)})
+            "camera_conf": None if std is None else round(float(np.exp(-std[0])), 4)}
+        if refine_cfg is not None:
+            row["held_p"] = held_p
+            row["press_basis"] = press_basis
+            row["admission_reason"] = None
+            if windows is not None:
+                lo, hi = anchor - span_start, anchor + step_s - span_start
+                why = next((w for a0, b0, w in windows if a0 < hi and b0 > lo), None)
+                if why:
+                    row["suitability"], row["admission_reason"] = "rejected", why
+        rows.append(row)
     return rows
 
 
-def export(ckpt, spans_path, work, out_dir, *, video=None, model=None, anchor_dir=None, camera_scale=None):
+def export(ckpt, spans_path, work, out_dir, *, video=None, model=None, anchor_dir=None, camera_scale=None,
+           refine_cfg=None, scan_dir=None):
     from policy.range_bc import vocab
     _, supported, thresholds = vod.load_any(ckpt, "cpu")
     thresholds = {a: t for a, t in (thresholds or vod.FULL03_THRESHOLDS).items() if t < 1.0 and a not in PRESS_UNKNOWN}
+    if refine_cfg is not None:
+        thresholds = {a: refine_cfg["thresholds"].get(a, t) for a, t in thresholds.items()}
     name = model or model_name(ckpt)
-    out_dir = Path(out_dir) / name
+    out_dir = Path(out_dir) / (refine_cfg["name"] if refine_cfg is not None else name)
     out_dir.mkdir(parents=True, exist_ok=True)
     shas_path = Path(work) / "media-sha256.json"
     shas = json.loads(shas_path.read_text()) if shas_path.exists() else {}
@@ -292,16 +335,27 @@ def export(ckpt, spans_path, work, out_dir, *, video=None, model=None, anchor_di
                 raise ValueError("anchor reference contains unknown spans")
             if (out_dir / reference.name).exists():
                 raise FileExistsError("aligned export must use a new output file")
-        rows, has_held = [], False
+        rows, has_held, scanned = [], False, 0
+        no_hud = hud_admission = None
+        if refine_cfg is not None and scan_dir is not None:
+            scans = [x for x in (refine.load_scan(Path(scan_dir) / (s["span_id"].replace(":", "_") + ".jsonl"))
+                                 for s in ss) if x]
+            no_hud = refine.no_hud_share(scans)
+            hud_admission = no_hud <= refine_cfg["admission"]["max_no_hud_share"]
         for s in ss:
             f = span_file(work, name, s)
             if f.exists():
                 with np.load(f) as z:
                     z = {k: z[k] for k in z.files}
                 has_held = has_held or "held" in z
+                scan = None if scan_dir is None else refine.load_scan(
+                    Path(scan_dir) / (s["span_id"].replace(":", "_") + ".jsonl"))
+                scanned += scan is not None
                 rows += step_rows(z, thresholds, video_path=path, index_pts=index_pts, tb=tb,
                                   run_id=s["span_id"], i0=len(rows),
-                                  anchor_rows=None if anchors is None else anchors.get(s["span_id"], []))
+                                  anchor_rows=None if anchors is None else anchors.get(s["span_id"], []),
+                                  refine_cfg=refine_cfg, scan=scan, span_start=s["start_s"],
+                                  hud_admission=bool(hud_admission))
         if not rows:
             continue
         sha = _sha(path, shas)
@@ -332,6 +386,14 @@ def export(ckpt, spans_path, work, out_dir, *, video=None, model=None, anchor_di
                                       "flag": camera_scale.get("flags", {}).get(player)}
             for r in rows:
                 r["camera_scale"] = applied
+        if refine_cfg is not None:
+            regimes = refine_cfg.get("patch_regime", {})
+            header["idm"]["refine"] = {**{k: v for k, v in refine_cfg.items() if k != "patch_regime"},
+                                       "scanned_spans": scanned, "hud_kinds": refine.HUD_KIND,
+                                       "hud_durations_used": False, "patch_regime": regimes.get(vid, "unknown"),
+                                       "no_hud_share": None if no_hud is None else round(no_hud, 4),
+                                       "hud_admission": hud_admission,
+                                       "rejected_rows": sum(r["suitability"] == "rejected" for r in rows)}
         out = out_dir / f"expert-{vid}.steps.jsonl"
         if reference is not None:
             header["idm"]["anchor_reference"] = str(reference)
@@ -387,6 +449,8 @@ def main(argv=None):
     e.add_argument("--video")
     e.add_argument("--model")
     e.add_argument("--anchor-dir", help="reuse this label directory's anchors; requires new output files")
+    e.add_argument("--refine", help="policy.idm.refine config JSON (writes to OUT/<its name>/)")
+    e.add_argument("--scan-dir", help="per-span HUD scans for --refine (admission and HUD evidence)")
     e.add_argument("--camera-scale", help="JSON {default, applied: {creator: scale}, creators: {creator: measured}, "
                                           "basis}: adds camera_scale (row column and header)")
     c = sub.add_parser("clips")
@@ -404,7 +468,9 @@ def main(argv=None):
     else:
         scale = json.loads(Path(a.camera_scale).read_text(encoding="utf-8")) if a.camera_scale else None
         print(json.dumps(export(a.ckpt, a.spans, a.work, a.out, video=a.video, model=a.model,
-                                anchor_dir=a.anchor_dir, camera_scale=scale), indent=1))
+                                anchor_dir=a.anchor_dir, camera_scale=scale,
+                                refine_cfg=json.loads(Path(a.refine).read_text(encoding="utf-8")) if a.refine else None,
+                                scan_dir=a.scan_dir), indent=1))
     return 0
 
 
