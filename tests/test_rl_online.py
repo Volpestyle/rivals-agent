@@ -364,3 +364,32 @@ def test_aim_metrics_on_a_synthetic_approach():
     tracked = m.series_from_boxes([0, .1, .2], [[(1300, 700, 1340, 740), (2000, 700, 2040, 740)],
                                                 [(1310, 700, 1350, 740)], []])
     assert tracked[1][1] == (1310, 700, 1350, 740) and tracked[2][1] is None
+
+
+def test_ttk_engagements_split_on_gaps_and_end_at_the_ko():
+    from rl import ttk
+    hits = [0., 1., 2., 10., 10.5, 20.]
+    kos = [3.5, 30.]                     # first ends engagement 1; the second is 10 s after the last hit: no TTK
+    eng = ttk.engagements(hits, kos)
+    assert [(e["start"], e["hits"], e["ttk"]) for e in eng] == [(0., 3, 3.5), (10., 2, None), (20., 1, None)]
+    s = ttk.summary(hits, kos, 60.)
+    assert s["kos_per_min"] == 2. and s["kos_with_ttk"] == 1 and s["ttk_median_s"] == 3.5
+
+
+def test_kill_windows_merge_overlapping_pre_event_spans():
+    from rl.kill_windows import windows
+    assert windows([5., 1., 6.5, 20.], pre=2.) == [[0., 1.], [3., 6.5], [18., 20.]]
+
+
+def test_aim_teacher_signs_deadband_and_tracking():
+    from rl.aim import teacher as T
+    size = (2560, 1440)
+    right_low = T.label((1580, 900, 1700, 1100), size)            # centre (1640, 1000): right of and below the crosshair
+    assert right_low.step_deg[0] > 0 and right_low.step_deg[1] > 0
+    assert right_low.cam_class[0] > 15 and right_low.cam_class[1] > 15
+    near = T.label((1250, 680, 1330, 780), size)                   # 5 px right, 5 px low at 1280: inside the deadband
+    assert near.step_deg == (0., 0.) and near.cam_class == (15, 15)
+    a, b = (2200, 700, 2300, 800), (1300, 700, 1400, 800)
+    assert T.select([a, b], size) == b                              # nearest the crosshair first
+    assert T.select([(2210, 700, 2310, 800), b], size, previous=a) == (2210, 700, 2310, 800)   # then held
+    assert T.select([], size) is None

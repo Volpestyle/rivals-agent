@@ -4,8 +4,9 @@
 
 Per episode: arm, stop result, runner decisions and how many were actually sent (disposition 'ready') versus dropped,
 exploration options started and what they held, sampled-vs-deterministic disagreements, pixel reward events (hit, KO,
-fall) and the update's loss/KL. Writes summary.json and summary.png (KOs/min, hits/min and executed-decision share by
-episode, frozen BC vs RL).
+fall) and the update's loss/KL. Per arm: hits/min, KOs/min and time to kill (rl.ttk, from the retained frames) next to
+James's and the scripted baselines (rl/out/ttk/ttk.json). Writes summary.json and summary.png (KOs/min, hits/min and
+executed-decision share by episode, frozen BC vs RL).
 """
 from __future__ import annotations
 
@@ -58,9 +59,19 @@ def main(argv=None):
                         "kos_per_min": round(sum(e.get("ko", 0) for e in rows) / max(secs, 1e-6) * 60, 2),
                         "hits_per_min": round(sum(e.get("hit", 0) for e in rows) / max(secs, 1e-6) * 60, 2),
                         "ready_share": round(sum(e["ready"] for e in rows) / max(1, sum(e["decisions"] for e in rows)), 3)}
+    from rl import ttk
+    excluded = set(json.loads(ttk.EXCLUSIONS.read_text())["episodes"]) if ttk.EXCLUSIONS.exists() else set()
+    for arm, r in ttk.sitting(sitting, excluded).items():
+        if arm in summary:
+            summary[arm]["ttk"] = {k: r[k] for k in ("kos_with_ttk", "ttk_median_s", "ttk_p25_p75_s", "ttk_s")}
+    base = Path("rl/out/ttk/ttk.json")
+    if base.exists():
+        b = json.loads(base.read_text())
+        summary["baselines"] = {k: {kk: b[k][kk] for kk in ("hits_per_min", "kos_per_min", "ttk_median_s")}
+                                for k in ("james", "scripted") if k in b}
     (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     plot(episodes, out / "summary.png")
-    print(json.dumps({k: summary[k] for k in ("bc", "rl")}, indent=1))
+    print(json.dumps({k: summary[k] for k in ("bc", "rl", "baselines") if k in summary}, indent=1))
     return summary
 
 

@@ -72,19 +72,20 @@ def credit(event_times, event_rewards, decision_times):
 
 
 def rewards(frames_and_times, weights=None):
-    """Per-frame reward and event flags from the pixel readers (rl.rewards), in time order."""
+    """Per-frame reward and event flags from the pixel readers (rl.rewards), in time order. Any iterable of
+    (frame, t): a stream from disk holds one frame at a time."""
     from rl.rewards import RewardTracker, Weights, hit_marker, ko_marker, own_hp
     tracker = RewardTracker(weights or Weights())
-    r = np.zeros(len(frames_and_times))
+    r = []
     events = {"hit": 0, "ko": 0, "death": 0}
-    for k, (frame, t) in enumerate(frames_and_times):
+    for frame, t in frames_and_times:
         hp, max_hp = own_hp(frame)
         step = tracker.update(t, hit_marker(frame), ko_marker(frame), hp, max_hp)
-        r[k] = step.reward
+        r.append(step.reward)
         events["hit"] += step.hit
         events["ko"] += step.ko
         events["death"] += step.death
-    return r, events
+    return np.array(r, float), events
 
 
 def intervals(times):
@@ -113,15 +114,35 @@ def featurize(frames, tower, device, batch=16):
     return torch.cat(feats).numpy(), torch.cat(gg).numpy(), torch.cat(gc).numpy()
 
 
-def load_frames(run_dir, rows):
-    import cv2
-    out = []
-    for r in rows:
-        frame = cv2.imread(str(Path(run_dir) / r["file"]))
+class LazyFrames:
+    """An episode's retained frames read from disk on access: len, index, slice and iteration, never all at once.
+    A 45 s episode at ~10 Hz is ~450 native 1440p frames (~5 GB decoded); featurize reads 16 at a time and rewards
+    one at a time, so a process stays well under the PC's ~3 GB cap."""
+
+    def __init__(self, run_dir, rows):
+        self.run_dir, self.rows = Path(run_dir), list(rows)
+
+    def __len__(self):
+        return len(self.rows)
+
+    def _read(self, r):
+        import cv2
+        frame = cv2.imread(str(self.run_dir / r["file"]))
         if frame is None:
-            raise ValueError(f"missing retained frame {r['file']} in {run_dir}")
-        out.append(frame)
-    return out
+            raise ValueError(f"missing retained frame {r['file']} in {self.run_dir}")
+        return frame
+
+    def __getitem__(self, k):
+        if isinstance(k, slice):
+            return [self._read(r) for r in self.rows[k]]
+        return self._read(self.rows[k])
+
+    def __iter__(self):
+        return (self._read(r) for r in self.rows)
+
+
+def load_frames(run_dir, rows):
+    return LazyFrames(run_dir, rows)
 
 
 def episode(run_dir, live_names, tower=None, device="cpu", weights=None, death=False):
@@ -132,13 +153,13 @@ def episode(run_dir, live_names, tower=None, device="cpu", weights=None, death=F
     rows, saved, result = decisions(run_dir)
     if not rows:
         return None
-    frames = load_frames(run_dir, rows)
+    frames = LazyFrames(run_dir, rows)
     times = [float(r["t"]) for r in rows]
     yaw_enabled = float(result.get("yaw_scale") or 0.) > 0
     act, known, cam, cam_known = targets(rows, live_names, yaw_enabled)
-    all_frames = frames if len(saved) == len(rows) else load_frames(run_dir, saved)
+    all_frames = LazyFrames(run_dir, saved)
     all_times = [float(r["t"]) for r in saved]
-    per_frame, events = rewards(list(zip(all_frames, all_times)), weights)
+    per_frame, events = rewards(zip(all_frames, all_times), weights)
     r = credit(all_times, per_frame, times)
     events["frames_read"] = len(saved)
     if not events["death"] and saved and saved[-1].get("file") == "stop.png":

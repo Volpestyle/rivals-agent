@@ -1,7 +1,15 @@
 {
-  "what": "Episodes or spans excluded from aim metrics, the BC baseline and any training/DAgger dataset because a human input reached the game while the pad was attached (missed takeover; live-loop is fixing the guard). Add live-loop's flagged spans here.",
+  "what": "Episodes excluded from aim metrics, the BC baseline, RL rewards/updates and any training/DAgger dataset because a human input reached the game while the pad was attached (missed takeover). Source: live-loop's audit of sittings 01-07 (D:/rivals-agent-local/takeover-sitting07-20260930/sittings01-07-audit.json, raw key/button/motion packets inside each episode's window; 27 other covered episodes had none). Whole episodes are excluded, not spans.",
   "episodes": {
-    "data/calibration/rl-sitting-20260930-07/ep-008-bc": "James pressed D/Space/S at 18:59:03-06 during the attached episode (lead, 2026-09-30)"
+    "data/calibration/rl-sitting-20260930-07/ep-008-bc": "13 key downs + 404 motion packets (James pressed D/Space/S at 18:59:03-06)",
+    "data/calibration/rl-sitting-20260930-07/ep-012-bc": "46 mouse motion packets",
+    "data/calibration/rl-sitting-20260930-07/ep-015-rl": "102 mouse motion packets"
   },
+  "contaminated_bundles": {
+    "data/calibration/rl-sitting-20260930-07/bundles/rl-015": "online AWR after episode 15, which includes ep-015-rl",
+    "data/calibration/rl-sitting-20260930-07/bundles/rl-017": "descends from rl-015",
+    "data/calibration/rl-sitting-20260930-07/bundles/rl-019": "descends from rl-015"
+  },
+  "contaminated_bundles_note": "Never start from or evaluate these bundles as RL progress. Episodes ep-017-rl and ep-019-rl were driven by them: they are not RL learning-curve evidence, but their frames stay valid as policy-visited frames (aim metrics, DAgger inputs), since no human input reached the game in them.",
   "spans": []
 }
