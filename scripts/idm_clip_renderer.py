@@ -6,6 +6,7 @@ overlaid clips are copied to the private Mac board. No upload to public services
 from __future__ import annotations
 
 import argparse
+import ast
 from collections import defaultdict
 import csv
 import hashlib
@@ -15,14 +16,19 @@ import math
 import os
 from pathlib import Path
 import re
+import secrets
+import struct
 import subprocess
 import time
+import zipfile
 
 CORPUS = Path('D:/rivals-expert-footage')
 LABELS = Path('D:/rivals-agent-local/idm-labels')
 ROOT = CORPUS / 'private-review'
 MAC_ROOT = '/Users/james/dev/idm-review'
-SETS = ('v2-a', 'v2-cd')
+SETS = ('v2-a', 'v2-cd', 'v2-cd-r1')
+R1_LABELS = Path('D:/rivals-agent-local/idm-labels-r1')
+RAW_LABELS = Path('D:/rivals-agent-local/idm-labels-work/v2-cd')
 MAX_LABEL_BYTES = 32 * 1024 * 1024
 RENDER_VERSION = 2
 
@@ -56,7 +62,7 @@ def read_json(path, limit=8 * 1024 * 1024):
 def write_json(path, value):
     path = safe(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    temp = safe(path.with_suffix(path.suffix + '.tmp'))
+    temp = safe(path.with_suffix(path.suffix + '.' + secrets.token_hex(6) + '.tmp'))
     temp.write_text(json.dumps(value, separators=(',', ':'), allow_nan=False), encoding='utf-8')
     temp.replace(path)
 
@@ -64,6 +70,11 @@ def write_json(path, value):
 def stamp():
     from datetime import datetime, timezone
     return datetime.now(timezone.utc).isoformat()
+
+
+def label_path(labels, label_set, sid):
+    directory = R1_LABELS if labels == LABELS and label_set == 'v2-cd-r1' else labels
+    return safe(directory / label_set / f'expert-{sid}.steps.jsonl')
 
 
 def corpus_rows(path):
@@ -131,7 +142,7 @@ def prepare(root=ROOT, corpus=CORPUS, labels=LABELS):
         grouped[span['source_id']].append(span)
     videos = []
     for sid, spans in grouped.items():
-        indexes = {name: label_index(labels / name / f'expert-{sid}.steps.jsonl',
+        indexes = {name: label_index(label_path(labels, name, sid),
                                     root / 'indexes' / f'{name}-{sid}.json') for name in SETS}
         cat = catalogue[sid]
         public = []
@@ -156,7 +167,7 @@ def selected_span(sid, ordinal, corpus=CORPUS):
 
 def project_labels(span, label_set, root=ROOT, labels=LABELS):
     sid = span['source_id']
-    path = safe(labels / label_set / f'expert-{sid}.steps.jsonl')
+    path = label_path(labels, label_set, sid)
     index = label_index(path, root / 'indexes' / f'{label_set}-{sid}.json')
     part = index.get('spans', {}).get(span['span_id'])
     if not part:
@@ -180,16 +191,101 @@ def project_labels(span, label_set, root=ROOT, labels=LABELS):
             def known(values, mask):
                 return [v if i < len(mask) and mask[i] else None for i, v in enumerate(values)]
             yaw, pitch = row.get('yaw_deg'), row.get('pitch_deg')
-            result.append({'t': t, 'dt': step,
+            result.append({'t': t, 'anchor_ns': row['anchor_ns'], 'dt': step,
                            'yaw': yaw / step if isinstance(yaw, (int, float)) and math.isfinite(yaw) else None,
                            'pitch': pitch / step if isinstance(pitch, (int, float)) and math.isfinite(pitch) else None,
                            'press': known(row.get('press', []), row.get('press_known', [])),
-                           'held': known(row.get('held_start', []), row.get('held_known', []))})
+                           'held': known(row.get('held_start', []), row.get('held_known', [])),
+                           'press_p': row.get('press_p', []), 'held_p': row.get('held_p', []),
+                           'press_basis': row.get('press_basis', []),
+                           'suitability': row.get('suitability'),
+                           'admission_reason': row.get('admission_reason')})
             if len(result) > 10000:
                 raise ValueError('span exceeds 10000 label row bound')
     return {'actions': header['actions'], 'rows': result, 'step_s': step,
             'units': 'deg/s', 'source': 'actual exported IDM steps',
+            'thresholds': header.get('idm', {}).get('thresholds', {}),
+            'refine': header.get('idm', {}).get('refine', {}),
+            'checkpoint': header.get('idm', {}).get('checkpoint'),
             'camera_basis': header.get('camera_scale', {}).get('basis', 'James camera degrees; expert scale unverified')}
+
+
+def npy_member(archive, name):
+    """Small stdlib reader for the producer's numeric/Unicode NPYs; no pickle."""
+    info = archive.getinfo(name + '.npy')
+    if info.file_size > 8 * 1024 * 1024:
+        raise ValueError('raw array exceeds 8 MiB')
+    raw = archive.read(info)
+    if raw[:6] != b'\x93NUMPY' or raw[6:8] not in (b'\x01\x00', b'\x02\x00'):
+        raise ValueError('unsupported raw array format')
+    prefix = 10 if raw[6] == 1 else 12
+    length = int.from_bytes(raw[8:prefix], 'little')
+    if length > 4096:
+        raise ValueError('oversized array header')
+    header = ast.literal_eval(raw[prefix:prefix + length].decode('latin1'))
+    shape, dtype = header['shape'], header['descr']
+    if header['fortran_order'] or len(shape) > 2 or any(not isinstance(n, int) or n < 0 for n in shape):
+        raise ValueError('unsupported raw array shape')
+    count = math.prod(shape)
+    if count > 640000:
+        raise ValueError('too many raw probability cells')
+    payload = raw[prefix + length:]
+    if shape == () and re.fullmatch(r'<U\d{1,6}', dtype):
+        if len(payload) != int(dtype[2:]) * 4:
+            raise ValueError('invalid raw metadata size')
+        return payload.decode('utf-32-le').rstrip('\x00')
+    fmt = {'<f2': 'e', '<f4': 'f', '<f8': 'd'}.get(dtype)
+    if not fmt or not shape or (len(shape) == 2 and shape[1] == 0) or len(payload) != count * struct.calcsize(fmt):
+        raise ValueError('unsupported raw dtype or size')
+    values = [v[0] if math.isfinite(v[0]) else None for v in struct.iter_unpack('<' + fmt, payload)]
+    return values if len(shape) == 1 else [values[i:i + shape[1]] for i in range(0, count, shape[1])]
+
+
+def raw_probabilities(span, actions, raw_root=RAW_LABELS):
+    # IDs are constructed from admitted metadata, never a requested filesystem path.
+    sid = span['source_id']
+    key(sid, 0, 'v2-cd')
+    filename = f'{sid}_{span["start_s"]:.3f}-{span["end_s"]:.3f}.npz'
+    path = safe(raw_root / filename)
+    if not path.exists():
+        return []
+    if path.stat().st_size > MAX_LABEL_BYTES:
+        raise ValueError('raw label archive exceeds 32 MiB')
+    with zipfile.ZipFile(path) as archive:
+        if sum(i.file_size for i in archive.infolist()) > MAX_LABEL_BYTES:
+            raise ValueError('raw label archive expands beyond 32 MiB')
+        arrays = {name: npy_member(archive, name) for name in ('t', 'prob', 'held', 'meta')}
+    meta = json.loads(arrays['meta'])
+    times, press, held = (arrays[k] for k in ('t', 'prob', 'held'))
+    if len(times) > 10000 or len(times) != len(press) or len(times) != len(held):
+        raise ValueError('invalid raw probability row count')
+    indices = [meta['actions'].index(action) if action in meta['actions'] else None for action in actions]
+    def aligned(values):
+        return [values[i] if i is not None and i < len(values) else None for i in indices]
+    return [{'t': t, 'press_p': aligned(p), 'held_p': aligned(h)} for t, p, h in zip(times, press, held)
+            if t is not None and span['start_s'] <= t < span['end_s']]
+
+
+def comparison_snapshot(sid, ordinal, root=ROOT, corpus=CORPUS, labels=LABELS, r1_labels=R1_LABELS, raw_root=RAW_LABELS):
+    """Read two bounded exported spans only; never decode, enqueue or alter labels."""
+    key(sid, ordinal, 'v2-cd-r1')
+    span = selected_span(sid, ordinal, corpus)
+    result = {'updated': stamp(), 'source_id': sid, 'ordinal': ordinal, 'sets': {}}
+    for name, directory in (('v2-cd', labels), ('v2-cd-r1', r1_labels)):
+        detail = project_labels(span, name, root, directory)
+        detail.update(start_s=span['start_s'], end_s=span['end_s'], span_id=span['span_id'], label_set=name)
+        if name == 'v2-cd' and detail.get('rows'):
+            try:
+                raw = raw_probabilities(span, detail['actions'], raw_root)
+                if raw:
+                    detail['probability_rows'] = raw
+                    detail['probability_source'] = 'Existing 60 Hz NPZ interval probabilities (before step aggregation)'
+                    detail['held_thresholds'] = {action: .5 for i, action in enumerate(detail['actions'])
+                        if any(i < len(r['held']) and r['held'][i] is not None for r in detail['rows'])}
+            except (OSError, ValueError, KeyError, zipfile.BadZipFile):
+                detail['probability_warning'] = 'Raw NPZ unavailable or unsupported; showing exported probabilities only.'
+        result['sets'][name] = detail
+    return result
 
 
 def blockers(ignore_pid=None):
@@ -434,14 +530,16 @@ def main():
         if not kernel.SetPriorityClass(kernel.GetCurrentProcess(), 0x4000):
             raise ctypes.WinError(ctypes.get_last_error())
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=['prepare', 'seed', 'enqueue', 'worker'])
+    parser.add_argument('command', choices=['prepare', 'seed', 'enqueue', 'worker', 'comparison'])
     parser.add_argument('--source')
     parser.add_argument('--span', type=int)
     parser.add_argument('--label-set', choices=SETS, default='v2-cd')
     parser.add_argument('--sync', action='store_true')
     parser.add_argument('--once', action='store_true')
     args = parser.parse_args()
-    if args.command == 'prepare':
+    if args.command == 'comparison':
+        print(json.dumps(comparison_snapshot(args.source, args.span), allow_nan=False))
+    elif args.command == 'prepare':
         prepare()
         if args.sync:
             sync_files([ROOT / 'catalogue.json', *sorted((ROOT / 'videos').glob('*.json'))])

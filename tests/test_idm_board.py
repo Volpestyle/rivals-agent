@@ -7,6 +7,8 @@ import pytest
 from scripts import idm_board as board
 from scripts import idm_clip_renderer as clips
 import io
+import struct
+import zipfile
 
 
 def fixture(tmp_path):
@@ -240,3 +242,152 @@ def test_review_strip_preserves_unknown_camera_and_overlay_press(tmp_path):
     assert '+pitch down' in overlay and 'l 7.5 -15.0' in overlay
     data['rows'][0].update(yaw=None, pitch=None)
     assert 'Actual IDM camera and action labels' in board.label_strip(data)
+
+
+def test_r1_projection_retains_rejection_probabilities_and_exact_anchor(tmp_path):
+    root, labels, span, path = review_fixture(tmp_path)
+    head, row = [json.loads(line) for line in path.read_text().splitlines()][:2]
+    head['idm'] = {'thresholds': {'jump': .89}, 'refine': {'hysteresis': {'web_swing': {'on': .7, 'off': .25}}}}
+    row.update(suitability='rejected', admission_reason='scoreboard', press_p=[.9, .8],
+               held_p=[None, .45], press_basis=['idm', 'hud_contradicted'])
+    target = labels / 'v2-cd-r1/expert-1.steps.jsonl'
+    target.parent.mkdir()
+    target.write_text('\n'.join(map(json.dumps, [head, row])) + '\n')
+    detail = clips.project_labels(span, 'v2-cd-r1', root, labels)
+    projected = detail['rows'][0]
+    assert projected['anchor_ns'] == 10000000000
+    assert projected['suitability'] == 'rejected' and projected['admission_reason'] == 'scoreboard'
+    assert projected['press_p'] == [.9, .8] and projected['held_p'] == [None, .45]
+    assert projected['press_basis'] == ['idm', 'hud_contradicted']
+    assert detail['thresholds'] == {'jump': .89}
+    assert detail['refine']['hysteresis']['web_swing']['off'] == .25
+
+
+def test_changes_align_exact_anchors_and_distinguish_unknown_rejected_and_absent():
+    def row(anchor, press, held, **extra):
+        return {'anchor_ns': anchor, 't': anchor / 1e9, 'dt': .03,
+                'press': press, 'held': held, **extra}
+    before = {'actions': ['jump', 'web_swing'], 'rows': [
+        row(10, [0, 1], [None, 0]), row(20, [1, 0], [0, 1]), row(30, [1, 1], [1, 1])]}
+    after = {'actions': ['jump', 'web_swing'], 'rows': [
+        row(10, [1, 0], [None, 1]),
+        row(20, [None, 0], [1, None], press_basis=['hud_contradicted', 'idm']),
+        row(30, [1, 1], [1, 1], suitability='rejected', admission_reason='scoreboard'),
+        row(40, [1, 0], [1, 0])]}
+    changes = board.label_changes(before, after)
+    assert [c['kind'] for c in changes] == ['added', 'removed', 'held', 'removed', 'held', 'unknown', 'rejected']
+    assert 'unknown, not zero' in changes[3]['reason']
+    assert changes[-1]['reason'] == 'scoreboard'
+    assert not board.label_changes(before, {'actions': before['actions'], 'rows': []})
+    assert len(changes) == 7  # No invented changes for the unmatched anchor 40.
+
+
+def test_probability_plot_exposes_near_miss_and_does_not_invent_held():
+    detail = {'actions': ['jump'], 'start_s': 10, 'end_s': 11,
+              'thresholds': {'jump': .89}, 'rows': [
+                  {'t': 10.1, 'dt': .03, 'press_p': [.887], 'held_p': [None]},
+                  {'t': 10.2, 'dt': .03, 'press_p': [.5], 'held_p': [None]}]}
+    plot = board.probability_strip(detail, 'jump')
+    assert '0.8900000' in plot and '0.887000 at +0.100s' in plot
+    assert 'stroke-dasharray' in plot and 'held_p: unknown' in plot
+    assert 'hold=' not in plot
+
+
+def test_comparison_pending_is_not_zero_changes_and_flagged_links_are_read_only():
+    page = board.review_page('review', board.comparison_view({'sets': {}}), '', 'nonce')
+    assert 'Comparison pending' in page and '0 changed cells' not in page
+    assert 'James flagged' in page and '2873352801/7/v2-cd-r1' in page
+    assert '2874563514/0/v2-cd-r1' in page and '<form' not in page
+
+
+def test_stacked_strips_highlight_real_cells_and_rejection_reason():
+    row = {'anchor_ns': 10000000000, 't': 10., 'dt': .03, 'yaw': None, 'pitch': None,
+           'press': [0], 'held': [0], 'suitability': 'accepted'}
+    before = {'actions': ['jump'], 'start_s': 10., 'end_s': 11., 'rows': [row]}
+    after = dict(before, rows=[dict(row, press=[1], held=[1]),
+                              dict(row, anchor_ns=10030000000, t=10.03, suitability='rejected', admission_reason='scoreboard')])
+    page = board.comparison_view({'sets': {'v2-cd': before, 'v2-cd-r1': after}})
+    assert 'id="label-strip-v2-cd"' in page and 'id="label-strip-v2-cd-r1"' in page
+    assert 'stroke="#46d9ff"' in page and 'stroke="#ba99ff"' in page
+    assert '<title>scoreboard</title>' in page and '2 changed cells; 1 rejected rows' in page
+
+
+def test_snapshot_reads_separate_r1_export_without_rendering(tmp_path, monkeypatch):
+    root, labels, span, path = review_fixture(tmp_path)
+    corpus = tmp_path / 'corpus'
+    corpus.mkdir()
+    (corpus / 'idm-spans.jsonl').write_text(json.dumps(span) + '\n')
+    r1 = tmp_path / 'r1'
+    target = r1 / 'v2-cd-r1/expert-1.steps.jsonl'
+    target.parent.mkdir(parents=True)
+    target.write_bytes(path.read_bytes())
+    monkeypatch.setattr(clips, 'guarded_run', lambda *a, **k: pytest.fail('no decoder'))
+    data = clips.comparison_snapshot('1', 0, root, corpus, labels, r1, tmp_path / 'raw')
+    assert data['sets']['v2-cd']['rows'][0]['anchor_ns'] == data['sets']['v2-cd-r1']['rows'][0]['anchor_ns']
+    assert not (root / 'queue').exists()
+
+
+def test_r1_get_uses_baseline_clip_without_enqueuing(tmp_path, monkeypatch):
+    clips.write_json(tmp_path / 'videos/1.json', {'creator': 'test', 'spans': [
+        {'start_s': 10, 'end_s': 20, 'labels': ['v2-cd']}]})
+    token = clips.key('1', 0, 'v2-cd')
+    clips.write_json(tmp_path / 'status' / f'{token}.json', {'state': 'ready', 'clip_duration_s': 10})
+    monkeypatch.setattr(board, 'comparison', lambda *args: ({'sets': {}}, None))
+    monkeypatch.setattr(board, 'queue_remote', lambda *args: pytest.fail('must not render'))
+    handler = ReviewHandler('/idm-review/span/1/0/v2-cd-r1')
+    board.handle_review_request(handler, '', tmp_path)
+    page = handler.wfile.getvalue().decode()
+    assert handler.status == 200
+    assert f'/media/{token}.mp4' in page and 'v2-cd BEFORE overlay' in page
+    assert '<form' not in page and 'setInterval(refreshLabels,30000)' in page
+    assert "connect-src 'self'" in handler.sent['Content-Security-Policy']
+
+
+def test_comparison_api_requires_admitted_membership(tmp_path, monkeypatch):
+    monkeypatch.setattr(board, 'comparison', lambda *args: pytest.fail('unknown source cannot start PC reads'))
+    handler = ReviewHandler('/idm-review/comparison/unknown/0')
+    board.handle_review_request(handler, '', tmp_path)
+    assert handler.status == 404
+
+
+def test_comparison_refresh_keeps_last_good_snapshot_on_pc_failure(tmp_path, monkeypatch):
+    token = clips.key('1', 0, 'v2-cd-r1')
+    saved = {'source_id': '1', 'ordinal': 0, 'sets': {'v2-cd': {'rows': []}}}
+    clips.write_json(tmp_path / 'comparisons' / f'{token}.json', saved)
+    def fail(*args, **kwargs):
+        assert args[0][:5] == ['nice', '-n', '10', 'taskpolicy', '-b']
+        assert 'comparison' in args[0] and kwargs['timeout'] == 150
+        raise subprocess.TimeoutExpired('ssh', 150)
+    monkeypatch.setattr(board.subprocess, 'run', fail)
+    board._comparison_slots.acquire()
+    board.fetch_comparison('1', 0, tmp_path)
+    assert clips.read_json(tmp_path / 'comparisons' / f'{token}.json') == saved
+    assert 'stale' in clips.read_json(tmp_path / 'comparisons' / f'{token}.status.json')['error']
+
+
+def npy(dtype, shape, payload):
+    header = repr({'descr': dtype, 'fortran_order': False, 'shape': shape}).encode() + b'\n'
+    return b'\x93NUMPY\x01\x00' + struct.pack('<H', len(header)) + header + payload
+
+
+def test_bounded_stdlib_raw_probabilities_align_actions_and_preserve_precision(tmp_path):
+    span = {'source_id': '1', 'start_s': 10., 'end_s': 11.}
+    meta = json.dumps({'actions': ['jump', 'web_swing']})
+    with zipfile.ZipFile(tmp_path / '1_10.000-11.000.npz', 'w') as archive:
+        archive.writestr('meta.npy', npy(f'<U{len(meta)}', (), meta.encode('utf-32-le')))
+        archive.writestr('t.npy', npy('<f8', (2,), struct.pack('<2d', 10.1, 10.2)))
+        for name in ('prob', 'held'):
+            archive.writestr(name + '.npy', npy('<f4', (2, 2), struct.pack('<4f', .1, .2, .3, .4)))
+    result = clips.raw_probabilities(span, ['web_swing', 'jump', 'missing'], tmp_path)
+    assert len(result) == 2 and result[0]['t'] == 10.1
+    assert result[0]['press_p'][:2] == pytest.approx([.2, .1])
+    assert result[0]['held_p'][2] is None
+
+
+def test_raw_reader_rejects_object_dtype_and_sealed_root(tmp_path):
+    with zipfile.ZipFile(tmp_path / 'bad.npz', 'w') as archive:
+        archive.writestr('prob.npy', npy('|O', (1,), b'pickle'))
+    with zipfile.ZipFile(tmp_path / 'bad.npz') as archive, pytest.raises(ValueError, match='dtype'):
+        clips.npy_member(archive, 'prob')
+    with pytest.raises(ValueError, match='sealed'):
+        clips.raw_probabilities({'source_id': '1', 'start_s': 10., 'end_s': 11.}, [], tmp_path / 'sealed')

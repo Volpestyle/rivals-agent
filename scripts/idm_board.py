@@ -264,6 +264,56 @@ class VideoLink:
 
 REVIEW_ROOT = Path('/Users/james/dev/idm-review')
 _queue_slots = threading.BoundedSemaphore(2)
+_comparison_slots = threading.BoundedSemaphore(1)
+_comparison_deadlines = {}
+_comparison_lock = threading.Lock()
+FLAGGED = (
+    ('2871149954', 0, 'DayMR · swing continuity'),
+    ('2872282230', 0, 'DayMR · scoreboard onset'),
+    ('2873352801', 7, 'ReqMR · missed Web-Cluster / GOH'),
+    ('2874563514', 0, 'LuckyZeal · left / right'),
+    ('2873352801', 0, 'ReqMR · wall-run fire / hold continuity'),
+)
+
+
+def fetch_comparison(sid, ordinal, root):
+    """Background read-only PC projection. No decoder, render queue or inference."""
+    token = review.key(sid, ordinal, 'v2-cd-r1')
+    try:
+        result = subprocess.run(
+            ['nice', '-n', '10', 'taskpolicy', '-b', 'ssh', '-n', '-T',
+             '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=4', '-o', 'StrictHostKeyChecking=yes',
+             'volpe@supedupsilly',
+             'C:/Users/volpe/AppData/Local/Programs/Python/Python311/python.exe',
+             'C:/Users/volpe/repos/rivals-agent/scripts/idm_clip_renderer.py',
+             'comparison', '--source', sid, '--span', str(ordinal)],
+            capture_output=True, timeout=150, check=True)
+        if len(result.stdout) > 8 * 1024 * 1024:
+            raise ValueError('comparison exceeds 8 MiB')
+        value = json.loads(result.stdout)
+        if value.get('source_id') != sid or value.get('ordinal') != ordinal:
+            raise ValueError('comparison identity mismatch')
+        review.write_json(root / 'comparisons' / f'{token}.json', value)
+        review.write_json(root / 'comparisons' / f'{token}.status.json', {'updated': review.stamp()})
+    except (OSError, ValueError, subprocess.SubprocessError):
+        review.write_json(root / 'comparisons' / f'{token}.status.json',
+                          {'error': 'PC label snapshot unavailable; retained data may be stale.', 'updated': review.stamp()})
+    finally:
+        _comparison_slots.release()
+
+
+def comparison(sid, ordinal, root):
+    token = review.key(sid, ordinal, 'v2-cd-r1')
+    with _comparison_lock:
+        if time.monotonic() >= _comparison_deadlines.get(token, 0) and _comparison_slots.acquire(blocking=False):
+            # Bound process-local request bookkeeping as well as concurrent reads.
+            if len(_comparison_deadlines) > 10000:
+                _comparison_deadlines.clear()
+            _comparison_deadlines[token] = time.monotonic() + 30
+            threading.Thread(target=fetch_comparison, args=(sid, ordinal, root), daemon=True).start()
+    data = review.read_json(root / 'comparisons' / f'{token}.json')
+    state = review.read_json(root / 'comparisons' / f'{token}.status.json')
+    return data, state.get('error')
 
 
 def review_url(sid, ordinal, label_set):
@@ -285,7 +335,7 @@ def timeline(video):
             '<rect width="1000" height="32" fill="#253039"/>' + ''.join(pieces) + '</svg>')
 
 
-def label_strip(detail):
+def label_strip(detail, suffix='', changes=()):
     """SVG uses actual points; unknown labels remain gray, never converted to zero."""
     rows = detail.get('rows', [])
     if not rows:
@@ -295,7 +345,7 @@ def label_strip(detail):
     scale = width / max(.001, end - start)
     actions = detail['actions']
     height = 265 + len(actions) * 23
-    parts = [f'<svg id="label-strip" role="img" aria-label="Actual IDM camera and action labels" viewBox="0 0 1160 {height}">',
+    parts = [f'<svg id="label-strip{suffix}" role="img" aria-label="Actual IDM camera and action labels" viewBox="0 0 1160 {height}">',
              '<rect width="1160" height="100%" fill="#101619"/>']
     for j, field in enumerate(('yaw', 'pitch')):
         mid = 60 + j * 90
@@ -331,14 +381,133 @@ def label_strip(detail):
                 color = '#59666b' if value is None else '#edba76' if lane else '#91d9bd'
                 parts.append(f'<rect x="{left + (a - start) * scale:.2f}" y="{y + lane * 8}" '
                              f'width="{max(.4, (b - a) * scale):.2f}" height="7" fill="{color}"/>')
+    for change in changes:
+        x = left + (change['t'] - start) * scale
+        w = max(.8, min(change['dt'], end - change['t']) * scale)
+        if change['kind'] == 'rejected':
+            parts.append(f'<rect x="{x:.2f}" y="210" width="{w:.2f}" height="{len(actions) * 23 + 20}" fill="#ee6577" opacity=".3"><title>{escape(change["reason"])}</title></rect>')
+            continue
+        if change['action'] not in actions:
+            continue
+        y = 230 + actions.index(change['action']) * 23 + (8 if change['field'] == 'press' else 0)
+        color = {'added': '#46d9ff', 'removed': '#ff6ba9', 'held': '#ba99ff', 'unknown': '#a6afb5'}[change['kind']]
+        parts.append(f'<rect x="{x:.2f}" y="{y}" width="{w:.2f}" height="7" fill="none" stroke="{color}" stroke-width="1.5"><title>{escape(change["reason"])}</title></rect>')
     for tick in range(6):
         t = (end - start) * tick / 5
         parts.append(f'<text x="{left + width * tick / 5:.1f}" y="{height - 5}" fill="#b9c8cc" text-anchor="middle">{t:.1f}s</text>')
-    parts.append(f'<line id="playhead" x1="{left}" x2="{left}" y1="4" y2="{height - 20}" stroke="#fff" opacity=".7"/>')
+    parts.append(f'<line id="playhead{suffix}" class="playhead" x1="{left}" x2="{left}" y1="4" y2="{height - 20}" stroke="#fff" opacity=".7"/>')
     return ''.join(parts) + '</svg>'
 
 
+def label_changes(before, after):
+    """Exact exported anchors; absent/unknown cells are never negative labels."""
+    baseline = {r['anchor_ns']: r for r in before.get('rows', []) if 'anchor_ns' in r}
+    changes = []
+    for row in after.get('rows', []):
+        old = baseline.get(row.get('anchor_ns'))
+        common = {'t': row['t'], 'dt': row['dt']}
+        if row.get('suitability') == 'rejected':
+            changes.append(common | {'kind': 'rejected', 'reason': row.get('admission_reason') or 'rejected'})
+            continue
+        if not old:
+            continue
+        for i, action in enumerate(after.get('actions', [])):
+            if action not in before.get('actions', []):
+                continue
+            j = before['actions'].index(action)
+            for field in ('press', 'held'):
+                a = old[field][j] if j < len(old[field]) else None
+                b = row[field][i] if i < len(row[field]) else None
+                basis = row.get('press_basis', [])
+                contradicted = field == 'press' and i < len(basis) and basis[i] == 'hud_contradicted'
+                if a == b or (a is None and b is None):
+                    continue
+                kind = ('removed' if contradicted and a == 1 else 'unknown' if a is None or b is None
+                        else 'held' if field == 'held' else 'added' if b == 1 else 'removed')
+                reason = f'{action} {field}: {a} → {b}' + (' (HUD contradicted; unknown, not zero)' if contradicted else '')
+                changes.append(common | {'kind': kind, 'field': field, 'action': action, 'reason': reason})
+    return changes
+
+
+def probability_strip(detail, action):
+    """Raw exported probabilities, without replacing unsupported heads with zero."""
+    if action not in detail.get('actions', []):
+        return '<p>Not available for this label set.</p>'
+    i = detail['actions'].index(action)
+    start, end = detail['start_s'], detail['end_s']
+    scale = 1000 / max(.001, end - start)
+    parts = ['<svg role="img" aria-label="Raw press and held probabilities with thresholds" viewBox="0 0 1160 165">',
+             '<rect width="1160" height="165" fill="#101619"/>',
+             '<text x="8" y="18" fill="#eee">probability 1</text><text x="8" y="122" fill="#eee">0</text>']
+    for field, color in (('press_p', '#edba76'), ('held_p', '#91d9bd')):
+        points, count = [], 0
+        for row in detail.get('probability_rows', detail.get('rows', [])) + [{'t': end}]:
+            values = row.get(field) or []
+            value = values[i] if i < len(values) else None
+            t = row['t'] + (row.get('dt', 0) if field == 'held_p' else 0)
+            if isinstance(value, (float, int)) and 0 <= value <= 1 and start <= t <= end:
+                points.append(f'{145 + (t - start) * scale:.2f},{120 - value * 105:.2f}')
+                count += 1
+            else:
+                if points:
+                    parts.append(f'<polyline points="{" ".join(points)}" fill="none" stroke="{color}" stroke-width="1.5"/>')
+                    points = []
+        if not count:
+            parts.append(f'<text x="8" y="{45 if field == "press_p" else 65}" fill="{color}">{field}: unknown</text>')
+    thresholds = [('press', detail.get('thresholds', {}).get(action), '#edba76')]
+    thresholds += [('hold', detail.get('held_thresholds', {}).get(action), '#91d9bd')]
+    hysteresis = detail.get('refine', {}).get('hysteresis', {}).get(action, {})
+    thresholds += [(f'hold {k}', hysteresis.get(k), '#91d9bd') for k in ('on', 'off')]
+    for name, value, color in thresholds:
+        if isinstance(value, (int, float)) and 0 <= value <= 1:
+            y = 120 - value * 105
+            parts.append(f'<line x1="145" x2="1145" y1="{y:.2f}" y2="{y:.2f}" stroke="{color}" stroke-dasharray="5 4"><title>{name} threshold {value:.7f}</title></line>')
+    for tick in range(6):
+        parts.append(f'<text x="{145 + tick * 200}" y="155" fill="#ccc" text-anchor="middle">{(end-start)*tick/5:.2f}s</text>')
+    parts.append('<line class="playhead" x1="145" x2="145" y1="5" y2="130" stroke="#fff" opacity=".7"/>')
+    legend = ', '.join(f'{name}={value:.7f}' for name, value, _ in thresholds if isinstance(value, (float, int)))
+    peaks = []
+    for field in ('press_p', 'held_p'):
+        values = [(r['t'], (r.get(field) or [])[i]) for r in detail.get('probability_rows', detail.get('rows', []))
+                  if i < len(r.get(field) or []) and isinstance(r[field][i], (int, float)) and 0 <= r[field][i] <= 1]
+        if values:
+            t, value = max(values, key=lambda p: p[1])
+            peaks.append(f'{field} peak {value:.6f} at +{t - start:.3f}s')
+    return '<p>' + escape(legend or 'Thresholds not published') + '</p><p>' + escape('; '.join(peaks)) + '</p>' + ''.join(parts) + '</svg>'
+
+
+def comparison_view(data):
+    sets = data.get('sets', {})
+    before, after = sets.get('v2-cd', {}), sets.get('v2-cd-r1', {})
+    changes = label_changes(before, after)
+    content = '<h2>Before / after · same span, same timeline</h2><p>Cyan: added press · pink: removed/suppressed press · purple: changed hold · gray outline: known/unknown changed · red band: rejected row. Missing rows are unavailable, never inferred rejections.</p>'
+    for name, detail in (('v2-cd', before), ('v2-cd-r1', after)):
+        content += f'<h3>{name} {"BEFORE" if name == "v2-cd" else "AFTER"}</h3>'
+        if detail.get('rows'):
+            content += '<div class="strip">' + label_strip(detail, '-' + name, changes) + '</div>'
+        else:
+            content += '<p>Export not available for this span yet. Refresh checks for new data.</p>'
+    reasons = sorted({c['reason'] for c in changes if c['kind'] == 'rejected'})
+    if before.get('rows') and after.get('rows'):
+        content += f'<p>{sum(c["kind"] != "rejected" for c in changes)} changed cells; {sum(c["kind"] == "rejected" for c in changes)} rejected rows' + (': ' + escape(', '.join(reasons)) if reasons else '') + '.</p>'
+    else:
+        content += '<p>Comparison pending: both exports are needed to count changes.</p>'
+    content += '<p>Held is the exported held_start state. Hysteresis/gap filling is a modelling choice. Rejected rows show retained predictions under red bands; they are not admitted labels. Physical keys and releases remain unverified.</p><h2>Raw probabilities by action</h2><p>Amber: press_p. Green: held_p. v2-cd uses existing 60 Hz raw intervals when available; r1 shows exported step-max press and step-end held probabilities. Dashed lines: published thresholds. Missing heads stay unknown; raw unsupported heads do not imply supported labels. Presses use peak selection, and HUD overrides can differ from threshold decisions.</p>'
+    for name, detail in (('v2-cd', before), ('v2-cd-r1', after)):
+        content += f'<p>{name}: {escape(detail.get("probability_source", "exported 30 Hz steps"))} {escape(detail.get("probability_warning", ""))}</p>'
+    actions = list(dict.fromkeys(before.get('actions', []) + after.get('actions', [])))
+    for action in actions:
+        content += f'<details><summary>{escape(action)}</summary>'
+        for name, detail in (('v2-cd', before), ('v2-cd-r1', after)):
+            content += f'<h4>{name}</h4><div class="strip">' + probability_strip(detail, action) + '</div>'
+        content += '</details>'
+    return content
+
+
 def review_page(title, content, css, nonce, refresh=False):
+    flagged = '<aside class="flagged"><strong>James flagged</strong><ul>' + ''.join(
+        f'<li><a href="{review_url(sid, ordinal, "v2-cd-r1")}">{escape(label)}</a></li>'
+        for sid, ordinal, label in FLAGGED) + '</ul><small>User observations; exact expert physical keys remain unverified.</small></aside>'
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width,initial-scale=1">'
             + ('<meta http-equiv="refresh" content="5">' if refresh else '')
@@ -350,9 +519,12 @@ def review_page(title, content, css, nonce, refresh=False):
             '.review button{background:#91d9bd;color:#13231e;border:0;border-radius:5px;padding:10px;cursor:pointer}'
             '.review form{display:inline-block;margin:3px}.review svg text{font:12px monospace}'
             '.strip{overflow-x:auto}.strip svg{width:100%;min-width:760px}.review nav{margin-bottom:24px}'
+            '.flagged{padding:16px;background:#17282c;border:1px solid #40565c;border-radius:8px;margin-bottom:24px}'
+            '.flagged ul{display:flex;flex-wrap:wrap;gap:12px 28px;padding-left:20px}.review details{border-bottom:1px solid #344247;padding:12px 0}'
+            '.review summary{cursor:pointer;font-weight:600}.review h3{margin:20px 0 8px}'
             '</style></head><body><main class="review"><nav><a href="/idm-labelling">IDM labelling</a> · '
             '<a href="/idm-review/">All videos</a></nav>'
-            f'<h1>{escape(title)}</h1>{content}<p class="muted">Private tailnet review. Third-party footage must not be posted to Linear or the blog.</p></main></body></html>')
+            f'{flagged}<h1>{escape(title)}</h1>{content}<p class="muted">Private tailnet review. Third-party footage must not be posted to Linear or the blog.</p></main></body></html>')
 
 
 def queue_remote(sid, ordinal, name, root):
@@ -384,12 +556,21 @@ def handle_review_request(handler, css, root=REVIEW_ROOT):
         handler.send_header('Content-Length', str(len(body)))
         handler.send_header('Cache-Control', 'no-store')
         handler.send_header('X-Content-Type-Options', 'nosniff')
-        handler.send_header('Content-Security-Policy', f"default-src 'none'; style-src 'unsafe-inline'; script-src 'nonce-{nonce}'; media-src 'self'; form-action 'self'; frame-ancestors 'none'")
+        handler.send_header('Content-Security-Policy', f"default-src 'none'; style-src 'unsafe-inline'; script-src 'nonce-{nonce}'; connect-src 'self'; media-src 'self'; form-action 'self'; frame-ancestors 'none'")
         for name, value in extra:
             handler.send_header(name, value)
         handler.end_headers()
         handler.wfile.write(body)
     try:
+        compare_match = re.fullmatch(r'/idm-review/comparison/([A-Za-z0-9_-]{1,64})/(\d{1,4})', path)
+        if compare_match and handler.command == 'GET':
+            sid, ordinal = compare_match[1], int(compare_match[2])
+            video = review.read_json(root / 'videos' / f'{sid}.json')
+            video['spans'][ordinal]  # Require membership before starting any PC read.
+            snapshot, warning = comparison(sid, ordinal, root)
+            respond(json.dumps({'html': comparison_view(snapshot), 'updated': snapshot.get('updated'),
+                                'warning': warning}, allow_nan=False), 'application/json')
+            return True
         media = re.fullmatch(r'/idm-review/media/([a-f0-9]{24})\.mp4', path)
         if media and handler.command == 'GET':
             clip = review.safe(root / 'clips' / (media[1] + '.mp4'))
@@ -415,7 +596,7 @@ def handle_review_request(handler, css, root=REVIEW_ROOT):
                 headers.append(('Content-Range', f'bytes {a}-{b}/{size}'))
             respond(payload, 'video/mp4', 206 if requested else 200, headers)
             return True
-        match = re.fullmatch(r'/idm-review/(span|render)/([A-Za-z0-9_-]{1,64})/(\d{1,4})/(v2-a|v2-cd)', path)
+        match = re.fullmatch(r'/idm-review/(span|render)/([A-Za-z0-9_-]{1,64})/(\d{1,4})/(v2-a|v2-cd|v2-cd-r1)', path)
         if match:
             kind, sid, ordinal, name = match[1], match[2], int(match[3]), match[4]
             token = review.key(sid, ordinal, name)
@@ -442,25 +623,44 @@ def handle_review_request(handler, css, root=REVIEW_ROOT):
                 respond('Method not allowed', status=405)
                 return True
             detail = review.read_json(root / 'details' / (token + '.json'))
+            snapshot, warning = comparison(sid, ordinal, root) if name != 'v2-a' else ({}, None)
+            # Old detail caches still provide the baseline while the bounded read completes.
+            if not snapshot.get('sets', {}).get('v2-cd', {}).get('rows'):
+                baseline = review.read_json(root / 'details' / (review.key(sid, ordinal, 'v2-cd') + '.json'))
+                snapshot.setdefault('sets', {})['v2-cd'] = baseline
+            if name == 'v2-cd-r1':
+                # Reuse the original clip, explicitly labelled as the BEFORE overlay.
+                token = review.key(sid, ordinal, 'v2-cd')
+                status = review.read_json(root / 'status' / (token + '.json'))
             state = status.get('state', 'not rendered')
             title = f'{video["creator"]} · {sid} · span {ordinal + 1}'
             content = f'<p><a href="/idm-review/video/{sid}">Back to video timeline</a> · {span["start_s"]:.3f}–{span["end_s"]:.3f}s · {name}</p>'
-            for other in span['labels']:
+            for other in dict.fromkeys([*span['labels'], 'v2-cd', 'v2-cd-r1']):
                 content += f'<a style="margin-right:14px" href="{review_url(sid, ordinal, other)}">{other} labels</a>'
+            content += '<p><a href="' + review_url(sid, ordinal, name) + '">Refresh labels</a> · Read-only label snapshot; opening this page never queues a render.</p>'
+            if warning:
+                content += '<p role="status">' + escape(warning) + '</p>'
+            content += '<p id="snapshot-status">Label snapshot: ' + escape(snapshot.get('updated', 'loading from PC; refresh shortly')) + '</p>'
             content += f'<p><strong>{escape(state)}</strong> {escape(status.get("reason", ""))}</p>'
             if state == 'ready':
                 content += f'<video id="review-video" controls autoplay muted loop playsinline src="/idm-review/media/{token}.mp4"></video>'
-                content += f'<p>First {status["clip_duration_s"]:.1f}s of the span · 540p · actual IDM overlay. Camera arrow: +yaw right, +pitch down.</p>'
+                content += f'<p>First {status["clip_duration_s"]:.1f}s of the span · 540p · {"v2-cd BEFORE" if name == "v2-cd-r1" else name} overlay. Camera arrow: +yaw right, +pitch down.</p>'
             else:
-                content += f'<form method="post" action="/idm-review/render/{sid}/{ordinal}/{name}"><button>Load labels &amp; render 10s review</button></form>'
-                content += '<p>Rendering waits until both the game and OBS have exited, including OBS in the tray.</p>'
-            content += '<h2>Label strip</h2><p>Yaw/pitch in deg/s. Each action: held in green (upper), presses in amber (lower), unknown in gray.</p>'
-            content += '<div class="strip">' + label_strip(detail) + '</div>'
+                content += '<p>No cached review clip. Label inspection does not require a render.</p>'
+            content += '<p>Yaw/pitch in deg/s. Each action: held in green (upper), presses in amber (lower), unknown in gray.</p>'
+            content += '<section id="comparison">' + comparison_view(snapshot) + '</section>' if name != 'v2-a' else '<div class="strip">' + label_strip(detail) + '</div>'
             if detail:
                 content += f'<p class="muted">Camera basis: {escape(detail.get("camera_basis", "unknown"))}</p>'
-            if state == 'ready':
-                duration = span['end_s'] - span['start_s']
-                content += f'<script nonce="{nonce}">const v=document.getElementById("review-video"),p=document.getElementById("playhead");function tick(){{if(p){{let x=145+1000*v.currentTime/{duration};p.setAttribute("x1",x);p.setAttribute("x2",x);}}requestAnimationFrame(tick)}}tick();</script>'
+            duration = span['end_s'] - span['start_s']
+            content += f'<script nonce="{nonce}">const v=document.getElementById("review-video");function tick(){{if(v){{let x=145+1000*v.currentTime/{duration};for(const p of document.querySelectorAll(".playhead")){{p.setAttribute("x1",x);p.setAttribute("x2",x);}}}}requestAnimationFrame(tick)}}tick();'
+            if name != 'v2-a':
+                content += f'''let updated={json.dumps(snapshot.get('updated'))};async function refreshLabels(){{
+try{{const response=await fetch('/idm-review/comparison/{sid}/{ordinal}');if(!response.ok)throw Error();const data=await response.json();
+if(data.updated && data.updated!==updated){{const section=document.getElementById('comparison');const opened=new Set([...section.querySelectorAll('details[open] summary')].map(x=>x.textContent));section.innerHTML=data.html;for(const d of section.querySelectorAll('details'))d.open=opened.has(d.querySelector('summary').textContent);updated=data.updated;}}
+document.getElementById('snapshot-status').textContent=(data.warning||'Label snapshot: '+(data.updated||'loading from PC'))+' · refreshes every 30 seconds';
+}}catch{{document.getElementById('snapshot-status').textContent='Label refresh unavailable; retained snapshot may be stale.';}}}}
+setTimeout(refreshLabels,2000);setInterval(refreshLabels,30000);'''
+            content += '</script>'
             respond(review_page(title, content, css, nonce, state in ('queued', 'rendering', 'paused-for-game')))
             return True
         video_match = re.fullmatch(r'/idm-review/video/([A-Za-z0-9_-]{1,64})', path)
@@ -472,7 +672,7 @@ def handle_review_request(handler, css, root=REVIEW_ROOT):
             for span in video['spans']:
                 controls = 'not yet'
                 if span['labels']:
-                    controls = ''.join(f'<form method="post" action="/idm-review/render/{sid}/{span["ordinal"]}/{name}"><button>Review {name}</button></form>' for name in span['labels'])
+                    controls = ' · '.join(f'<a href="{review_url(sid, span["ordinal"], name)}">{name}</a>' for name in dict.fromkeys([*span['labels'], 'v2-cd-r1']))
                 content += f'<tr><td>{span["ordinal"] + 1}</td><td>{span["start_s"]:.3f}–{span["end_s"]:.3f}s</td><td>{span["end_s"] - span["start_s"]:.1f}s</td><td>{controls}</td></tr>'
             content += '</table></div>'
             respond(review_page(video['creator'] + ' · ' + sid, content, css, nonce))

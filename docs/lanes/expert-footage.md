@@ -552,3 +552,30 @@ shots, and Venom team-up as the giant black spiky-ball effect. This is user-supp
 visual taxonomy, not independently verified cast truth. Ordinal 7's +6.083 team_up
 tick is therefore a possible web-shot/team-up confusion, not a confirmed false
 positive without agreement from available team-up and contemporaneous HUD state.
+
+## Private r1 comparison viewer (2026-09-30, VUH-1353)
+
+`scripts/idm_board.py` exposes `v2-cd-r1` and pins James's five reported cases.
+The before/after strips align exact exported anchors, highlight press/hold cell
+changes, and mark explicitly rejected rows with their admission reason. Missing
+rows and unknown labels are not inferred negatives. Cached clips remain clearly
+identified as the v2-cd BEFORE overlay; no new render is triggered by inspection.
+
+The read-only comparison command in `scripts/idm_clip_renderer.py` reads bounded
+per-span exports from the existing label root and `idm-labels-r1/v2-cd-r1`.
+IDM confirmed identical anchors and retained rejected rows, `held_p`, `press_basis`,
+and header `idm.refine` on r1. Existing v2-cd NPZ probabilities are read once per
+member with a bounded stdlib numeric reader; raw interval versus exported step
+timing is named on the page. Baseline held cutoff .5 is producer-confirmed, while
+r1 threshold/hysteresis lines come only from its published export header.
+
+The Mac fetches one requested comparison at a time and refreshes displayed labels
+every 30 seconds without restarting playback. PC reads use BelowNormal priority;
+Mac work uses nice 10 and taskpolicy background. Source labels, media and producers
+are unchanged. At deployment r1 was not exported yet (producer ETA 3–4 hours), so
+the real AFTER view explicitly remains pending; contract fixtures test changes
+and rejection handling. Five actual baseline cases, 66 focused tests, lint,
+Mac route/refresh checks and native desktop/phone playback checks passed ($0).
+Private screenshots: `D:/rivals-expert-footage/private-review/r1-viewer-private.png`
+and `r1-viewer-phone-private.png`; never publish these third-party images.
+Mac backups have suffix `20261001T011742Z.bak`.
