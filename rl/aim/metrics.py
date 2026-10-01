@@ -71,6 +71,7 @@ def metrics(series, size=(W, H)):
     for seg in segs:
         first_on = None
         prev_dx = None
+        side = 0                                 # which side of the box the crosshair was last outside on
         for k, (t, b) in enumerate(seg):
             bx, by = _centre(b)
             dx, dy = bx - cx, by - cy
@@ -81,9 +82,11 @@ def metrics(series, size=(W, H)):
             if inside and first_on is None:
                 first_on = t - seg[0][0]
             half = (b[2] - b[0]) / 2
+            if abs(dx) > half:                   # outside the box horizontally
+                if side and np.sign(dx) != side:
+                    over += 1                    # came out on the far side: the turn went past the target
+                side = np.sign(dx)
             if prev_dx is not None:
-                if np.sign(dx) != np.sign(prev_dx) and abs(dx) > half and abs(prev_dx) > 0:
-                    over += 1
                 dt = t - seg[k - 1][0]
                 if dt > 0:
                     close.append((abs(prev_dx) - abs(dx)) / dt)
