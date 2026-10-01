@@ -185,11 +185,37 @@ SSH_OPTS = ("-o", "BatchMode=yes", "-o", "ConnectTimeout=15", "-o", "ServerAlive
 LAN_MBPS, UPLINK_MBPS = 10., 11.5        # measured 2026-09-30: scp PC->Mac ~12 MB/s, Mac->Modal ~9.5-11.5 MB/s
 
 
+MAC_LAN = "Jamess-MacBook-Pro.local"     # mDNS name of the same Mac: the 'mac' alias keeps its key and host key
+_lan_until = [0.]
+
+
+def _remote(argv, timeout):
+    """Run an ssh/scp argv addressed to the 'mac' alias. When the tailnet name does not resolve (Tailscale logged
+    out, 2026-09-30 21:41), retry over the LAN with -o HostName=MAC_LAN and keep using the LAN for 30 minutes."""
+    def run(extra):
+        return subprocess.run([argv[0], *extra, *argv[1:]], check=True, capture_output=True, text=True,
+                              timeout=timeout)
+    if time.monotonic() < _lan_until[0]:
+        return run(["-o", f"HostName={MAC_LAN}"])
+    try:
+        return run([])
+    except subprocess.CalledProcessError as e:
+        if e.returncode == 255 and "Could not resolve hostname" in (e.stderr or ""):
+            _lan_until[0] = time.monotonic() + 1800
+            return run(["-o", f"HostName={MAC_LAN}"])
+        raise
+
+
 def _ssh(cmd, timeout=60):
     """One short remote command (Git Bash ssh, -n -T, BatchMode). No long-lived session: Windows ssh has hung on
     teardown after a successful command (2026-09-30, the first shard's upload). Returns stdout."""
-    return subprocess.run([f"{GIT_SSH}/ssh.exe", "-n", "-T", *SSH_OPTS, "mac", cmd], check=True,
-                          capture_output=True, text=True, timeout=timeout).stdout
+    return _remote([f"{GIT_SSH}/ssh.exe", "-n", "-T", *SSH_OPTS, "mac", cmd], timeout).stdout
+
+
+def scp(src, dst, timeout, recursive=False):
+    """scp a local path to 'mac:<dst>' with the same tailnet-or-LAN addressing as _ssh."""
+    return _remote([f"{GIT_SSH}/scp.exe", "-q", *(["-r"] if recursive else []), *SSH_OPTS, str(src), f"mac:{dst}"],
+                   timeout)
 
 
 def _gib(text):
@@ -272,8 +298,7 @@ def ship(feature_dir, log=print, lan=None):
             _query(f"mkdir -p {MAC_SHIP} && rm -rf {remote} {remote}.done {remote}.log")
             with (lan or threading.Lock()):
                 t = time.monotonic()
-                subprocess.run([f"{GIT_SSH}/scp.exe", "-q", "-r", *SSH_OPTS, str(d), f"mac:{MAC_SHIP}/"], check=True,
-                               capture_output=True, text=True, timeout=max(300, 2 * gb * 1e3 / LAN_MBPS))
+                scp(d, f"{MAC_SHIP}/", max(300, 2 * gb * 1e3 / LAN_MBPS), recursive=True)
                 log(f"{d.name}: {gb:.2f} GB on the Mac in {time.monotonic() - t:.0f} s")
             _query(f"nohup sh -c '{MODAL} volume put --force {VOLUME} {remote} /expert-features/{d.name} "
                    f"&& rm -rf {remote} && echo ok > {remote}.done || echo fail > {remote}.done' "

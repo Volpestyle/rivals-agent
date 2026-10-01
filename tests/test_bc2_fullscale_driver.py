@@ -149,3 +149,28 @@ def test_marker_probe_keeps_real_errors(remote, world):
     remote([255])
     with pytest.raises(fullscale.Unknown):
         fullscale.marker("~/x.done")
+
+
+def test_tailnet_dns_failure_falls_back_to_the_lan_name(monkeypatch):
+    import subprocess
+    from policy.bc2 import fullscale
+    seen = []
+
+    def run(args, **kw):
+        seen.append(args)
+        if f"HostName={fullscale.MAC_LAN}" not in args:
+            raise subprocess.CalledProcessError(255, args, "", "ssh: Could not resolve hostname x.ts.net: unknown")
+        return subprocess.CompletedProcess(args, 0, "Jamess-MacBook-Pro.local\n", "")
+    monkeypatch.setattr(subprocess, "run", run)
+    monkeypatch.setattr(fullscale, "_lan_until", [0.])
+    assert fullscale._ssh("hostname").strip() == "Jamess-MacBook-Pro.local"
+    assert len(seen) == 2 and "mac" in seen[1]                     # alias kept, HostName overridden
+    fullscale.scp("x", "dir/", 10)
+    assert len(seen) == 3                                           # sticky: straight to the LAN name
+    monkeypatch.setattr(fullscale, "_lan_until", [0.])
+
+    def other(args, **kw):
+        raise subprocess.CalledProcessError(255, args, "", "Connection refused")
+    monkeypatch.setattr(subprocess, "run", other)
+    with pytest.raises(subprocess.CalledProcessError):              # other transport errors are not rerouted
+        fullscale._ssh("hostname")

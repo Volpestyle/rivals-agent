@@ -113,12 +113,11 @@ class Env:
 
     def put_dir(self, local, volume_path, timeout):
         """Copy a local directory to the Mac and `modal volume put` it, detached, polled with short ssh calls."""
-        from policy.bc2.fullscale import GIT_SSH, MAC_SHIP, MODAL, SSH_OPTS, VOLUME, Unknown, _query, marker
+        from policy.bc2.fullscale import MAC_SHIP, MODAL, Unknown, VOLUME, _query, marker, scp
         name = Path(local).name
         remote = f"{MAC_SHIP}/{name}"
         _query(f"mkdir -p {MAC_SHIP} && rm -rf {remote} {remote}.done {remote}.log")
-        subprocess.run([f"{GIT_SSH}/scp.exe", "-q", "-r", *SSH_OPTS, str(local), f"mac:{MAC_SHIP}/"], check=True,
-                       capture_output=True, text=True, timeout=timeout)
+        scp(local, f"{MAC_SHIP}/", timeout, recursive=True)
         _query(f"nohup sh -c '{MODAL} volume put --force {VOLUME} {remote} {volume_path} && rm -rf {remote} "
                f"&& echo ok > {remote}.done || echo fail > {remote}.done' > {remote}.log 2>&1 < /dev/null &")
         deadline = time.time() + timeout
@@ -142,19 +141,17 @@ class Env:
         tar = ROOT / f"code-{sha}.tar"
         self.run(["git", "archive", "-o", str(tar), "HEAD", "agent", "policy", "scripts",
                   "data/human/sealed-denylist.v2.json", "data/human/patch-equivalence.json"], 300)
-        from policy.bc2.fullscale import GIT_SSH, SSH_OPTS, _query
-        subprocess.run([f"{GIT_SSH}/scp.exe", "-q", *SSH_OPTS, str(tar), "mac:dev/policy-bc2/"], check=True,
-                       capture_output=True, text=True, timeout=600)
+        from policy.bc2.fullscale import _query, scp
+        scp(tar, "dev/policy-bc2/", 600)
         _query(f"cd ~/dev/policy-bc2 && rm -rf code-{sha} && mkdir code-{sha} && tar -xf code-{sha}.tar -C code-{sha}")
         return f"~/dev/policy-bc2/code-{sha}"
 
     def launch(self, code, spec, log_name, timeout):
         """Run the grid on the Mac (detached, niced); poll its exit file; return the exit code."""
-        from policy.bc2.fullscale import GIT_SSH, SSH_OPTS, Unknown, _query, marker
+        from policy.bc2.fullscale import Unknown, _query, marker, scp
         spec_file = ROOT / f"{log_name}.json"
         spec_file.write_text(json.dumps(spec, indent=1) + "\n")
-        subprocess.run([f"{GIT_SSH}/scp.exe", "-q", *SSH_OPTS, str(spec_file), f"mac:dev/policy-bc2/{spec_file.name}"],
-                       check=True, capture_output=True, text=True, timeout=300)
+        scp(spec_file, f"dev/policy-bc2/{spec_file.name}", 300)
         log = f"~/dev/policy-bc2/{log_name}.log"
         _query(f"cd {code} && nohup sh -c 'export PATH=$HOME/.local/bin:$PATH; MODAL_PROFILE=rivals nice -n 10 "
                f"taskpolicy -b modal run -m policy.bc2.cloud::grid --spec \"$(cat ../{spec_file.name})\" "
