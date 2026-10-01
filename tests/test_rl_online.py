@@ -328,3 +328,26 @@ def test_turn_options_fire_toward_bots_on_real_sitting_frames():
     assert all(v for _, v, _ in turned)                 # no turn without an outline in view
     agree = [y * b > 0 for y, v, b in turned if abs(b) >= explore.CENTRED]
     assert agree and sum(agree) / len(agree) >= .8    # toward the outline (the bearing refreshes at 5 Hz)
+
+
+def test_load_weights_swaps_in_place_and_clears_the_graph(tmp_path):
+    model, cfg = tiny_policy()
+    other, _ = tiny_policy()
+    for p in other.parameters():
+        torch.nn.init.constant_(p, .123)
+    base = tmp_path / "base"
+    base.mkdir()
+    (base / "v").write_bytes(b"v")
+    (base / "bundle.json").write_text(json.dumps({"kind": "bc2", "live": {}, "thresholds": {}, "files": {
+        "checkpoint": {"path": "selected.pt", "sha256": "x"}, "vision": {"path": "v", "sha256": "y"}}}))
+    out = update.write_bundle(other, cfg.as_dict(), base, tmp_path / "rl-002", name="rl-002")
+    live = SimpleNamespace(model=model, graph={"shape": (1, 2, 3)}, resets=0)
+    live.reset = lambda: setattr(live, "resets", live.resets + 1)
+    update.load_weights(live, out)
+    assert live.graph == {} and live.resets == 1
+    assert all(torch.allclose(a, b) for a, b in zip(model.state_dict().values(), other.state_dict().values()))
+    spec = json.loads((out / "bundle.json").read_text())
+    spec["files"]["checkpoint"]["sha256"] = "0" * 64
+    (out / "bundle.json").write_text(json.dumps(spec))
+    with pytest.raises(ValueError):
+        update.load_weights(live, out)

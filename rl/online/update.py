@@ -120,3 +120,31 @@ def write_bundle(model, config, base_bundle, out_dir, name, notes=""):
     spec.update(name=name, notes=notes, files=files)
     (out_dir / "bundle.json").write_text(json.dumps(spec, indent=2) + "\n")
     return out_dir
+
+
+def load_weights(policy, bundle_dir):
+    """Swap a running LivePolicy (or an ExploringPolicy around one) to another bc2 bundle's Policy2 weights in place,
+    keeping the tower, capture and process: the persistent sitting's bundle swap. Call it only between episodes, never
+    inside a pad scope. The checkpoint must hash to its bundle.json and have the same config as the loaded model; the
+    CUDA-graph cache is cleared (the graph holds the old parameters' buffers) so the next step recaptures, and the
+    recurrent state is reset."""
+    import torch
+    base = getattr(policy, "base", policy)
+    bundle_dir = Path(bundle_dir)
+    spec = json.loads((bundle_dir / "bundle.json").read_text())
+    if spec.get("kind") != "bc2" or "buttons" in spec["files"]:
+        raise ValueError("load_weights swaps plain bc2 bundles only")
+    entry = spec["files"]["checkpoint"]
+    path = bundle_dir / entry["path"]
+    if _sha256(path) != entry["sha256"]:
+        raise ValueError(f"{path}: hash differs from bundle.json")
+    payload = torch.load(path, map_location="cpu", weights_only=True)
+    if payload["config"] != base.model.config.as_dict():
+        raise ValueError("checkpoint config differs from the loaded model; build a new LivePolicy instead")
+    device = next(base.model.parameters()).device
+    base.model.load_state_dict({k: v.to(device) for k, v in payload["model"].items()}, strict=True)
+    base.model.eval()
+    if getattr(base, "graph", None) is not None:
+        base.graph = {}
+    policy.reset()
+    return entry["sha256"]
