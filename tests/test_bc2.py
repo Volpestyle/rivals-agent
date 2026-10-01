@@ -206,6 +206,7 @@ def test_equal_expert_windows_give_equal_steps_and_weights_apply(tmp_path):
                                    soft_targets=("press_soft",),
                                    cam_weight={"weight": 5., "source": "test", "rows": {"a": [[10, 60], [200, 230]]}})
     assert runs["A"]["steps"] == runs["B"]["steps"]
+    assert [h["train_loss"] > 0 for h in runs["A"]["history"]] == [True, True]
     assert [h["epoch"] for h in runs["A"]["history"]] == [h["epoch"] for h in runs["B"]["history"]]
     assert runs["B"]["expert"]["streamed"] and runs["B"]["expert"]["soft_rows"]["press_soft"] == 86
     assert runs["A"]["cam_weight"]["row_share"]["a"] == pytest.approx(80 / 300, abs=1e-4)

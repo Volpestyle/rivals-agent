@@ -533,9 +533,16 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
         f"{sum(s.n for s in dev_s)} dev, {sum(s.n for s in eval_s)} eval")
 
     def epoch_items(epoch):
-        items = windows(all_s, gen, config.use_dt)
-        human = [w for w in items if w[0] < len(train_s)]
-        expert = [w for w in items if w[0] >= len(train_s)] if epoch < expert_epochs else []
+        if expert_windows is not None:
+            # equal-budget arms: human windows (and oversampling) from their own generator, so both arms get the
+            # identical human windows and the same window count per epoch, whatever the expert pool
+            human = windows(train_s, gen_h, config.use_dt)
+            expert = [(si + len(train_s), *w) for si, *w in windows(expert_s, gen, config.use_dt)] \
+                if epoch < expert_epochs else []
+        else:
+            items = windows(all_s, gen, config.use_dt)
+            human = [w for w in items if w[0] < len(train_s)]
+            expert = [w for w in items if w[0] >= len(train_s)] if epoch < expert_epochs else []
         if expert and expert_share is not None:
             keep = int(len(human) * expert_share / (1 - expert_share))
             expert = [expert[i] for i in torch.randperm(len(expert), generator=gen)[:keep].tolist()]
@@ -554,13 +561,14 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
             want = int(share * (len(items) - len(own)) / (1 - share))
             extra = want - len(own)
             if extra > 0:
-                picks = torch.randint(0, len(own), (extra,), generator=gen).tolist()
+                picks = torch.randint(0, len(own), (extra,), generator=gen if expert_windows is None else gen_h).tolist()
                 items = items + [own[i] for i in picks]
         return items
     pw = pos_weights(train_s)
     model = Policy2(config).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=wd)
     gen = torch.Generator().manual_seed(seed)
+    gen_h = torch.Generator().manual_seed(seed + 7919)      # human windows in equal-budget arms
     sizes = [len(epoch_items(e)) // batch_size for e in (0, epochs - 1)]
     total = sizes[0] * expert_epochs + sizes[1] * (epochs - expert_epochs)
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda k: min(1, k / 300) * .5 * (1 + math.cos(math.pi * min(k, total) / total)))
