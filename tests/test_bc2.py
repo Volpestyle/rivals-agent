@@ -162,3 +162,89 @@ def test_split_features(tmp_path):
     fit, hold = bc2_train.Session(tmp_path / "x-fit", "cpu"), bc2_train.Session(tmp_path / "x-hold", "cpu")
     assert fit.n == 80 and hold.n == 20 and bool(hold.t["run_start"][0])
     assert np.array_equal(np.load(tmp_path / "x-hold" / "gray_c.npy"), np.load(d / "gray_c.npy")[80:])
+
+
+def test_streamed_session_batches_match_resident(tmp_path):
+    d = make_session(tmp_path, "s", n=300)
+    with np.load(d / "targets.npz") as z:      # drop rows 40-59: explicit feature_row mapping, a run break
+        keep = np.r_[0:40, 60:300]
+        t = {k: z[k][keep] for k in z.files}
+    t["feature_row"] = keep
+    t["run_start"][40] = True
+    np.savez(d / "targets.npz", **t)
+    res, st = bc2_train.Session(d, "cpu"), bc2_train.Session(d, "cpu", stream=True)
+    assert isinstance(st.feats, np.memmap)
+    items = [(0, 0, 128, True, 1), (1, 30, 100, False, 2), (0, 150, 64, False, 3)]
+    torch.manual_seed(5)
+    a = bc2_train.batch([res, res], items, "cpu", chunk=3, static_aug=.5, motion_dropout=.5)
+    torch.manual_seed(5)
+    b = bc2_train.batch([st, st], items, "cpu", chunk=3, static_aug=.5, motion_dropout=.5)
+    assert a.keys() == b.keys()
+    for k in a:
+        assert torch.equal(a[k], b[k]), k
+    with pytest.raises(ValueError, match="training-only"):
+        st.inputs(torch.zeros(1, 4, dtype=torch.long))
+
+
+def test_equal_expert_windows_give_equal_steps_and_weights_apply(tmp_path):
+    feats = tmp_path / "features"
+    feats.mkdir()
+    own, dev = make_session(feats, "a", seed=1), make_session(feats, "c", seed=3)
+    small = [make_session(feats, "x", seed=4)]
+    big = small + [make_session(feats, f"y{i}", n=600, seed=5 + i) for i in range(3)]
+    with np.load(big[1] / "targets.npz") as z:
+        t = {k: z[k] for k in z.files}
+    t["press_soft"] = np.full((600, vocab.N), np.nan, np.float32)
+    t["press_soft"][::7, vocab.INDEX["jump"]] = .3
+    np.savez(big[1] / "targets.npz", **t)
+    config = bc2_model.Config(embed=16, motion=16, hidden=32, use_dt=True)
+    runs = {}
+    for name, experts, stream in (("A", small, False), ("B", big, True)):
+        runs[name] = bc2_train.fit([own], [dev], [dev], tmp_path / name, config=config, epochs=2, batch_size=4,
+                                   device="cpu", log=lambda *_: None, expert_dirs=experts, expert_windows=4,
+                                   stream_expert=stream, press_unknown=("spider_power",),
+                                   soft_targets=("press_soft",),
+                                   cam_weight={"weight": 5., "source": "test", "rows": {"a": [[10, 60], [200, 230]]}})
+    assert runs["A"]["steps"] == runs["B"]["steps"]
+    assert [h["epoch"] for h in runs["A"]["history"]] == [h["epoch"] for h in runs["B"]["history"]]
+    assert runs["B"]["expert"]["streamed"] and runs["B"]["expert"]["soft_rows"]["press_soft"] == 86
+    assert runs["A"]["cam_weight"]["row_share"]["a"] == pytest.approx(80 / 300, abs=1e-4)
+    with pytest.raises(ValueError, match="fewer than"):
+        bc2_train.fit([own], [dev], [], tmp_path / "C", config=config, epochs=1, batch_size=4, device="cpu",
+                      log=lambda *_: None, expert_dirs=small, expert_windows=10 ** 6)
+
+
+def test_window_rows_maps_composition_times_to_row_ranges(tmp_path):
+    from policy.bc2 import data
+    p = tmp_path / "s.steps.jsonl"
+    rows = [{"i": k, "frame": {"composition_ns": 1000 + 100 * k}} for k in range(20)]
+    p.write_text("\n".join(json.dumps(r) for r in [{"format": "x"}] + rows) + "\n")
+    # rows 2-4 (1200-1400), 10 (exactly 2000), 18-19 (window past the end)
+    assert data.window_rows(p, [[1150, 1450], [2000, 2050], [2750, 9999]]) == [[2, 5], [10, 11], [18, 20]]
+
+
+def test_relabel_carries_soft_targets_into_training_batches(tmp_path):
+    from policy.bc2.expert import relabel
+    jump, swing = vocab.INDEX["jump"], vocab.INDEX["web_swing"]
+
+    def soft(h, rows):
+        for r in rows:
+            r["press_p"] = [None] * vocab.N
+            r["press_p"][jump] = .25
+            r["held_p"] = {"web_swing": .75}
+    old, labels, d = relabel_case(tmp_path, change=soft)
+    relabel(old, labels, d)
+    with np.load(d / "targets.npz") as z:
+        assert z["press_soft"].shape == (6, vocab.N) and np.isnan(z["press_soft"][:, swing]).all()
+        assert (z["press_soft"][:, jump] == .25).all() and (z["held_soft"][:, swing] == .75).all()
+    s = bc2_train.Session(d, "cpu")
+    assert s.soft("press_soft", 1) == 6 and s.soft("held_soft", 0) == 6
+    b = bc2_train.batch([s], [(0, 0, 3, True, 1)], "cpu")
+    assert torch.allclose(b["act"][0, :, 1, jump], torch.full((3,), .25))
+    assert torch.allclose(b["act"][0, :, 0, swing], torch.full((3,), .75))
+    # a relabel to labels without soft fields leaves none behind
+    (tmp_path / "plain").mkdir()
+    old2, labels2, d2 = relabel_case(tmp_path / "plain")
+    relabel(old2, labels2, d2)
+    with np.load(d2 / "targets.npz") as z:
+        assert "press_soft" not in z.files

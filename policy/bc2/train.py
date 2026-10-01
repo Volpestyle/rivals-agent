@@ -27,8 +27,12 @@ REPS = torch.tensor([vocab.class_degrees(k) for k in range(vocab.CAMERA_CLASSES)
 
 
 class Session:
-    def __init__(self, root, device, gray_file="gray_g.npy"):
+    """stream=True keeps the feature arrays as memory maps (local disk) and gathers each window's rows on the
+    host, for an expert corpus larger than GPU memory (the full-scale arm, ~385 GB); targets stay on the device.
+    Streamed sessions are training-only: predict/evaluate need resident features."""
+    def __init__(self, root, device, gray_file="gray_g.npy", stream=False):
         root = Path(root)
+        self.stream = stream
         self.meta = json.loads((root / "meta.json").read_text())
         self.id = self.meta["session"]
         t = np.load(root / "targets.npz")
@@ -40,8 +44,15 @@ class Session:
                                         or np.any(feature_row < 0) or np.any(feature_row[1:] <= feature_row[:-1])):
             raise ValueError("feature_row must be strictly increasing nonnegative row indices")
 
+        self.dev = dev
+        self.frow = None if feature_row is None else np.asarray(feature_row, np.int64)
+
         def load_features(name):
             a = np.load(root / name, mmap_mode="r")
+            if stream:
+                if (len(a) != n) if feature_row is None else (n and feature_row[-1] >= len(a)):
+                    raise ValueError(f"{name}: target/feature row mismatch")
+                return a
             if feature_row is None:
                 if len(a) != n:
                     raise ValueError(f"{name}: target/feature row mismatch; explicit feature_row required")
@@ -59,7 +70,8 @@ class Session:
         self.green = load_features("green.npy") if green.exists() else None
         prev = np.arange(n) - 1
         prev[self.t["run_start"]] = np.flatnonzero(self.t["run_start"])
-        self.prev = torch.from_numpy(np.maximum(prev, 0)).to(dev)
+        self.prev_np = np.maximum(prev, 0)
+        self.prev = torch.from_numpy(self.prev_np).to(dev)
         yaw = np.nan_to_num(self.t["yaw"], nan=9.)
         run_id = np.cumsum(self.t["run_start"])
         onset = (np.abs(yaw) >= .5) & (np.abs(yaw) < 9.)
@@ -68,7 +80,8 @@ class Session:
             back[k:] = (run_id[k:] == run_id[:-k]) & (np.abs(yaw[:-k]) < .5)
             onset &= back
         self.onset = torch.from_numpy(onset).to(dev)
-        self.run_first = torch.from_numpy(np.maximum.accumulate(np.where(self.t["run_start"], np.arange(n), 0))).to(dev)
+        self.run_first_np = np.maximum.accumulate(np.where(self.t["run_start"], np.arange(n), 0))
+        self.run_first = torch.from_numpy(self.run_first_np).to(dev)
         starts = np.flatnonzero(self.t["run_start"]).tolist()
         self.runs = list(zip(starts, starts[1:] + [n]))
         valid = torch.from_numpy(self.t["valid"]).to(dev)
@@ -76,13 +89,43 @@ class Session:
         self.act_mask = torch.from_numpy(self.t["act_known"]).to(dev) & valid[:, None, None]
         self.cam = torch.from_numpy(self.t["cam_class"]).to(dev)
         self.cam_mask = torch.from_numpy(self.t["cam_known"]).to(dev) & valid[:, None]
+        self.cam_w = None           # per-row camera loss weight (fit's cam_weight), None = 1
         self.n = n
 
-    def inputs(self, idx, k=1):
-        """idx LongTensor [B, T] of rows (k rows apart) -> (feats, gray pairs, None, green, dt)."""
+    def soft(self, field, channel):
+        """Replace channel's targets (0 hold, 1 press) by the float soft field from targets.npz (the IDM's own
+        probability, e.g. press_p) where it is finite; known masks are unchanged. Returns the rows replaced."""
+        if field not in self.t:
+            return 0
+        v = torch.from_numpy(np.asarray(self.t[field], np.float32)).to(self.act.device)
+        ok = torch.isfinite(v)
+        self.act[:, channel] = torch.where(ok, v, self.act[:, channel])
+        return int(ok.any(1).sum())
+
+    def inputs(self, idx, k=1, rows=None):
+        """idx LongTensor [B, T] of rows (k rows apart) -> (feats, gray pairs, None, green, dt). A streamed session
+        also needs `rows`, the same single window as a host array (no device sync to read it back)."""
+        if self.stream:
+            return self._gather(rows, k)
         p = self.prev[idx] if k == 1 else torch.maximum(idx - k, self.run_first[idx])
         return (self.feats[idx], self.gray_g[p], self.gray_g[idx], self.gray_c[p], self.gray_c[idx], None,
                 None if self.green is None else self.green[idx], torch.full(idx.shape, float(k), device=idx.device))
+
+    def _gather(self, rows, k):
+        """One window from the memory maps: read the contiguous feature-row span once, pick rows, pin, copy."""
+        if rows is None:
+            raise ValueError("streamed sessions are training-only: pass the window's host rows")
+        p = self.prev_np[rows] if k == 1 else np.maximum(rows - k, self.run_first_np[rows])
+        fr = (lambda r: r) if self.frow is None else (lambda r: self.frow[r])
+        cur, pre = fr(rows), fr(p)
+        lo, hi = int(min(cur.min(), pre.min())), int(max(cur.max(), pre.max())) + 1
+
+        def take(a, r):
+            x = torch.from_numpy(np.ascontiguousarray(np.asarray(a[lo:hi])[r - lo])[None])
+            return x.pin_memory().to(self.dev, non_blocking=True) if self.dev.type == "cuda" else x.to(self.dev)
+        dt = torch.full((1, len(rows)), float(k), device=self.dev)
+        return (take(self.feats, cur), take(self.gray_g, pre), take(self.gray_g, cur), take(self.gray_c, pre),
+                take(self.gray_c, cur), None, None if self.green is None else take(self.green, cur), dt)
 
 
 def windows(sessions, generator, jitter=False):
@@ -112,11 +155,12 @@ def batch(sessions, items, device, chunk=0, motion_dropout=0., static_aug=0.):
     actions: from a frozen scene, the policy still has to start the typical action."""
     t = max(item[2] for item in items)
     parts = {k: [] for k in ("feats", "gp", "gc", "cp", "cc", "green", "dt", "onset", "fcam", "fcam_mask", "act",
-                             "act_mask", "camera", "camera_mask")}
+                             "act_mask", "camera", "camera_mask", "cam_w")}
     for si, st, n, at_start, stride in items:
         s = sessions[si]
-        idx = (st + stride * torch.arange(t, device=device)).clamp_max(s.n - 1)
-        inputs = s.inputs(idx[None], stride)
+        rows = np.minimum(st + stride * np.arange(t), s.n - 1)
+        idx = torch.from_numpy(rows).to(device, non_blocking=True)
+        inputs = s.inputs(idx[None], stride, rows)
         parts["dt"].append(inputs[7][0])
         inputs = list(inputs)
         if motion_dropout and float(torch.rand(1)) < motion_dropout:
@@ -156,7 +200,43 @@ def batch(sessions, items, device, chunk=0, motion_dropout=0., static_aug=0.):
         parts["act_mask"].append(s.act_mask[idx] & keep[:, None, None])
         parts["camera"].append(s.cam[idx])
         parts["camera_mask"].append(s.cam_mask[idx] & keep[:, None])
+        parts["cam_w"].append(torch.ones(t, device=device) if s.cam_w is None else s.cam_w[idx])
     return {k: torch.stack(v) for k, v in parts.items() if v}
+
+
+def prefetched(make, jobs, depth=2):
+    """Run make(job) one or two jobs ahead on a worker thread (streamed windows read from disk while the GPU
+    trains). Only this thread draws batch()'s CPU random numbers, so the sequence matches a sequential loop."""
+    import queue
+    import threading
+    q, stop = queue.Queue(depth), threading.Event()
+
+    def work():
+        try:
+            for job in jobs:
+                if stop.is_set():
+                    return
+                q.put(("ok", make(job)))
+            q.put(("end", None))
+        except BaseException as e:      # surface loader errors in the training thread
+            q.put(("err", e))
+    worker = threading.Thread(target=work, daemon=True)
+    worker.start()
+    try:
+        while True:
+            kind, value = q.get()
+            if kind == "end":
+                return
+            if kind == "err":
+                raise value
+            yield value
+    finally:
+        stop.set()
+        while worker.is_alive():
+            try:
+                q.get_nowait()
+            except queue.Empty:
+                worker.join(.05)
 
 
 def pos_weights(sessions):
@@ -391,23 +471,49 @@ def dev_loss(model, sessions, pw, chunk=512):
 def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batch_size=32, lr=3e-4, wd=.05,
         device="cuda", incumbent=None, log=print, onset_weight=1., chunk_weight=.5, expert_dirs=(),
         expert_epochs=None, expert_share=None, expert_actions=True, motion_dropout=0., static_aug=0.,
-        expert_mask=None, oversample=None):
+        expert_mask=None, oversample=None, expert_windows=None, stream_expert=False, cam_weight=None,
+        press_unknown=(), soft_targets=()):
     """expert_dirs: IDM-labelled expert sessions (policy.bc2.expert), used as extra training windows for the first
     expert_epochs epochs (default: all; VPT-style pretrain-then-finetune when fewer). expert_share caps the
-    expert fraction of an epoch's windows. Selection, thresholds and pos_weight stay on James's data."""
+    expert fraction of an epoch's windows. Selection, thresholds and pos_weight stay on James's data.
+
+    Full-scale comparison (lead, 2026-09-30): expert_windows draws exactly that many expert windows per epoch
+    (fresh each epoch), so arms with small and large expert pools get identical steps, schedule and selection
+    points; stream_expert keeps expert features as memory maps (Session(stream=True)). cam_weight
+    {"weight": w, "rows": {session id: [[lo, hi), ...] step-table rows}} multiplies those rows' camera loss
+    (rl's pre-hit/KO windows, data.window_rows). press_unknown: action names whose expert presses are unknown
+    (spider_power: LMB is held auto-fire, idm 2026-09-30). soft_targets: targets.npz float fields used as expert
+    targets where finite, from ("press_soft", "held_soft") (the IDM's press_p / held_p)."""
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     torch.manual_seed(seed)
     gray_file = "gray_g1.npy" if config.hires else "gray_g.npy"
-    load = lambda dirs: [Session(d, device, gray_file) for d in dirs]
+    load = lambda dirs, stream=False: [Session(d, device, gray_file, stream) for d in dirs]
     train_s, dev_s, eval_s = load(train_dirs), load(dev_dirs), load(eval_dirs)
-    expert_s = load(expert_dirs)
+    expert_s = load(expert_dirs, stream_expert)
     unusable = [s.id for s in expert_s if not any(b - a >= 32 for a, b in s.runs)]
     if unusable:
         raise ValueError(f"expert sessions have no trainable runs (minimum 32 steps): {unusable}")
+    soft_rows = {}
+    for field in soft_targets:
+        channel = {"held_soft": 0, "press_soft": 1}[field]
+        soft_rows[field] = sum(s.soft(field, channel) for s in expert_s)
     if not expert_actions:                 # camera-only expert labels
         for s in expert_s:
             s.act_mask[:] = False
+    for name in press_unknown:
+        for s in expert_s:
+            s.act_mask[:, 1, vocab.INDEX[name]] = False
+    weighted = {}
+    for s in train_s:
+        ranges = ((cam_weight or {}).get("rows") or {}).get(s.id)
+        if ranges:
+            row = s.t["row"]
+            hit = np.zeros(len(row), bool)
+            for lo, hi in ranges:
+                hit |= (row >= lo) & (row < hi)
+            s.cam_w = torch.from_numpy(np.where(hit, float(cam_weight["weight"]), 1.).astype(np.float32)).to(device)
+            weighted[s.id] = round(float(hit.mean()), 4)
     # Per-creator label masks from label audits, e.g. {"daymr": {"camera": true, "actions": ["web_cluster"]}}:
     # masked channels become unknown (no loss) for that creator's shards.
     masked = {}
@@ -433,6 +539,10 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
         if expert and expert_share is not None:
             keep = int(len(human) * expert_share / (1 - expert_share))
             expert = [expert[i] for i in torch.randperm(len(expert), generator=gen)[:keep].tolist()]
+        if expert and expert_windows is not None:
+            if len(expert) < expert_windows:
+                raise ValueError(f"expert pool has {len(expert)} windows this epoch, fewer than {expert_windows}")
+            expert = [expert[i] for i in torch.randperm(len(expert), generator=gen)[:expert_windows].tolist()]
         items = human + expert
         # oversample {session id: share}: repeat that session's windows until they are about `share` of the epoch
         # (a short targeted take, e.g. start-from-still, would otherwise be a sliver of every batch).
@@ -461,17 +571,17 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
         per_epoch = len(items) // batch_size
         order = torch.randperm(len(items), generator=gen).tolist()
         started, running = time.monotonic(), 0.
-        for k in range(per_epoch):
-            b = batch(all_s, [items[i] for i in order[k * batch_size:(k + 1) * batch_size]], device, config.chunk,
-                      motion_dropout, static_aug)
+        jobs = ([items[i] for i in order[k * batch_size:(k + 1) * batch_size]] for k in range(per_epoch))
+        make = lambda job: batch(all_s, job, device, config.chunk, motion_dropout, static_aug)
+        for b in (prefetched(make, jobs) if stream_expert else map(make, jobs)):
             with torch.autocast("cuda", dtype=torch.bfloat16, enabled=device == "cuda"):
                 x, y, _, fut = model(b["feats"], b["gp"], b["gc"], b["cp"], b["cc"], green=b.get("green"), dt=b["dt"],
                                      future=True)
             terms = rtrain.loss_terms(x.float(), y.float(), b, pw)
-            if onset_weight != 1:           # camera CE with onset steps up-weighted
+            if onset_weight != 1 or weighted:   # camera CE with onset steps and cam_weight rows up-weighted
                 ce = F.cross_entropy(y.float().reshape(-1, vocab.CAMERA_CLASSES), b["camera"].reshape(-1),
                                      reduction="none").reshape(b["camera_mask"].shape)
-                w = b["camera_mask"].float() * (1 + (onset_weight - 1) * b["onset"].float())[..., None]
+                w = b["camera_mask"].float() * ((1 + (onset_weight - 1) * b["onset"].float()) * b["cam_w"])[..., None]
                 terms["camera"] = (ce * w).sum() / w.sum().clamp_min(1)
             if fut is not None:
                 fce = F.cross_entropy(fut.float().reshape(-1, vocab.CAMERA_CLASSES), b["fcam"].reshape(-1),
@@ -497,7 +607,10 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
     report = {"config": config.as_dict(), "seed": seed, "epochs": epochs, "history": history, "selected_epoch": best[1],
               "expert": {"sessions": [s.id for s in expert_s], "steps": sum(s.n for s in expert_s),
                          "epochs": expert_epochs if expert_s else 0, "share": expert_share,
-                         "actions": expert_actions, "masked": masked},
+                         "actions": expert_actions, "masked": masked, "windows_per_epoch": expert_windows,
+                         "streamed": stream_expert, "press_unknown": list(press_unknown), "soft_rows": soft_rows},
+              "steps": total, "cam_weight": None if not cam_weight else
+              {"weight": cam_weight["weight"], "source": cam_weight.get("source"), "row_share": weighted},
               "selection": "lowest dev loss (dev sessions only); eval sessions never used for selection"}
     live = [bool(x) for x in vocab.live_mask([10 ** 6] * vocab.N)]
     for tag, ep in (("selected", best[1]), ("final", epochs)):

@@ -71,9 +71,12 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
         expert_epochs: int = None, expert_share: float = None, hires: bool = False, layers: int = 1,
         expert_actions: bool = True, expert_sessions: list = None, expert_label_source: str = None,
         expert_targets: str = None, motion_dropout: float = 0., static_aug: float = 0., expert_mask: dict = None,
-        extra_train: list = None, oversample: dict = None):
+        extra_train: list = None, oversample: dict = None, expert_windows: int = None, stream_expert: bool = False,
+        cam_weight: dict = None, press_unknown: list = (), soft_targets: list = ()):
     """expert_targets: a volume directory of target-only overlays (<shard>/{targets.npz, meta.json}, from
-    expert.relabel) that replace each staged expert shard's targets; the original features are unchanged."""
+    expert.relabel) that replace each staged expert shard's targets; the original features are unchanged.
+    expert_windows, stream_expert, cam_weight, press_unknown, soft_targets: as train.fit (the full-scale arms);
+    a streamed arm runs through fit_big, whose container has the disk for the whole staged corpus."""
     _setup()
     import shutil
     from policy.bc2 import model, train
@@ -121,7 +124,8 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
                        onset_weight=onset_weight, chunk_weight=chunk_weight, expert_dirs=experts,
                        expert_epochs=expert_epochs, expert_share=expert_share, expert_actions=expert_actions,
                        motion_dropout=motion_dropout, static_aug=static_aug, expert_mask=expert_mask,
-                       oversample=oversample,
+                       oversample=oversample, expert_windows=expert_windows, stream_expert=stream_expert,
+                       cam_weight=cam_weight, press_unknown=tuple(press_unknown), soft_targets=tuple(soft_targets),
                        incumbent=train.load_incumbent("/out/assets/incumbent/epoch-26.pt",
                                                       "/out/assets/incumbent/evaluation.json"),
                        log=lambda m: print(m, flush=True))
@@ -131,6 +135,14 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
     shutil.copytree(run, final)
     out.commit()
     return {"name": name, "selected_epoch": report["selected_epoch"]}
+
+
+# The full-scale arm: ~385 GB of expert features staged to container disk and streamed (train.Session(stream=True)).
+# One container; it counts toward the policy lane's 3 concurrent GPUs together with fit's.
+@app.function(image=image, gpu="H100", cpu=16, memory=131072, ephemeral_disk=900 * 1024, timeout=10 * 3600,
+              retries=0, max_containers=1, volumes={"/out": out})
+def fit_big(kw: dict):
+    return fit.local(**kw)
 
 
 @app.function(image=image, cpu=8, memory=16384, timeout=3600, retries=0,
@@ -205,7 +217,9 @@ def grid(spec: str, log: str = ""):
     """spec: JSON list of fit kwargs, each with a unique "name". log: this launcher's log path (board evidence)."""
     import json
     specs = json.loads(spec)
-    calls = [fit.spawn(**kw) for kw in specs]
+    # "big": true routes a spec to fit_big (staged corpus larger than fit's container disk)
+    calls = [fit_big.spawn({k: v for k, v in kw.items() if k != "big"}) if kw.get("big") else fit.spawn(**kw)
+             for kw in specs]
     for kw in specs:
         _status(kw["name"], owner="policy (VUH-1346)", stage="running", host="modal",
                 evidence=log or "modal volume rivals-policy-bc2-20260930:/runs/" + kw["name"],

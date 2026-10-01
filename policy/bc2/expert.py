@@ -302,6 +302,7 @@ def unpack(views_dir, *, batch=2000):
 
 LABEL_FIELDS = ("held_start", "held_end", "held_known", "press", "press_known", "release", "release_known",
                 "yaw_deg", "pitch_deg", "beyond_pad_envelope")
+SOFT_FIELDS = ("press_p", "held_p")     # optional IDM probabilities (v2-cd-r1 soft targets; data.session_arrays)
 
 
 def relabel(shard_labels, video_labels, out_features_dir):
@@ -345,7 +346,8 @@ def relabel(shard_labels, video_labels, out_features_dir):
             missing += 1
             rows.append(dict(r, suitability="rejected"))
         else:
-            rows.append(dict(r, **{k: m[k] for k in (*LABEL_FIELDS, "suitability", "regime", "gap_free")}))
+            rows.append(dict(r, **{k: m[k] for k in (*LABEL_FIELDS, "suitability", "regime", "gap_free")},
+                             **{k: m.get(k) for k in SOFT_FIELDS}))     # absent in new labels -> None, never stale
     session = steps.Session(shard.path, shard.sha256, dict(shard.header, calibration=header["calibration"]), rows)
     targets = data.session_arrays(session, list(range(len(rows))))
     if not len(targets["row"]):
