@@ -246,7 +246,7 @@ def test_native_spawn_glass_controls_and_plaza(name):
     from perception.outline import find_enemies
     frame = cv2.imread(str(Path(__file__).parent / 'fixtures/reentry' / (name + '.jpg')))
     size = frame.shape[1], frame.shape[0]
-    boxes = Q.open_bots(frame, Q.eligible(find_enemies(frame, scale=size[0]/1280), size))
+    boxes = Q.open_bots(frame, Q.eligible(find_enemies(frame, scale=size[0]/1280), size), require_plate=False)
     assert bool(boxes) == (name == 'arrival-plaza-bot-ahead')
     runner = Q.ResetRunner(None, None, None, None, 30.)
     runner.size = size
@@ -278,13 +278,13 @@ def sitting06_frame(name):
     return cv2.imread(str(path))
 
 
-def test_sitting06_growth_keeps_target_but_does_not_relax_readiness():
+def test_sitting06_near_unplated_outlines_are_navigation_ready():
     percept = L.default_perception()
     runner = Q.ResetRunner(None, percept, None, None, 30.)
     frame = sitting06_frame('000050.jpg')
     runner.size = percept.size(frame)
     ds = percept.wide(frame)
-    assert not runner.visible(frame, Q.eligible(ds, runner.size))
+    assert len(runner.visible(frame, Q.eligible(ds, runner.size))) == 2
     targets = runner.approach_targets(frame, ds)
     assert len(targets) == 2 and all(d.height / 1440 >= .08 and d.plate is False for d in targets)
 
@@ -305,10 +305,10 @@ def test_sitting06_association_does_not_switch_to_new_closest_outline():
     assert Q.follow_target(runner.approach_targets(balcony, percept.wide(balcony)), matched) is None
 
 
-@pytest.mark.parametrize('next_frame,clause', [('000050.jpg', 'reset_target_near_unverified'),
+@pytest.mark.parametrize('next_frame,clause', [('000050.jpg', 'ready'),
                                             ('000090.jpg', 'reset_target_lost')])
 def test_sitting06_real_frame_reset_stops_without_blind_search_or_balcony_walk(next_frame, clause):
-    frames = [sitting06_frame('000049.jpg'), sitting06_frame('000049.jpg'), sitting06_frame(next_frame)]
+    frames = [sitting06_frame('000000.jpg'), sitting06_frame('000000.jpg'), sitting06_frame(next_frame)]
     io, percept, rows = IO(), L.default_perception(), []
     def capture():
         frame = frames[min(io.n, len(frames) - 1)]
@@ -319,8 +319,14 @@ def test_sitting06_real_frame_reset_stops_without_blind_search_or_balcony_walk(n
     runner = Q.ResetRunner(io, percept, lambda f: percept.in_range(f) and not percept.idle(f), None, 2.,
                           log=NS(write=lambda row, frame=None: rows.append(row)),
                           sleep=lambda s: setattr(io, 't', io.t + s))
-    with pytest.raises(RangeLost, match=clause):
-        runner.reset()
+    if clause == 'ready':
+        result = runner.reset()
+        assert result['result'] == 'ready' and result['eligible'] == 2
+        assert result['identity'] == 'unverified' and result['distance_m'] is None
+        assert sum(row.get('ready_frames') == 3 for row in rows) == 1
+    else:
+        with pytest.raises(RangeLost, match=clause):
+            runner.reset()
     assert len(io.calls) == 1 and io.calls[0][0]['ly'] == .5
     assert all(pad['rx'] == 0 for pad, _ in io.calls)
     assert io.t < .4 and io.releases >= 3

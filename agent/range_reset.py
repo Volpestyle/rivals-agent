@@ -2,7 +2,7 @@
 
 CLI: --live --game-pid PID --camera-settings-match alt-247-124 --out DIR
 or --dry RECORDED_RUN --out DIR. Exit 0 means three fresh views of eligible
-enemy outlines with a nameplate and without local door glass; it does not prove
+enemy outlines, with or without a nameplate, without local door glass; it does not prove
 identity, metres, groundedness or a prior death. The geometry band is .08-.55
 frame height; native Luna/Galacta controls pass, spawn glass controls fail.
 The learned runner's --settle-s releases and monitors on its existing pad.
@@ -81,11 +81,13 @@ class ResetRunner(LearnedRunner):
         return sign * .2, .1 if abs(error) > .1 else .05
 
     def visible(self, frame, boxes):
-        return open_bots(frame, boxes)
+        # Damaged range bots can show a health bar instead of a nameplate.
+        # Readiness is navigation geometry; it is not an identity/safety proof.
+        return open_bots(frame, boxes, require_plate=False)
 
     def approach_targets(self, frame, detections):
-        # Keep the target when it grows beyond the walking band. A near outline
-        # without a plate is unverified, not absent and not permission to search.
+        # Keep the target when it grows beyond the walking band so readiness
+        # can confirm it without switching to a remote outline.
         w, h = self.size
         candidates = [d for d in detections if d.cls == 'enemy'
                       and .03 <= d.height / h <= .55
