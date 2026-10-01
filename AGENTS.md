@@ -133,6 +133,9 @@ half-typed draft submits the draft with it (tested 2026-09-30). Workers reply wi
 lead on its own. Nobody polls an idle model in a loop (`~/dotfiles/docs/agents/swarm-launch.md`). Keep one
 lead responsible for dispatch, shared integration and Linear status transitions;
 co-leads route scope decisions through that lead. A status request alone creates no work.
+Advisors advise and the lead decides (James, 2026-10-01). Adopt an advisor finding that changes a decision or catches
+a real defect, settle wording and scope nits yourself, push back when you disagree, and bring James decisions rather
+than every correction.
 
 - **Organize around two outcomes:** expert learning (audited demonstrations through a
   baseline-compared policy) and reliable autonomous episodes (tracking, recovery, resets
