@@ -191,7 +191,7 @@ def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0, anchor_ro
         c = actions.index(a)
         onset[vod.onsets(prob[:, c], thr), c] = True
     held_on = None if held is None else held >= 0.5
-    basis = windows = None
+    basis = windows = hud_seen = readable = None
     if refine_cfg is not None:
         if held is not None:
             for name, h in refine_cfg["hysteresis"].items():
@@ -200,6 +200,8 @@ def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0, anchor_ro
         if scan is not None:
             hc = refine_cfg["hud"]
             events, coverage = refine.hud_evidence(scan, max_gap_s=hc["max_gap_s"])
+            hud_seen = [(refine.HUD_ACTION[e.ability], e.t_hi) for e in events]
+            readable = np.array([r["t"] for r in scan if "f" in r])
             hud = [a for a in refine.HUD_ACTION.values() if a in thresholds]
             onset_hud, basis = refine.apply_hud(onset, prob, t - span_start, actions,
                                                 [e for e in events if refine.HUD_ACTION[e.ability] in hud],
@@ -280,6 +282,16 @@ def step_rows(z, thresholds, *, video_path, index_pts, tb, run_id, i0, anchor_ro
             row["held_p"] = held_p
             row["press_basis"] = press_basis
             row["admission_reason"] = None
+            if hud_seen is not None:
+                # 1: the HUD first shows a cast of this action in the step; 0: HUD read, no cast shown; null: unread
+                lo, hi = anchor - span_start, anchor + step_s - span_start
+                seen = len(readable) and np.min(np.abs(readable - (lo + hi) / 2)) <= refine.SCAN_PERIOD_S
+                cast = [None] * len(actions)
+                for name in set(refine.HUD_ACTION.values()):
+                    if name in actions:
+                        hit = any(a0 == name and lo < t0 <= hi for a0, t0 in hud_seen)
+                        cast[actions.index(name)] = 1 if hit else (0 if seen else None)
+                row["hud_cast"] = cast
             if windows is not None:
                 lo, hi = anchor - span_start, anchor + step_s - span_start
                 why = next((w for a0, b0, w in windows if a0 < hi and b0 > lo), None)
