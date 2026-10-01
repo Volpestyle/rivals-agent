@@ -336,12 +336,15 @@ Mean decode throughout:
 | fs-B | 0.803 | 75.1% | 0.800 | 81.0% | 1.390 | 65.0% |
 | fs-A, no kill weight | 0.801 | 74.8% | 0.796 | 77.7% | 1.423 | 64.6% |
 | fs-A, v2-a labels | 0.816 | 76.3% | 0.814 | 81.4% | 1.450 | 60.8% |
+| fs-A, v2-a labels and no kill weight | 0.868 | 74.8% | 0.839 | 77.5% | 1.484 | 61.0% |
 
 - **Scale:** B beats A on yaw everywhere. The val onset gain is +1.8 points, short of the pre-stated +3, so the
   result is not kept.
 - **Recipe:** the shared recipe regresses camera against mix399. Removing either the kill weight or r1 labels
-  recovers about half of the dev gap; their combination is untested.
-- **Costs and verdicts:** `docs/runs-ledger.md` rows 30-31.
+  recovers about half of the dev gap, but removing both does worse than either alone (dev yaw 0.868), so 1-seed noise
+  is large and those two are not the cause. The prime suspect is the still-start take at 15%, which all fs arms carry:
+  adding it to the static-aug recipe took val yaw from 0.754 to 0.834 (`docs/runs-ledger.md` row 27). Untested.
+- **Costs and verdicts:** `docs/runs-ledger.md` rows 30-32.
 - **Result files:** `D:/rivals-policy/replay/heldout-matches-fullscale-{AB,ablations}.json`.
 
 Pipeline facts found on the way:
