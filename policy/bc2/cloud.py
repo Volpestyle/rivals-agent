@@ -60,9 +60,11 @@ def extract_session(session: str, cache_root: str = "/src/caches", steps_root: s
     return meta
 
 
+# Memory 128 GiB: staged features sit in page cache (counted against the container) while each session is copied to
+# the GPU; at 96 GiB a 399k-step expert pool was OOM-killed once at startup (2026-10-01, fs-A-v2a-nokill-s0).
 # Lane share of concurrent Modal GPUs (lead, 2026-09-30): policy at most 3. A larger grid queues, it never
 # exceeds the share.
-@app.function(image=image, gpu="H100", cpu=8, memory=98304, timeout=4 * 3600, retries=0, max_containers=3,
+@app.function(image=image, gpu="H100", cpu=8, memory=131072, timeout=4 * 3600, retries=0, max_containers=3,
               volumes={"/out": out})
 def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_motion: bool = True,
         eval_sessions: list = None, batch_size: int = 32, lr: float = 3e-4, wd: float = .05,
