@@ -304,3 +304,18 @@ def test_in_run_time_hole_starts_a_new_sequence_but_pts_jitter_does_not(tmp_path
     np.savez(d / "targets.npz", **{**t, "frame": np.arange(len(eligible))})
     sess = bc2_train.Session(d, "cpu")
     assert sess.runs == [(0, 21), (21, 40)] and int(sess.prev[21]) == 21     # motion pair does not cross it
+
+
+NATIVE_TS = "D:/rivals-expert-footage/media/6fthumblearab/v2882096680.mp4"
+NATIVE_RUN_LABELS = "D:/rivals-policy/fullscale/labels/expert-2882096680-c1.steps.jsonl"
+
+
+@pytest.mark.skipif(not (__import__("os").path.exists(NATIVE_TS) and __import__("os").path.exists(NATIVE_RUN_LABELS)),
+                    reason="native MPEG-TS footage and its planned shard live on the PC")
+def test_decode_rows_recovers_frames_an_mpegts_seek_lands_past():
+    from policy.bc2.expert import decode_rows
+    rows = [json.loads(line) for line in open(NATIVE_RUN_LABELS, encoding="utf-8")
+            if '"2882096680:236.000-240.000"' in line]
+    assert len(rows) == 107
+    got = {k: bgr.shape for k, bgr in decode_rows(NATIVE_TS, rows)}       # the plain seek found only 52 of 107
+    assert sorted(got) == list(range(107)) and set(got.values()) == {(936, 1664, 3)}   # this VOD is 1664x936

@@ -380,6 +380,46 @@ def pending_gb(out_root):
     return sum(f.stat().st_size for f in Path(out_root).glob("*/*.npy")) / 2 ** 30
 
 
+def drop_run(labels, run):
+    """Rewrite a planned shard's label file without one run (renumbering i); returns the rows dropped."""
+    lines = Path(labels).read_text(encoding="utf-8").splitlines()
+    kept, dropped = [lines[0]], 0
+    for line in lines[1:]:
+        if not line.strip():
+            continue
+        r = json.loads(line)
+        if r["run"] == run:
+            dropped += 1
+            continue
+        kept.append(json.dumps(dict(r, i=len(kept) - 1)))
+    Path(labels).write_text("\n".join(kept) + "\n", encoding="utf-8")
+    return dropped
+
+
+def extract_or_drop(labels, out_root, tower, *, max_drops=5, log=print):
+    """extract(), dropping any run whose labelled frames the video does not contain (logged to
+    <out_root>/../dropped-runs.jsonl) and retrying; a shard still failing gets an extract-failed marker and the
+    loop moves on (the driver stops on it: shards remain unextracted with no extractor)."""
+    from policy.bc2.expert import MissingFrames
+    d = Path(out_root) / Path(labels).name.replace(".steps.jsonl", "")
+    for attempt in range(max_drops + 1):
+        try:
+            return extract(labels, out_root, tower, log=log)
+        except MissingFrames as e:
+            if attempt == max_drops:
+                d.mkdir(parents=True, exist_ok=True)
+                (d / "extract-failed").write_text(f"{e}\n")
+                log(f"{d.name}: extract-failed after {max_drops} dropped runs: {e}")
+                return None
+            n = drop_run(labels, e.run)
+            with (Path(out_root).parent / "dropped-runs.jsonl").open("a", encoding="utf-8") as f:
+                f.write(json.dumps({"shard": d.name, "run": e.run, "rows": n, "reason": str(e),
+                                    "at": time.strftime("%Y-%m-%dT%H:%M:%S%z")}) + "\n")
+            log(f"{d.name}: dropped run {e.run} ({n} rows): {e}; retrying")
+            for f in d.glob("*.npy"):
+                f.unlink()
+
+
 def extract_loop(label_dir, out_root, *, part=0, parts=1, cap_gb=40., floor_gb=6., poll=60, log=print):
     """Extract this part's shards (resumable: a shard with meta.json is done; a partial one is redone)."""
     import torch
@@ -387,7 +427,7 @@ def extract_loop(label_dir, out_root, *, part=0, parts=1, cap_gb=40., floor_gb=6
     from policy.bc2.features import load_tower
     tag = f"-p{part}"
     mine = [(p, d) for i, (p, d) in enumerate(_shards(label_dir, out_root)) if i % parts == part]
-    todo = [(p, d) for p, d in mine if not (d / "meta.json").exists()]
+    todo = [(p, d) for p, d in mine if not (d / "meta.json").exists() and not (d / "extract-failed").exists()]
     log(f"part {part}/{parts}: {len(mine)} shards, {len(todo)} to extract")
     tower = None
     try:
@@ -402,7 +442,7 @@ def extract_loop(label_dir, out_root, *, part=0, parts=1, cap_gb=40., floor_gb=6
                 tower = load_tower("D:/rivals-policy/bundles/ng-nohist-s1/vision.safetensors",
                                    "D:/rivals-policy/bundles/ng-nohist-s1/siglip2-large-config.json", "cuda")
             _status(f"extracting {p.name} ({i + 1}/{len(todo)})", part=tag)
-            extract(p, out_root, tower, log=log)
+            extract_or_drop(p, out_root, tower, log=log)
         _status(f"{len(todo)} shards extracted", stage="done", part=tag)
     except BaseException as e:
         _status(str(e)[:200], stage="failed", part=tag)

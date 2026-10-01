@@ -40,8 +40,33 @@ def load_labels(path):
 DECODE_THREADS = int(__import__("os").environ.get("POLICY_DECODE_THREADS", "4"))   # per decoder; cap on shared hosts
 
 
+class MissingFrames(ValueError):
+    """Some of a run's labelled frames are absent from the decoded video (e.g. a source timestamp hole)."""
+    def __init__(self, message, run):
+        super().__init__(message)
+        self.run = run
+
+
+SEEK_BACKOFF_S = (0, 3, 12)    # re-seek this much earlier when a seek lands past the run's first frame
+
+
+def _seek_at_or_before(container, stream, first):
+    """Seek so decoding starts at or before pts `first`; returns the frame iterator with its first frame pushed back.
+    MPEG-TS seeks are byte estimates: seek(first, backward=True) once landed 1.82 s late in 6fthumblearab
+    v2882096680 (run 236.000-240.000), so the run's first frames were never decoded although they exist."""
+    import itertools
+    for back in SEEK_BACKOFF_S:
+        container.seek(max(0, first - int(back / stream.time_base)), stream=stream, backward=True)
+        frames = container.decode(stream)
+        head = next((f for f in frames if f.pts is not None), None)
+        if head is None or head.pts <= first:
+            return itertools.chain([head] if head is not None else [], frames)
+    return itertools.chain([head], frames)          # still late: the missing-frame check reports it
+
+
 def decode_rows(video, rows, threads=DECODE_THREADS):
-    """Yield (row index, BGR ndarray) for each row's frame, matched by pts, one seek per run."""
+    """Yield (row index, BGR ndarray) for each row's frame, matched by pts, one seek per run (re-seeking earlier when
+    the container lands past the run's first frame)."""
     import av
     runs = {}
     for k, r in enumerate(rows):
@@ -53,8 +78,7 @@ def decode_rows(video, rows, threads=DECODE_THREADS):
         for ks in runs.values():
             want = {rows[k]["frame"]["pts"]: k for k in ks}
             first, last = min(want), max(want)
-            container.seek(first, stream=stream, backward=True)
-            for frame in container.decode(stream):
+            for frame in _seek_at_or_before(container, stream, first):
                 if frame.pts is None or frame.pts < first:
                     continue
                 if frame.pts > last:
@@ -63,7 +87,8 @@ def decode_rows(video, rows, threads=DECODE_THREADS):
                 if k is not None:
                     yield k, frame.to_ndarray(format="bgr24")
             if want:
-                raise ValueError(f"{len(want)} row frames not found in {video} (run {rows[ks[0]]['run']})")
+                raise MissingFrames(f"{len(want)} row frames not found in {video} (run {rows[ks[0]]['run']})",
+                                    rows[ks[0]]["run"])
 
 
 def decode_rows_from_clips(clip_root, rows, threads=DECODE_THREADS):
