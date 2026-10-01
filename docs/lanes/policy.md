@@ -337,14 +337,21 @@ Mean decode throughout:
 | fs-A, no kill weight | 0.801 | 74.8% | 0.796 | 77.7% | 1.423 | 64.6% |
 | fs-A, v2-a labels | 0.816 | 76.3% | 0.814 | 81.4% | 1.450 | 60.8% |
 | fs-A, v2-a labels and no kill weight | 0.868 | 74.8% | 0.839 | 77.5% | 1.484 | 61.0% |
+| fs-A, no still-start take | 0.849 | 78.1% | 0.788 | 81.1% | 1.460 | 64.2% |
+| fs-B, no still-start take | 0.775 | 77.3% | 0.774 | 81.7% | 1.274 | 67.4% |
 
 - **Scale:** B beats A on yaw everywhere. The val onset gain is +1.8 points, short of the pre-stated +3, so the
   result is not kept.
 - **Recipe:** the shared recipe regresses camera against mix399. Removing either the kill weight or r1 labels
   recovers about half of the dev gap, but removing both does worse than either alone (dev yaw 0.868), so 1-seed noise
   is large and those two are not the cause. The prime suspect is the still-start take at 15%, which all fs arms carry:
-  adding it to the static-aug recipe took val yaw from 0.754 to 0.834 (`docs/runs-ledger.md` row 27). Untested.
-- **Costs and verdicts:** `docs/runs-ledger.md` rows 30-32.
+  adding it to the static-aug recipe took val yaw from 0.754 to 0.834 (`docs/runs-ledger.md` row 27). Dropping it
+  restores dev onset (78.1%) but not dev yaw (0.849), so it explains the onset loss and part of the yaw loss.
+- **Scale without the take:** B-nostill beats A-nostill on dev yaw (0.775 vs 0.849) and still-false turns, but not on
+  dev onset (77.3% vs 78.1%), so the pre-stated scale criterion (+3 pts onset) fails again. B-nostill is the closest
+  fs arm to mix399 on dev and edges it on held-out yaw (1.274 vs 1.286, report-only). With a 1-seed yaw spread of
+  about 0.07 today, the yaw gain needs seeds 1-2 before it counts.
+- **Costs and verdicts:** `docs/runs-ledger.md` rows 30-33.
 - **Result files:** `D:/rivals-policy/replay/heldout-matches-fullscale-{AB,ablations}.json`.
 
 Pipeline facts found on the way:
