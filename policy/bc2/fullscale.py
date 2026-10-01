@@ -293,25 +293,34 @@ def ship(feature_dir, log=print, lan=None):
     log(f"shipped {d.name}")
 
 
-def overlays(shard_labels, aligned_dir, plain_dir, meta_root, out_root, log=print):
-    """Target-only r1 overlays (cloud.fit expert_targets) for each shard: copy the shard's feature meta.json from
-    meta_root/<shard>/ and expert.relabel it against expert-<video>.steps.jsonl. Old "-s" shards hold v2-a frames
-    and take idm's aligned-to-v2-a r1 table; new "-c" shards hold v2-cd frames and take the plain r1 table (a
-    video can have both). Returns {shard: (matched, missing)}."""
-    from policy.bc2.expert import relabel
-    out = {}
-    for labels in shard_labels:
-        labels = Path(labels)
+def overlays(shard_labels, aligned_dir, plain_dir, meta_roots, out_root, log=print):
+    """Target-only r1 overlays (cloud.fit expert_targets) for each shard: copy the shard's feature meta.json from the
+    first of meta_roots holding <shard>/meta.json and expert.relabel it against expert-<video>.steps.jsonl. Old "-s"
+    shards hold v2-a frames and take idm's aligned-to-v2-a r1 table; new "-c" shards hold v2-cd frames and take the
+    plain r1 table (a video can have both). Each table is loaded once. Returns {shard: (matched, missing)}."""
+    from policy.bc2.expert import load_table, relabel
+    jobs = {}
+    for labels in map(Path, shard_labels):
         shard = labels.name.replace(".steps.jsonl", "")
         video, part = shard.rsplit("-", 1)
         table = Path(aligned_dir if part.startswith("s") else plain_dir) / f"{video}.steps.jsonl"
         if not table.exists():
             raise FileNotFoundError(f"no r1 table for {shard}: {table}")
-        dst = Path(out_root) / shard
-        dst.mkdir(parents=True, exist_ok=True)
-        (dst / "meta.json").write_bytes((Path(meta_root) / shard / "meta.json").read_bytes())
-        out[shard] = relabel(labels, table, dst)
-        log(f"{shard}: {table.parent.name}/{table.name} matched {out[shard][0]}, missing {out[shard][1]}")
+        jobs.setdefault(table, []).append((shard, labels))
+    out = {}
+    for table, shards in jobs.items():
+        loaded = load_table(table)
+        for shard, labels in shards:
+            src = next((Path(m) / shard / "meta.json" for m in meta_roots if (Path(m) / shard / "meta.json").exists()),
+                       None)
+            if src is None:
+                raise FileNotFoundError(f"no feature meta.json for {shard} in {meta_roots}")
+            dst = Path(out_root) / shard
+            dst.mkdir(parents=True, exist_ok=True)
+            (dst / "meta.json").write_bytes(src.read_bytes())
+            out[shard] = relabel(labels, table, dst, table=loaded)
+            log(f"{shard}: {table.parent.parent.name}/{table.name} matched {out[shard][0]}, missing {out[shard][1]}")
+        del loaded
     return out
 
 
@@ -433,11 +442,7 @@ def main(argv=None):
     if a.stage == "overlays":            # paths: shard label files or directories of them
         labels = [f for d in a.paths for f in (sorted(Path(d).glob("expert-*.steps.jsonl")) if Path(d).is_dir()
                                                 else [Path(d)])]
-        result = {}
-        for f in labels:
-            shard = f.name.replace(".steps.jsonl", "")
-            meta_root = next(m for m in a.meta if (Path(m) / shard / "meta.json").exists())
-            result.update(overlays([f], a.aligned, a.plain, meta_root, a.out, log=log))
+        result = overlays(labels, a.aligned, a.plain, a.meta, a.out, log=log)
         print(json.dumps({"shards": len(result), "matched": sum(m for m, _ in result.values()),
                           "missing": sum(x for _, x in result.values())}))
         return 0

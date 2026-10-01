@@ -305,13 +305,36 @@ LABEL_FIELDS = ("held_start", "held_end", "held_known", "press", "press_known", 
 SOFT_FIELDS = ("press_p", "held_p")     # optional IDM probabilities (v2-cd-r1 soft targets; data.session_arrays)
 
 
-def relabel(shard_labels, video_labels, out_features_dir):
+def _frame_key(r):
+    f = r["frame"]
+    return r["run"], f["frame_index"], f["pts"], tuple(f["timebase"])
+
+
+def load_table(video_labels):
+    """(header, {source-frame identity: row}) of one video's label table, row-checked (relabel's input; load once
+    and pass as relabel(table=...) when several shards share the video)."""
+    from policy.range_bc import steps
+    new = {}
+    with Path(video_labels).open(encoding="utf-8") as stream:
+        header = json.loads(stream.readline())
+        steps.check_header(header)
+        for i, line in enumerate(line for line in stream if line.strip()):
+            r = json.loads(line)
+            steps.check_row(r, header, i)
+            key = _frame_key(r)
+            if key in new:
+                raise ValueError("duplicate source-frame identity in new labels")
+            new[key] = r
+    return header, new
+
+
+def relabel(shard_labels, video_labels, out_features_dir, table=None):
     """Swap a shard's targets to a newer label set for the same video (frames and features unchanged).
 
     Match exact source frames within each run, not the exporter's nominal anchor grid (which can shift with
     the IDM window). Unmatched rows leave the eligible runs. Targets carry explicit feature_row indices so
     the loader selects the corresponding cached features and resets motion/history across gaps.
-    Writes targets.npz and provenance in meta.json; returns (matched, missing)."""
+    Writes targets.npz and provenance in meta.json; returns (matched, missing). table: load_table(video_labels)."""
     from policy.bc2 import data
     from policy.range_bc import steps
     shard = load_labels(shard_labels)
@@ -319,25 +342,11 @@ def relabel(shard_labels, video_labels, out_features_dir):
     meta = json.loads((out / "meta.json").read_text())
     if meta["session"] != shard.session_id or meta["steps_sha256"] != shard.sha256:
         raise ValueError("cached features do not belong to these shard labels")
-
-    def frame_key(r):
-        f = r["frame"]
-        return r["run"], f["frame_index"], f["pts"], tuple(f["timebase"])
-
-    new = {}
-    with Path(video_labels).open(encoding="utf-8") as stream:
-        header = json.loads(stream.readline())
-        steps.check_header(header)
-        if (header["session_id"] != shard.header.get("source_video_group", shard.session_id)
-                or header["media_sha256"] != shard.header["media_sha256"]):
-            raise ValueError("new labels are from a different source video")
-        for i, line in enumerate(line for line in stream if line.strip()):
-            r = json.loads(line)
-            steps.check_row(r, header, i)
-            key = frame_key(r)
-            if key in new:
-                raise ValueError("duplicate source-frame identity in new labels")
-            new[key] = r
+    frame_key = _frame_key
+    header, new = table if table is not None else load_table(video_labels)
+    if (header["session_id"] != shard.header.get("source_video_group", shard.session_id)
+            or header["media_sha256"] != shard.header["media_sha256"]):
+        raise ValueError("new labels are from a different source video")
     rows, missing, new_indices = [], 0, []
     for r in shard.rows:
         m = new.get(frame_key(r))
