@@ -61,12 +61,13 @@ class Live:
       blocked capture, a hung guard or a stalled caller therefore cannot leave anything held. Only _apply takes the pad
       lock, for the few microseconds of a report; the guard and the capture never run under it.
     - Every method that can be interrupted mid-press ends with the pad neutral.
-    `pad_factory`, `capture` and the guards are injected by the tests; live they are vgamepad, dxcam, record.in_range,
+    `pad_factory`, `capture` and the guards are injected by the tests; `pad_codes` also lets an owned native factory
+    retain native button values without changing the whitelist. Live they are vgamepad, dxcam, record.in_range,
     perception.scoreboard.is_scoreboard and record.banner_score.
     """
 
     def __init__(self, pad_factory=None, capture=None, guard=None, board_guard=None, session_guard=None, settle_s=3.0,
-                 attach_opener_deadline=None):
+                 attach_opener_deadline=None, pad_codes=None):
         if attach_opener_deadline is not None and not math.isfinite(attach_opener_deadline):
             raise ValueError("finite attach opener deadline required")
         if guard is None:
@@ -92,7 +93,7 @@ class Live:
             self._codes = button_codes(vg, ALLOWED | {"BACK"})
             self._pad = vg.VX360Gamepad()
         else:
-            self._codes = {n: n for n in ALLOWED | {"BACK"}}
+            self._codes = pad_codes if pad_codes is not None else {n: n for n in ALLOWED | {"BACK"}}
             self._pad = pad_factory()
         self.sent = dict(NEUTRAL)
         self._lock, self._lease_until, self._closed, self._dead = threading.Lock(), None, threading.Event(), False
