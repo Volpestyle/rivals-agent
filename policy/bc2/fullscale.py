@@ -179,14 +179,114 @@ def extract(labels, out_root, tower, *, device="cuda", batch=256, log=print, dec
     return meta
 
 
-def ship(feature_dir, log=print):
-    """scp to the Mac, upload into the volume's /expert-features/<shard>, then free the .npy bytes on both sides."""
+GIT_SSH = "C:/Program Files/Git/usr/bin"
+SSH_OPTS = ("-o", "BatchMode=yes", "-o", "ConnectTimeout=15", "-o", "ServerAliveInterval=15",
+            "-o", "ServerAliveCountMax=4")
+LAN_MBPS, UPLINK_MBPS = 10., 11.5        # measured 2026-09-30: scp PC->Mac ~12 MB/s, Mac->Modal ~9.5-11.5 MB/s
+
+
+def _ssh(cmd, timeout=60):
+    """One short remote command (Git Bash ssh, -n -T, BatchMode). No long-lived session: Windows ssh has hung on
+    teardown after a successful command (2026-09-30, the first shard's upload). Returns stdout."""
+    return subprocess.run([f"{GIT_SSH}/ssh.exe", "-n", "-T", *SSH_OPTS, "mac", cmd], check=True,
+                          capture_output=True, text=True, timeout=timeout).stdout
+
+
+def _gib(text):
+    v, unit = text.split()
+    return float(v) * {"B": 2 ** -30, "KiB": 2 ** -20, "MiB": 2 ** -10, "GiB": 1., "TiB": 2 ** 10}[unit]
+
+
+class Unknown(RuntimeError):
+    """A status query failed in transport (ssh exit 255 or timeout): nothing is known, so nothing is cleaned up."""
+
+
+def _query(cmd, timeout=120):
+    try:
+        return _ssh(cmd, timeout)
+    except subprocess.TimeoutExpired as e:
+        raise Unknown(f"timeout: {cmd[:60]}") from e
+    except subprocess.CalledProcessError as e:
+        if e.returncode == 255:
+            raise Unknown(f"ssh transport: {e.stderr[-200:]}") from e
+        raise
+
+
+def on_volume(d):
+    """True when every file of shard dir d is on the volume at its local size (modal's listing rounds sizes), False
+    when a successful listing shows it absent or short. Raises Unknown when the listing itself failed."""
+    shards = json.loads(_query(f"{MODAL} volume ls --json {VOLUME} /expert-features"))
+    if not any(Path(e["filename"]).name == d.name for e in shards):
+        return False
+    listing = json.loads(_query(f"{MODAL} volume ls --json {VOLUME} /expert-features/{d.name}"))
+    remote = {Path(e["filename"]).name: _gib(e["size"]) for e in listing if e.get("type") == "file"}
+    for f in d.iterdir():
+        if f.name in ("shipped", "ship-failed"):
+            continue
+        want = f.stat().st_size / 2 ** 30
+        if f.name not in remote or abs(remote[f.name] - want) > max(.06 * want, 1e-3):
+            return False
+    return True
+
+
+def mac_attempt(remote):
+    """The Mac side of a shard's upload: (done marker text, an upload process is live, staging dir exists)."""
+    name = remote.rsplit("/", 1)[1]
+    out = _query(f"cat {remote}.done 2>/dev/null; echo; pgrep -f 'volume put.*fs-ship/{name} ' >/dev/null "
+                 f"&& echo live || echo idle; [ -d {remote} ] && echo dir || echo nodir", 60).split("\n")
+    return out[0].strip(), "live" in out, "dir" in out
+
+
+def ship(feature_dir, log=print, lan=None):
+    """scp to the Mac, upload into the volume's /expert-features/<shard> as a detached Mac job, poll it with short
+    ssh calls, check the volume, then free the .npy bytes on both sides. Timeouts are ~2x the expected time.
+    lan: a lock held only around the PC->Mac copy, so the next shard's copy overlaps this shard's upload.
+    A failed status query (Unknown) never leads to cleanup; a live detached upload is reattached, not restarted;
+    a shard whose state cannot be reconciled gets a ship-failed marker for the owner."""
     d = Path(feature_dir)
     remote = f"{MAC_SHIP}/{d.name}"
-    run = lambda *a: subprocess.run(a, check=True, capture_output=True, text=True, timeout=6 * 3600)
-    run("ssh", "mac", f"mkdir -p {MAC_SHIP} && rm -rf {remote}")
-    run("scp", "-q", "-r", str(d), f"mac:{MAC_SHIP}/")
-    run("ssh", "mac", f"{MODAL} volume put --force {VOLUME} {remote} /expert-features/{d.name} && rm -rf {remote}")
+    gb = sum(f.stat().st_size for f in d.iterdir() if f.is_file()) / 1e9
+    limit = max(600, 2 * gb * 1e3 / UPLINK_MBPS)
+    if on_volume(d):
+        log(f"{d.name}: already on the volume")
+    else:
+        done, live, _ = mac_attempt(remote)
+        if live:
+            log(f"{d.name}: reattaching to a live upload on the Mac")
+        elif done == "ok":           # a finished upload the listing does not confirm: do not loop on it
+            (d / "ship-failed").write_text("upload reported ok but the volume listing does not match\n")
+            raise RuntimeError(f"{d.name}: marked ship-failed (ok marker, listing mismatch)")
+        else:                        # no attempt is live: safe to clean the staging copy and start over
+            _query(f"mkdir -p {MAC_SHIP} && rm -rf {remote} {remote}.done {remote}.log")
+            with (lan or threading.Lock()):
+                t = time.monotonic()
+                subprocess.run([f"{GIT_SSH}/scp.exe", "-q", "-r", *SSH_OPTS, str(d), f"mac:{MAC_SHIP}/"], check=True,
+                               capture_output=True, text=True, timeout=max(300, 2 * gb * 1e3 / LAN_MBPS))
+                log(f"{d.name}: {gb:.2f} GB on the Mac in {time.monotonic() - t:.0f} s")
+            _query(f"nohup sh -c '{MODAL} volume put --force {VOLUME} {remote} /expert-features/{d.name} "
+                   f"&& rm -rf {remote} && echo ok > {remote}.done || echo fail > {remote}.done' "
+                   f"> {remote}.log 2>&1 < /dev/null &")
+        t = time.monotonic()
+        while True:
+            time.sleep(30)
+            try:
+                done, live, _ = mac_attempt(remote)
+            except Unknown as e:               # one failed probe is not a failed upload
+                log(f"{d.name}: status unavailable ({e}); polling again")
+                continue
+            if done == "ok":
+                break
+            if done == "fail" and not live:
+                raise RuntimeError(f"{d.name}: modal volume put failed (see {remote}.log on the Mac)")
+            if time.monotonic() - t > limit:
+                if live:                       # still running: never clean up under it; the owner decides
+                    (d / "ship-failed").write_text(f"upload still live after {limit:.0f} s\n")
+                raise TimeoutError(f"{d.name}: upload not done after {limit:.0f} s (live={live})")
+            log(f"{d.name}: uploading {time.monotonic() - t:.0f}/{limit:.0f} s")
+        log(f"{d.name}: uploaded in {time.monotonic() - t:.0f} s ({gb * 1e3 / (time.monotonic() - t):.1f} MB/s)")
+        if not on_volume(d):
+            (d / "ship-failed").write_text("upload reported ok but the volume listing does not match\n")
+            raise RuntimeError(f"{d.name}: marked ship-failed (listing mismatch after upload)")
     for name in NPY:
         (d / name).unlink(missing_ok=True)
     (d / "shipped").write_text(time.strftime("%Y-%m-%dT%H:%M:%S%z") + "\n")
@@ -263,26 +363,42 @@ def extract_loop(label_dir, out_root, *, part=0, parts=1, cap_gb=40., floor_gb=6
         raise
 
 
-def ship_loop(label_dir, out_root, *, poll=60, log=print):
-    """Ship finished shards in plan order until every planned shard is shipped."""
+def ship_loop(label_dir, out_root, *, poll=60, inflight=2, log=print):
+    """Ship finished shards in plan order until every planned shard is shipped: up to `inflight` shards at once,
+    one PC->Mac copy at a time (the next copy overlaps the previous upload); a failed shard backs off up to 15 min
+    and is retried."""
+    lan, busy, retry_at, lock = threading.Lock(), {}, {}, threading.Lock()
+
+    def one(d):
+        try:
+            ship(d, log, lan)
+            retry_at.pop(d.name, None)
+        except Exception as e:
+            wait = min(2 * retry_at.get(d.name, (0, poll / 2))[1], 900)
+            retry_at[d.name] = (time.monotonic() + wait, wait)
+            log(f"ship failed {d.name}: {e}; retrying in {wait:.0f} s")
+        finally:
+            with lock:
+                busy.pop(d.name, None)
     while True:
         shards = _shards(label_dir, out_root)
-        left = [d for _, d in shards if not (d / "shipped").exists()]
-        ready = [d for d in left if (d / "meta.json").exists()]
-        if not left:
-            _status(f"all {len(shards)} shards shipped", stage="done", part="-ship")
+        failed = [d.name for _, d in shards if (d / "ship-failed").exists()]
+        left = [d for _, d in shards if not (d / "shipped").exists() and d.name not in failed]
+        if not left and not busy:
+            _status(f"{len(shards) - len(failed)}/{len(shards)} shards shipped; ship-failed (owner): {failed}",
+                    stage="done" if not failed else "failed", part="-ship")
             return
-        if not ready:
-            _status(f"{len(shards) - len(left)}/{len(shards)} shipped; waiting for extraction", part="-ship")
-            time.sleep(poll)
-            continue
-        _status(f"shipping {ready[0].name}; {len(shards) - len(left)}/{len(shards)} shipped, "
-                f"{pending_gb(out_root):.0f} GB waiting", part="-ship")
-        try:
-            ship(ready[0], log)
-        except Exception as e:
-            log(f"ship failed {ready[0].name}: {e}; retrying in {poll} s")
-            time.sleep(poll)
+        now = time.monotonic()
+        ready = [d for d in left if (d / "meta.json").exists() and d.name not in busy
+                 and retry_at.get(d.name, (0, 0))[0] <= now]
+        with lock:
+            while ready and len(busy) < inflight:
+                d = ready.pop(0)
+                busy[d.name] = threading.Thread(target=one, args=(d,), daemon=True)
+                busy[d.name].start()
+        _status(f"{len(shards) - len(left) - len(failed)}/{len(shards)} shipped; in flight: {', '.join(busy) or 'none'}; "
+                f"{pending_gb(out_root):.0f} GB waiting" + (f"; ship-failed: {failed}" if failed else ""), part="-ship")
+        time.sleep(10)
 
 
 def main(argv=None):
