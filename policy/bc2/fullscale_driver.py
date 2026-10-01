@@ -27,7 +27,6 @@ REPO = Path(__file__).resolve().parents[2]
 PY = "C:/Users/volpe/.venvs/rivals-live-cu128/Scripts/python.exe"
 OLD_LABELS = ("D:/rivals-policy/expert-labels", "D:/rivals-policy/expert-labels-mac")
 STILL = "20260930T193113-731Z-163680-1"
-LABEL_SOURCE = "idm v2-cd (v2-c-w8-wide.pt+v2-d-w12-wide.pt)"
 STEPS = ("restart_p1", "wait_ready", "overlays", "launch", "done")
 NAME = "policy-fullscale-driver"
 
@@ -154,12 +153,14 @@ class Env:
         return f"~/dev/policy-bc2/code-{sha}"
 
     def launch(self, code, spec, log_name, timeout):
-        """Run the grid on the Mac (detached, niced); poll its exit file; return the exit code."""
+        """Run the grid on the Mac (detached, niced); poll its exit file; return (exit code, failed fits). The grid
+        catches each fit's exception and exits 0, so failures are counted from its "'failed'" lines."""
         from policy.bc2.fullscale import Unknown, _query, marker, scp
         spec_file = ROOT / f"{log_name}.json"
         spec_file.write_text(json.dumps(spec, indent=1) + "\n")
         scp(spec_file, f"dev/policy-bc2/{spec_file.name}", 300)
         log = f"~/dev/policy-bc2/{log_name}.log"
+        _query(f"rm -f {log} {log}.exit")
         _query(f"cd {code} && nohup sh -c 'export PATH=$HOME/.local/bin:$PATH; MODAL_PROFILE=rivals nice -n 10 "
                f"taskpolicy -b modal run -m policy.bc2.cloud::grid --spec \"$(cat ../{spec_file.name})\" "
                f"--log {log}; echo $? > {log}.exit' > {log} 2>&1 < /dev/null &")
@@ -171,7 +172,8 @@ class Env:
             except Unknown:
                 continue
             if code_text:
-                return int(code_text)
+                failed = _query(f"grep -c \"'failed'\" {log} || true", 60).strip()
+                return int(code_text), int(failed or 0)
             self.status(f"arms running on Modal; Mac log {log}")
         raise TimeoutError(f"grid not finished after {timeout} s (Mac log {log}); Modal fit timeouts still apply")
 
@@ -191,14 +193,23 @@ def expert_windows(a_overlay_dirs, trials=30):
     return int(.98 * min(counts)), counts
 
 
-def arm_specs(n_windows, a_shards, b_shards):
+def overlay_source(overlay_dirs):
+    """The one label source all overlays carry (cloud.fit refuses a mix)."""
+    sources = {json.loads((Path(d) / "meta.json").read_text())["relabel"]["calibration"]["source"]
+               for d in overlay_dirs}
+    if len(sources) != 1:
+        raise RuntimeError(f"overlays carry {len(sources)} label sources: {sorted(sources)}")
+    return sources.pop()
+
+
+def arm_specs(n_windows, a_shards, b_shards, label_source):
     grid = json.loads((REPO / "policy/bc2/grid-l-static.json").read_text())[0]
     mask = dict(grid["expert_mask"])
     for creator in ("rdpaco", "6fthumblearab"):          # new creators: ability slots unverified, as for the others
         mask[creator] = {"camera": False, "actions": ["amazing_combo", "get_over_here", "web_cluster"]}
     common = {k: grid[k] for k in ("seed", "epochs", "batch_size", "use_dt", "hidden", "layers", "static_aug")}
     common.update(expert=True, expert_mask=mask, expert_targets="/out/expert-targets-r1",
-                  expert_label_source=LABEL_SOURCE, expert_windows=n_windows,
+                  expert_label_source=label_source, expert_windows=n_windows,
                   cam_weight=json.loads((REPO / "policy/bc2/kill-rows-onset5.json").read_text()),
                   press_unknown=["spider_power"], soft_targets=["press_soft"],
                   extra_train=[f"{STILL}-fit"], oversample={f"{STILL}-fit": .15},
@@ -261,12 +272,13 @@ def step(env, state):
         b = sorted(p.name for p in (ROOT / "overlays-r1").iterdir() if p.is_dir())
         n, counts = expert_windows([ROOT / "overlays-r1" / x for x in a])
         state["expert_windows"], state["window_counts"] = n, [min(counts), max(counts)]
-        specs = arm_specs(n, a, b)
+        specs = arm_specs(n, a, b, overlay_source([ROOT / "overlays-r1" / x for x in b]))
         code = env.push_code()
         env.log(f"launching A ({len(a)} shards) and B ({len(b)} shards), {n} expert windows/epoch, code {code}")
-        rc = env.launch(code, specs, "fs-explore", 14 * 3600)
-        if rc:
-            raise RuntimeError(f"grid exited {rc}")
+        state["attempt"] = state.get("attempt", 0) + 1
+        rc, failed = env.launch(code, specs, f"fs-explore-{state['attempt']}", 14 * 3600)
+        if rc or failed:
+            raise RuntimeError(f"grid exited {rc} with {failed} failed fit(s); see fs-explore-{state['attempt']}.log")
         state["step"] = "done"
         return True
     return False

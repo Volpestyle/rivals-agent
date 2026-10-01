@@ -28,7 +28,9 @@ class Fake(fd.Env):
     def build_overlays(self): self.actions.append(("overlays",)); return {"shards": len(self.shard) + 33}
     def put_dir(self, local, path, timeout): self.actions.append(("put", path))
     def push_code(self): self.actions.append(("code",)); return "~/code"
-    def launch(self, code, spec, name, timeout): self.actions.append(("launch", [s["name"] for s in spec])); return 0
+    def launch(self, code, spec, name, timeout):
+        self.actions.append(("launch", [s["name"] for s in spec]))
+        return 0, 0
 
     def tick(self):                      # the world moves on: scan ends at t=600, work finishes after
         if self.t >= 600:
@@ -46,6 +48,8 @@ def world(tmp_path, monkeypatch):
     (tmp_path / "overlays-r1").mkdir()
     for s in json.loads((fd.REPO / "policy/bc2/grid-l-static.json").read_text())[0]["expert_sessions"]:
         (tmp_path / "overlays-r1" / s).mkdir()
+        (tmp_path / "overlays-r1" / s / "meta.json").write_text(
+            json.dumps({"relabel": {"calibration": {"source": "idm v2-cd (v2-d-w12-wide.pt)"}}}))
     monkeypatch.setattr(fd, "expert_windows", lambda dirs: (100, [110, 120]))
     return tmp_path
 
@@ -84,7 +88,7 @@ def test_driver_failure_writes_failed_json_and_stops(world):
 
 
 def test_arm_specs_are_identical_but_for_the_pool():
-    a, b = fd.arm_specs(500, ["expert-1-s0"], ["expert-1-s0", "expert-2-c0"])
+    a, b = fd.arm_specs(500, ["expert-1-s0"], ["expert-1-s0", "expert-2-c0"], "idm v2-cd (v2-d-w12-wide.pt)")
     diff = {k for k in set(a) | set(b) if a.get(k) != b.get(k)}
     assert diff == {"name", "expert_sessions", "stream_expert", "big"}
     assert a["expert_windows"] == 500 and a["cam_weight"]["weight"] == 5.0
@@ -135,9 +139,9 @@ def test_real_put_dir_reports_a_failed_upload(remote, world):
 
 def test_real_launch_waits_for_the_exit_file_and_returns_its_code(remote, world):
     remote(["PENDING\n", "PENDING\n", "HAVE\n0\n"])
-    assert fd.Env().launch("~/code", [{"name": "a"}], "fs-test", 3600) == 0
+    assert fd.Env().launch("~/code", [{"name": "a"}], "fs-test", 3600)[0] == 0
     remote(["HAVE\n1\n"])
-    assert fd.Env().launch("~/code", [{"name": "a"}], "fs-test", 3600) == 1
+    assert fd.Env().launch("~/code", [{"name": "a"}], "fs-test", 3600)[0] == 1
 
 
 def test_marker_probe_keeps_real_errors(remote, world):
@@ -174,3 +178,21 @@ def test_tailnet_dns_failure_falls_back_to_the_lan_name(monkeypatch):
     monkeypatch.setattr(subprocess, "run", other)
     with pytest.raises(subprocess.CalledProcessError):              # other transport errors are not rerouted
         fullscale._ssh("hostname")
+
+
+
+def test_launch_fails_when_a_fit_failed_even_if_the_grid_exits_0(world):
+    env = Fake()
+    env.launch = lambda code, spec, name, timeout: (0, 1)
+    state = {"step": "launch"}
+    with pytest.raises(RuntimeError, match="1 failed fit"):
+        fd.step(env, state)
+
+
+def test_overlay_source_refuses_a_mix(tmp_path):
+    for name, src in (("a", "x"), ("b", "y")):
+        (tmp_path / name).mkdir()
+        (tmp_path / name / "meta.json").write_text(json.dumps({"relabel": {"calibration": {"source": src}}}))
+    with pytest.raises(RuntimeError, match="2 label sources"):
+        fd.overlay_source([tmp_path / "a", tmp_path / "b"])
+    assert fd.overlay_source([tmp_path / "a"]) == "x"
