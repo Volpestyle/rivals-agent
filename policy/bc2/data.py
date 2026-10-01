@@ -9,9 +9,18 @@ import numpy as np
 from policy.range_bc import steps, vocab
 
 
+GAP_STEPS = 1.5     # an in-run anchor stride above this many step_ns is a hole: a new sequence starts after it
+
+
 def session_arrays(session, row_frame):
     rows_idx = [k for a, b in steps.runs(session) for k in range(a, b)]
     starts = {a for a, _ in steps.runs(session)}
+    # A run can hold a time hole between consecutive rows (expert-2881469912 rows 69262->69263: 80 steps, 2.67 s, the
+    # source video's pts jump too). Recurrent state and frame-pair motion must not bridge it; frame-pts jitter
+    # (33.0-33.4 ms) stays continuous. Row, frame and cache keys are unchanged.
+    gap = GAP_STEPS * session.header["step_ns"]
+    starts |= {b for a, b in zip(rows_idx, rows_idx[1:]) if b == a + 1 and b not in starts
+               and session.rows[b]["anchor_ns"] - session.rows[a]["anchor_ns"] > gap}
     n, m = len(rows_idx), vocab.N
     out = {"row": np.array(rows_idx, np.int64), "frame": np.array([row_frame[k] for k in rows_idx], np.int64),
            "run_start": np.array([k in starts for k in rows_idx], bool),

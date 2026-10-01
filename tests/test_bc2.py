@@ -282,3 +282,25 @@ def test_overlaid_cohort_accepts_new_shards_and_mixed_base_sources(tmp_path):
         expert_dirs(tmp_path, ["expert-1-s0", "expert-2-c0"])
     assert [d.name for d in expert_dirs(tmp_path, ["expert-1-s0", "expert-2-c0"], overlaid=True)] == \
         ["expert-1-s0", "expert-2-c0"]
+
+
+def test_in_run_time_hole_starts_a_new_sequence_but_pts_jitter_does_not(tmp_path):
+    from policy.bc2 import data
+    from policy.range_bc import fixture, steps
+    h, rows = fixture.replay_session("expert-2881469912", runs=(40,))
+    # native pair (v2-cd/r1 expert-2881469912 rows 69262 -> 69263): one run, contiguous i, an 80-step hole
+    native = (3945515999892, 3948182666532)
+    for k, r in enumerate(rows):
+        jitter = (-400_000, 0, 400_000)[k % 3]                    # 33.0-33.7 ms strides: continuous
+        r["anchor_ns"] = native[0] + (k - 20) * h["step_ns"] + jitter if k < 21 else \
+            native[1] + (k - 21) * h["step_ns"] + jitter
+    rows[20]["anchor_ns"], rows[21]["anchor_ns"] = native
+    s = steps.Session("x", "0" * 64, h, rows)
+    t = data.session_arrays(s, list(range(len(rows))))
+    eligible = [k for a, b in steps.runs(s) for k in range(a, b)]
+    starts = [eligible[i] for i in np.flatnonzero(t["run_start"])]
+    assert starts == [eligible[0], 21]                            # the hole, and nothing at jittered strides
+    d = make_session(tmp_path, "gap", n=len(eligible))
+    np.savez(d / "targets.npz", **{**t, "frame": np.arange(len(eligible))})
+    sess = bc2_train.Session(d, "cpu")
+    assert sess.runs == [(0, 21), (21, 40)] and int(sess.prev[21]) == 21     # motion pair does not cross it
