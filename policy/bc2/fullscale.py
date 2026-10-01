@@ -212,6 +212,18 @@ def _query(cmd, timeout=120):
         raise
 
 
+def marker(path, timeout=60):
+    """A remote marker file's text, or None while it does not exist yet (pending). A transport failure raises
+    Unknown; any other failure of the query raises CalledProcessError (a real error, not 'pending')."""
+    out = _query(f"if [ -e {path} ]; then echo HAVE; cat {path}; else echo PENDING; fi", timeout)
+    head, _, rest = out.partition("\n")
+    if head.strip() == "PENDING":
+        return None
+    if head.strip() != "HAVE":
+        raise RuntimeError(f"unexpected marker probe output: {out[:200]!r}")
+    return rest.strip()
+
+
 def on_volume(d):
     """True when every file of shard dir d is on the volume at its local size (modal's listing rounds sizes), False
     when a successful listing shows it absent or short. Raises Unknown when the listing itself failed."""

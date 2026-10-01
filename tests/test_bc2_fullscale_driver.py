@@ -89,3 +89,63 @@ def test_arm_specs_are_identical_but_for_the_pool():
     assert diff == {"name", "expert_sessions", "stream_expert", "big"}
     assert a["expert_windows"] == 500 and a["cam_weight"]["weight"] == 5.0
     assert a["expert_mask"]["rdpaco"]["actions"] and a["expert_mask"]["daymr"]["camera"]
+
+
+class Remote:
+    """subprocess.run stand-in for ssh/scp: marker probes answer from a script; everything else succeeds."""
+    def __init__(self, answers):
+        self.answers, self.calls = list(answers), []
+
+    def __call__(self, args, **kw):
+        import subprocess
+        self.calls.append(args)
+        if str(args[0]).endswith("scp.exe") or "if [ -e" not in args[-1]:
+            return subprocess.CompletedProcess(args, 0, "", "")
+        answer = self.answers.pop(0)
+        if isinstance(answer, int):                       # an ssh failure with this exit code
+            raise subprocess.CalledProcessError(answer, args, "", "kex reset")
+        return subprocess.CompletedProcess(args, 0, answer, "")
+
+
+@pytest.fixture
+def remote(monkeypatch, world):
+    import subprocess
+
+    def install(answers):
+        r = Remote(answers)
+        monkeypatch.setattr(subprocess, "run", r)
+        return r
+    monkeypatch.setattr(fd.Env, "poll_wait", staticmethod(lambda s: None))
+    return install
+
+
+def test_real_put_dir_polls_through_absent_marker_and_transport_errors(remote, world):
+    r = remote(["PENDING\n", 255, "PENDING\n", "HAVE\nok\n"])
+    (world / "x").mkdir()
+    fd.Env().put_dir(world / "x", "/expert-targets-r1", 600)          # no exception: pending, unknown, pending, ok
+    assert r.answers == []
+
+
+def test_real_put_dir_reports_a_failed_upload(remote, world):
+    remote(["PENDING\n", "HAVE\nfail\n"])
+    (world / "x").mkdir()
+    with pytest.raises(RuntimeError, match="failed"):
+        fd.Env().put_dir(world / "x", "/v", 600)
+
+
+def test_real_launch_waits_for_the_exit_file_and_returns_its_code(remote, world):
+    remote(["PENDING\n", "PENDING\n", "HAVE\n0\n"])
+    assert fd.Env().launch("~/code", [{"name": "a"}], "fs-test", 3600) == 0
+    remote(["HAVE\n1\n"])
+    assert fd.Env().launch("~/code", [{"name": "a"}], "fs-test", 3600) == 1
+
+
+def test_marker_probe_keeps_real_errors(remote, world):
+    import subprocess
+    from policy.bc2 import fullscale
+    remote([1])
+    with pytest.raises(subprocess.CalledProcessError):
+        fullscale.marker("~/x.done")
+    remote([255])
+    with pytest.raises(fullscale.Unknown):
+        fullscale.marker("~/x.done")

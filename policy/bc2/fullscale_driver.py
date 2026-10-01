@@ -40,6 +40,8 @@ class Env:
     def sleep(self, s):
         time.sleep(s)
 
+    poll_wait = staticmethod(time.sleep)
+
     def log(self, msg):
         print(time.strftime("%H:%M:%S"), msg, flush=True)
 
@@ -111,7 +113,7 @@ class Env:
 
     def put_dir(self, local, volume_path, timeout):
         """Copy a local directory to the Mac and `modal volume put` it, detached, polled with short ssh calls."""
-        from policy.bc2.fullscale import GIT_SSH, MAC_SHIP, MODAL, SSH_OPTS, VOLUME, Unknown, _query
+        from policy.bc2.fullscale import GIT_SSH, MAC_SHIP, MODAL, SSH_OPTS, VOLUME, Unknown, _query, marker
         name = Path(local).name
         remote = f"{MAC_SHIP}/{name}"
         _query(f"mkdir -p {MAC_SHIP} && rm -rf {remote} {remote}.done {remote}.log")
@@ -121,10 +123,12 @@ class Env:
                f"&& echo ok > {remote}.done || echo fail > {remote}.done' > {remote}.log 2>&1 < /dev/null &")
         deadline = time.time() + timeout
         while time.time() < deadline:
-            time.sleep(20)
+            self.poll_wait(20)
             try:
-                done = _query(f"cat {remote}.done 2>/dev/null", 60).strip()
+                done = marker(f"{remote}.done")
             except Unknown:
+                continue
+            if done is None:
                 continue
             if done == "ok":
                 return
@@ -146,7 +150,7 @@ class Env:
 
     def launch(self, code, spec, log_name, timeout):
         """Run the grid on the Mac (detached, niced); poll its exit file; return the exit code."""
-        from policy.bc2.fullscale import GIT_SSH, SSH_OPTS, Unknown, _query
+        from policy.bc2.fullscale import GIT_SSH, SSH_OPTS, Unknown, _query, marker
         spec_file = ROOT / f"{log_name}.json"
         spec_file.write_text(json.dumps(spec, indent=1) + "\n")
         subprocess.run([f"{GIT_SSH}/scp.exe", "-q", *SSH_OPTS, str(spec_file), f"mac:dev/policy-bc2/{spec_file.name}"],
@@ -157,9 +161,9 @@ class Env:
                f"--log {log}; echo $? > {log}.exit' > {log} 2>&1 < /dev/null &")
         deadline = time.time() + timeout
         while time.time() < deadline:
-            time.sleep(120)
+            self.poll_wait(120)
             try:
-                code_text = _query(f"cat {log}.exit 2>/dev/null", 60).strip()
+                code_text = marker(f"{log}.exit")
             except Unknown:
                 continue
             if code_text:
