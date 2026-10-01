@@ -315,6 +315,43 @@ Mac from idm's per-span clips, which keep the original timestamps; rows match cl
 `bc2-mix-s1` (dev's pick by press F1): val press F1 0.364, above the incumbent head's 0.325, so it needs no
 hybrid. It runs p50 38 / p95 46 ms.
 
+### Full-scale A/B: 3.7 h vs ~51 h of expert footage (2026-10-01, exploratory, 1 seed)
+
+The two arms differ only in their expert pool:
+- **A:** grid-l's 13 shards, 388,796 r1 steps.
+- **B:** 185 shards, 5,374,887 steps. That is 33 old v2-a shards with idm's aligned r1 tables plus 152 new shards
+  extracted from v2-cd rows (`policy/bc2/fullscale.py`), streamed from container disk.
+
+Both draw 6,350 expert windows per epoch from their own generators (`fit(expert_windows=)`), with identical human
+windows, so both take 48,780 steps. The shared recipe is r1 labels, static_aug 0.3, the kill-window camera weight
+x5 (`kill-rows-onset5.json`), press_p soft targets, LMB press unknown and the still-start take at 15%. The
+overnight chain was `fullscale_driver.py`.
+
+Mean decode throughout:
+
+| Arm | Dev yaw | Dev onset | Val yaw | Val onset | Held-out -11/-12 yaw | Held-out onset |
+|---|---:|---:|---:|---:|---:|---:|
+| bc2-mix399 (3 seeds) | 0.755-0.769 | 77.2-77.8% | 0.736-0.755 | 82.0-83.4% | 1.286 | 69.3% |
+| fs-A | 0.901 | 72.6% | 0.857 | 79.2% | 1.501 | 61.1% |
+| fs-B | 0.803 | 75.1% | 0.800 | 81.0% | 1.390 | 65.0% |
+| fs-A, no kill weight | 0.801 | 74.8% | 0.796 | 77.7% | 1.423 | 64.6% |
+| fs-A, v2-a labels | 0.816 | 76.3% | 0.814 | 81.4% | 1.450 | 60.8% |
+
+- **Scale:** B beats A on yaw everywhere. The val onset gain is +1.8 points, short of the pre-stated +3, so the
+  result is not kept.
+- **Recipe:** the shared recipe regresses camera against mix399. Removing either the kill weight or r1 labels
+  recovers about half of the dev gap; their combination is untested.
+- **Costs and verdicts:** `docs/runs-ledger.md` rows 30-31.
+- **Result files:** `D:/rivals-policy/replay/heldout-matches-fullscale-{AB,ablations}.json`.
+
+Pipeline facts found on the way:
+- **NVDEC:** NVDEC frames shift the frozen tower's features by about 12% (about 0.1 grey level), so expert shards
+  use software decode.
+- **MPEG-TS seeks:** a seek can land 1.8 s late; `decode_rows` re-seeks earlier.
+- **Time holes:** in-run anchor holes over 1.5 steps start a new sequence (`data.session_arrays`).
+- **Overlap videos:** in 10 videos the v2-cd anchors interleave the old shards' frames. Those videos keep only their
+  old shards; the excluded shard is listed in `D:/rivals-policy/fullscale/excluded/`.
+
 ### Explicit next scaling cohort and v2-cd alignment (2026-09-30)
 
 The five grid-i3 reports were already collected when temporary policy ownership began; all five name the same
