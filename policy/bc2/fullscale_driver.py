@@ -85,11 +85,18 @@ class Env:
         return any(" ship " in p for p in self.processes())
 
     def start_extractor(self, part):
-        flags = 0x00000008 | 0x00000200 | 0x00004000      # DETACHED_PROCESS | NEW_PROCESS_GROUP | BELOW_NORMAL
-        log = open(ROOT / f"extract-p{part}-driver.log", "ab")
-        subprocess.Popen([PY, "-m", "policy.bc2.fullscale", "run", str(ROOT / "labels"), "--out",
-                          str(ROOT / "features"), "--part", f"{part}/2"], cwd=REPO, stdout=log, stderr=log,
-                         creationflags=flags, env={**__import__("os").environ, "PYTHONUNBUFFERED": "1"})
+        """Via PowerShell Start-Process, so the extractor is not in the driver's process tree (a tree kill of the
+        driver once stopped it, 2026-09-30) and runs at BelowNormal."""
+        log = ROOT / f"extract-p{part}-driver"
+        cmd = (f"$env:PYTHONUNBUFFERED='1'; $p = Start-Process -FilePath '{PY}' -ArgumentList '-m',"
+               f"'policy.bc2.fullscale','run','{ROOT / 'labels'}','--out','{ROOT / 'features'}','--part','{part}/2' "
+               f"-WorkingDirectory '{REPO}' -WindowStyle Hidden -RedirectStandardOutput '{log}.log' "
+               f"-RedirectStandardError '{log}.err' -PassThru; Start-Sleep 2; "
+               f"Get-CimInstance Win32_Process -Filter \"ParentProcessId=$($p.Id)\" | % {{ "
+               f"(Get-Process -Id $_.ProcessId).PriorityClass = 'BelowNormal' }}")
+        # no captured pipes: the detached extractor would inherit them and the call would wait for its exit
+        subprocess.run(["powershell", "-NoProfile", "-c", cmd], check=True, stdin=subprocess.DEVNULL,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=120)
 
     def shards(self):
         """[(name, extracted, shipped, ship_failed)] for every planned shard."""
