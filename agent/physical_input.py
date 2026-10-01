@@ -278,6 +278,7 @@ def sentinel(parent_pid):  # pragma: no cover - needs a Windows desktop session
         sys.stdout.flush()
 
     def on_input(lparam):
+        received_perf_s = time.perf_counter()
         size = w.UINT(ctypes.sizeof(buf))
         if user32.GetRawInputData(lparam, RID_INPUT, buf, ctypes.byref(size), hdr_size) in (0, 0xFFFFFFFF):
             return
@@ -301,7 +302,8 @@ def sentinel(parent_pid):  # pragma: no cover - needs a Windows desktop session
                 say(f"EV {now:.3f}")
             if not state["tripped"]:
                 state.update(tripped=True, trip_t=now, acked=False)
-                detail = {"kind": kind, "device": int(handle), **(fields if kind == "mouse" else detail_key)}
+                detail = {"kind": kind, "device": int(handle), "received_perf_s": received_perf_s,
+                          **(fields if kind == "mouse" else detail_key)}
                 say("TRIP " + json.dumps(detail))
 
     def on_timer():

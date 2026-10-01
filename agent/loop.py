@@ -1284,6 +1284,7 @@ class LiveSafety:
                 except Exception as e:
                     self.status["errors"].append(f"close: {e!r}")
                 else:
+                    self.status["close_returned_t"] = self.clock()
                     self.status["close_returned"] = True
 
     def bind(self, live):
