@@ -271,3 +271,14 @@ def test_fullscale_plan_extracts_only_uncovered_frames_in_whole_pieces(tmp_path)
     assert runs[:10] == [run0 + "~0"] * 10 and runs[10:30] == [run0 + "~1"] * 20 and runs[30:] == [run1] * 30
     from policy.range_bc import steps
     assert [b - a for a, b in steps.runs(s)] == [10, 20, 30]  # no window bridges the covered gap
+
+
+def test_overlaid_cohort_accepts_new_shards_and_mixed_base_sources(tmp_path):
+    from policy.bc2.cohort import expert_dirs
+    a, c = [make_session(tmp_path, name, n=8) for name in ("expert-1-s0", "expert-2-c0")]
+    (a / "meta.json").write_text(json.dumps({"session": "expert-1-s0", "calibration": {"source": "idm v2-a"}}))
+    (c / "meta.json").write_text(json.dumps({"session": "expert-2-c0", "calibration": {"source": "idm v2-cd"}}))
+    with pytest.raises(ValueError, match="mixes label sources"):
+        expert_dirs(tmp_path, ["expert-1-s0", "expert-2-c0"])
+    assert [d.name for d in expert_dirs(tmp_path, ["expert-1-s0", "expert-2-c0"], overlaid=True)] == \
+        ["expert-1-s0", "expert-2-c0"]

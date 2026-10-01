@@ -193,6 +193,28 @@ def ship(feature_dir, log=print):
     log(f"shipped {d.name}")
 
 
+def overlays(shard_labels, aligned_dir, plain_dir, meta_root, out_root, log=print):
+    """Target-only r1 overlays (cloud.fit expert_targets) for each shard: copy the shard's feature meta.json from
+    meta_root/<shard>/ and expert.relabel it against expert-<video>.steps.jsonl. Old "-s" shards hold v2-a frames
+    and take idm's aligned-to-v2-a r1 table; new "-c" shards hold v2-cd frames and take the plain r1 table (a
+    video can have both). Returns {shard: (matched, missing)}."""
+    from policy.bc2.expert import relabel
+    out = {}
+    for labels in shard_labels:
+        labels = Path(labels)
+        shard = labels.name.replace(".steps.jsonl", "")
+        video, part = shard.rsplit("-", 1)
+        table = Path(aligned_dir if part.startswith("s") else plain_dir) / f"{video}.steps.jsonl"
+        if not table.exists():
+            raise FileNotFoundError(f"no r1 table for {shard}: {table}")
+        dst = Path(out_root) / shard
+        dst.mkdir(parents=True, exist_ok=True)
+        (dst / "meta.json").write_bytes((Path(meta_root) / shard / "meta.json").read_bytes())
+        out[shard] = relabel(labels, table, dst)
+        log(f"{shard}: {table.parent.name}/{table.name} matched {out[shard][0]}, missing {out[shard][1]}")
+    return out
+
+
 def _status(progress, stage="running", part=""):
     try:
         from scripts.job_status import write
@@ -265,13 +287,16 @@ def ship_loop(label_dir, out_root, *, poll=60, log=print):
 
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("stage", choices=("plan", "extract", "run", "ship"))
+    p.add_argument("stage", choices=("plan", "extract", "run", "ship", "overlays"))
     p.add_argument("paths", nargs="+")
     p.add_argument("--have", nargs="*", default=[])
     p.add_argument("--out", required=True)
     p.add_argument("--rows", type=int, default=30000)
     p.add_argument("--pending-gb", type=float, default=40.)
     p.add_argument("--part", default="0/1", help="run: this process's share i/N of the planned shards")
+    p.add_argument("--aligned", help="overlays: idm's aligned-to-v2-a r1 tables (for -s shards)")
+    p.add_argument("--plain", help="overlays: idm's plain r1 tables (for -c shards)")
+    p.add_argument("--meta", nargs="+", help="overlays: directories holding <shard>/meta.json")
     a = p.parse_args(argv)
     if a.stage == "plan":
         tables = [t for d in a.paths for t in (sorted(Path(d).glob("expert-*.steps.jsonl")) if Path(d).is_dir()
@@ -289,6 +314,17 @@ def main(argv=None):
             extract(path, a.out, tower, log=lambda m: print(m, flush=True))
         return 0
     log = lambda m: print(time.strftime("%H:%M:%S"), m, flush=True)
+    if a.stage == "overlays":            # paths: shard label files or directories of them
+        labels = [f for d in a.paths for f in (sorted(Path(d).glob("expert-*.steps.jsonl")) if Path(d).is_dir()
+                                                else [Path(d)])]
+        result = {}
+        for f in labels:
+            shard = f.name.replace(".steps.jsonl", "")
+            meta_root = next(m for m in a.meta if (Path(m) / shard / "meta.json").exists())
+            result.update(overlays([f], a.aligned, a.plain, meta_root, a.out, log=log))
+        print(json.dumps({"shards": len(result), "matched": sum(m for m, _ in result.values()),
+                          "missing": sum(x for _, x in result.values())}))
+        return 0
     if a.stage == "ship":
         ship_loop(a.paths[0], a.out, log=log)
         return 0

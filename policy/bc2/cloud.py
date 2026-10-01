@@ -98,7 +98,7 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
     if expert:
         from policy.bc2.cohort import expert_dirs
         base_source = None if expert_targets else expert_label_source
-        for d in expert_dirs("/out/expert-features", expert_sessions, base_source):
+        for d in expert_dirs("/out/expert-features", expert_sessions, base_source, overlaid=bool(expert_targets)):
             shutil.copytree(d, local / d.name)
             experts.append(local / d.name)
         if expert_targets:
