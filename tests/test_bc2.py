@@ -255,22 +255,22 @@ def test_fullscale_plan_extracts_only_uncovered_frames_in_whole_pieces(tmp_path)
     from policy.bc2 import fullscale
     from policy.bc2.expert import load_labels
     from policy.range_bc import fixture
-    h, rows = fixture.replay_session("expert-9", runs=(40, 30, 20))
+    h, rows = fixture.replay_session("expert-9", runs=(80, 40, 20))
     for d in ("v2cd", "have"):
         (tmp_path / d).mkdir()
     table = fixture.write(tmp_path / "v2cd" / "expert-9.steps.jsonl", h, rows)
-    have = rows[10:20] + rows[70:90]          # an existing shard holds run 0's middle and all of run 2
+    # an existing shard holds run 0's middle, most of run 1 (leaving 2- and 10-row slivers) and all of run 2
+    have = rows[35:45] + rows[82:110] + rows[120:140]
     sh = dict(h, session_id="expert-9-s0", session_group="expert-9-s0", source_video_group="expert-9")
     fixture.write(tmp_path / "have" / "expert-9-s0.steps.jsonl", sh, [dict(r, i=k) for k, r in enumerate(have)])
     written = fullscale.plan([table], fullscale.covered([tmp_path / "have"]), tmp_path / "out", rows_per_shard=1000)
-    assert list(written.values()) == [60]                     # 90 rows - 30 covered
+    assert list(written.values()) == [70]                     # two 35-row pieces; slivers < 32 rows dropped
     s = load_labels(next(iter(written)))                       # header and row checks pass
     assert s.session_id == "expert-9-c0" and s.header["source_video_group"] == "expert-9"
-    runs = [r["run"] for r in s.rows]
-    run0, run1 = rows[0]["run"], rows[40]["run"]
-    assert runs[:10] == [run0 + "~0"] * 10 and runs[10:30] == [run0 + "~1"] * 20 and runs[30:] == [run1] * 30
+    run0 = rows[0]["run"]
+    assert [r["run"] for r in s.rows] == [run0 + "~0"] * 35 + [run0 + "~1"] * 35
     from policy.range_bc import steps
-    assert [b - a for a, b in steps.runs(s)] == [10, 20, 30]  # no window bridges the covered gap
+    assert [b - a for a, b in steps.runs(s)] == [35, 35]      # no window bridges the covered gap
 
 
 def test_overlaid_cohort_accepts_new_shards_and_mixed_base_sources(tmp_path):
@@ -319,3 +319,15 @@ def test_decode_rows_recovers_frames_an_mpegts_seek_lands_past():
     assert len(rows) == 107
     got = {k: bgr.shape for k, bgr in decode_rows(NATIVE_TS, rows)}       # the plain seek found only 52 of 107
     assert sorted(got) == list(range(107)) and set(got.values()) == {(936, 1664, 3)}   # this VOD is 1664x936
+
+
+def test_relabel_matches_planned_pieces_by_their_base_run(tmp_path):
+    from policy.bc2.expert import relabel
+    from policy.range_bc import fixture, steps
+    old, labels, d = relabel_case(tmp_path)
+    h, *rows = [json.loads(line) for line in old.read_text().splitlines()]
+    pieces = [dict(r, run=r["run"] + "~0") for r in rows]          # as fullscale.plan names a split run's pieces
+    old.unlink()
+    fixture.write(old, h, pieces)
+    (d / "meta.json").write_text(json.dumps({"session": h["session_id"], "steps_sha256": steps.sha256(old)}))
+    assert relabel(old, labels, d) == (6, 2)

@@ -33,6 +33,7 @@ MAC_SHIP = "~/dev/policy-bc2/fs-ship"
 VOLUME = "rivals-policy-bc2-20260930"
 MODAL = "export PATH=$HOME/.local/bin:$PATH; MODAL_PROFILE=rivals nice -n 10 taskpolicy -b modal"   # Mac caps
 NPY = ("feats.npy", "gray_g.npy", "gray_c.npy", "green.npy")
+MIN_PIECE = 32       # rows; train.windows skips runs shorter than this
 
 
 def _video(header):
@@ -82,6 +83,10 @@ def plan(tables, have, out_dir, rows_per_shard=30000, log=print):
             if piece:
                 pieces.append(piece)
         # a run that came out in more than one piece gets "~k" names; whole runs keep theirs
+        # pieces shorter than a window never train (train.windows needs 32 rows); where v2-cd anchors interleave an
+        # existing shard's frames they are almost all single rows (expert-2879205768-c0: 31,110 pieces, none >= 32)
+        short = sum(len(p) for p in pieces if len(p) < MIN_PIECE)
+        pieces = [p for p in pieces if len(p) >= MIN_PIECE]
         multi = {run for run, k in splits.items() if k > 0}
         n = max(1, round(sum(map(len, pieces)) / rows_per_shard))
         shards, sizes = [[] for _ in range(n)], [0] * n
@@ -103,7 +108,8 @@ def plan(tables, have, out_dir, rows_per_shard=30000, log=print):
                     f.write(json.dumps(dict(r, i=k)) + "\n")
             written[str(path)] = len(rows)
         log(f"{Path(table).name}: {total} rows, {sum(map(len, pieces))} new in {len(pieces)} pieces "
-            f"({len(multi)} runs split) -> {len([s for s in shards if s])} shards")
+            f"({len(multi)} runs split, {short} rows in pieces < {MIN_PIECE} dropped) -> "
+            f"{len([s for s in shards if s])} shards")
     return written
 
 

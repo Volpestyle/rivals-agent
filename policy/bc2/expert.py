@@ -367,7 +367,8 @@ def relabel(shard_labels, video_labels, out_features_dir, table=None):
     meta = json.loads((out / "meta.json").read_text())
     if meta["session"] != shard.session_id or meta["steps_sha256"] != shard.sha256:
         raise ValueError("cached features do not belong to these shard labels")
-    frame_key = _frame_key
+    # planned shards name the pieces of a run split by covered rows '<run>~k' (fullscale.plan); labels keep '<run>'
+    frame_key = lambda r: _frame_key(dict(r, run=r["run"].split("~")[0]))
     header, new = table if table is not None else load_table(video_labels)
     if (header["session_id"] != shard.header.get("source_video_group", shard.session_id)
             or header["media_sha256"] != shard.header["media_sha256"]):
