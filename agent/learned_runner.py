@@ -585,7 +585,7 @@ def main(argv=None):
         ap.error('policy-bundle required')
     if a.out.exists():
         ap.error('output already exists; preserve the previous attempt')
-    policy = source = safety = log = runner = None
+    policy = source = safety = log = runner = takeover = None
     result = {'result': 'exception', 'live': a.live, 'policy_bundle': str(a.policy_bundle), 'max_s': a.max_s,
               'obs_video': a.obs_video, 'recording': 'native frames + per-tick JSONL; session video owned by OBS',
               'yaw_scale': a.yaw_scale, 'decision_hz': a.decision_hz}
@@ -669,6 +669,8 @@ def main(argv=None):
                 if safety is not None:
                     safety.close()
                     result['safety'] = safety.status
+                elif callable(getattr(takeover, 'close', None)):
+                    takeover.close()  # pre-attach/preload failure still owns a raw listener
             finally:
                 try:
                     if runner is not None and runner.worker is not None:

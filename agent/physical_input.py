@@ -63,6 +63,46 @@ class Refused(Exception):
     pass
 
 
+class TakeoverGuard:
+    """Latched raw-input takeover plus the legacy key-state poll.
+
+    Raw motion trips at one device count (the smallest nonzero delta), including
+    slow motion split across packets. Cursor warping/locking cannot hide it.
+    The sentinel stays unarmed: LiveSafety owns pad release, not process killing.
+    """
+
+    def __init__(self, get_state, raw):
+        self.get_state, self.raw = get_state, raw
+        self.latched = self.closed = False
+        # Also cover preflight exceptions before a LiveSafety scope exists.
+        import atexit
+        atexit.register(self.close)
+
+    def __call__(self):
+        from .camera_calibration import human_input
+        if self.closed:
+            raise RuntimeError("physical takeover guard is closed")
+        reason = self.raw.check()
+        if reason not in (None, TRIPPED):
+            raise RuntimeError(reason)
+        self.latched = human_input(self.get_state) or reason == TRIPPED or self.latched
+        return self.latched
+
+    def snapshot(self):
+        return {"method": "raw RIDEV_INPUTSINK + GetAsyncKeyState",
+                "motion_min_counts": 1, "latched": self.latched,
+                "raw_registration": self.raw.info, "raw_trip": self.raw.trip}
+
+    def close(self):
+        if not self.closed:
+            self.closed = True
+            try:
+                self.raw.close()
+            finally:
+                import atexit
+                atexit.unregister(self.close)
+
+
 class PhysicalInput:
     """The sentinel's client. `command` is injectable for tests (any process speaking the line protocol)."""
 

@@ -1188,7 +1188,11 @@ def _live_scope_proof(reader, focused, not_after):
 
 
 def human_takeover_guard(get_state=None):
-    """Reuse the calibration tool's all-key/mouse poll, without input injection."""
+    """Raw key/button/motion latch plus the all-key poll; never inject input.
+
+    An injected get_state alone is the legacy, hardware-free unit-test seam.
+    Native callers must register the raw-input listener before any pad opens.
+    """
     from .camera_calibration import human_input
     if get_state is None:
         import ctypes
@@ -1196,6 +1200,14 @@ def human_takeover_guard(get_state=None):
         user32.GetAsyncKeyState.argtypes = [ctypes.c_int]
         user32.GetAsyncKeyState.restype = ctypes.c_short
         get_state = user32.GetAsyncKeyState
+        from .physical_input import PhysicalInput, TakeoverGuard
+        raw = PhysicalInput()
+        try:
+            raw.start()
+            return TakeoverGuard(get_state, raw)
+        except BaseException:
+            raw.close()
+            raise
     return lambda: human_input(get_state)
 
 
@@ -1249,6 +1261,11 @@ class LiveSafety:
                     reason = "safety_check_error"
                     self.status["errors"].append(repr(e))
                 self.status["stop_reason"] = reason
+                if reason and callable(getattr(self.takeover, "snapshot", None)):
+                    try:
+                        self.status["takeover"] = self.takeover.snapshot()
+                    except Exception as e:
+                        self.status["errors"].append(f"takeover metadata: {e!r}")
             stopped = self.status["stop_reason"] is not None
         if stopped:
             self._close_live()
@@ -1313,6 +1330,9 @@ class LiveSafety:
         self._close_live()
         if self._thread is not None and self._thread.is_alive() and self._thread is not threading.current_thread():
             self._thread.join(timeout=1)
+        close_takeover = getattr(self.takeover, "close", None)
+        if callable(close_takeover):
+            close_takeover()
         if self.live is not None and not self.status["close_returned"]:
             raise RuntimeError(f"live safety could not confirm release: {self.status['errors']}")
 
@@ -1479,7 +1499,7 @@ def main(argv=None):
                 return 1
             percept = replace(percept, in_range=start_guard)
             scope = {"game_pid": a.game_pid, "focus_method": "GetForegroundWindow/GetWindowThreadProcessId, read-only",
-                     "takeover": "any keyboard key or mouse button; synthetic gamepad VKs excluded",
+                     "takeover": "any keyboard key, mouse button or raw motion; raw latch + key-state poll; synthetic gamepad VKs excluded",
                      "safety": safety.status, "loop_perf_origin": source.t0, "not_after_perf": deadline,
                      "not_after_t": deadline - source.t0, "startup_max_s": START_DEADLINE_S,
                      "phase_max_s": a.max_s, "combined_max_s": START_DEADLINE_S + a.max_s}
