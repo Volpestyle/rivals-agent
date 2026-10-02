@@ -315,6 +315,33 @@ Mac from idm's per-span clips, which keep the original timestamps; rows match cl
 `bc2-mix-s1` (dev's pick by press F1): val press F1 0.364, above the incumbent head's 0.325, so it needs no
 hybrid. It runs p50 38 / p95 46 ms.
 
+### Explicit target input from the 720p finder (2026-10-02, exploratory, 1 seed)
+
+The model gets a 10-value per-step target vector from `policy/bc2/target_features.py`: known, the nearest and largest
+enemy (visible, dx, dy, height), and log count. It is the guarded 720p green finder with the door abstention.
+- Wiring: `Config.use_target`, a Linear->32 embedding.
+- Dropout: 15% of steps plus a random 25-100% span in 30% of windows.
+- Expert shards: always unknown.
+- Live: `LivePolicy._target` makes the same call, and gave identical vectors on 262 retained live and 200 recorded
+  frames.
+- Extraction: `target_extract` (13 sessions, 374k rows, local, $0).
+- Coverage: 61-71% of rows have a target. Main-account take 035932 is 0.3%, because its bots have red nameplates.
+  The door rule also drops green foliage scenes.
+- Recipe: mix399's i3 (`grid-t-target.json`).
+- DEV scoring: `prehit_dev` binds DEV and reuses rl's scoring helpers.
+
+| DEV, mean decode | Yaw | Onset sign | Press F1 | Still-false turn | Pre-hit yaw (106 windows) |
+|---|---:|---:|---:|---:|---:|
+| mix399 seeds 0-2 | 0.755-0.769 | 77.2-77.8% | 0.319-0.324 | 8.3-9.2% | 0.6568-0.6706 |
+| target input | 0.750 | 79.6% | 0.350 | 8.9% | 0.6512 |
+| same model, every target masked | 0.750 | 79.1% | 0.351 | 8.8% | 0.6516 |
+
+Every keep check passes on paper, but masking every target changes nothing, so the model ignores the input. Its edge
+over mix399 is a seed effect within the seed spread, not aiming from the targets. This matches the prior: the
+finder's nearest bearing agrees with James's onset turn only 57% of the time. Report-only: val yaw 0.735, F1 0.409;
+held-out -11/-12 yaw 1.281 (mix399 1.286). Cost $1.59 (`docs/runs-ledger.md` row 37). Chart:
+`D:/rivals-policy/replay/target-ablation-dev.png`.
+
 ### Full-scale A/B: 3.7 h vs ~51 h of expert footage (2026-10-01, exploratory, 1 seed)
 
 The two arms differ only in their expert pool:
