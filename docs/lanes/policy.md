@@ -263,7 +263,11 @@ James's frames at the same 10 Hz. The following are ruled out:
 An input-swap ablation isolates the cause: live frames with James's motion input give 0.275 and 0.383, while James
 frames with the live motion input give 0.011. Swapping in James's image features or green profile changes nothing,
 and James's own first frame repeated (zero motion) gives 0.020. The model predicts stillness whenever nothing moves,
-and stillness produces no motion. James is never fully still for long: 10.9% of val steps are still, and the
+and stillness produces no motion.
+
+*Superseded 2026-10-02 by [the offline idle diagnosis](../../rl/out/idle/README.md): the generalization about
+James never being fully still does not hold across admitted sessions; exact-neutral and camera-still definitions differ.*
+James is never fully still for long: 10.9% of val steps are still, and the
 longest still stretch is 42 steps (1.4 s).
 
 Motion-input dropout (`train.batch(motion_dropout=)`: blank the motion over a random 25-100% span of a window;
@@ -280,6 +284,16 @@ retained live frames hold rises to 0.178 (needs 0.3) and turn to 0.465 (needs 0.
 press F1 0.369 (both pass); dev yaw 0.772, F1 0.342. The run is discarded. Freezing the whole input moves the camera
 side from a static start; hold probabilities stay below the per-action thresholds. James's start-from-still
 recordings (recipe with the lead) target the missing state directly.
+
+#### Cross-path idle diagnosis (2026-10-02)
+
+[Offline diagnosis, VUH-1346](../../rl/out/idle/README.md): the live and offline paths agree on the same inputs;
+motion swaps reverse activity, while later frozen-BC episodes idle despite fresh decisions. Decoding is consistent,
+and both cached and native James features remain active. Similar resting scenes have thin
+restart supervision, rather than idle being absent from human play. Keep mix399 as the BC/KL anchor; an unchanged
+hit-only sitting adds little. The existing dense-aim reward with directed exploration is a useful different next
+experiment, and a prospective task-conditioned initiation branch is the proposed BC fix. Neither fix was run live
+in this diagnosis; the record holds the numbers, visual, limitations and lead-owned Linear correction.
 
 #### Known limitation: far bots are invisible at 256x144 (2026-09-30)
 

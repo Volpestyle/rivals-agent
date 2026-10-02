@@ -1,0 +1,394 @@
+[
+  {
+    "source": "data/calibration/compat-check-20260929/learned-01-a",
+    "seconds": 12.932190499966964,
+    "decisions": 126,
+    "ready": 5,
+    "stale": 121,
+    "sends": 5,
+    "sent_ticks": 5,
+    "nonzero_sends": 0,
+    "lease_seconds_including_neutral": 0.46646820004098055,
+    "nonzero_command_seconds": 0.0,
+    "camera_command_seconds": 0.0,
+    "inference_s": {
+      "p50": 0.09535685001173988,
+      "p95": 0.13160432496806607
+    },
+    "age_s": {
+      "p50": 0.1359268999658525,
+      "p95": 0.19117887495667674
+    },
+    "decoded_action_steps": 0,
+    "capture_gap_s": {
+      "p50": 0.0936516000656411,
+      "p95": 0.13962720001582057
+    },
+    "abs_yaw_median": 0.0017970872703173767,
+    "nonzero_time_share": 0.0
+  },
+  {
+    "source": "data/calibration/rl-sitting-20260930-01/ep-000-bc",
+    "seconds": 19.749583299970254,
+    "decisions": 227,
+    "ready": 227,
+    "stale": 0,
+    "sends": 226,
+    "sent_ticks": 226,
+    "nonzero_sends": 0,
+    "lease_seconds_including_neutral": 19.128997199819427,
+    "nonzero_command_seconds": 0.0,
+    "camera_command_seconds": 0.0,
+    "inference_s": {
+      "p50": 0.01911450002808124,
+      "p95": 0.040912560001015646
+    },
+    "age_s": {
+      "p50": 0.03161750000435859,
+      "p95": 0.05399859002791345
+    },
+    "decoded_action_steps": 0,
+    "capture_gap_s": {
+      "p50": 0.09252679999917746,
+      "p95": 0.09418547505629249
+    },
+    "abs_yaw_median": 0.0015525133055952268,
+    "nonzero_time_share": 0.0
+  },
+  {
+    "source": "data/calibration/rl-sitting-20260930-01/ep-002-bc",
+    "seconds": 19.809269099961966,
+    "decisions": 242,
+    "ready": 242,
+    "stale": 0,
+    "sends": 243,
+    "sent_ticks": 242,
+    "nonzero_sends": 1,
+    "lease_seconds_including_neutral": 19.550015803042733,
+    "nonzero_command_seconds": 0.01340760324422964,
+    "camera_command_seconds": 0.01340760324422964,
+    "inference_s": {
+      "p50": 0.02585529995849356,
+      "p95": 0.043862724973587314
+    },
+    "age_s": {
+      "p50": 0.045463150017894804,
+      "p95": 0.06785500007681547
+    },
+    "decoded_action_steps": 0,
+    "capture_gap_s": {
+      "p50": 0.07825129991397262,
+      "p95": 0.09411539998836815
+    },
+    "abs_yaw_median": 0.0063308605059104305,
+    "nonzero_time_share": 0.0006768348280076312
+  },
+  {
+    "source": "data/calibration/rl-sitting-20260930-01/ep-004-bc",
+    "seconds": 19.827366299927235,
+    "decisions": 229,
+    "ready": 229,
+    "stale": 0,
+    "sends": 229,
+    "sent_ticks": 229,
+    "nonzero_sends": 0,
+    "lease_seconds_including_neutral": 19.167058899742557,
+    "nonzero_command_seconds": 0.0,
+    "camera_command_seconds": 0.0,
+    "inference_s": {
+      "p50": 0.018378300010226667,
+      "p95": 0.03457087997812778
+    },
+    "age_s": {
+      "p50": 0.03917360003106296,
+      "p95": 0.056682180007919664
+    },
+    "decoded_action_steps": 0,
+    "capture_gap_s": {
+      "p50": 0.09199615003308281,
+      "p95": 0.09439045503968373
+    },
+    "abs_yaw_median": 0.0013787540247811592,
+    "nonzero_time_share": 0.0
+  },
+  {
+    "source": "data/calibration/rl-sitting-20260930-07/ep-000-bc",
+    "seconds": 19.788886299938895,
+    "decisions": 222,
+    "ready": 222,
+    "stale": 0,
+    "sends": 223,
+    "sent_ticks": 222,
+    "nonzero_sends": 1,
+    "lease_seconds_including_neutral": 19.526853701048758,
+    "nonzero_command_seconds": 0.00632120139918993,
+    "camera_command_seconds": 0.00632120139918993,
+    "inference_s": {
+      "p50": 0.01868580002337694,
+      "p95": 0.026283245056401932
+    },
+    "age_s": {
+      "p50": 0.029593000013846904,
+      "p95": 0.041416220023529605
+    },
+    "decoded_action_steps": 0,
+    "capture_gap_s": {
+      "p50": 0.0930606999900192,
+      "p95": 0.09424240002408624
+    },
+    "abs_yaw_median": 0.0018611412478975354,
+    "nonzero_time_share": 0.0003194318923955538
+  },
+  {
+    "source": "data/calibration/rl-sitting-20260930-07/ep-002-bc",
+    "seconds": 19.79998460004572,
+    "decisions": 224,
+    "ready": 224,
+    "stale": 0,
+    "sends": 225,
+    "sent_ticks": 224,
+    "nonzero_sends": 1,
+    "lease_seconds_including_neutral": 19.27874874229309,
+    "nonzero_command_seconds": 0.007290242554135462,
+    "camera_command_seconds": 0.007290242554135462,
+    "inference_s": {
+      "p50": 0.018130749987903982,
+      "p95": 0.03429729993804358
+    },
+    "age_s": {
+      "p50": 0.03015894995769486,
+      "p95": 0.05328178008203394
+    },
+    "decoded_action_steps": 0,
+    "capture_gap_s": {
+      "p50": 0.09277710004244,
+      "p95": 0.09465772998519241
+    },
+    "abs_yaw_median": 9.782434406515618e-05,
+    "nonzero_time_share": 0.00036819435476321676
+  },
+  {
+    "source": "data/calibration/rl-sitting-20260930-07/ep-004-bc",
+    "seconds": 19.804481099941768,
+    "decisions": 235,
+    "ready": 235,
+    "stale": 0,
+    "sends": 236,
+    "sent_ticks": 235,
+    "nonzero_sends": 1,
+    "lease_seconds_including_neutral": 19.640054624615928,
+    "nonzero_command_seconds": 0.015755224502408502,
+    "camera_command_seconds": 0.015755224502408502,
+    "inference_s": {
+      "p50": 0.025005199946463108,
+      "p95": 0.033186710067093374
+    },
+    "age_s": {
+      "p50": 0.04058499995153397,
+      "p95": 0.04592028001789003
+    },
+    "decoded_action_steps": 0,
+    "capture_gap_s": {
+      "p50": 0.07859844999620691,
+      "p95": 0.09422655997914262
+    },
+    "abs_yaw_median": 0.006286450262258825,
+    "nonzero_time_share": 0.0007955383644186884
+  },
+  {
+    "source": "data/calibration/rl-sitting-20260930-07/ep-006-bc",
+    "seconds": 19.835939100012183,
+    "decisions": 229,
+    "ready": 229,
+    "stale": 0,
+    "sends": 233,
+    "sent_ticks": 229,
+    "nonzero_sends": 4,
+    "lease_seconds_including_neutral": 19.23248954370987,
+    "nonzero_command_seconds": 0.023551143262502905,
+    "camera_command_seconds": 0.023551143262502905,
+    "inference_s": {
+      "p50": 0.019229400088079274,
+      "p95": 0.039290299988351755
+    },
+    "age_s": {
+      "p50": 0.030380800017155707,
+      "p95": 0.05434278000611812
+    },
+    "decoded_action_steps": 0,
+    "capture_gap_s": {
+      "p50": 0.09231840004213154,
+      "p95": 0.09451150501845404
+    },
+    "abs_yaw_median": 0.0027402963387260127,
+    "nonzero_time_share": 0.0011872966106499308
+  },
+  {
+    "source": "data/calibration/rl-sitting-20260930-07/ep-008-bc",
+    "seconds": 19.81927740003448,
+    "decisions": 233,
+    "ready": 233,
+    "stale": 0,
+    "sends": 326,
+    "sent_ticks": 233,
+    "nonzero_sends": 119,
+    "lease_seconds_including_neutral": 18.940188980721874,
+    "nonzero_command_seconds": 2.5444186813570617,
+    "camera_command_seconds": 1.128352981423966,
+    "inference_s": {
+      "p50": 0.020048200036399066,
+      "p95": 0.04321634005755186
+    },
+    "age_s": {
+      "p50": 0.037101399968378246,
+      "p95": 0.05767840000335127
+    },
+    "decoded_action_steps": 26,
+    "capture_gap_s": {
+      "p50": 0.0872172000235878,
+      "p95": 0.09427738494123332
+    },
+    "abs_yaw_median": 0.001191443872386345,
+    "nonzero_time_share": 0.12838100148659481
+  },
+  {
+    "source": "data/calibration/rl-sitting-20260930-07/ep-010-bc",
+    "seconds": 19.799567400012165,
+    "decisions": 233,
+    "ready": 233,
+    "stale": 0,
+    "sends": 234,
+    "sent_ticks": 233,
+    "nonzero_sends": 1,
+    "lease_seconds_including_neutral": 19.529266871335963,
+    "nonzero_command_seconds": 0.006302871542099797,
+    "camera_command_seconds": 0.006302871542099797,
+    "inference_s": {
+      "p50": 0.022856399999000132,
+      "p95": 0.03277038007508963
+    },
+    "age_s": {
+      "p50": 0.039772699936293066,
+      "p95": 0.04810175993479787
+    },
+    "decoded_action_steps": 0,
+    "capture_gap_s": {
+      "p50": 0.07848154997918755,
+      "p95": 0.09412825999315828
+    },
+    "abs_yaw_median": 0.0019424867359461471,
+    "nonzero_time_share": 0.000318333800671621
+  },
+  {
+    "source": "data/calibration/rl-sitting-20260930-07/ep-012-bc",
+    "seconds": 19.82860560005065,
+    "decisions": 232,
+    "ready": 232,
+    "stale": 0,
+    "sends": 243,
+    "sent_ticks": 232,
+    "nonzero_sends": 11,
+    "lease_seconds_including_neutral": 19.251233952421437,
+    "nonzero_command_seconds": 0.1388030523888034,
+    "camera_command_seconds": 0.1388030523888034,
+    "inference_s": {
+      "p50": 0.01988814998185262,
+      "p95": 0.04417532997322268
+    },
+    "age_s": {
+      "p50": 0.03771085001062602,
+      "p95": 0.05780283497297202
+    },
+    "decoded_action_steps": 0,
+    "capture_gap_s": {
+      "p50": 0.07886719994712621,
+      "p95": 0.09464490000391379
+    },
+    "abs_yaw_median": 0.00032997545635353735,
+    "nonzero_time_share": 0.00700014187525364
+  },
+  {
+    "source": "data/calibration/rl-sitting-20260930-07/ep-014-bc",
+    "seconds": 19.805761700030416,
+    "decisions": 229,
+    "ready": 229,
+    "stale": 0,
+    "sends": 230,
+    "sent_ticks": 229,
+    "nonzero_sends": 1,
+    "lease_seconds_including_neutral": 19.5167623869536,
+    "nonzero_command_seconds": 0.0051536868718984885,
+    "camera_command_seconds": 0.0051536868718984885,
+    "inference_s": {
+      "p50": 0.018152000033296645,
+      "p95": 0.03468835996463895
+    },
+    "age_s": {
+      "p50": 0.028174799983389676,
+      "p95": 0.04630570004228503
+    },
+    "decoded_action_steps": 0,
+    "capture_gap_s": {
+      "p50": 0.09256264998111874,
+      "p95": 0.09420943997101858
+    },
+    "abs_yaw_median": 0.0018213009003616774,
+    "nonzero_time_share": 0.000260211495521052
+  },
+  {
+    "source": "data/calibration/rl-sitting-20260930-07/ep-016-bc",
+    "seconds": 19.81331819994375,
+    "decisions": 222,
+    "ready": 222,
+    "stale": 0,
+    "sends": 224,
+    "sent_ticks": 222,
+    "nonzero_sends": 2,
+    "lease_seconds_including_neutral": 19.56680477833762,
+    "nonzero_command_seconds": 0.010877378000076376,
+    "camera_command_seconds": 0.010877378000076376,
+    "inference_s": {
+      "p50": 0.019684950006194413,
+      "p95": 0.026396355021279305
+    },
+    "age_s": {
+      "p50": 0.03064934996655211,
+      "p95": 0.043877529929159206
+    },
+    "decoded_action_steps": 0,
+    "capture_gap_s": {
+      "p50": 0.09286089998204261,
+      "p95": 0.09463529998902231
+    },
+    "abs_yaw_median": 0.0011710911751404045,
+    "nonzero_time_share": 0.0005489932524329648
+  },
+  {
+    "source": "data/calibration/rl-sitting-20260930-07/ep-018-bc",
+    "seconds": 19.811570799909532,
+    "decisions": 231,
+    "ready": 231,
+    "stale": 0,
+    "sends": 232,
+    "sent_ticks": 231,
+    "nonzero_sends": 1,
+    "lease_seconds_including_neutral": 19.229846187431775,
+    "nonzero_command_seconds": 0.011038987764567118,
+    "camera_command_seconds": 0.011038987764567118,
+    "inference_s": {
+      "p50": 0.0216391000431031,
+      "p95": 0.03604034997988492
+    },
+    "age_s": {
+      "p50": 0.04028489999473095,
+      "p95": 0.05677069997182116
+    },
+    "decoded_action_steps": 0,
+    "capture_gap_s": {
+      "p50": 0.0791167999850586,
+      "p95": 0.09468214004300535
+    },
+    "abs_yaw_median": 0.0008067676939852216,
+    "nonzero_time_share": 0.0005571990164766504
+  }
+]
