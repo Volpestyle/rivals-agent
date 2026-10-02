@@ -1,7 +1,9 @@
 """Fourteen explicit retained development frames, CPU only; no videos, fits or corpus writes.
 
 Run from the repository: python rl/out/aim/target_features_pilot_20261002.py
+Historical RAW-detector baseline: deliberately bypasses the later guarded extract().
 Writes same-stem JSON, a full-resolution annotated sheet and a compact overview.
+Do not rerun over the preserved historical artifacts to check the later guard.
 """
 import ctypes
 import json
@@ -92,8 +94,8 @@ def main():
         values = T.from_boxes(boxes)
         elapsed = (time.perf_counter() - start) * 1000
         latency.append(elapsed)
-        # Same bytes through the public extraction path; one extra pass, no new rows.
-        assert np.array_equal(values, T.extract(frame))
+        # Preserve the raw baseline after extract() gained the shared teacher veto.
+        assert np.array_equal(values, T.from_boxes(T.detect_boxes(frame)))
         canvas = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
         draw = ImageDraw.Draw(canvas)
         for j, b in enumerate(boxes):
@@ -131,7 +133,8 @@ def main():
         details.save(str(STEM) + f".detail-{page + 1}.jpg", quality=92)
     result = dict(cost_usd=0, device="CPU BelowNormal, OpenCV 2 threads", samples=len(rows),
                   fields=T.FIELDS, unknown="all-zero with known=0; geometry and count are placeholders",
-                  expert="unconditionally unknown; no expert pixels opened", public_path_parity=True,
+                  expert="unconditionally unknown; no expert pixels opened", raw_path_parity=True,
+                  extraction_mode="historical raw detector; guarded extract intentionally bypassed",
                   latency_ms=dict(first=latency[0], p50=float(np.median(latency[1:])),
                                   p95=float(np.percentile(latency[1:], 95)), max=max(latency)),
                   latency_scope="resize + green finder + vector; excludes JPEG read; first sample excluded from p50/p95",

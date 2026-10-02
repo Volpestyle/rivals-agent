@@ -23,7 +23,9 @@ def test_unknown_distinct_from_centred_target_and_expert_never_reads_pixels(monk
     assert centred[0] == 1 and tuple(centred[1:4]) == (1, 0, 0)
     assert np.array_equal(centred[1:5], centred[5:9])
     monkeypatch.setattr(T, "detect_boxes", lambda _: pytest.fail("expert pixels read"))
+    monkeypatch.setattr(T.teacher, "green_share", lambda _: pytest.fail("expert guard read pixels"))
     assert np.array_equal(T.extract(None, source_kind="expert"), unknown)
+    assert T.extract_with_reason(None, source_kind="expert")[1] == "expert_unqualified"
 
 
 def test_nearest_uses_pixels_largest_uses_area_and_ties_are_stable():
@@ -71,3 +73,44 @@ def test_invalid_boxes_refused(box):
 def test_unsupported_source_refused():
     with pytest.raises(ValueError):
         T.extract(None, source_kind="replay")
+
+
+def test_door_abstention_shares_teacher_function_threshold_and_strict_boundary(monkeypatch):
+    # Changing the teacher constant here catches an accidentally copied numeric veto.
+    monkeypatch.setattr(T.teacher, "DOOR_GREEN_SHARE", .125)
+    f = frame()
+    boxes = [(800, 300, 840, 360)]
+    monkeypatch.setattr(T, "detect_boxes", lambda _: boxes)
+    monkeypatch.setattr(T.teacher, "green_share", lambda _: .125)
+    assert np.array_equal(T.extract(f), T.from_boxes(boxes))
+    monkeypatch.setattr(T.teacher, "green_share", lambda _: .126)
+    monkeypatch.setattr(T, "detect_boxes", lambda _: pytest.fail("finder ran after abstention"))
+    assert not T.extract(f).any()
+    assert T.extract_with_reason(f)[1] == "teacher_door_abstention"
+
+
+def test_saturated_green_scene_abstains_with_same_native_frame_as_teacher(monkeypatch):
+    f = frame()
+    ring(f, 840, 280, 50, 110)
+    native = cv2.resize(f, (2560, 1440), interpolation=cv2.INTER_NEAREST)
+    native[100:400, 200:500] = (83, 199, 92)
+    assert T.teacher.green_share(native) > T.teacher.DOOR_GREEN_SHARE
+    assert not T.extract(native).any()
+    seen = []
+    real_share = T.teacher.green_share
+
+    def share(image):
+        seen.append(image)
+        return real_share(image)
+
+    monkeypatch.setattr(T.teacher, "green_share", share)
+    assert not T.extract(native).any()
+    assert seen[0] is native  # no preceding resize changes the teacher's decision
+
+
+def test_known_and_unknown_reasons():
+    f = frame()
+    assert T.extract_with_reason(f)[1] == "no_green_detection"
+    ring(f, 840, 280, 50, 110)
+    values, reason = T.extract_with_reason(f)
+    assert values[0] == 1 and reason == "detected_not_verified"
