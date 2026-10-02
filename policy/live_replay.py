@@ -18,8 +18,9 @@ SHORT = {"move_forward": "W", "move_left": "A", "move_back": "S", "move_right": 
          "web_cluster": "RMB"}
 
 
-def frames_for(video, rows, hwaccel=True):
-    """Yield (row, BGR frame) for rows whose frame pts appear in order in the video (NVDEC when available)."""
+def frames_for(video, rows, hwaccel=True, threads=None):
+    """Yield (row, BGR frame) for rows whose frame pts appear in order in the video (NVDEC when available).
+    threads: cap the decoder's CPU threads (None = PyAV AUTO; bulk jobs on the shared PC pass 2)."""
     import av
     wanted = {r["frame"]["pts"]: r for r in rows}
     first = rows[0]["frame"]["pts"]
@@ -33,6 +34,8 @@ def frames_for(video, rows, hwaccel=True):
     with av.open(video, hwaccel=accel) if accel else av.open(video) as container:
         stream = container.streams.video[0]
         stream.thread_type = "AUTO"
+        if threads:
+            stream.codec_context.thread_count = threads
         tb = rows[0]["frame"]["timebase"]
         if [stream.time_base.numerator, stream.time_base.denominator] != tb:
             raise ValueError(f"stream timebase {stream.time_base} differs from rows {tb}")
