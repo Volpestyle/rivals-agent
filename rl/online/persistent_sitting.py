@@ -20,7 +20,7 @@ def arm_for(index, bc_every=0):
     return 'bc' if index == 0 or bc_every and index % bc_every == 0 else 'rl'
 
 
-def update_worker(base_bundle, out, jobs, results, device, beta, kl, steps):
+def update_worker(base_bundle, out, jobs, results, device, beta, kl, steps, aim_weight=0.):
     """Own model copies, a snapshot of completed episode files, and no pad API."""
     try:
         import os
@@ -71,12 +71,14 @@ def update_worker(base_bundle, out, jobs, results, device, beta, kl, steps):
                 row.update(seconds=ep['seconds'], **ep['events'],
                            hits_per_min=ep['events']['hit']/minutes, kos_per_min=ep['events']['ko']/minutes,
                            return_sum=float(ep['reward'].sum()))
+                if 'reward_aim' in ep:
+                    row.update(aim_sum=float(ep['reward_aim'].sum()), aim_known=float(ep['aim_known'].mean()))
             results.put({'kind': 'episode', 'row': row})
             # Safety/human-contaminated episodes never enter an update.
             if go_on and arm == 'rl' and ep is not None:
                 buffer.append(ep)
                 current, summary = update.update(current, base, buffer, beta=beta, kl=kl,
-                                                 steps=steps, device=device, seed=index)
+                                                 steps=steps, device=device, seed=index, aim_weight=aim_weight)
                 bundle = update.write_bundle(current, config, base_bundle, out/'bundles'/f'rl-{index:03d}',
                                              name=f'rl-{index:03d}')
                 results.put({'kind': 'update', 'episode': index, 'bundle': str(bundle), 'summary': summary})
@@ -86,12 +88,13 @@ def update_worker(base_bundle, out, jobs, results, device, beta, kl, steps):
 
 
 class BackgroundUpdate:
-    def __init__(self, base, out, *, device, beta, kl, steps):
+    def __init__(self, base, out, *, device, beta, kl, steps, aim_weight=0.):
         self.closed = False
         context = mp.get_context('spawn')
         self.jobs, self.results = context.Queue(maxsize=2), context.Queue()
         self.process = context.Process(target=update_worker,
-                                       args=(str(base), str(out), self.jobs, self.results, device, beta, kl, steps),
+                                       args=(str(base), str(out), self.jobs, self.results, device, beta, kl, steps,
+                                             aim_weight),
                                        daemon=True, name='rivals-persistent-update')
         self.process.start()
 
@@ -234,11 +237,15 @@ def main(argv=None):
     ap.add_argument('--bc-every', type=int, default=0)
     ap.add_argument('--no-reset', action='store_true')
     ap.add_argument('--device', default='cuda')
+    ap.add_argument('--aim-weight', type=float, default=0.,
+                    help='weight of the dense aim advantage in the update (rl.aim.reward; 0 = sparse rewards only)')
     a = ap.parse_args(argv)
     if (not 1 <= a.episodes <= 20 or a.bc_every < 0 or not math.isfinite(a.episode_s)
             or not 0 < a.episode_s or not math.isfinite(a.settle_s) or a.settle_s < 0
-            or a.episode_s+a.settle_s > 60 or not 0 < a.game_pid <= 0xffffffff):
-        ap.error('1-20 episodes, nonnegative bc-every, positive episode+settle <=60s and valid game PID required')
+            or a.episode_s+a.settle_s > 60 or not 0 < a.game_pid <= 0xffffffff
+            or not (math.isfinite(a.aim_weight) and 0 <= a.aim_weight <= 2)):
+        ap.error('1-20 episodes, nonnegative bc-every, positive episode+settle <=60s, valid game PID and aim weight 0-2 '
+                 'required')
     if a.out.exists():
         ap.error('output exists')
     spec = json.loads((a.base_bundle/'bundle.json').read_text())
@@ -261,7 +268,8 @@ def main(argv=None):
         policy = LivePolicy(a.base_bundle, device=a.device)
         session = Session(policy, L.default_perception(), Capture('dxcam'), focus, takeover)
         session.warm()
-        worker = BackgroundUpdate(a.base_bundle, a.out, device=a.device, beta=1., kl=1., steps=40)
+        worker = BackgroundUpdate(a.base_bundle, a.out, device=a.device, beta=1., kl=1., steps=40,
+                                  aim_weight=a.aim_weight)
         def make_policy(session, arm, index, directory, hook):
             return ExploringPolicy(BorrowedPolicy(session.policy, hook), temperature=1. if arm == 'rl' else 0.,
                                    option_rate_hz=.5 if arm == 'rl' else 0., cam_temperature=1. if arm == 'rl' else 0.,
