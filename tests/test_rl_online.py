@@ -100,6 +100,39 @@ def test_targets_from_a_real_learned_run():
     assert data.intervals([0, .1, .2, 1.])[1] == pytest.approx(3.) and data.intervals([0, .1, .2, 1.])[3] == 3.
 
 
+def test_execution_records_join_without_retiming_and_normalize_camera_once(tmp_path):
+    from policy.range_bc import vocab
+    rows = [{'event': 'decision', 'tick': 4, 't': .1, 'file': 'frame.jpg',
+             'camera_execution_version': 2, 'camera_steps': 3., 'disposition': 'ready',
+             'held': {'jump': True}, 'scaled_yaw_deg': 0., 'scaled_pitch_deg': 0.},
+            {'event': 'execution', 'tick': 4, 't': .14, 'action_sent': True,
+             'execution_complete': True, 'scaled_yaw_deg': 1.5, 'scaled_pitch_deg': -.6}]
+    (tmp_path/'frames.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows))
+    kept, saved, _ = data.decisions(tmp_path)
+    assert kept[0]['t'] == .1 and len(saved) == 1
+    _, known, cam, cam_known = data.targets(kept, {'jump'}, yaw_enabled=True)
+    assert known.any() and cam_known.all()
+    assert cam.tolist() == [[vocab.camera_class(.5), vocab.camera_class(-.2)]]
+    # Actual capped rotation, not the requested integrated rotation, is the label.
+    kept[0]['requested_yaw_deg'] = 100.
+    assert np.array_equal(data.targets(kept, {'jump'}, True)[2], cam)
+
+
+@pytest.mark.parametrize('execution', [{}, {'action_sent': False, 'execution_complete': False},
+                                      {'action_sent': True, 'execution_complete': False}])
+def test_missing_refused_or_partial_execution_has_no_known_targets(execution):
+    row = {'disposition': 'ready', 'camera_execution_version': 2, 'camera_steps': 2.,
+           'held': {'jump': True}, 'scaled_yaw_deg': .6, 'scaled_pitch_deg': -.4, **execution}
+    _, known, _, cam_known = data.targets([row], {'jump'}, True)
+    assert not known.any() and not cam_known.any()
+
+
+@pytest.mark.parametrize('steps', [0., 4., float('nan')])
+def test_invalid_execution_step_scale_refuses(steps):
+    with pytest.raises(ValueError, match='camera_steps'):
+        data.targets([{'camera_execution_version': 2, 'camera_steps': steps}], {'jump'}, True)
+
+
 def tiny_policy():
     from policy.bc2.model import Config, Policy2
     cfg = Config(embed=8, motion=8, hidden=16, feat_dropout=0., use_dt=True)

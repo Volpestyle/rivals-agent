@@ -30,6 +30,23 @@ MOVE = {'move_forward': (0., 1.), 'move_back': (0., -1.),
         'move_left': (-1., 0.), 'move_right': (1., 0.)}
 
 
+def camera_request(yaw_deg, pitch_deg, interval_s, yaw_scale=1.):
+    """Per-30-Hz-step degrees -> one decision's request, for 1-3 steps.
+
+    The preceding decision interval predicts the next one; the first uses the
+    configured decision period. This is not a lease and creates no catch-up debt.
+    CameraPulses still owns the unchanged stick, duration and residual caps.
+    """
+    if any(type(v) not in (int, float) or not math.isfinite(v)
+           for v in (yaw_deg, pitch_deg, interval_s, yaw_scale)) or not 0 <= yaw_scale <= 1:
+        raise ValueError('finite camera degrees/interval and yaw-scale in [0,1] required')
+    interval = min(3 * STEP_S, max(STEP_S, interval_s))
+    steps = interval / STEP_S
+    return {'camera_interval_s': interval, 'camera_steps': steps,
+            'requested_yaw_deg': yaw_deg * yaw_scale * steps,
+            'requested_pitch_deg': pitch_deg * steps}
+
+
 def action_pad(step):
     """A full snapshot; press-only taps participate for this decision's lease."""
     active = set()
@@ -302,6 +319,7 @@ class LearnedRunner:
 
     def run(self):
         reason = 'exception'
+        camera_stamp = None  # decision cadence survives individual pulse releases
         try:
             self.release()
             self.policy.reset()
@@ -312,16 +330,19 @@ class LearnedRunner:
                 pad, active, masked = action_pad(step)
                 if type(step.yaw_deg) not in (int, float) or not math.isfinite(step.yaw_deg):
                     raise ValueError('finite numeric camera degrees required')
-                scaled_yaw = step.yaw_deg * self.yaw_scale
                 if type(step.pitch_deg) not in (int, float) or not math.isfinite(step.pitch_deg):
                     raise ValueError('finite numeric camera degrees required')
+                interval = 1 / self.decision_hz if camera_stamp is None else stamp - camera_stamp
+                camera_stamp = stamp
+                request = camera_request(step.yaw_deg, step.pitch_deg, interval, self.yaw_scale)
                 row = {'event': 'decision', 't': stamp, 'tick': self.ticks, 'size': list(self.size),
                        'inference_s': finished - started, 'age_s': self.now() - stamp,
                        'policy_latency_ms': getattr(step, 'latency_ms', None), 'queue_wait_s': started - stamp,
                        'held': step.held, 'press': step.press, 'release': step.release,
                        'active': active, 'masked': masked, 'yaw_deg': step.yaw_deg,
-                       'yaw_scale': self.yaw_scale, 'scaled_yaw_deg': scaled_yaw,
-                       'pitch_deg': step.pitch_deg, 'pulses': [],
+                       'yaw_scale': self.yaw_scale, 'scaled_yaw_deg': 0., 'scaled_pitch_deg': 0.,
+                       'pitch_deg': step.pitch_deg, 'pulses': [], 'camera_execution_version': 2,
+                       **request,
                        **(timing[0] if timing else {})}
                 self.ticks += 1
                 if not self.guard(frame):
@@ -332,10 +353,15 @@ class LearnedRunner:
                     self.write({**row, 'disposition': 'stale_after_inference'}, frame)
                     continue
                 self.camera.begin(stamp, self.now())
-                pulses = [p for axis, degrees in (('yaw', scaled_yaw), ('pitch', step.pitch_deg))
+                pulses = [p for axis, degrees in (('yaw', request['requested_yaw_deg']),
+                                                 ('pitch', request['requested_pitch_deg']))
                           if (p := self.camera.pulse(axis, degrees)) is not None]
                 row.update(pulses=pulses, residual_deg=dict(self.camera.residual))
                 self.write({**row, 'disposition': 'ready'}, frame)
+                execution = {'event': 'execution', 'tick': self.ticks - 1,
+                             'camera_execution_version': 2, 'camera_steps': request['camera_steps'],
+                             'scaled_yaw_deg': 0., 'scaled_pitch_deg': 0.,
+                             'action_sent': False, 'execution_complete': False}
                 try:
                     for pulse in pulses:
                         command = {**pad, 'rx': 0., 'ry': 0.}
@@ -343,23 +369,33 @@ class LearnedRunner:
                         sent = self.now()
                         end = min(sent + pulse['duration_s'], self.deadline)
                         self.send(command, stamp, end)
+                        execution['action_sent'] = True
                         self.write({'event': 'send', 't': sent, 'tick': self.ticks - 1,
                                     'policy_frame_t': stamp, 'pad': command, 'release_at': end})
-                        while True:
-                            remaining = end - self.io.now()
-                            if remaining <= 0:
-                                break
-                            self.sleep(min(.005, remaining))
-                            if self.io.now() < end:
-                                obs = self.observe()
-                                if obs is None:
-                                    raise InputExpired('no fresh observation during camera pulse')
-                                proof_frame, proof_stamp = obs
-                                self.write({'event': 'guard', 't': proof_stamp, 'tick': self.ticks - 1}, proof_frame)
+                        try:
+                            while True:
+                                remaining = end - self.io.now()
+                                if remaining <= 0:
+                                    break
+                                self.sleep(min(.005, remaining))
+                                if self.io.now() < end:
+                                    obs = self.observe()
+                                    if obs is None:
+                                        raise InputExpired('no fresh observation during camera pulse')
+                                    proof_frame, proof_stamp = obs
+                                    self.write({'event': 'guard', 't': proof_stamp, 'tick': self.ticks - 1}, proof_frame)
+                        finally:
+                            # Estimated commanded rotation, not measured game response.
+                            # A refused send never gets here; an interrupted pulse gets
+                            # only its elapsed, deadline-clipped duration. Preserve sign.
+                            elapsed = max(0., min(self.io.now(), end) - sent)
+                            key = 'scaled_yaw_deg' if pulse['axis'] == 'yaw' else 'scaled_pitch_deg'
+                            execution[key] += pulse['estimated_deg'] * elapsed / pulse['duration_s']
                         self.release()  # never extend a camera pulse through inference
                     sent = self.now()
                     end = min(sent + ACTION_LEASE_S, self.deadline)
                     self.send(pad, stamp, end)  # right stick neutral; holds may span the next inference
+                    execution['action_sent'] = execution['execution_complete'] = True
                     self.write({'event': 'send', 't': sent, 'tick': self.ticks - 1,
                                 'policy_frame_t': stamp, 'pad': pad, 'release_at': end})
                 except InputExpired as e:
@@ -367,6 +403,10 @@ class LearnedRunner:
                     self.dropped += 1
                     self.write({'event': 'discard', 't': self.io.now(), 'tick': self.ticks - 1,
                                 'clause': 'policy_frame_expired_before_input', 'detail': str(e)})
+                finally:
+                    # Join by tick in rl.online.data; the retained decision frame
+                    # was logged before input and may include only a partial send.
+                    self.write({**execution, 't': self.io.now()})
         except RangeLost as e:
             reason = str(e)
         except BaseException as e:

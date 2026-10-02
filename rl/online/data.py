@@ -2,8 +2,9 @@
 
 Rows are the decisions whose native frame the runner retained (RunLog, ~10 Hz JPEG). Per row:
   - targets: the EXECUTED held/press/release (the exploring policy's sampled decisions), known only for live actions
-    of decisions the runner actually sent (disposition 'ready'); camera classes of the executed yaw (scaled_yaw_deg,
-    known only when yaw was enabled) and pitch;
+    of decisions the runner actually sent; v2 execution records confirm completion.
+    Camera degrees actually commanded are divided by camera_steps before classing:
+    the model still predicts degrees per 1/30 s, not integrated decision degrees;
   - reward: rl.rewards read off the same frame (hit and KO rising edges, fall death), RewardTracker events;
   - reward_aim / aim_known: the dense aim shaping (rl.aim.reward, unweighted), a SEPARATE component: per-frame
     F = Phi(s') - Phi(s) on the crosshair-to-nearest-target offset, credited to the decision acting over that
@@ -32,6 +33,13 @@ def decisions(run_dir):
     and the settle are dropped: they are not RL data."""
     run_dir = Path(run_dir)
     rows = [json.loads(line) for line in open(run_dir / "frames.jsonl", encoding="utf-8") if line.strip()]
+    executions = {r["tick"]: r for r in rows if r.get("event") == "execution"}
+    for r in rows:
+        if r.get("event") == "decision" and r.get("camera_execution_version") == 2:
+            execution = executions.get(r["tick"], {})
+            for key in ("scaled_yaw_deg", "scaled_pitch_deg", "action_sent", "execution_complete"):
+                if key in execution:
+                    r[key] = execution[key]
     result = json.loads((run_dir / "result.json").read_text()) if (run_dir / "result.json").exists() else {}
     saved = [r for r in rows if r.get("file") and "t" in r]
     stop = next((r for r in rows if r.get("event") == "stop" and "t" in r), None)
@@ -55,12 +63,19 @@ def targets(rows, live_names, yaw_enabled):
     cam_known = np.zeros((n, 2), bool)
     live = np.array([name in live_names for name in vocab.NAMES])
     for k, r in enumerate(rows):
-        sent = r.get("disposition") == "ready"
+        v2 = r.get("camera_execution_version") == 2
+        sent = (r.get("disposition") == "ready" and
+                (not v2 or (r.get("action_sent") is True and r.get("execution_complete") is True)))
         for j, key in enumerate(("held", "press", "release")):
             values = r.get(key) or {}
             act[k, j] = [int(bool(values.get(name, False))) for name in vocab.NAMES]
             known[k, j] = live & sent
-        cam[k] = (vocab.camera_class(float(r.get("scaled_yaw_deg") or 0.)), vocab.camera_class(float(r.get("pitch_deg") or 0.)))
+        scale = float(r["camera_steps"]) if v2 else 1.
+        if not np.isfinite(scale) or not 1 <= scale <= 3:
+            raise ValueError('camera_steps must be finite and in [1,3]')
+        yaw = float(r.get("scaled_yaw_deg") or 0.) / scale
+        pitch = float(r.get("scaled_pitch_deg" if v2 else "pitch_deg") or 0.) / scale
+        cam[k] = (vocab.camera_class(yaw), vocab.camera_class(pitch))
         cam_known[k] = (sent and yaw_enabled, sent)
     return act, known, cam, cam_known
 

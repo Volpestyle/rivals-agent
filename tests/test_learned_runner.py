@@ -110,6 +110,36 @@ def test_invalid_actions_refuse(held):
         R.action_pad(decision(held=held))
 
 
+@pytest.mark.parametrize('interval,steps', [(-1., 1.), (0., 1.), (.01, 1.),
+                                         (1/30, 1.), (.08, 2.4), (.1, 3.), (9., 3.)])
+def test_camera_request_integrates_and_clamps(interval, steps):
+    request = R.camera_request(-.2, .1, interval, .5)
+    assert request['camera_steps'] == pytest.approx(steps)
+    assert request['requested_yaw_deg'] == pytest.approx(-.1 * steps)
+    assert request['requested_pitch_deg'] == pytest.approx(.1 * steps)
+    assert R.camera_request(0., 0., interval)['requested_yaw_deg'] == 0.
+    assert R.camera_request(0., 0., interval)['requested_pitch_deg'] == 0.
+
+
+@pytest.mark.parametrize('axis', ['yaw', 'pitch'])
+@pytest.mark.parametrize('sign', [-1, 1])
+def test_integrated_request_cannot_extend_existing_pulse_cap(axis, sign):
+    request = R.camera_request(sign * 100., sign * 100., .1)
+    camera = R.CameraPulses()
+    pulse = camera.pulse(axis, request[f'requested_{axis}_deg'])
+    assert pulse['clamped'] and pulse['duration_s'] == R.AXIS_S
+    assert abs(pulse['stick']) <= (.45 if axis == 'yaw' else .2)
+    assert math.copysign(1, pulse['estimated_deg']) == sign
+    assert abs(pulse['estimated_deg']) < abs(request[f'requested_{axis}_deg'])
+    assert camera.residual[axis] == 0.
+
+
+@pytest.mark.parametrize('bad', [float('nan'), float('inf'), None, True, '2'])
+def test_camera_request_rejects_invalid_interval(bad):
+    with pytest.raises(ValueError):
+        R.camera_request(.1, .2, bad)
+
+
 @pytest.mark.parametrize('axis', ['yaw','pitch'])
 @pytest.mark.parametrize('degrees', [-40., -.2, 0., .2, 40.])
 def test_camera_exact_knots_sign_clamps_and_no_interpolation(axis, degrees):
@@ -230,7 +260,11 @@ def test_dropped_decision_cannot_contribute_to_later_camera_pulse(drop):
     f.policy.step = step
     f.runner.run()
     sends = [row for row in f.log.rows if row['event'] == 'send' and row['pad']['rx']]
-    assert sends and sends[0]['tick'] == 4  # three fresh decisions AFTER the drop
+    assert sends and sends[0]['tick'] == (2 if drop == 'stale' else 4)
+    # The long stale interval integrates the next fresh request to .12 degrees;
+    # it must contain none of the .04-degree remainder from before the drop.
+    first = next(r for r in f.log.rows if r['event'] == 'decision' and r['tick'] == sends[0]['tick'])
+    assert first['pulses'][0]['accumulated_deg'] == pytest.approx(.12)
     assert f.runner.dropped == 1
     assert f.runner.camera.residual == {'yaw': 0., 'pitch': 0.}
 
@@ -280,10 +314,47 @@ def test_yaw_scale_changes_only_yaw_and_is_logged(scale):
     f=setup(yaw_scale=scale)
     f.runner.run()
     rows=[r for r in f.log.rows if r['event']=='decision']
-    assert rows and all(r['yaw_scale']==scale and r['scaled_yaw_deg']==.2*scale for r in rows)
+    assert rows and all(r['yaw_scale']==scale and
+                       r['requested_yaw_deg']==pytest.approx(.2*scale*r['camera_steps']) for r in rows)
     assert all(r['pitch_deg']==.1 and r['active']==['spider_power'] for r in rows)
     assert any(p['rx'] for _,p,_ in f.io.calls)==bool(scale)
     assert any(p['ry'] for _,p,_ in f.io.calls)
+
+
+def test_execution_logs_actual_capped_camera_and_measured_interval():
+    f = setup(yaw_scale=1., step=decision(yaw_deg=100., pitch_deg=-100.))
+    f.runner.run()
+    rows = [r for r in f.log.rows if r['event'] == 'decision']
+    executions = {r['tick']: r for r in f.log.rows if r['event'] == 'execution'}
+    assert rows[0]['camera_steps'] == 1.
+    for prev, row in zip(rows, rows[1:]):
+        assert row['camera_steps'] == pytest.approx(min(3., max(1., (row['t']-prev['t'])/R.STEP_S)))
+    for row in rows:
+        e = executions[row['tick']]
+        if e['execution_complete']:
+            assert e['scaled_yaw_deg'] == pytest.approx(row['pulses'][0]['estimated_deg'])
+            assert e['scaled_pitch_deg'] == pytest.approx(row['pulses'][1]['estimated_deg'])
+            assert e['scaled_yaw_deg'] < row['requested_yaw_deg']
+
+
+def test_refused_send_logs_zero_incomplete_execution():
+    f = setup(yaw_scale=1.)
+    f.io.expire = True
+    f.runner.run()
+    executions = [r for r in f.log.rows if r['event'] == 'execution']
+    assert executions and all(not r['action_sent'] and not r['execution_complete'] for r in executions)
+    assert all(r['scaled_yaw_deg'] == r['scaled_pitch_deg'] == 0. for r in executions)
+
+
+def test_interrupted_pulse_logs_only_elapsed_rotation_and_releases():
+    f = setup(yaw_scale=1., step=decision(yaw_deg=100., pitch_deg=0.))
+    f.io.hook = lambda: setattr(f.flags, 'focus', False) if f.io.calls else None
+    f.runner.run()
+    row = next(r for r in f.log.rows if r['event'] == 'decision')
+    e = next(r for r in f.log.rows if r['event'] == 'execution')
+    assert e['action_sent'] and not e['execution_complete']
+    assert 0 < e['scaled_yaw_deg'] < row['pulses'][0]['estimated_deg']
+    assert e['scaled_pitch_deg'] == 0. and f.io.pad == NEUTRAL
 
 
 @pytest.mark.parametrize('scale',[-1,2,float('nan'),float('inf'),True])
@@ -605,7 +676,8 @@ def test_slow_reader_discards_frame_and_records_named_timing_then_recovers():
     row=f.log.rows[-1]
     assert row['clause']=='stale_after_readers' and row['readers_s']==pytest.approx(.114)
     f.runner.guard=guard
-    assert f.runner.run()['result']=='deadline' and f.io.calls
+    assert f.runner.run()['result'] in {'deadline', 'range_or_scope_lost'} and f.io.calls
+    assert f.safety.status['stop_reason'] == 'deadline'
 
 
 @pytest.mark.parametrize('stamp,now,last,clause',[
