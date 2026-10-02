@@ -1,0 +1,579 @@
+{
+  "cost_usd": 0,
+  "device": "CPU BelowNormal, OpenCV 2 threads",
+  "samples": 14,
+  "fields": [
+    "known",
+    "nearest_visible",
+    "nearest_dx",
+    "nearest_dy",
+    "nearest_h",
+    "largest_visible",
+    "largest_dx",
+    "largest_dy",
+    "largest_h",
+    "log1p_count"
+  ],
+  "unknown": "all-zero with known=0; geometry and count are placeholders",
+  "expert": "unconditionally unknown; no expert pixels opened",
+  "public_path_parity": true,
+  "latency_ms": {
+    "first": 13.941400000476278,
+    "p50": 6.462299999839161,
+    "p95": 7.240440002351534,
+    "max": 13.941400000476278
+  },
+  "latency_scope": "resize + green finder + vector; excludes JPEG read; first sample excluded from p50/p95",
+  "rows": [
+    {
+      "id": 0,
+      "purpose": "centred control",
+      "image": "data/calibration/compat-check-20260929/learned-01-a/000000.jpg",
+      "native_size": [
+        2560,
+        1440
+      ],
+      "boxes_720": [
+        [
+          616.0,
+          320.0,
+          679.0,
+          381.0
+        ],
+        [
+          394.0,
+          322.0,
+          423.0,
+          387.0
+        ]
+      ],
+      "values": [
+        1.0,
+        1.0,
+        0.005859375,
+        -0.013194444589316845,
+        0.08472222089767456,
+        1.0,
+        0.005859375,
+        -0.013194444589316845,
+        0.08472222089767456,
+        1.0986123085021973
+      ],
+      "latency_ms": 13.941400000476278,
+      "reason": "detected_not_verified",
+      "inspection": {
+        "enemy_overlapping_raw_box_ids": [
+          0,
+          1
+        ],
+        "observation": "Right/centred bot mostly boxed; left bot only right-side fragment.",
+        "false_known": false,
+        "confidence": "high for object-vs-scenery; full-body extents not labelled"
+      }
+    },
+    {
+      "id": 1,
+      "purpose": "open left/up",
+      "image": "data/calibration/rl-sitting-20260930-04/ep-000-bc/000027.jpg",
+      "native_size": [
+        2560,
+        1440
+      ],
+      "boxes_720": [
+        [
+          837.0,
+          300.0,
+          904.0,
+          367.0
+        ],
+        [
+          608.0,
+          302.0,
+          649.0,
+          363.0
+        ]
+      ],
+      "values": [
+        1.0,
+        1.0,
+        -0.008984374813735485,
+        -0.0381944440305233,
+        0.08472222089767456,
+        1.0,
+        0.18007811903953552,
+        -0.03680555522441864,
+        0.09305555373430252,
+        1.0986123085021973
+      ],
+      "latency_ms": 6.735499999194872,
+      "reason": "detected_not_verified",
+      "inspection": {
+        "enemy_overlapping_raw_box_ids": [
+          0,
+          1
+        ],
+        "observation": "Nearest left bot partially boxed (left arm/side missing); largest right bot mostly boxed.",
+        "false_known": false,
+        "confidence": "high for object-vs-scenery; full-body extents not labelled"
+      }
+    },
+    {
+      "id": 2,
+      "purpose": "multiple/distant",
+      "image": "data/calibration/rl-sitting-20260930-01/ep-000-bc/000000.jpg",
+      "native_size": [
+        2560,
+        1440
+      ],
+      "boxes_720": [
+        [
+          700.0,
+          264.0,
+          747.0,
+          310.0
+        ]
+      ],
+      "values": [
+        1.0,
+        1.0,
+        0.06523437798023224,
+        -0.10138888657093048,
+        0.06388889253139496,
+        1.0,
+        0.06523437798023224,
+        -0.10138888657093048,
+        0.06388889253139496,
+        0.6931471824645996
+      ],
+      "latency_ms": 6.620999996812316,
+      "reason": "detected_not_verified",
+      "inspection": {
+        "enemy_overlapping_raw_box_ids": [
+          0
+        ],
+        "observation": "Right distant bot boxed (46/720 height); visible left bot entirely missed.",
+        "false_known": false,
+        "confidence": "high for object-vs-scenery; full-body extents not labelled"
+      }
+    },
+    {
+      "id": 3,
+      "purpose": "door glass",
+      "image": "data/calibration/rl-sitting-20260930-07/ep-004-bc/000056.jpg",
+      "native_size": [
+        2560,
+        1440
+      ],
+      "boxes_720": [
+        [
+          457.0,
+          110.7,
+          604.0,
+          275.0
+        ]
+      ],
+      "values": [
+        1.0,
+        1.0,
+        -0.08554687350988388,
+        -0.2321527749300003,
+        0.2281944453716278,
+        1.0,
+        -0.08554687350988388,
+        -0.2321527749300003,
+        0.2281944453716278,
+        0.6931471824645996
+      ],
+      "latency_ms": 6.537900000694208,
+      "reason": "detected_not_verified",
+      "inspection": {
+        "enemy_overlapping_raw_box_ids": [],
+        "observation": "FALSE KNOWN: lone box is door/ceiling scenery; visible enemies through glass missed.",
+        "false_known": true,
+        "confidence": "high for object-vs-scenery; full-body extents not labelled"
+      }
+    },
+    {
+      "id": 4,
+      "purpose": "04 start",
+      "image": "data/calibration/rl-sitting-20260930-04/ep-000-bc/000000.jpg",
+      "native_size": [
+        2560,
+        1440
+      ],
+      "boxes_720": [
+        [
+          727.0,
+          300.0,
+          766.0,
+          332.0
+        ]
+      ],
+      "values": [
+        1.0,
+        1.0,
+        0.08320312201976776,
+        -0.06111111119389534,
+        0.04444444552063942,
+        1.0,
+        0.08320312201976776,
+        -0.06111111119389534,
+        0.04444444552063942,
+        0.6931471824645996
+      ],
+      "latency_ms": 6.447499999922002,
+      "reason": "detected_not_verified",
+      "inspection": {
+        "enemy_overlapping_raw_box_ids": [
+          0
+        ],
+        "observation": "Right small bot partial body, head omitted (32/720 height); left bot missed.",
+        "false_known": false,
+        "confidence": "high for object-vs-scenery; full-body extents not labelled"
+      }
+    },
+    {
+      "id": 5,
+      "purpose": "04 later",
+      "image": "data/calibration/rl-sitting-20260930-04/ep-000-bc/000100.jpg",
+      "native_size": [
+        2560,
+        1440
+      ],
+      "boxes_720": [
+        [
+          837.0,
+          305.0,
+          906.0,
+          369.0
+        ],
+        [
+          608.0,
+          305.0,
+          648.0,
+          358.0
+        ]
+      ],
+      "values": [
+        1.0,
+        1.0,
+        -0.00937500037252903,
+        -0.03958333283662796,
+        0.07361111044883728,
+        1.0,
+        0.18085937201976776,
+        -0.03194444626569748,
+        0.08888889104127884,
+        1.0986123085021973
+      ],
+      "latency_ms": 7.167800002207514,
+      "reason": "detected_not_verified",
+      "inspection": {
+        "enemy_overlapping_raw_box_ids": [
+          0,
+          1
+        ],
+        "observation": "Nearest left bot partial body; largest right bot mostly boxed.",
+        "false_known": false,
+        "confidence": "high for object-vs-scenery; full-body extents not labelled"
+      }
+    },
+    {
+      "id": 6,
+      "purpose": "04 end",
+      "image": "data/calibration/rl-sitting-20260930-04/ep-000-bc/000150.jpg",
+      "native_size": [
+        2560,
+        1440
+      ],
+      "boxes_720": [
+        [
+          837.0,
+          304.0,
+          905.0,
+          369.0
+        ],
+        [
+          587.0,
+          301.0,
+          650.0,
+          364.0
+        ]
+      ],
+      "values": [
+        1.0,
+        1.0,
+        -0.01679687574505806,
+        -0.0381944440305233,
+        0.08749999850988388,
+        1.0,
+        0.18046875298023224,
+        -0.03263888880610466,
+        0.0902777761220932,
+        1.0986123085021973
+      ],
+      "latency_ms": 7.349400002567563,
+      "reason": "detected_not_verified",
+      "inspection": {
+        "enemy_overlapping_raw_box_ids": [
+          0,
+          1
+        ],
+        "observation": "Both bots mostly boxed; nearest left, largest right.",
+        "false_known": false,
+        "confidence": "high for object-vs-scenery; full-body extents not labelled"
+      }
+    },
+    {
+      "id": 7,
+      "purpose": "01 middle",
+      "image": "data/calibration/rl-sitting-20260930-01/ep-000-bc/000070.jpg",
+      "native_size": [
+        2560,
+        1440
+      ],
+      "boxes_720": [
+        [
+          700.0,
+          263.0,
+          747.0,
+          310.0
+        ]
+      ],
+      "values": [
+        1.0,
+        1.0,
+        0.06523437798023224,
+        -0.10208333283662796,
+        0.06527777761220932,
+        1.0,
+        0.06523437798023224,
+        -0.10208333283662796,
+        0.06527777761220932,
+        0.6931471824645996
+      ],
+      "latency_ms": 7.013499998720363,
+      "reason": "detected_not_verified",
+      "inspection": {
+        "enemy_overlapping_raw_box_ids": [
+          0
+        ],
+        "observation": "Right distant bot boxed; visible left bot missed.",
+        "false_known": false,
+        "confidence": "high for object-vs-scenery; full-body extents not labelled"
+      }
+    },
+    {
+      "id": 8,
+      "purpose": "01 end",
+      "image": "data/calibration/rl-sitting-20260930-01/ep-000-bc/000115.jpg",
+      "native_size": [
+        2560,
+        1440
+      ],
+      "boxes_720": [
+        [
+          700.0,
+          264.0,
+          748.0,
+          310.0
+        ]
+      ],
+      "values": [
+        1.0,
+        1.0,
+        0.06562499701976776,
+        -0.10138888657093048,
+        0.06388889253139496,
+        1.0,
+        0.06562499701976776,
+        -0.10138888657093048,
+        0.06388889253139496,
+        0.6931471824645996
+      ],
+      "latency_ms": 6.341999996948289,
+      "reason": "detected_not_verified",
+      "inspection": {
+        "enemy_overlapping_raw_box_ids": [
+          0
+        ],
+        "observation": "Right distant bot boxed; visible left bot missed.",
+        "false_known": false,
+        "confidence": "high for object-vs-scenery; full-body extents not labelled"
+      }
+    },
+    {
+      "id": 9,
+      "purpose": "07-004 start",
+      "image": "data/calibration/rl-sitting-20260930-07/ep-004-bc/000000.jpg",
+      "native_size": [
+        2560,
+        1440
+      ],
+      "boxes_720": [],
+      "values": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "latency_ms": 6.462299999839161,
+      "reason": "no_green_detection",
+      "inspection": {
+        "enemy_overlapping_raw_box_ids": [],
+        "observation": "Unknown despite visible enemies through door glass; no raw detections.",
+        "false_known": false,
+        "confidence": "high for object-vs-scenery; full-body extents not labelled"
+      }
+    },
+    {
+      "id": 10,
+      "purpose": "07-004 end",
+      "image": "data/calibration/rl-sitting-20260930-07/ep-004-bc/000117.jpg",
+      "native_size": [
+        2560,
+        1440
+      ],
+      "boxes_720": [
+        [
+          388.2,
+          79.8,
+          480.8,
+          183.3
+        ]
+      ],
+      "values": [
+        1.0,
+        1.0,
+        -0.16054686903953552,
+        -0.3172916769981384,
+        0.14374999701976776,
+        1.0,
+        -0.16054686903953552,
+        -0.3172916769981384,
+        0.14374999701976776,
+        0.6931471824645996
+      ],
+      "latency_ms": 5.995700001221849,
+      "reason": "detected_not_verified",
+      "inspection": {
+        "enemy_overlapping_raw_box_ids": [],
+        "observation": "FALSE KNOWN: lone box is door/ceiling scenery; visible enemies through glass missed.",
+        "false_known": true,
+        "confidence": "high for object-vs-scenery; full-body extents not labelled"
+      }
+    },
+    {
+      "id": 11,
+      "purpose": "multiple targets",
+      "image": "data/calibration/rl-sitting-20260930-07/ep-000-bc/000055.jpg",
+      "native_size": [
+        2560,
+        1440
+      ],
+      "boxes_720": [
+        [
+          745.0,
+          253.0,
+          805.0,
+          311.0
+        ],
+        [
+          515.0,
+          255.0,
+          538.0,
+          301.0
+        ]
+      ],
+      "values": [
+        1.0,
+        1.0,
+        -0.08867187798023224,
+        -0.11388888955116272,
+        0.06388889253139496,
+        1.0,
+        0.10546875,
+        -0.10833333432674408,
+        0.08055555820465088,
+        1.0986123085021973
+      ],
+      "latency_ms": 6.429400000342866,
+      "reason": "detected_not_verified",
+      "inspection": {
+        "enemy_overlapping_raw_box_ids": [
+          0,
+          1
+        ],
+        "observation": "Nearest is only the left bot's left limb fragment; largest right bot mostly boxed.",
+        "false_known": false,
+        "confidence": "high for object-vs-scenery; full-body extents not labelled"
+      }
+    },
+    {
+      "id": 12,
+      "purpose": "hero-only wall",
+      "image": "data/calibration/rl-sitting-20260930-07/ep-006-bc/000050.jpg",
+      "native_size": [
+        2560,
+        1440
+      ],
+      "boxes_720": [],
+      "values": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "latency_ms": 6.147500000224682,
+      "reason": "no_green_detection",
+      "inspection": {
+        "enemy_overlapping_raw_box_ids": [],
+        "observation": "Hero and wall only; no visible enemy, correctly unknown.",
+        "false_known": false,
+        "confidence": "high for object-vs-scenery; full-body extents not labelled"
+      }
+    },
+    {
+      "id": 13,
+      "purpose": "empty foliage",
+      "image": "data/calibration/rl-sitting-20260930-07/ep-001-rl/000070.jpg",
+      "native_size": [
+        2560,
+        1440
+      ],
+      "boxes_720": [],
+      "values": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "latency_ms": 5.994899998768233,
+      "reason": "no_green_detection",
+      "inspection": {
+        "enemy_overlapping_raw_box_ids": [],
+        "observation": "Hero and foliage only; no visible enemy, correctly unknown.",
+        "false_known": false,
+        "confidence": "high for object-vs-scenery; full-body extents not labelled"
+      }
+    }
+  ]
+}
