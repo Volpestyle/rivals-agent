@@ -122,15 +122,11 @@ to it instead of adding a third statement.
 
 ## Agent delivery protocol
 
-Use `herdr-lead` for swarm coordination and `herdr` for pane operations. Send the content of every assignment, answer
-and decision with `swarm_send` to the worker's actor UUID: it arrives whole, from a verified sender, and stays on record.
-Then wake the worker with the fixed Herdr prompt `Check your Swarm inbox.` and nothing more. An idle worker, Claude or
-Codex, never picks up a Swarm message on its own; a busy Claude worker gets it at its next tool call, and a busy Codex
-worker only when it fetches. A message counts as delivered when the worker acks it, not when Herdr reports the prompt
-submitted; if no ack arrives once the worker's turn ends, wake it again. Only the lead types into worker panes, and it
-reads the composer before each wake: whatever lands in a pane runs with James's authority, and a prompt sent over a
-half-typed draft submits the draft with it (tested 2026-09-30). Workers reply with `swarm_send`, which reaches a Claude
-lead on its own. Nobody polls an idle model in a loop (`~/dotfiles/docs/agents/swarm-launch.md`). Keep one
+Coordinate through Herdr: `herdr-lead` for coordination and `herdr` for pane operations. Put each brief in a file
+under `~/.herdr-handoffs/` and prompt the worker with its path; the worker reports by writing the result file the
+brief names, which the lead watches. Only the lead types into worker panes, and it reads the composer before each
+send: whatever lands in a pane runs with James's authority, and a prompt sent over a half-typed draft submits the
+draft with it (tested 2026-09-30). Confirm assignment pickup once; nobody polls an idle model in a loop. Keep one
 lead responsible for dispatch, shared integration and Linear status transitions;
 co-leads route scope decisions through that lead. A status request alone creates no work.
 Advisors advise and the lead decides (James, 2026-10-01). Adopt an advisor finding that changes a decision or catches
