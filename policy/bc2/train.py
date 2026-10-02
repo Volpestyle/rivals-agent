@@ -16,7 +16,7 @@ import numpy as np
 import torch
 from torch.nn import functional as F
 
-from policy.bc2.model import Config, Policy2
+from policy.bc2.model import TARGET_DIM, Config, Policy2
 from policy.range_bc import train as rtrain, vocab
 from policy.range_bc.metrics import match_window
 
@@ -68,6 +68,15 @@ class Session:
         self.gray_c = load_features("gray_c.npy")
         green = root / "green.npy"
         self.green = load_features("green.npy") if green.exists() else None
+        # target.npy: policy.bc2.target_features per targets row (James range sessions only). Absent (expert
+        # shards) = unknown, all zeros with known 0, never "no enemy" or "camera zero".
+        tgt = root / "target.npy"
+        self.target = None
+        if tgt.exists():
+            a = np.load(tgt)
+            if a.shape != (n, TARGET_DIM):
+                raise ValueError(f"target.npy shape {a.shape} != ({n}, {TARGET_DIM})")
+            self.target = torch.from_numpy(a.astype(np.float32)).to(dev)
         prev = np.arange(n) - 1
         prev[self.t["run_start"]] = np.flatnonzero(self.t["run_start"])
         self.prev_np = np.maximum(prev, 0)
@@ -102,14 +111,21 @@ class Session:
         self.act[:, channel] = torch.where(ok, v, self.act[:, channel])
         return int(ok.any(1).sum())
 
+    def target_rows(self, idx):
+        """[*, TARGET_DIM] target inputs for rows idx (a device tensor); zeros (unknown) when absent."""
+        if self.target is None:
+            return torch.zeros(*idx.shape, TARGET_DIM, device=idx.device)
+        return self.target[idx]
+
     def inputs(self, idx, k=1, rows=None):
-        """idx LongTensor [B, T] of rows (k rows apart) -> (feats, gray pairs, None, green, dt). A streamed session
-        also needs `rows`, the same single window as a host array (no device sync to read it back)."""
+        """idx LongTensor [B, T] of rows (k rows apart) -> (feats, gray pairs, None, green, dt, target). A streamed
+        session also needs `rows`, the same single window as a host array (no device sync to read it back)."""
         if self.stream:
-            return self._gather(rows, k)
+            return self._gather(rows, k) + (self.target_rows(idx),)
         p = self.prev[idx] if k == 1 else torch.maximum(idx - k, self.run_first[idx])
         return (self.feats[idx], self.gray_g[p], self.gray_g[idx], self.gray_c[p], self.gray_c[idx], None,
-                None if self.green is None else self.green[idx], torch.full(idx.shape, float(k), device=idx.device))
+                None if self.green is None else self.green[idx], torch.full(idx.shape, float(k), device=idx.device),
+                self.target_rows(idx))
 
     def _gather(self, rows, k):
         """One window from the memory maps: read the contiguous feature-row span once, pick rows, pin, copy."""
@@ -146,16 +162,18 @@ def windows(sessions, generator, jitter=False):
     return out
 
 
-def batch(sessions, items, device, chunk=0, motion_dropout=0., static_aug=0.):
+def batch(sessions, items, device, chunk=0, motion_dropout=0., static_aug=0., target_dropout=0., target_span=0.):
     """motion_dropout: per window, the probability of blanking the observed motion (previous frame = current
     frame) over a random span of 25-100% of the window, so the policy also learns to act from a static view
     (live, a still start otherwise stays still: docs/lanes/policy.md, learned-01 idle).
     static_aug: per window, the probability of freezing the WHOLE input (tower features, both gray views with zero
     motion, green profile) to the first frame of a random 25-100% span, while the targets stay James's real
-    actions: from a frozen scene, the policy still has to start the typical action."""
+    actions: from a frozen scene, the policy still has to start the typical action.
+    target_dropout / target_span: the explicit target input (Config.use_target) set unknown on that share of steps,
+    and over a random 25-100% span of that share of windows, so the policy never depends on a finder it may lose."""
     t = max(item[2] for item in items)
     parts = {k: [] for k in ("feats", "gp", "gc", "cp", "cc", "green", "dt", "onset", "fcam", "fcam_mask", "act",
-                             "act_mask", "camera", "camera_mask", "cam_w")}
+                             "act_mask", "camera", "camera_mask", "cam_w", "target")}
     for si, st, n, at_start, stride in items:
         s = sessions[si]
         rows = np.minimum(st + stride * np.arange(t), s.n - 1)
@@ -175,13 +193,21 @@ def batch(sessions, items, device, chunk=0, motion_dropout=0., static_aug=0.):
             s0 = int(torch.randint(0, max(1, n - span + 1), (1,)))
             frozen = torch.zeros(t, dtype=torch.bool, device=device)
             frozen[s0:s0 + span] = True
-            for j in (0, 2, 4, 6):                                  # feats, current gray views, green
+            for j in (0, 2, 4, 6, 8):                               # feats, current gray views, green, target
                 if inputs[j] is not None:
                     x = inputs[j]
                     shape = (1, t) + (1,) * (x.dim() - 2)
                     inputs[j] = torch.where(frozen.view(shape), x[:, s0:s0 + 1], x)
             inputs[1] = torch.where(frozen[None, :, None, None], inputs[2], inputs[1])     # zero motion
             inputs[3] = torch.where(frozen[None, :, None, None], inputs[4], inputs[3])
+        if target_dropout or target_span:
+            drop = torch.rand(t, device=device) < target_dropout
+            if target_span and float(torch.rand(1)) < target_span:
+                span = int(n * (.25 + .75 * float(torch.rand(1))))
+                s0 = int(torch.randint(0, max(1, n - span + 1), (1,)))
+                drop[s0:s0 + span] = True
+            inputs[8] = torch.where(drop[None, :, None], torch.zeros_like(inputs[8]), inputs[8])
+        parts["target"].append(inputs[8][0])
         for k, v in zip(("feats", "gp", "gc", "cp", "cc"), inputs[:5]):
             parts[k].append(v[0])
         if inputs[6] is not None:
@@ -246,7 +272,7 @@ def pos_weights(sessions):
 
 
 @torch.no_grad()
-def predict(model, s, *, incumbent=False, chunk=512):
+def predict(model, s, *, incumbent=False, chunk=512, mask_target=False):
     """Whole runs with carried state: (hold, press, release) probs [n, 3, N] and camera probs [n, 2, C]."""
     acts = torch.zeros(s.n, 3, vocab.N, device=s.feats.device)
     cams = torch.zeros(s.n, 2, vocab.CAMERA_CLASSES, device=s.feats.device)
@@ -261,7 +287,8 @@ def predict(model, s, *, incumbent=False, chunk=512):
                     x, y, state = model(f[:, :, 0], f[:, :, 1], None, prev, state)
                 else:
                     inp = s.inputs(idx)
-                    x, y, state = model(*inp[:5], state, inp[6], inp[7])
+                    tgt = torch.zeros_like(inp[8]) if mask_target else inp[8]
+                    x, y, state = model(*inp[:5], state, inp[6], inp[7], target=tgt)
             acts[idx[0]], cams[idx[0]] = torch.sigmoid(x[0].float()), torch.softmax(y[0].float(), -1)
     return acts, cams
 
@@ -459,7 +486,7 @@ def dev_loss(model, sessions, pw, chunk=512):
                 idx = torch.arange(c0, min(b, c0 + chunk), device=s.feats.device)[None]
                 inp = s.inputs(idx)
                 with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16, enabled=s.feats.is_cuda):
-                    x, y, state = model(*inp[:5], state, inp[6], inp[7])
+                    x, y, state = model(*inp[:5], state, inp[6], inp[7], target=inp[8])
                 batch_ = {"act": s.act[idx], "act_mask": s.act_mask[idx], "camera": s.cam[idx],
                           "camera_mask": s.cam_mask[idx]}
                 terms = rtrain.loss_terms(x.float(), y.float(), batch_, pw)
@@ -472,7 +499,7 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
         device="cuda", incumbent=None, log=print, onset_weight=1., chunk_weight=.5, expert_dirs=(),
         expert_epochs=None, expert_share=None, expert_actions=True, motion_dropout=0., static_aug=0.,
         expert_mask=None, oversample=None, expert_windows=None, stream_expert=False, cam_weight=None,
-        press_unknown=(), soft_targets=()):
+        press_unknown=(), soft_targets=(), target_dropout=0., target_span=0.):
     """expert_dirs: IDM-labelled expert sessions (policy.bc2.expert), used as extra training windows for the first
     expert_epochs epochs (default: all; VPT-style pretrain-then-finetune when fewer). expert_share caps the
     expert fraction of an epoch's windows. Selection, thresholds and pos_weight stay on James's data.
@@ -580,11 +607,12 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
         order = torch.randperm(len(items), generator=gen).tolist()
         started, running = time.monotonic(), 0.
         jobs = ([items[i] for i in order[k * batch_size:(k + 1) * batch_size]] for k in range(per_epoch))
-        make = lambda job: batch(all_s, job, device, config.chunk, motion_dropout, static_aug)
+        make = lambda job: batch(all_s, job, device, config.chunk, motion_dropout, static_aug, target_dropout,
+                                 target_span)
         for b in (prefetched(make, jobs) if stream_expert else map(make, jobs)):
             with torch.autocast("cuda", dtype=torch.bfloat16, enabled=device == "cuda"):
                 x, y, _, fut = model(b["feats"], b["gp"], b["gc"], b["cp"], b["cc"], green=b.get("green"), dt=b["dt"],
-                                     future=True)
+                                     future=True, target=b["target"])
             terms = rtrain.loss_terms(x.float(), y.float(), b, pw)
             if onset_weight != 1 or weighted:   # camera CE with onset steps and cam_weight rows up-weighted
                 ce = F.cross_entropy(y.float().reshape(-1, vocab.CAMERA_CLASSES), b["camera"].reshape(-1),
@@ -617,7 +645,10 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
                          "epochs": expert_epochs if expert_s else 0, "share": expert_share,
                          "actions": expert_actions, "masked": masked, "windows_per_epoch": expert_windows,
                          "streamed": stream_expert, "press_unknown": list(press_unknown), "soft_rows": soft_rows},
-              "steps": total, "cam_weight": None if not cam_weight else
+              "steps": total, "target": None if not config.use_target else
+              {"dropout": target_dropout, "span": target_span,
+               "sessions_with_target": [s.id for s in train_s + dev_s + eval_s if s.target is not None]},
+              "cam_weight": None if not cam_weight else
               {"weight": cam_weight["weight"], "source": cam_weight.get("source"), "row_share": weighted},
               "selection": "lowest dev loss (dev sessions only); eval sessions never used for selection"}
     live = [bool(x) for x in vocab.live_mask([10 ** 6] * vocab.N)]
@@ -633,8 +664,11 @@ def fit(train_dirs, dev_dirs, eval_dirs, out, *, config, seed=0, epochs=12, batc
             outs = [(predict(model, s), s) for s in group]
             report[tag][part] = [evaluate(a, c, s, th, live) for (a, c), s in outs]
             report[tag][part + "_side"] = [evaluate(a, c, s, th, live, side_degrees(c, theta)) for (a, c), s in outs]
-        for part in ("dev", "eval", "dev_side", "eval_side"):
-            if report[tag][part]:
+        if config.use_target:     # the same model with every target unknown: how much does it lean on the finder?
+            for part, group in (("dev_masked", dev_s), ("eval_masked", eval_s)):
+                report[tag][part] = [evaluate(*predict(model, s, mask_target=True), s, th, live) for s in group]
+        for part in ("dev", "eval", "dev_side", "eval_side", "dev_masked", "eval_masked"):
+            if report[tag].get(part):
                 report[tag][part + "_pooled"] = pooled(report[tag][part])
     if incumbent is not None:
         inc, th = incumbent

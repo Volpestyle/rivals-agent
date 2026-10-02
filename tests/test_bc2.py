@@ -331,3 +331,51 @@ def test_relabel_matches_planned_pieces_by_their_base_run(tmp_path):
     fixture.write(old, h, pieces)
     (d / "meta.json").write_text(json.dumps({"session": h["session_id"], "steps_sha256": steps.sha256(old)}))
     assert relabel(old, labels, d) == (6, 2)
+
+
+def test_target_input_loads_drops_out_trains_and_reports_masked(tmp_path):
+    feats = tmp_path / "features"
+    feats.mkdir()
+    tr, dv = make_session(feats, "a", seed=1), make_session(feats, "c", seed=3)
+    rng = np.random.default_rng(0)
+    tgt = np.zeros((300, bc2_model.TARGET_DIM), np.float32)
+    tgt[::2, 0] = 1
+    tgt[::2, 1:5] = rng.uniform(-.5, .5, (150, 4))
+    np.save(tr / "target.npy", tgt)
+    np.save(dv / "target.npy", tgt)
+    s, plain = bc2_train.Session(tr, "cpu"), bc2_train.Session(make_session(feats, "x", seed=4), "cpu")
+    idx = torch.arange(10)[None]
+    assert torch.equal(s.inputs(idx)[8][0], torch.from_numpy(tgt[:10]))
+    assert torch.equal(plain.inputs(idx)[8], torch.zeros(1, 10, bc2_model.TARGET_DIM))   # absent = unknown
+    items = [(0, 0, 64, True, 1)]
+    assert bc2_train.batch([s], items, "cpu")["target"].abs().sum() > 0
+    assert bc2_train.batch([s], items, "cpu", target_dropout=1.)["target"].abs().sum() == 0
+    torch.manual_seed(1)
+    spans = bc2_train.batch([s], items * 8, "cpu", target_span=1.)["target"]
+    assert (spans[..., 0].sum(1) < torch.from_numpy(tgt[:64, 0]).sum()).all()          # every window loses a span
+    np.save(tr / "bad.npy", tgt)
+    np.save(make_session(feats, "short", n=40) / "target.npy", tgt)
+    with pytest.raises(ValueError, match="target.npy shape"):
+        bc2_train.Session(feats / "short", "cpu")
+    config = bc2_model.Config(embed=16, motion=16, hidden=32, use_dt=True, use_target=True)
+    report = bc2_train.fit([tr], [dv], [dv], tmp_path / "out", config=config, epochs=2, batch_size=4, device="cpu",
+                           log=lambda *_: None, expert_dirs=[feats / "x"], target_dropout=.15, target_span=.3)
+    assert report["target"]["sessions_with_target"] == ["a", "c", "c"]
+    sel = report["selected"]
+    assert "dev_masked_pooled" in sel and "eval_masked_pooled" in sel
+    assert sel["dev_masked_pooled"]["yaw"]["steps"] == sel["dev_pooled"]["yaw"]["steps"]
+
+
+def test_live_target_hook_uses_the_guarded_extract(monkeypatch):
+    from types import SimpleNamespace
+    from policy.live_policy import LivePolicy
+    frame = np.zeros((1440, 2560, 3), np.uint8)
+    off = SimpleNamespace(model=SimpleNamespace(config=bc2_model.Config()))
+    assert (LivePolicy._target(off, frame) == 0).all()
+    calls = []
+    from policy.bc2 import target_features
+    monkeypatch.setattr(target_features, "extract_with_reason",
+                        lambda f, source_kind: calls.append((f.shape, source_kind)) or (np.ones(10, np.float32), "x"))
+    on = SimpleNamespace(model=SimpleNamespace(config=bc2_model.Config(use_target=True)))
+    assert (LivePolicy._target(on, frame) == 1).all() and calls == [((1440, 2560, 3), "range")]
+    assert on.last_target_reason == "x"

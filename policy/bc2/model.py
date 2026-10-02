@@ -34,6 +34,7 @@ GREEN_DEAD = ((0.00, 0.83, 1.00, 1.00), (0.86, 0.00, 1.00, 0.32), (0.00, 0.00, 0
               (0.27, 0.39, 0.47, 0.90))   # HUD strip, fps/ping readout, key hints, the hero (perception.outline)
 GREEN_COLS, GREEN_ROWS = 32, 16
 GREEN_DIM = GREEN_COLS + GREEN_ROWS + 3
+TARGET_DIM = 10    # policy.bc2.target_features: known, nearest/largest (visible, dx, dy, h), log1p(count)
 
 
 def green_profile(rgb_u8):
@@ -143,6 +144,7 @@ class Config:
     use_feats: bool = True
     use_motion: bool = True
     use_green: bool = False
+    use_target: bool = False   # explicit enemy-position input from the 720p finder (unknown = zeros, known 0)
     use_dt: bool = False       # frame interval input, in 30 Hz steps (1 = 33 ms)
     hires: bool = False        # global motion frames at the view's full 144x256 instead of 72x128
     chunk: int = 0             # auxiliary camera heads for the next `chunk` steps (training signal only)
@@ -168,6 +170,9 @@ class Policy2(nn.Module):
         if c.use_green:
             self.green = nn.Sequential(nn.Linear(GREEN_DIM, 64), nn.GELU())
             width += 64
+        if c.use_target:
+            self.target = nn.Sequential(nn.Linear(TARGET_DIM, 32), nn.GELU())
+            width += 32
         self.norm = nn.LayerNorm(width)
         self.core = nn.LSTM(width, c.hidden, num_layers=c.layers, batch_first=True)
         self.actions = nn.Linear(c.hidden, 3 * vocab.N)
@@ -175,7 +180,7 @@ class Policy2(nn.Module):
         if c.chunk:
             self.future_camera = nn.Linear(c.hidden, c.chunk * 2 * vocab.CAMERA_CLASSES)
 
-    def step_inputs(self, feats, gp, gc, cp, cc, green=None, dt=None):
+    def step_inputs(self, feats, gp, gc, cp, cc, green=None, dt=None, target=None):
         """Per-step features [B, T, D]. feats [B, T, 2, FEAT]; gray pairs uint8 [B, T, H, W]."""
         b, t = gc.shape[:2]
         parts = []
@@ -194,10 +199,12 @@ class Policy2(nn.Module):
                       self.mot_s(s).reshape(b, t, -1)]
         if c.use_green:
             parts.append(self.green(green.float()))
+        if c.use_target:
+            parts.append(self.target(target.float()))
         return self.norm(torch.cat(parts, -1))
 
-    def forward(self, feats, gp, gc, cp, cc, state=None, green=None, dt=None, future=False):
-        x = self.step_inputs(feats, gp, gc, cp, cc, green, dt)
+    def forward(self, feats, gp, gc, cp, cc, state=None, green=None, dt=None, future=False, target=None):
+        x = self.step_inputs(feats, gp, gc, cp, cc, green, dt, target)
         out, state = self.core(x, state)
         b, t = out.shape[:2]
         result = (self.actions(out).reshape(b, t, 3, vocab.N),

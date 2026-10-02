@@ -209,9 +209,10 @@ class LivePolicy:
             raise ValueError(f"frame {frame.shape[:2]} differs from training {TRAIN_SIZE[::-1]}")
         return views_from_bgr(torch.from_numpy(frame).to(self.device, non_blocking=True))
 
-    def _bc2_core(self, frame_u8, prev_g, prev_c, use_prev, dt, h, c, bh=None, bc=None):
+    def _bc2_core(self, frame_u8, prev_g, prev_c, use_prev, dt, tgt, h, c, bh=None, bc=None):
         """One bc2 step on device tensors, free of host syncs and host-to-device copies, so the same code runs
         eagerly and inside a CUDA graph. use_prev: 0-dim bool (False = no usable previous frame: no motion).
+        tgt: [1, 1, TARGET_DIM] explicit target input (zeros when the model has none; see _target).
         Returns action probs [3, N], camera probs [2, C], new LSTM state, this frame's gray views, and the hybrid
         action head's state."""
         import torch
@@ -224,7 +225,8 @@ class LivePolicy:
         pg, pc = torch.where(use_prev, prev_g, gg), torch.where(use_prev, prev_c, gc)
         green = green_profile(rgb[0]).to(torch.float16)[None] if self.model.config.use_green else None
         with torch.autocast("cuda", dtype=torch.bfloat16, enabled=frame_u8.is_cuda):
-            acts, cams, (h1, c1) = self.model(feats, pg[None], gg[None], pc[None], gc[None], (h, c), green, dt)
+            acts, cams, (h1, c1) = self.model(feats, pg[None], gg[None], pc[None], gc[None], (h, c), green, dt,
+                                              target=tgt)
         acts, cams = acts.float(), cams.float()
         if self.buttons is not None:          # hybrid: incumbent action head on the same tower features
             from policy.range_bc import steps
@@ -249,13 +251,27 @@ class LivePolicy:
             bz = lambda: torch.zeros(1, 1, self.buttons.core.hidden_size, device=self.device)
         return z(), z(), (bz() if bz else None), (bz() if bz else None)
 
+    def _target(self, frame):
+        """The explicit target input for this frame: policy.bc2.target_features.extract on the full captured frame,
+        the same guarded call the training extraction makes (zeros, i.e. unknown, when the model has no target
+        input). The last vector and its reason are kept for diagnostics."""
+        import numpy as np
+        from policy.bc2.model import TARGET_DIM
+        if not getattr(self.model.config, "use_target", False):
+            return np.zeros(TARGET_DIM, np.float32)
+        from policy.bc2.target_features import extract_with_reason
+        vec, self.last_target_reason = extract_with_reason(frame, source_kind="range")
+        self.last_target = vec
+        return vec
+
     def _bc2_predict(self, frame, t=None):
         """policy.bc2: tower features of both views plus motion observed since the previous step's frame."""
         import torch
         use_prev, dt = self._bc2_inputs(t)
+        tgt = self._target(frame)
         with torch.inference_mode():
             if self.graph is not None:
-                return self._graph_step(frame, use_prev, dt)
+                return self._graph_step(frame, use_prev, dt, tgt)
             x = self._device_frame(frame)
             if self.state is None:
                 self.state = self._zero_state()
@@ -263,7 +279,8 @@ class LivePolicy:
                                       torch.zeros(1, 64, 64, dtype=torch.uint8, device=x.device))
             acts, cams, h, c, gg, gc, bh, bc = self._bc2_core(
                 x, prev[0], prev[1], torch.tensor(use_prev, device=x.device),
-                torch.full((1, 1), dt, device=x.device), *self.state)
+                torch.full((1, 1), dt, device=x.device), torch.from_numpy(tgt)[None, None].to(x.device),
+                *self.state)
             self.state, self.gray_prev = (h, c, bh, bc), (gg, gc)
             if not (bool(torch.isfinite(acts).all()) and bool(torch.isfinite(cams).all())):
                 raise ValueError("nonfinite model outputs")
@@ -275,7 +292,7 @@ class LivePolicy:
             raise ValueError(f"frame {frame.shape[:2]} differs from training {TRAIN_SIZE[::-1]}")
         return torch.from_numpy(frame).to(self.device, non_blocking=True)
 
-    def _graph_step(self, frame, use_prev, dt):
+    def _graph_step(self, frame, use_prev, dt, tgt):
         """CUDA-graph replay of _bc2_core: one launch per decision instead of hundreds, which matters when the
         game time-slices the GPU. Captured on the first frame (per frame size); inputs copied into static
         buffers, outputs copied back into the recurrent state."""
@@ -288,6 +305,7 @@ class LivePolicy:
         g["frame"].copy_(g["host"], non_blocking=True)
         g["use_prev"].fill_(bool(use_prev))
         g["dt"].fill_(dt)
+        g["target"].copy_(torch.from_numpy(tgt)[None, None])
         g["graph"].replay()
         acts, cams, h, c, gg, gc, bh, bc = g["out"]
         for dst, src in zip(g["state"], (h, c, bh, bc)):
@@ -303,6 +321,7 @@ class LivePolicy:
 
     def _capture(self, frame):
         import torch
+        from policy.bc2.model import TARGET_DIM
         dev = self.device
         g = {"shape": frame.shape,
              "host": torch.empty(frame.shape, dtype=torch.uint8).pin_memory(),
@@ -311,12 +330,13 @@ class LivePolicy:
              "prev_c": torch.zeros(1, 64, 64, dtype=torch.uint8, device=dev),
              "use_prev": torch.zeros((), dtype=torch.bool, device=dev),
              "dt": torch.ones(1, 1, device=dev),
+             "target": torch.zeros(1, 1, TARGET_DIM, device=dev),
              "state": self._zero_state()}
         if self.model.config.hires:
             g["prev_g"] = torch.zeros(1, 144, 256, dtype=torch.uint8, device=dev)
         g["host"].copy_(torch.from_numpy(frame))
         g["frame"].copy_(g["host"])
-        args = lambda: (g["frame"], g["prev_g"], g["prev_c"], g["use_prev"], g["dt"], *g["state"])
+        args = lambda: (g["frame"], g["prev_g"], g["prev_c"], g["use_prev"], g["dt"], g["target"], *g["state"])
         side = torch.cuda.Stream()
         side.wait_stream(torch.cuda.current_stream())
         with torch.inference_mode(), torch.cuda.stream(side):

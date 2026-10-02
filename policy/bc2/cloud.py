@@ -74,7 +74,8 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
         expert_actions: bool = True, expert_sessions: list = None, expert_label_source: str = None,
         expert_targets: str = None, motion_dropout: float = 0., static_aug: float = 0., expert_mask: dict = None,
         extra_train: list = None, oversample: dict = None, expert_windows: int = None, stream_expert: bool = False,
-        cam_weight: dict = None, press_unknown: list = (), soft_targets: list = ()):
+        cam_weight: dict = None, press_unknown: list = (), soft_targets: list = (), use_target: bool = False,
+        target_dropout: float = 0., target_span: float = 0.):
     """expert_targets: a volume directory of target-only overlays (<shard>/{targets.npz, meta.json}, from
     expert.relabel) that replace each staged expert shard's targets; the original features are unchanged.
     expert_windows, stream_expert, cam_weight, press_unknown, soft_targets: as train.fit (the full-scale arms);
@@ -120,7 +121,8 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
                 raise ValueError(f"overlay label sources {sources} differ from {expert_label_source}")
     run = Path("/tmp/run") / name
     config = model.Config(use_feats=use_feats, use_motion=use_motion, feat_dropout=feat_dropout, hidden=hidden,
-                          use_green=use_green, use_dt=use_dt, chunk=chunk, hires=hires, layers=layers)
+                          use_green=use_green, use_dt=use_dt, chunk=chunk, hires=hires, layers=layers,
+                          use_target=use_target)
     report = train.fit([local / s for s in train_ids], [local / s for s in DEV], [local / s for s in evals], run,
                        config=config, seed=seed, epochs=epochs, batch_size=batch_size, lr=lr, wd=wd,
                        onset_weight=onset_weight, chunk_weight=chunk_weight, expert_dirs=experts,
@@ -128,6 +130,7 @@ def fit(name: str, seed: int = 0, epochs: int = 12, use_feats: bool = True, use_
                        motion_dropout=motion_dropout, static_aug=static_aug, expert_mask=expert_mask,
                        oversample=oversample, expert_windows=expert_windows, stream_expert=stream_expert,
                        cam_weight=cam_weight, press_unknown=tuple(press_unknown), soft_targets=tuple(soft_targets),
+                       target_dropout=target_dropout, target_span=target_span,
                        incumbent=train.load_incumbent("/out/assets/incumbent/epoch-26.pt",
                                                       "/out/assets/incumbent/evaluation.json"),
                        log=lambda m: print(m, flush=True))
