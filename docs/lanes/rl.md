@@ -385,3 +385,28 @@ Changes for the next sitting:
   (`--cam-temp`), and turn options yaw toward the nearest enemy outline (`--turn-rate`); the safety read passed
   after one fix. The base policy's camera distribution is peaked near zero (executed |yaw| 0.008 deg in a dry run at
   T = 1), so aiming exploration rests mainly on the turn options.
+
+## 8. Dense aim reward (2026-10-02, built and offline-validated, not yet run live)
+
+`rl/aim/reward.py`: potential-based shaping Phi = -min(d, 1). d is the crosshair-to-nearest-target distance in half
+screen widths, taken from the guarded `policy.bc2.target_features` vector. F = Phi(s') - Phi(s) (gamma 1) between
+retained frames. There is no term (None) when the target is unknown, on reacquisition after an unknown frame or a
+gap over 0.5 s, and on a switch (the nearest box jumps more than 0.25 half-widths or changes height by more than
+1.6x). `data.episode` writes it as a separate component (`reward_aim`, `aim_known`). `update.weights(aim_weight=)`
+uses it as a 0.5 s advantage (Phi(k+0.5 s) - Phi(k)), never inside the discounted return: there potential shaping
+collapses to -Phi(s_k), which a constant baseline does not cancel. `sitting.py --aim-weight` defaults to 0.
+Report: [`rl/out/aim/aim_reward_20261002.md`](../../rl/out/aim/aim_reward_20261002.md).
+
+- **Signal (4,805 retained frames, 49 hit/KO onsets).** In the 1 s before an event F sums positive in 57% of windows
+  that have a term, against 34% elsewhere (p = 0.003). That is weak evidence: the events are clustered, 34 of the 35
+  with a term come from scripted or older learned runs, and the RL sittings give 1.
+- **Farming.** Replayed oscillations net exactly 0, holding still pays 0, and flicker gaps net -0.3 over a gross of
+  42.5 in a synthetic sweep. Flicker and switches move Phi more than the paid terms do (cut |ΔPhi| 28.8 against 18.5
+  paid); cutting is what keeps that out.
+- **Coverage is the main limit.** There is a term on 24% of RL-sitting frames. Spawn-room door and foliage
+  abstention and empty views dominate. Hit effects and KOs make the finder switch boxes, so the event frame itself is
+  usually cut.
+- **Cost.** 18 ms per frame single-threaded (about 2 ms with OpenCV threads), run between episodes.
+- **Starting weight 0.3 per unit Phi.** At that weight the aim advantage has std ~0.017, against a one-hit episode's
+  return std of 0.24. With no hits in the buffer the advantage normalisation makes aim the whole signal, at a
+  strength set by beta.

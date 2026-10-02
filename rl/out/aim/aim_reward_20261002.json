@@ -1,0 +1,973 @@
+{
+ "window_s": 1.0,
+ "eps": 0.005,
+ "runs": {
+  "data/calibration/rl-sitting-20260930-01/ep-000-bc": {
+   "frames": 116,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 1.0,
+   "terms": 115,
+   "net": -0.0006,
+   "gross": 0.1113
+  },
+  "data/calibration/rl-sitting-20260930-01/ep-001-rl": {
+   "frames": 132,
+   "hits": 1,
+   "kos": 0,
+   "target_share": 0.652,
+   "terms": 75,
+   "net": 0.1955,
+   "gross": 1.6333
+  },
+  "data/calibration/rl-sitting-20260930-01/ep-002-bc": {
+   "frames": 124,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.0,
+   "terms": 0,
+   "net": 0,
+   "gross": 0
+  },
+  "data/calibration/rl-sitting-20260930-01/ep-003-rl": {
+   "frames": 125,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.696,
+   "terms": 77,
+   "net": -0.1135,
+   "gross": 0.98
+  },
+  "data/calibration/rl-sitting-20260930-01/ep-004-bc": {
+   "frames": 118,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.0,
+   "terms": 0,
+   "net": 0,
+   "gross": 0
+  },
+  "data/calibration/rl-sitting-20260930-01/ep-005-rl": {
+   "frames": 54,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.0,
+   "terms": 0,
+   "net": 0,
+   "gross": 0
+  },
+  "data/calibration/rl-sitting-20260930-04/ep-000-bc": {
+   "frames": 151,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 1.0,
+   "terms": 149,
+   "net": -0.0014,
+   "gross": 0.9361
+  },
+  "data/calibration/rl-sitting-20260930-04/ep-001-rl": {
+   "frames": 80,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.325,
+   "terms": 16,
+   "net": -0.1524,
+   "gross": 0.2824
+  },
+  "data/calibration/rl-sitting-20260930-07/ep-000-bc": {
+   "frames": 112,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 1.0,
+   "terms": 96,
+   "net": -0.0717,
+   "gross": 1.0306
+  },
+  "data/calibration/rl-sitting-20260930-07/ep-001-rl": {
+   "frames": 137,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.263,
+   "terms": 27,
+   "net": -0.0731,
+   "gross": 0.5767
+  },
+  "data/calibration/rl-sitting-20260930-07/ep-002-bc": {
+   "frames": 114,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.0,
+   "terms": 0,
+   "net": 0,
+   "gross": 0
+  },
+  "data/calibration/rl-sitting-20260930-07/ep-003-rl": {
+   "frames": 72,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.0,
+   "terms": 0,
+   "net": 0,
+   "gross": 0
+  },
+  "data/calibration/rl-sitting-20260930-07/ep-004-bc": {
+   "frames": 118,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.0,
+   "terms": 0,
+   "net": 0,
+   "gross": 0
+  },
+  "data/calibration/rl-sitting-20260930-07/ep-005-rl": {
+   "frames": 137,
+   "hits": 1,
+   "kos": 0,
+   "target_share": 0.182,
+   "terms": 12,
+   "net": -0.2751,
+   "gross": 1.0242
+  },
+  "data/calibration/rl-sitting-20260930-07/ep-006-bc": {
+   "frames": 117,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.0,
+   "terms": 0,
+   "net": 0,
+   "gross": 0
+  },
+  "data/calibration/rl-sitting-20260930-07/ep-007-rl": {
+   "frames": 125,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.0,
+   "terms": 0,
+   "net": 0,
+   "gross": 0
+  },
+  "data/calibration/rl-sitting-20260930-07/ep-009-rl": {
+   "frames": 135,
+   "hits": 1,
+   "kos": 0,
+   "target_share": 0.489,
+   "terms": 52,
+   "net": -0.073,
+   "gross": 0.6703
+  },
+  "data/calibration/rl-sitting-20260930-07/ep-010-bc": {
+   "frames": 117,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.009,
+   "terms": 0,
+   "net": 0,
+   "gross": 0
+  },
+  "data/calibration/rl-sitting-20260930-07/ep-011-rl": {
+   "frames": 138,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.072,
+   "terms": 5,
+   "net": -0.1168,
+   "gross": 0.2536
+  },
+  "data/calibration/rl-sitting-20260930-07/ep-013-rl": {
+   "frames": 143,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.308,
+   "terms": 18,
+   "net": -0.1502,
+   "gross": 1.2445
+  },
+  "data/calibration/rl-sitting-20260930-07/ep-014-bc": {
+   "frames": 115,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.0,
+   "terms": 0,
+   "net": 0,
+   "gross": 0
+  },
+  "data/calibration/rl-sitting-20260930-07/ep-016-bc": {
+   "frames": 112,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.723,
+   "terms": 59,
+   "net": 0.0405,
+   "gross": 0.8821
+  },
+  "data/calibration/rl-sitting-20260930-07/ep-017-rl": {
+   "frames": 132,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.258,
+   "terms": 15,
+   "net": 0.1944,
+   "gross": 0.8538
+  },
+  "data/calibration/rl-sitting-20260930-07/ep-018-bc": {
+   "frames": 118,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.0,
+   "terms": 0,
+   "net": 0,
+   "gross": 0
+  },
+  "data/calibration/rl-sitting-20260930-07/ep-019-rl": {
+   "frames": 131,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.031,
+   "terms": 3,
+   "net": -0.1187,
+   "gross": 0.1187
+  },
+  "data/calibration/compat-check-20260929/learned-01-a": {
+   "frames": 82,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 1.0,
+   "terms": 81,
+   "net": -0.001,
+   "gross": 0.0778
+  },
+  "data/l1/galacta-pilot-20260922-01-learned": {
+   "frames": 185,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 1.0,
+   "terms": 174,
+   "net": 0.0864,
+   "gross": 0.851
+  },
+  "data/l1/galacta-pilot-20260922-03-scripted": {
+   "frames": 27,
+   "hits": 4,
+   "kos": 0,
+   "target_share": 0.852,
+   "terms": 13,
+   "net": -0.0289,
+   "gross": 0.3638
+  },
+  "data/l1/galacta-pilot-20260922-04-learned": {
+   "frames": 184,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 1.0,
+   "terms": 173,
+   "net": 0.0095,
+   "gross": 1.1445
+  },
+  "data/l1/galacta-pilot-20260923-01-learned": {
+   "frames": 182,
+   "hits": 3,
+   "kos": 0,
+   "target_share": 0.582,
+   "terms": 100,
+   "net": 0.0415,
+   "gross": 0.7937
+  },
+  "data/l1/galacta-pilot-20260923-03-scripted": {
+   "frames": 28,
+   "hits": 4,
+   "kos": 0,
+   "target_share": 0.964,
+   "terms": 14,
+   "net": 0.2066,
+   "gross": 0.3067
+  },
+  "data/l1/range-cast-probe-20260922-a": {
+   "frames": 27,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.0,
+   "terms": 0,
+   "net": 0,
+   "gross": 0
+  },
+  "data/l1/range-cast-probe-20260922-b": {
+   "frames": 18,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 1.0,
+   "terms": 17,
+   "net": 0.002,
+   "gross": 0.0072
+  },
+  "data/l1/range-cast-probe-20260922-c": {
+   "frames": 70,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 1.0,
+   "terms": 69,
+   "net": 0.0337,
+   "gross": 0.1872
+  },
+  "data/l1/range-cast-probe-20260922-d": {
+   "frames": 66,
+   "hits": 2,
+   "kos": 0,
+   "target_share": 0.576,
+   "terms": 34,
+   "net": 0.1502,
+   "gross": 0.3046
+  },
+  "data/l1/range-request-20s-20260922-1": {
+   "frames": 179,
+   "hits": 11,
+   "kos": 1,
+   "target_share": 0.726,
+   "terms": 112,
+   "net": 0.2213,
+   "gross": 0.5551
+  },
+  "data/l1/range-request-diagnostic-20260922-1": {
+   "frames": 77,
+   "hits": 1,
+   "kos": 0,
+   "target_share": 0.922,
+   "terms": 70,
+   "net": 0.2303,
+   "gross": 0.3518
+  },
+  "data/l1/range-request-efficiency-20260922-1": {
+   "frames": 89,
+   "hits": 1,
+   "kos": 0,
+   "target_share": 0.427,
+   "terms": 35,
+   "net": 0.1383,
+   "gross": 0.2159
+  },
+  "data/l1/range-request-owned-pulse-20260922-1": {
+   "frames": 89,
+   "hits": 7,
+   "kos": 0,
+   "target_share": 0.809,
+   "terms": 64,
+   "net": 0.1775,
+   "gross": 0.3744
+  },
+  "data/l1/range-request-timing-20260922-1": {
+   "frames": 42,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 1.0,
+   "terms": 41,
+   "net": 0.0309,
+   "gross": 0.1479
+  },
+  "data/l1/scripted-diagnostic-20260922-1130": {
+   "frames": 180,
+   "hits": 10,
+   "kos": 2,
+   "target_share": 0.444,
+   "terms": 40,
+   "net": 0.2212,
+   "gross": 1.8265
+  },
+  "data/calibration/alt-20260926/period-1-frames": {
+   "frames": 23,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 1.0,
+   "terms": 20,
+   "net": 0.034,
+   "gross": 0.0591
+  },
+  "data/calibration/alt-20260926/period-a3-1-frames": {
+   "frames": 69,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.435,
+   "terms": 5,
+   "net": 0.1192,
+   "gross": 0.1192
+  },
+  "data/calibration/alt-20260926/period-a3-2-frames": {
+   "frames": 70,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.229,
+   "terms": 2,
+   "net": 0.0678,
+   "gross": 0.091
+  },
+  "data/calibration/alt-20260926/period-a3-3-frames": {
+   "frames": 73,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 0.247,
+   "terms": 3,
+   "net": 0.0828,
+   "gross": 0.0828
+  },
+  "data/calibration/alt-20260926/period-retry-1-frames": {
+   "frames": 72,
+   "hits": 0,
+   "kos": 0,
+   "target_share": 1.0,
+   "terms": 69,
+   "net": -0.0016,
+   "gross": 0.0196
+  }
+ },
+ "prehit": {
+  "events": {
+   "n": 49,
+   "positive": 20,
+   "negative": 9,
+   "flat": 6,
+   "no_term": 14,
+   "p_positive": 0.408,
+   "p_positive_given_term": 0.571,
+   "p_negative_given_term": 0.257,
+   "mean_given_term": 0.0231
+  },
+  "baseline_all_runs": {
+   "n": 3979,
+   "positive": 623,
+   "negative": 554,
+   "flat": 684,
+   "no_term": 2118,
+   "p_positive": 0.157,
+   "p_positive_given_term": 0.335,
+   "p_negative_given_term": 0.298,
+   "mean_given_term": 0.0009
+  },
+  "baseline_runs_with_events": {
+   "n": 762,
+   "positive": 151,
+   "negative": 173,
+   "flat": 150,
+   "no_term": 288,
+   "p_positive": 0.198,
+   "p_positive_given_term": 0.319,
+   "p_negative_given_term": 0.365,
+   "mean_given_term": 0.0049
+  },
+  "binomial_p_positive_given_term_vs_all": 0.003406171416883878,
+  "events_detail": [
+   {
+    "dir": "data/calibration/rl-sitting-20260930-01/ep-001-rl",
+    "t": 13.502742299926467,
+    "file": "000086.jpg",
+    "kind": "hit",
+    "sum": -0.022,
+    "terms": 1,
+    "phi": null
+   },
+   {
+    "dir": "data/calibration/rl-sitting-20260930-07/ep-005-rl",
+    "t": 1.80445429997053,
+    "file": "000012.jpg",
+    "kind": "hit",
+    "sum": null,
+    "terms": 0,
+    "phi": null
+   },
+   {
+    "dir": "data/calibration/rl-sitting-20260930-07/ep-009-rl",
+    "t": 5.358785099931993,
+    "file": "000036.jpg",
+    "kind": "hit",
+    "sum": null,
+    "terms": 0,
+    "phi": -0.08864931598720883
+   },
+   {
+    "dir": "data/l1/galacta-pilot-20260922-03-scripted",
+    "t": 8.933,
+    "file": "000005.jpg",
+    "kind": "hit",
+    "sum": -0.0214,
+    "terms": 5,
+    "phi": -0.03126099928925017
+   },
+   {
+    "dir": "data/l1/galacta-pilot-20260922-03-scripted",
+    "t": 9.6871,
+    "file": "000012.jpg",
+    "kind": "hit",
+    "sum": 0.0752,
+    "terms": 9,
+    "phi": -0.048589027567960234
+   },
+   {
+    "dir": "data/l1/galacta-pilot-20260922-03-scripted",
+    "t": 10.117,
+    "file": "000016.jpg",
+    "kind": "hit",
+    "sum": 0.1066,
+    "terms": 5,
+    "phi": -0.24157366578657224
+   },
+   {
+    "dir": "data/l1/galacta-pilot-20260922-03-scripted",
+    "t": 10.8464,
+    "file": "000023.jpg",
+    "kind": "hit",
+    "sum": 0.0351,
+    "terms": 1,
+    "phi": -0.11826597082952475
+   },
+   {
+    "dir": "data/l1/galacta-pilot-20260923-01-learned",
+    "t": 11.5029,
+    "file": "000026.jpg",
+    "kind": "hit",
+    "sum": 0.0464,
+    "terms": 10,
+    "phi": -0.03296747639720092
+   },
+   {
+    "dir": "data/l1/galacta-pilot-20260923-01-learned",
+    "t": 15.0418,
+    "file": "000058.jpg",
+    "kind": "hit",
+    "sum": null,
+    "terms": 0,
+    "phi": -0.042648225802048315
+   },
+   {
+    "dir": "data/l1/galacta-pilot-20260923-01-learned",
+    "t": 20.4563,
+    "file": "000107.jpg",
+    "kind": "hit",
+    "sum": null,
+    "terms": 0,
+    "phi": -0.10277772990323586
+   },
+   {
+    "dir": "data/l1/galacta-pilot-20260923-03-scripted",
+    "t": 9.3461,
+    "file": "000006.jpg",
+    "kind": "hit",
+    "sum": 0.0869,
+    "terms": 6,
+    "phi": -0.02341307090200899
+   },
+   {
+    "dir": "data/l1/galacta-pilot-20260923-03-scripted",
+    "t": 10.2334,
+    "file": "000014.jpg",
+    "kind": "hit",
+    "sum": -0.0046,
+    "terms": 7,
+    "phi": -0.13623832390337162
+   },
+   {
+    "dir": "data/l1/galacta-pilot-20260923-03-scripted",
+    "t": 10.6585,
+    "file": "000018.jpg",
+    "kind": "hit",
+    "sum": 0.001,
+    "terms": 3,
+    "phi": -0.2028314587440765
+   },
+   {
+    "dir": "data/l1/galacta-pilot-20260923-03-scripted",
+    "t": 11.3478,
+    "file": "000024.jpg",
+    "kind": "hit",
+    "sum": 0.0624,
+    "terms": 2,
+    "phi": -0.028306066597992733
+   },
+   {
+    "dir": "data/l1/range-cast-probe-20260922-d",
+    "t": 7.8601,
+    "file": "000022.jpg",
+    "kind": "hit",
+    "sum": 0.0145,
+    "terms": 13,
+    "phi": -0.023446727683463633
+   },
+   {
+    "dir": "data/l1/range-cast-probe-20260922-d",
+    "t": 9.2952,
+    "file": "000041.jpg",
+    "kind": "hit",
+    "sum": -0.0121,
+    "terms": 5,
+    "phi": null
+   },
+   {
+    "dir": "data/l1/range-request-20s-20260922-1",
+    "t": 9.7034,
+    "file": "000028.jpg",
+    "kind": "hit",
+    "sum": -0.0012,
+    "terms": 9,
+    "phi": null
+   },
+   {
+    "dir": "data/l1/range-request-20s-20260922-1",
+    "t": 10.6766,
+    "file": "000037.jpg",
+    "kind": "hit",
+    "sum": null,
+    "terms": 0,
+    "phi": null
+   },
+   {
+    "dir": "data/l1/range-request-20s-20260922-1",
+    "t": 11.529,
+    "file": "000045.jpg",
+    "kind": "hit",
+    "sum": null,
+    "terms": 0,
+    "phi": -0.0830475208935372
+   },
+   {
+    "dir": "data/l1/range-request-20s-20260922-1",
+    "t": 11.969,
+    "file": "000049.jpg",
+    "kind": "hit",
+    "sum": 0.0075,
+    "terms": 2,
+    "phi": -0.008446352855670903
+   },
+   {
+    "dir": "data/l1/range-request-20s-20260922-1",
+    "t": 12.7587,
+    "file": "000056.jpg",
+    "kind": "hit",
+    "sum": 0.007,
+    "terms": 5,
+    "phi": -0.007377456476489712
+   },
+   {
+    "dir": "data/l1/range-request-20s-20260922-1",
+    "t": 13.5639,
+    "file": "000063.jpg",
+    "kind": "hit",
+    "sum": 0.0023,
+    "terms": 1,
+    "phi": -0.018236697934727656
+   },
+   {
+    "dir": "data/l1/range-request-20s-20260922-1",
+    "t": 14.0275,
+    "file": "000067.jpg",
+    "kind": "hit",
+    "sum": 0.0132,
+    "terms": 2,
+    "phi": -0.0024653932875912518
+   },
+   {
+    "dir": "data/l1/range-request-20s-20260922-1",
+    "t": 16.0525,
+    "file": "000085.jpg",
+    "kind": "hit",
+    "sum": -0.0094,
+    "terms": 10,
+    "phi": -0.01330912615698341
+   },
+   {
+    "dir": "data/l1/range-request-20s-20260922-1",
+    "t": 17.9985,
+    "file": "000103.jpg",
+    "kind": "hit",
+    "sum": -0.0019,
+    "terms": 10,
+    "phi": -0.011721003649965306
+   },
+   {
+    "dir": "data/l1/range-request-20s-20260922-1",
+    "t": 20.02,
+    "file": "000121.jpg",
+    "kind": "hit",
+    "sum": 0.0017,
+    "terms": 9,
+    "phi": -0.12641820112848662
+   },
+   {
+    "dir": "data/l1/range-request-20s-20260922-1",
+    "t": 20.2374,
+    "file": "000123.jpg",
+    "kind": "ko",
+    "sum": -0.0148,
+    "terms": 8,
+    "phi": -0.49730846569464554
+   },
+   {
+    "dir": "data/l1/range-request-20s-20260922-1",
+    "t": 24.3257,
+    "file": "000159.jpg",
+    "kind": "hit",
+    "sum": null,
+    "terms": 0,
+    "phi": -0.26536622696579626
+   },
+   {
+    "dir": "data/l1/range-request-diagnostic-20260922-1",
+    "t": 14.4603,
+    "file": "000071.jpg",
+    "kind": "hit",
+    "sum": 0.0269,
+    "terms": 8,
+    "phi": null
+   },
+   {
+    "dir": "data/l1/range-request-efficiency-20260922-1",
+    "t": 8.0112,
+    "file": "000013.jpg",
+    "kind": "hit",
+    "sum": 0.1523,
+    "terms": 7,
+    "phi": -0.009541800472133129
+   },
+   {
+    "dir": "data/l1/range-request-owned-pulse-20260922-1",
+    "t": 8.0573,
+    "file": "000014.jpg",
+    "kind": "hit",
+    "sum": 0.1609,
+    "terms": 7,
+    "phi": -0.009541800472133129
+   },
+   {
+    "dir": "data/l1/range-request-owned-pulse-20260922-1",
+    "t": 10.6429,
+    "file": "000036.jpg",
+    "kind": "hit",
+    "sum": -0.0136,
+    "terms": 4,
+    "phi": null
+   },
+   {
+    "dir": "data/l1/range-request-owned-pulse-20260922-1",
+    "t": 11.4125,
+    "file": "000043.jpg",
+    "kind": "hit",
+    "sum": null,
+    "terms": 0,
+    "phi": null
+   },
+   {
+    "dir": "data/l1/range-request-owned-pulse-20260922-1",
+    "t": 11.8788,
+    "file": "000047.jpg",
+    "kind": "hit",
+    "sum": 0.0061,
+    "terms": 3,
+    "phi": -0.007846365798890592
+   },
+   {
+    "dir": "data/l1/range-request-owned-pulse-20260922-1",
+    "t": 12.8144,
+    "file": "000055.jpg",
+    "kind": "hit",
+    "sum": 0.0159,
+    "terms": 4,
+    "phi": -0.016568572848920937
+   },
+   {
+    "dir": "data/l1/range-request-owned-pulse-20260922-1",
+    "t": 13.5984,
+    "file": "000062.jpg",
+    "kind": "hit",
+    "sum": 0.0144,
+    "terms": 4,
+    "phi": -0.011825844842969994
+   },
+   {
+    "dir": "data/l1/range-request-owned-pulse-20260922-1",
+    "t": 15.0074,
+    "file": "000075.jpg",
+    "kind": "hit",
+    "sum": -0.007,
+    "terms": 10,
+    "phi": -0.01088164516801113
+   },
+   {
+    "dir": "data/l1/scripted-diagnostic-20260922-1130",
+    "t": 7.5396,
+    "file": "000009.jpg",
+    "kind": "hit",
+    "sum": null,
+    "terms": 0,
+    "phi": -0.06696328902139215
+   },
+   {
+    "dir": "data/l1/scripted-diagnostic-20260922-1130",
+    "t": 9.0133,
+    "file": "000022.jpg",
+    "kind": "hit",
+    "sum": 0.0323,
+    "terms": 3,
+    "phi": -0.0704247371312098
+   },
+   {
+    "dir": "data/l1/scripted-diagnostic-20260922-1130",
+    "t": 9.8058,
+    "file": "000029.jpg",
+    "kind": "hit",
+    "sum": 0.027,
+    "terms": 2,
+    "phi": -0.18133097081459223
+   },
+   {
+    "dir": "data/l1/scripted-diagnostic-20260922-1130",
+    "t": 10.3543,
+    "file": "000034.jpg",
+    "kind": "hit",
+    "sum": 0.0784,
+    "terms": 2,
+    "phi": -0.12381769063450707
+   },
+   {
+    "dir": "data/l1/scripted-diagnostic-20260922-1130",
+    "t": 11.0284,
+    "file": "000040.jpg",
+    "kind": "hit",
+    "sum": 0.0379,
+    "terms": 4,
+    "phi": -0.4176902261563736
+   },
+   {
+    "dir": "data/l1/scripted-diagnostic-20260922-1130",
+    "t": 11.1466,
+    "file": "000041.jpg",
+    "kind": "ko",
+    "sum": -0.0411,
+    "terms": 3,
+    "phi": -0.4296710360718564
+   },
+   {
+    "dir": "data/l1/scripted-diagnostic-20260922-1130",
+    "t": 18.9697,
+    "file": "000111.jpg",
+    "kind": "hit",
+    "sum": -0.0558,
+    "terms": 2,
+    "phi": -0.1524453093940578
+   },
+   {
+    "dir": "data/l1/scripted-diagnostic-20260922-1130",
+    "t": 22.3671,
+    "file": "000142.jpg",
+    "kind": "hit",
+    "sum": null,
+    "terms": 0,
+    "phi": null
+   },
+   {
+    "dir": "data/l1/scripted-diagnostic-20260922-1130",
+    "t": 22.6917,
+    "file": "000145.jpg",
+    "kind": "hit",
+    "sum": null,
+    "terms": 0,
+    "phi": null
+   },
+   {
+    "dir": "data/l1/scripted-diagnostic-20260922-1130",
+    "t": 24.06,
+    "file": "000157.jpg",
+    "kind": "hit",
+    "sum": null,
+    "terms": 0,
+    "phi": null
+   },
+   {
+    "dir": "data/l1/scripted-diagnostic-20260922-1130",
+    "t": 25.7408,
+    "file": "000172.jpg",
+    "kind": "hit",
+    "sum": null,
+    "terms": 0,
+    "phi": null
+   },
+   {
+    "dir": "data/l1/scripted-diagnostic-20260922-1130",
+    "t": 25.9423,
+    "file": "000174.jpg",
+    "kind": "ko",
+    "sum": null,
+    "terms": 0,
+    "phi": null
+   }
+  ]
+ },
+ "phi_at_event_vs_baseline": {
+  "limit_phi": -0.1,
+  "events": {
+   "known": 36,
+   "of": 49,
+   "share_within": 0.639,
+   "median_phi": -0.046
+  },
+  "baseline": {
+   "known": 1698,
+   "of": 3979,
+   "share_within": 0.488,
+   "median_phi": -0.106
+  }
+ },
+ "reasons": {
+  "first": 25,
+  "ok": 1855,
+  "switch": 221,
+  "unknown": 2601,
+  "gap": 103
+ },
+ "cuts": {
+  "switches": 221,
+  "sum_dropped_phi": -3.983,
+  "sum_abs_dropped_phi": 28.75,
+  "gross_paid": 18.477,
+  "net_paid": 1.105
+ },
+ "farming": {
+  "replayed_oscillation": {
+   "segments": 61,
+   "max_abs_net": 0.0,
+   "median_gross": 1.3740323250062079
+  },
+  "camera_period_runs": {
+   "period-1-frames": {
+    "terms": 20,
+    "net": 0.034,
+    "gross": 0.059,
+    "switches": 0
+   },
+   "period-a3-1-frames": {
+    "terms": 5,
+    "net": 0.119,
+    "gross": 0.119,
+    "switches": 17
+   },
+   "period-a3-2-frames": {
+    "terms": 2,
+    "net": 0.068,
+    "gross": 0.091,
+    "switches": 8
+   },
+   "period-a3-3-frames": {
+    "terms": 3,
+    "net": 0.083,
+    "gross": 0.083,
+    "switches": 11
+   },
+   "period-retry-1-frames": {
+    "terms": 69,
+    "net": -0.002,
+    "gross": 0.02,
+    "switches": 0
+   }
+  },
+  "synthetic_sweep_with_flicker": {
+   "frames": 500,
+   "terms": 357,
+   "net": -0.2972,
+   "gross": 42.5
+  }
+ }
+}

@@ -33,15 +33,29 @@ def returns(reward, t, half_life_s=HALF_LIFE_S):
     return g
 
 
-def weights(buffer, beta=1.0, clip=W_CLIP):
-    """Per-episode AWR weights; beta is in units of the buffer's advantage std."""
+def aim_advantage(e, horizon_s=None):
+    """The dense aim component as a short-horizon advantage per decision (rl.aim.reward.window): the aim change over
+    the next horizon. Zeros when the episode has no `reward_aim`. Never put into `returns`: summed into a discounted
+    return, potential shaping telescopes to -Phi(s_k), a state term a constant baseline does not cancel."""
+    from rl.aim.reward import AIM_HORIZON_S, window
+    if "reward_aim" not in e:
+        return np.zeros(len(e["t"]))
+    return window(e["reward_aim"], e["t"], AIM_HORIZON_S if horizon_s is None else horizon_s)
+
+
+def weights(buffer, beta=1.0, clip=W_CLIP, aim_weight=0.0):
+    """Per-episode AWR weights; beta is in units of the buffer's advantage std. aim_weight > 0 adds that multiple of
+    the aim advantage (aim_advantage) to each decision's return advantage, in reward units (a hit is 1)."""
     gs = [returns(e["reward"], e["t"]) for e in buffer]
     allg = np.concatenate(gs) if gs else np.zeros(0)
-    base, sd = (allg.mean(), allg.std()) if len(allg) else (0., 1.)
+    base = allg.mean() if len(allg) else 0.
+    adv = [g - base + (aim_weight * aim_advantage(e) if aim_weight else 0.) for g, e in zip(gs, buffer)]
+    alla = np.concatenate(adv) if adv else np.zeros(0)
+    sd = alla.std() if len(alla) else 1.
     sd = sd if sd > 1e-6 else 1.
-    ws = [np.minimum(np.exp(np.clip((g - base) / (beta * sd), -50, 50)), clip) for g in gs]
+    ws = [np.minimum(np.exp(np.clip(a / (beta * sd), -50, 50)), clip) for a in adv]
     mean = np.concatenate(ws).mean() if ws else 1.
-    return [w / mean for w in ws], {"return_mean": float(base), "return_std": float(sd)}
+    return [w / mean for w in ws], {"return_mean": float(base), "return_std": float(sd), "aim_weight": aim_weight}
 
 
 def _inputs(e, device):
@@ -52,7 +66,8 @@ def _inputs(e, device):
             t(e["dt"], torch.float32))
 
 
-def update(model, base, buffer, *, beta=1.0, kl=1.0, steps=40, lr=5e-5, device="cuda", seed=0, log=print):
+def update(model, base, buffer, *, beta=1.0, kl=1.0, steps=40, lr=5e-5, device="cuda", seed=0, log=print,
+           aim_weight=0.0):
     """Returns the updated model (a copy) and a summary. `base` is the frozen BC policy."""
     import torch
     from torch.nn import functional as F
@@ -60,7 +75,7 @@ def update(model, base, buffer, *, beta=1.0, kl=1.0, steps=40, lr=5e-5, device="
     usable = [e for e in buffer if "feats" in e and len(e["t"]) >= 8]
     if not usable:
         return model, {"skipped": "no usable episodes"}
-    ws, stats = weights(usable, beta)
+    ws, stats = weights(usable, beta, aim_weight=aim_weight)
     model = copy.deepcopy(model).to(device).train()
     base = base.to(device).eval()
     pw = torch.full((2, model.actions.out_features // 3), 5., device=device)   # press/release pos_weight, as bc2's cap

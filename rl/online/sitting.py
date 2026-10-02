@@ -145,6 +145,8 @@ def main(argv=None):
     ap.add_argument("--turn-rate", type=float, default=.5, help="RL arm only: turn options per second")
     ap.add_argument("--beta", type=float, default=1.)
     ap.add_argument("--kl", type=float, default=1.)
+    ap.add_argument("--aim-weight", type=float, default=0.,
+                    help="weight of the dense aim advantage in the update (rl.aim.reward; 0 = sparse rewards only)")
     ap.add_argument("--update-steps", type=int, default=40)
     ap.add_argument("--device", default="cuda")
     ap.add_argument("--reset", action="store_true", help="runner's integrated --reset-before and --settle-s")
@@ -213,7 +215,7 @@ def main(argv=None):
             if arm == "rl" and ep is not None:
                 buffer.append(ep)
                 current, summary = update.update(current, base, buffer, beta=a.beta, kl=a.kl, steps=a.update_steps,
-                                                 device=a.device, seed=i, log=say)
+                                                 device=a.device, seed=i, log=say, aim_weight=a.aim_weight)
                 current_bundle = update.write_bundle(current, config, a.base_bundle, a.out / "bundles" / f"rl-{i:03d}",
                                                      name=f"rl-{i:03d}", notes=f"online AWR after episode {i}")
                 row["update"] = summary

@@ -5,6 +5,9 @@ Rows are the decisions whose native frame the runner retained (RunLog, ~10 Hz JP
     of decisions the runner actually sent (disposition 'ready'); camera classes of the executed yaw (scaled_yaw_deg,
     known only when yaw was enabled) and pitch;
   - reward: rl.rewards read off the same frame (hit and KO rising edges, fall death), RewardTracker events;
+  - reward_aim / aim_known: the dense aim shaping (rl.aim.reward, unweighted), a SEPARATE component: per-frame
+    F = Phi(s') - Phi(s) on the crosshair-to-nearest-target offset, credited to the decision acting over that
+    interval; aim_known is False where no term exists (unknown target, gap, switch). Never folded into `reward`;
   - inputs: the bc2 features of the frame (tower features of both views, gray motion frames) and the frame interval.
 Features need the NitroGen tower; `featurize` takes it as an argument so tests can pass a stub.
 """
@@ -71,14 +74,23 @@ def credit(event_times, event_rewards, decision_times):
     return out
 
 
-def rewards(frames_and_times, weights=None):
+def rewards(frames_and_times, weights=None, aim=None):
     """Per-frame reward and event flags from the pixel readers (rl.rewards), in time order. Any iterable of
-    (frame, t): a stream from disk holds one frame at a time."""
+    (frame, t): a stream from disk holds one frame at a time. `aim`, an rl.aim.reward.AimShaper, also reads the
+    guarded target vector of every frame (policy.bc2.target_features) and records its AimSteps in aim.steps."""
     from rl.rewards import RewardTracker, Weights, hit_marker, ko_marker, own_hp
     tracker = RewardTracker(weights or Weights())
     r = []
     events = {"hit": 0, "ko": 0, "death": 0}
+    if aim is not None:
+        from policy.bc2.target_features import extract
     for frame, t in frames_and_times:
+        if aim is not None:
+            try:
+                vec = extract(frame, source_kind="range")
+            except ValueError:          # not a 16:9 full frame: no target read, never a centred one
+                vec = None
+            aim.update(t, vec)
         hp, max_hp = own_hp(frame)
         step = tracker.update(t, hit_marker(frame), ko_marker(frame), hp, max_hp)
         r.append(step.reward)
@@ -145,8 +157,20 @@ def load_frames(run_dir, rows):
     return LazyFrames(run_dir, rows)
 
 
-def episode(run_dir, live_names, tower=None, device="cpu", weights=None, death=False):
+def aim_arrays(steps, decision_times):
+    """Per-decision aim shaping (sum of the frames' F, each credited to the decision at or before its interval's
+    start) and whether any term landed on that decision."""
+    terms = [s for s in steps if s.shaping is not None]
+    at = [s.prev_t for s in terms]
+    r = credit(at, [s.shaping for s in terms], decision_times)
+    known = credit(at, np.ones(len(terms)), decision_times) > 0
+    return r, known
+
+
+def episode(run_dir, live_names, tower=None, device="cpu", weights=None, death=False, aim=True):
     """Everything the update needs from one episode, plus its KO/hit counts and duration.
+
+    aim: also read the dense aim shaping (rl.aim.reward) into `reward_aim` / `aim_known`, a separate component.
 
     death: the sitting confirmed a fall death after this episode (a range_lost followed by a pixel-confirmed respawn).
     The death screen drops the HUD before any HP-0 frame is retained, so the penalty goes on the last decision."""
@@ -159,7 +183,11 @@ def episode(run_dir, live_names, tower=None, device="cpu", weights=None, death=F
     act, known, cam, cam_known = targets(rows, live_names, yaw_enabled)
     all_frames = LazyFrames(run_dir, saved)
     all_times = [float(r["t"]) for r in saved]
-    per_frame, events = rewards(zip(all_frames, all_times), weights)
+    shaper = None
+    if aim:
+        from rl.aim.reward import AimShaper
+        shaper = AimShaper()
+    per_frame, events = rewards(zip(all_frames, all_times), weights, aim=shaper)
     r = credit(all_times, per_frame, times)
     events["frames_read"] = len(saved)
     if not events["death"] and saved and saved[-1].get("file") == "stop.png":
@@ -177,6 +205,11 @@ def episode(run_dir, live_names, tower=None, device="cpu", weights=None, death=F
     out = {"run": str(run_dir), "t": np.array(times), "dt": intervals(times), "act": act, "act_known": known,
            "cam_class": cam, "cam_known": cam_known, "reward": r, "events": events,
            "seconds": times[-1] - times[0] if len(times) > 1 else 0., "result": result.get("result")}
+    if shaper is not None:
+        out["reward_aim"], out["aim_known"] = aim_arrays(shaper.steps, times)
+        terms = [s.shaping for s in shaper.steps if s.shaping is not None]
+        events.update(aim_terms=len(terms), aim_sum=round(float(sum(terms)), 4),
+                      aim_target_share=round(sum(s.phi is not None for s in shaper.steps) / max(1, len(shaper.steps)), 3))
     if tower is not None:
         out["feats"], out["gray_g"], out["gray_c"] = featurize(frames, tower, device)
     return out
