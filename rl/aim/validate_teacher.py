@@ -60,7 +60,7 @@ def decode(video, pts_s):
     return cv2.imdecode(np.frombuffer(out, np.uint8), cv2.IMREAD_COLOR)
 
 
-def james_samples(per_session, seed=0):
+def james_samples(per_session, seed=0, late=None):
     from policy.range_bc import steps
     windows = json.loads(KILL_WINDOWS.read_text())["sessions"]
     deny = steps.load_denylist()
@@ -81,7 +81,10 @@ def james_samples(per_session, seed=0):
         for k, r in enumerate(rows[:-TURN_STEPS]):
             while j < len(spans) and spans[j][1] < r["anchor_ns"]:
                 j += 1
-            if j < len(spans) and spans[j][0] <= r["anchor_ns"] <= spans[j][1] and r["regime"] == "normal":
+            lo, hi = (spans[j] if j < len(spans) else (0, -1))
+            if late is not None and j < len(spans):          # only the end of the window, just before the first hit
+                lo, hi = max(lo, hi - int(late[0] * 1e9)), hi - int(late[1] * 1e9)
+            if j < len(spans) and lo <= r["anchor_ns"] <= hi and r["regime"] == "normal":
                 nxt = rows[k:k + TURN_STEPS]
                 if all(x["relative_known"] and x["run"] == r["run"] for x in nxt):
                     cand.append(k)
@@ -99,23 +102,25 @@ def james_samples(per_session, seed=0):
     return out
 
 
-def james(per_session, sheet_path=None, finder=None):
+def james(per_session, sheet_path=None, finder=None, late=None):
     finder = finder or T.default_finder()
-    samples = james_samples(per_session)
+    teacher = T.Teacher(finder=finder)
+    samples = james_samples(per_session, late=late)
     rows, thumbs = [], []
     for s in samples:
         frame = decode(s["video"], s["pts_s"])
         if frame is None:
             continue
-        size = (frame.shape[1], frame.shape[0])
-        box = T.select(finder(frame), size)
-        row = {**{k: s[k] for k in ("session", "step", "pts_s", "yaw_sum", "pitch_sum")}, "target": box is not None}
-        if box is not None:
-            lab = T.label(box, size)
+        # Samples are disconnected, so reset tracking but keep the dataset's
+        # frame-level abstention rules (notably spawn-door rejection).
+        teacher.reset()
+        lab = teacher(frame)
+        row = {**{k: s[k] for k in ("session", "step", "pts_s", "yaw_sum", "pitch_sum")}, "target": lab is not None}
+        if lab is not None:
             row.update(err_px_1280=[round(v, 1) for v in lab.err_px_1280], angle_deg=[round(v, 2) for v in lab.angle_deg],
                        step_deg=[round(v, 3) for v in lab.step_deg])
             if len(thumbs) < 24:
-                thumbs.append(_thumb(frame, box, lab, s))
+                thumbs.append(_thumb(frame, lab.box, lab, s))
         rows.append(row)
     if sheet_path and thumbs:
         import cv2
@@ -128,18 +133,27 @@ def james(per_session, sheet_path=None, finder=None):
 def summarise(rows):
     seen = [r for r in rows if r["target"]]
     out = {"samples": len(rows), "target_visible": round(len(seen) / max(1, len(rows)), 3)}
+    rng = np.random.default_rng(0)
     for axis, key in ((0, "yaw"), (1, "pitch")):
         ask = [r for r in seen if r["step_deg"][axis] != 0]
         turned = [r for r in ask if abs(r[f"{key}_sum"]) >= MIN_TURN_DEG]
         agree = [r for r in turned if np.sign(r[f"{key}_sum"]) == np.sign(r["step_deg"][axis])]
+        shuffled = rng.permutation([r[f"{key}_sum"] for r in turned]) if turned else []
+        control = (float(np.mean([np.sign(v) == np.sign(r["step_deg"][axis]) for v, r in zip(shuffled, turned)]))
+                   if turned else None)
         a = np.array([r["angle_deg"][axis] for r in ask])
         rate = np.array([r[f"{key}_sum"] / TURN_STEPS for r in ask])
         same = (np.sign(a) == np.sign(rate)) & (np.abs(a) > 0)
         out[key] = {"teacher_asks": len(ask), "james_turned": len(turned),
                     "sign_agree": round(len(agree) / max(1, len(turned)), 3),
+                    "sign_agree_shuffled_control": round(control, 3) if control is not None else None,
                     "gain_lsq": round(float((a * rate).sum() / max((a * a).sum(), 1e-9)), 3) if len(ask) else None,
                     "gain_median_ratio": round(float(np.median(rate[same] / a[same])), 3) if same.any() else None,
-                    "corr": round(float(np.corrcoef(a, rate)[0, 1]), 3) if len(ask) > 2 else None}
+                    "gain_median_ratio_scope": "same-sign subset only; not a validated gain",
+                    "gain_same_sign_samples": int(same.sum()),
+                    "gain_median_signed_ratio": round(float(np.median(rate / a)), 3) if len(ask) else None,
+                    "corr": (round(float(np.corrcoef(a, rate)[0, 1]), 3)
+                             if len(ask) > 2 and a.std() > 0 and rate.std() > 0 else None)}
     out["rows"] = rows
     return out
 
@@ -164,6 +178,8 @@ def main(argv=None):
     ap.add_argument("out")
     ap.add_argument("--run05")
     ap.add_argument("--per-session", type=int, default=40)
+    ap.add_argument("--late", help="'A,B': sample only A..B s before each engagement's first hit (e.g. 0.6,0.1)")
+    ap.add_argument("--tag", default="", help="suffix for the output files")
     a = ap.parse_args(argv)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -172,9 +188,11 @@ def main(argv=None):
     if a.run05:
         result["run05"] = run05(a.run05)
         print("run05", {k: v for k, v in result["run05"].items() if k != "rows"}, flush=True)
-    result["james"] = james(a.per_session, out / "teacher_james_sheet.jpg")
+    late = tuple(float(v) for v in a.late.split(",")) if a.late else None
+    result["late_window_s"] = late
+    result["james"] = james(a.per_session, out / f"teacher_james_sheet{a.tag}.jpg", late=late)
     print("james", json.dumps({k: v for k, v in result["james"].items() if k != "rows"}), flush=True)
-    (out / "teacher_validation_20260930.json").write_text(json.dumps(result, indent=1) + "\n")
+    (out / f"teacher_validation_20260930{a.tag}.json").write_text(json.dumps(result, indent=1) + "\n")
     return result
 
 

@@ -1,0 +1,248 @@
+{
+ "base": "D:\\rivals-policy\\bundles\\bc2-mix399-s0\\selected.pt",
+ "epochs": 400,
+ "kl": 1.0,
+ "gain": null,
+ "sessions": 26,
+ "labelled_rows": 369,
+ "folds": {
+  "hold-compat-check-20260929": {
+   "train_sessions": 25,
+   "test_sessions": 1,
+   "train_labelled": 288,
+   "fit_log": [
+    {
+     "epoch": 0,
+     "ce": 9.3523,
+     "kl": 0.0
+    },
+    {
+     "epoch": 100,
+     "ce": 1.397,
+     "kl": 0.5872
+    },
+    {
+     "epoch": 200,
+     "ce": 0.9564,
+     "kl": 0.4897
+    },
+    {
+     "epoch": 300,
+     "ce": 0.7226,
+     "kl": 0.4417
+    },
+    {
+     "epoch": 399,
+     "ce": 0.5882,
+     "kl": 0.412
+    }
+   ],
+   "held_out": {
+    "yaw": {
+     "finetuned": {
+      "n": 0
+     },
+     "mix399": {
+      "n": 0
+     },
+     "teacher": {
+      "n": 0
+     }
+    },
+    "pitch": {
+     "finetuned": {
+      "n": 0
+     },
+     "mix399": {
+      "n": 0
+     },
+     "teacher": {
+      "n": 0
+     }
+    }
+   },
+   "dev_yaw_mae": [
+    0.9213,
+    24556
+   ]
+  },
+  "hold-rl-sitting-20260930-04": {
+   "train_sessions": 24,
+   "test_sessions": 2,
+   "train_labelled": 244,
+   "fit_log": [
+    {
+     "epoch": 0,
+     "ce": 6.8797,
+     "kl": 0.0
+    },
+    {
+     "epoch": 100,
+     "ce": 0.9988,
+     "kl": 0.4201
+    },
+    {
+     "epoch": 200,
+     "ce": 0.6854,
+     "kl": 0.3456
+    },
+    {
+     "epoch": 300,
+     "ce": 0.5191,
+     "kl": 0.3163
+    },
+    {
+     "epoch": 399,
+     "ce": 0.4262,
+     "kl": 0.2982
+    }
+   ],
+   "held_out": {
+    "yaw": {
+     "finetuned": {
+      "n": 125,
+      "sign_agree": 0.096,
+      "turned": 0.76,
+      "reduction_deg": -0.4527,
+      "abs_err_after_deg": 4.7204
+     },
+     "mix399": {
+      "n": 125,
+      "sign_agree": 0.952,
+      "turned": 0.016,
+      "reduction_deg": -0.0172,
+      "abs_err_after_deg": 4.2849
+     },
+     "teacher": {
+      "n": 125,
+      "sign_agree": 1.0,
+      "turned": 1.0,
+      "reduction_deg": 1.0669,
+      "abs_err_after_deg": 3.2008
+     }
+    },
+    "pitch": {
+     "finetuned": {
+      "n": 125,
+      "sign_agree": 0.944,
+      "turned": 0.88,
+      "reduction_deg": 0.5684,
+      "abs_err_after_deg": 3.2012
+     },
+     "mix399": {
+      "n": 125,
+      "sign_agree": 0.056,
+      "turned": 0.008,
+      "reduction_deg": 0.0106,
+      "abs_err_after_deg": 3.759
+     },
+     "teacher": {
+      "n": 125,
+      "sign_agree": 1.0,
+      "turned": 0.992,
+      "reduction_deg": 0.9424,
+      "abs_err_after_deg": 2.8272
+     }
+    }
+   },
+   "dev_yaw_mae": [
+    0.9142,
+    24556
+   ]
+  },
+  "hold-rl-sitting-20260930-07": {
+   "train_sessions": 9,
+   "test_sessions": 17,
+   "train_labelled": 206,
+   "fit_log": [
+    {
+     "epoch": 0,
+     "ce": 4.9999,
+     "kl": 0.0
+    },
+    {
+     "epoch": 100,
+     "ce": 0.7328,
+     "kl": 0.2965
+    },
+    {
+     "epoch": 200,
+     "ce": 0.5222,
+     "kl": 0.2707
+    },
+    {
+     "epoch": 300,
+     "ce": 0.4115,
+     "kl": 0.2598
+    },
+    {
+     "epoch": 399,
+     "ce": 0.3474,
+     "kl": 0.2538
+    }
+   ],
+   "held_out": {
+    "yaw": {
+     "finetuned": {
+      "n": 163,
+      "sign_agree": 0.2699,
+      "turned": 0.0491,
+      "reduction_deg": -0.0878,
+      "abs_err_after_deg": 17.1537
+     },
+     "mix399": {
+      "n": 163,
+      "sign_agree": 0.2515,
+      "turned": 0.0245,
+      "reduction_deg": 0.0308,
+      "abs_err_after_deg": 17.0351
+     },
+     "teacher": {
+      "n": 163,
+      "sign_agree": 1.0,
+      "turned": 1.0,
+      "reduction_deg": 4.2665,
+      "abs_err_after_deg": 12.7994
+     }
+    },
+    "pitch": {
+     "finetuned": {
+      "n": 162,
+      "sign_agree": 0.9321,
+      "turned": 0.0556,
+      "reduction_deg": 0.2347,
+      "abs_err_after_deg": 10.6678
+     },
+     "mix399": {
+      "n": 162,
+      "sign_agree": 0.5864,
+      "turned": 0.0247,
+      "reduction_deg": 0.0032,
+      "abs_err_after_deg": 10.8993
+     },
+     "teacher": {
+      "n": 162,
+      "sign_agree": 1.0,
+      "turned": 1.0,
+      "reduction_deg": 2.7256,
+      "abs_err_after_deg": 8.1769
+     }
+    }
+   },
+   "dev_yaw_mae": [
+    1.039,
+    24556
+   ]
+  }
+ },
+ "dev_yaw_mae_mix399": [
+  0.7552,
+  24556
+ ],
+ "labelled_by_sitting": {
+  "compat-check-20260929": 81,
+  "rl-sitting-20260930-01": 0,
+  "rl-sitting-20260930-04": 125,
+  "rl-sitting-20260930-07": 163
+ }
+}

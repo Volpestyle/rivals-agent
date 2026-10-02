@@ -11,10 +11,13 @@ down):
              at .45 stick; the camera map's measured focal is still "missing", so magnitudes carry that assumption,
              signs do not)
   per step   GAIN of the remaining angle per step, clamped to vocab.CLAMP_DEG (compat closes in short pulses; a
-             proportional step is the same direction with a smooth size, and GAIN is fitted on James's turns)
+             proportional step is the same direction with a smooth size; GAIN remains provisional, not fitted)
 
 Labels are None when no eligible target is visible: the teacher has nothing to say there, and the dataset must
-not read that as "don't turn".
+not read that as "don't turn". They are also None when the spawn room's green door is in view (more than
+DOOR_GREEN_SHARE of the frame is saturated green): the outline finder boxes pieces of the door glass, and on the
+2026-10-01 DAgger sheet every labelled frame at or above 0.76% green was such a door box, while real bot frames
+(thin green outlines) peaked at 0.58%.
 """
 from __future__ import annotations
 
@@ -25,6 +28,7 @@ DEADBAND_PX_1280 = 12.          # agent.camera_compat.LIMITS.deadband_px_1280
 FOCAL_1280 = 465.               # agent.placement.FOCAL_PX (930) at 1280 wide
 GAIN = .25                      # share of the remaining angle per 30 Hz step; provisional until fitted on James
 TRACK_PX_1280 = 80.             # rl.aim.metrics.TRACK_PX (160 at 2560)
+DOOR_GREEN_SHARE = .0065        # frame share of saturated green (at 640x360) above which the spawn door is in view
 
 
 @dataclass(frozen=True)
@@ -69,6 +73,13 @@ def select(boxes, size, previous=None):
     return min(boxes, key=lambda b: sum(e * e for e in error_1280(b, size)))
 
 
+def green_share(frame):
+    """Share of saturated green pixels (OpenCV hue 35-85, s and v > 90) at 640x360."""
+    import cv2
+    h = cv2.cvtColor(cv2.resize(frame, (640, 360), interpolation=cv2.INTER_AREA), cv2.COLOR_BGR2HSV)
+    return float(((h[..., 0] >= 35) & (h[..., 0] <= 85) & (h[..., 1] > 90) & (h[..., 2] > 90)).mean())
+
+
 def label(box, size, gain=GAIN, focal=FOCAL_1280):
     from policy.range_bc import vocab
     err = error_1280(box, size)
@@ -89,6 +100,9 @@ class Teacher:
 
     def __call__(self, frame):
         size = (frame.shape[1], frame.shape[0])
+        if green_share(frame) > DOOR_GREEN_SHARE:
+            self.previous = None
+            return None
         box = select(self.finder(frame), size, self.previous)
         self.previous = box
         return None if box is None else label(box, size, self.gain, self.focal)

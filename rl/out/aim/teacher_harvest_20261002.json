@@ -1,0 +1,156 @@
+{
+  "decision": "Native controls support a provisional gain-0.25 probe; James agreement does not validate gain.",
+  "cost_usd": 0,
+  "validation": {
+    "teacher_validation_20260930.json": {
+      "samples": 400,
+      "target_visible": 0.245,
+      "yaw": {
+        "teacher_asks": 76,
+        "james_turned": 63,
+        "sign_agree": 0.524,
+        "sign_agree_shuffled_control": 0.524,
+        "gain_lsq": 0.001,
+        "gain_median_ratio": 0.047,
+        "gain_median_ratio_scope": "same-sign subset only; not a validated gain",
+        "gain_same_sign_samples": 36,
+        "gain_median_signed_ratio": 0.0,
+        "corr": 0.005
+      },
+      "pitch": {
+        "teacher_asks": 90,
+        "james_turned": 71,
+        "sign_agree": 0.535,
+        "sign_agree_shuffled_control": 0.507,
+        "gain_lsq": 0.008,
+        "gain_median_ratio": 0.1,
+        "gain_median_ratio_scope": "same-sign subset only; not a validated gain",
+        "gain_same_sign_samples": 46,
+        "gain_median_signed_ratio": 0.0,
+        "corr": 0.112
+      }
+    },
+    "teacher_validation_20260930-late.json": {
+      "samples": 360,
+      "target_visible": 0.306,
+      "yaw": {
+        "teacher_asks": 84,
+        "james_turned": 77,
+        "sign_agree": 0.532,
+        "sign_agree_shuffled_control": 0.481,
+        "gain_lsq": 0.029,
+        "gain_median_ratio": 0.256,
+        "gain_median_ratio_scope": "same-sign subset only; not a validated gain",
+        "gain_same_sign_samples": 43,
+        "gain_median_signed_ratio": 0.002,
+        "corr": 0.111
+      },
+      "pitch": {
+        "teacher_asks": 91,
+        "james_turned": 83,
+        "sign_agree": 0.506,
+        "sign_agree_shuffled_control": 0.602,
+        "gain_lsq": 0.009,
+        "gain_median_ratio": 0.107,
+        "gain_median_ratio_scope": "same-sign subset only; not a validated gain",
+        "gain_same_sign_samples": 48,
+        "gain_median_signed_ratio": 0.004,
+        "corr": 0.068
+      }
+    }
+  },
+  "native_controls": [
+    {
+      "note": "door false positive",
+      "image": "data/calibration/rl-sitting-20260930-07/ep-004-bc/000056.jpg",
+      "green_share": 0.05751736111111111,
+      "old_step_deg": [
+        -3.3272946738501195,
+        -4.870479425119286
+      ],
+      "current_step_deg": null,
+      "old_box": [
+        910.4,
+        223.8,
+        1209.6,
+        558.2
+      ]
+    },
+    {
+      "note": "open bot, left/up correction",
+      "image": "data/calibration/rl-sitting-20260930-04/ep-000-bc/000027.jpg",
+      "green_share": 0.0045616319444444445,
+      "old_step_deg": [
+        -0.7463253281086304,
+        -0.8691498950459334
+      ],
+      "current_step_deg": [
+        -0.7463253281086304,
+        -0.8691498950459334
+      ],
+      "old_box": [
+        1166.0,
+        602.0,
+        1297.0,
+        725.0
+      ]
+    },
+    {
+      "note": "open bot, centred control",
+      "image": "data/calibration/compat-check-20260929/learned-01-a/000000.jpg",
+      "green_share": 0.0034939236111111113,
+      "old_step_deg": [
+        0.0,
+        0.0
+      ],
+      "current_step_deg": [
+        0.0,
+        0.0
+      ],
+      "old_box": [
+        1233.0,
+        639.0,
+        1357.0,
+        761.0
+      ]
+    },
+    {
+      "note": "visible but below eligibility size",
+      "image": "data/calibration/rl-sitting-20260930-01/ep-000-bc/000000.jpg",
+      "green_share": 0.0033984375,
+      "old_step_deg": null,
+      "current_step_deg": null,
+      "old_box": null
+    }
+  ],
+  "cohort": {
+    "compat-check-20260929": {
+      "sessions": 1,
+      "rows": 81,
+      "labelled": 81,
+      "yaw_turn": 0,
+      "pitch_turn": 0
+    },
+    "rl-sitting-20260930-01": {
+      "sessions": 6,
+      "rows": 601,
+      "labelled": 0,
+      "yaw_turn": 0,
+      "pitch_turn": 0
+    },
+    "rl-sitting-20260930-04": {
+      "sessions": 2,
+      "rows": 163,
+      "labelled": 125,
+      "yaw_turn": 125,
+      "pitch_turn": 125
+    },
+    "rl-sitting-20260930-07": {
+      "sessions": 17,
+      "rows": 1723,
+      "labelled": 163,
+      "yaw_turn": 163,
+      "pitch_turn": 162
+    }
+  }
+}
