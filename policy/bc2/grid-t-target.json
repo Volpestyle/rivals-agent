@@ -8,9 +8,7 @@
   "hidden": 1536,
   "layers": 2,
   "expert": true,
-  "eval_sessions": [
-   "20260925T212646-322Z-49728-6"
-  ],
+  "eval_sessions": [],
   "expert_label_source": "idm v2-a (v2-a.pt)",
   "expert_sessions": [
    "expert-2871149954-s0",
