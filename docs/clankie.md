@@ -9,6 +9,10 @@ Deployment, task re-enabling and sittings require scheduling by the lead; the
 launcher's explicit cooldown argument. Every sitting records that regime and the
 kit patch. The examples below describe the interface, not run authorization.
 
+Clankie's side of the bridge (his `rivals` tool, the shared play lease and exact-stop
+recovery) lives in [`clankie-extension/`](../clankie-extension/README.md), a Clankie game
+extension installed from this checkout (moved out of Clankie's core, VUH-2419).
+
 The Clankie bridge author (Codex, VUH-1316) owns `agent/server.py`,
 `agent/session.py`, this document, `scripts/clankie_bridge.ps1`, and
 `tests/test_session_api.py`. These five files are the reviewed bridge's commit
