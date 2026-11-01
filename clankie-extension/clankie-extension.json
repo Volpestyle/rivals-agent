@@ -1,0 +1,1 @@
+{"id":"rivals","version":"0.1.0","contracts":[1],"kind":"game","entry":"src/index.ts","description":"Spider-Man practice-range sittings through Rivals Agent's session server.","permissions":["options","state","credentials","tools","routes","play","go-live"]}

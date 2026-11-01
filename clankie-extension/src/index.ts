@@ -1,4 +1,4 @@
-import type { GameExtension, GameExtensionModuleHost, GameExtensionModuleProjection } from "@clankie/game-extension";
+import type { GameExtension, GameExtensionModuleHost, GameExtensionModuleProjection } from "@clankie/extension";
 import { RivalsService, type RivalsRuntime, type RivalsStart } from "./service.ts";
 
 /**
