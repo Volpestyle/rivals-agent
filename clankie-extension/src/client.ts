@@ -1,4 +1,4 @@
-import type { GameExtensionModuleHost } from "@clankie/game-extension";
+import type { GameExtensionModuleHost } from "@clankie/extension";
 import { RivalsCommandSchema, RivalsStatusSchema, type RivalsCommand } from "./protocol.ts";
 
 const MAX_RESPONSE = 4 * 1024 * 1024;
@@ -46,7 +46,8 @@ async function bytes(response: Response): Promise<Uint8Array> {
 
 /** The session-server client. Redirects are refused and replies are bounded. */
 export function createRivalsClient(options: {
-  host: Pick<GameExtensionModuleHost, "options" | "credential" | "goLive">;
+  host: Pick<GameExtensionModuleHost, "options" | "credential"> &
+    Partial<Pick<GameExtensionModuleHost, "goLive">>;
   fetchImpl?: typeof fetch;
 }) {
   const fetchImpl = options.fetchImpl ?? fetch;
@@ -123,6 +124,7 @@ export function createRivalsClient(options: {
         }
         const watchUrl = new URL(shared.watchPath, base).href;
         if (!command.guildId || !command.channelId) return { outcome: "watch", watchUrl };
+        if (!options.host.goLive) return { outcome: "watch", watchUrl, publishing: "unavailable" };
         await guard?.();
         const requested = await options.host.goLive({
           guildId: command.guildId,

@@ -20,7 +20,7 @@ import type {
   GameExtensionStatus,
   GameRunControl,
   GameTool,
-} from "@clankie/game-extension";
+} from "@clankie/extension";
 import { createRivalsClient } from "./client.ts";
 import { RivalsCommandSchema, RivalsStatusSchema, type RivalsCommand, type RivalsStatus } from "./protocol.ts";
 

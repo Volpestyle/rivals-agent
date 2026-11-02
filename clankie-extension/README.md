@@ -12,7 +12,7 @@ the session server in this repository (`agent/server.py`, [docs/clankie.md](../d
 supplies the tactical policy and fast pad loop. It moved here from Clankie's core
 on 2026-10-17 ([VUH-2419](https://linear.app/vuhlp/issue/VUH-2419); Clankie ADR 0175
 and ADR 0234). It implements Clankie's public game-extension module contract
-(`@clankie/game-extension`, `src/module.ts`) and imports only types from it:
+(`@clankie/extension`, `src/game.ts`) and imports only types from it:
 Clankie hands it the durable play ledger, the shared lifecycle wrapper, its own
 broker credentials, a private state directory and the Go Live port.
 
@@ -60,7 +60,9 @@ conversation in `x-clankie-conversation-id`) accept the same commands:
 session-scoped, read-only watch URL; a browser must be able to reach that URL's
 host (a loopback forward is local to the Mac). The optional Discord destination
 uses the active user-session body's Go Live publisher and its channel allowlist;
-an official bot body cannot publish Go Live. Stopping the sitting invalidates
+an official bot body cannot publish Go Live. If the owner declines the Go Live port,
+sharing still returns the watch URL with `publishing: "unavailable"`. Stopping
+the sitting invalidates
 the watch feed. Sharing carries video, not game audio.
 
 ## Set up the session server
@@ -124,7 +126,7 @@ Rivals Agent; its normal synchronized recording is under that session's `game/`.
 ## Verify
 
 ```sh
-pnpm typecheck                      # resolves @clankie/game-extension from ../../clankie
+pnpm typecheck                      # resolves @clankie/extension from ../../clankie
 CLANKIE_ROOT=~/dev/clankie pnpm test   # Node 24+, a Clankie checkout with pnpm install done
 ```
 

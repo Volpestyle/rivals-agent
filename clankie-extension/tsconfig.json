@@ -17,7 +17,7 @@
     "types": ["node"],
     "baseUrl": ".",
     "paths": {
-      "@clankie/game-extension": ["../../clankie/packages/game-extension/src/index.ts"]
+      "@clankie/extension": ["../../clankie/packages/extension/src/index.ts"]
     }
   },
   "include": ["src/**/*.ts", "test/**/*.ts"]
