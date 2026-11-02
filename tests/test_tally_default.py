@@ -1,4 +1,4 @@
-"""tally.py's default snapshot (2026-09-26): it validates the live registry, and it reproduces the committed tally.
+"""tally.py's retained snapshot API: explicit current denylist, historical tally opt-in.
 
 Each check runs in a fresh interpreter, as the command line does, so the snapshot's own agent.human_intake is the one
 imported (in this process the repository's module is already loaded)."""
@@ -25,14 +25,16 @@ def _default_snapshot():
     return _run("import tally\nprint(tally.DEFAULT_SNAPSHOT)\n").strip()
 
 
-def test_the_default_snapshot_is_committed_and_validates_the_live_registry():
+def test_the_committed_snapshot_api_validates_current_registry_with_explicit_pin():
+    from policy.range_bc.steps import DENYLIST_SHA256
+
     probe = _run(
         "import json, sys, tally\n"
         "snap = tally.HERE / tally.DEFAULT_SNAPSHOT\n"
         "sys.path.insert(0, str(snap))\n"
         "from agent import human_intake as hi\n"
         "assert hi.__file__.startswith(str(snap)), hi.__file__\n"
-        "den = hi.load_denylist(tally.ROOT / 'data/human/sealed-denylist.v2.json', sha256_pin=tally.DENYLIST_SHA256)\n"
+        f"den = hi.load_denylist(tally.ROOT / 'data/human/sealed-denylist.v2.json', sha256_pin={DENYLIST_SHA256!r})\n"
         "reg = hi.check_registry(tally.ROOT / 'data/human/session-splits.corpus.json', denylist=den)\n"
         "print(json.dumps(sorted({p.split for p in reg.values()})))\n")
     assert json.loads(probe.strip().splitlines()[-1]) == ["gate2", "idm_train", "test", "train", "val"]

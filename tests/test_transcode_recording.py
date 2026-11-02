@@ -195,15 +195,24 @@ def test_an_interrupted_encode_leaves_no_partial(take, tmp_path, monkeypatch):
 
 # --- the sealed denylist and pairing ----------------------------------------------------------------------------
 
-def test_the_sealed_session_is_refused_by_id_before_anything_is_opened(tmp_path):
+@pytest.fixture
+def sealed_denylist(tmp_path):
+    path = tmp_path / "denylist.json"
+    path.write_bytes((json.dumps({"schema_version": 1, "sessions": [{
+        "session_id": SEALED_ID, "media_path": SEALED_MEDIA,
+        "media_sha256": "d" * 64}]}) + "\n").encode())
+    return {"denylist_path": path, "denylist_pin": _sha(path)}
+
+
+def test_the_sealed_session_is_refused_by_id_before_anything_is_opened(tmp_path, sealed_denylist):
     with pytest.raises(T.Refused, match="session id"):
-        _run(tmp_path / "nothing.mkv", tmp_path / SEALED_ID, tmp_path / "o.mkv")    # neither exists
+        _run(tmp_path / "nothing.mkv", tmp_path / SEALED_ID, tmp_path / "o.mkv", **sealed_denylist)    # neither exists
 
 
 @pytest.mark.parametrize("spelling", [SEALED_MEDIA, SEALED_MEDIA.upper(), SEALED_MEDIA.replace("/", "\\")])
-def test_the_sealed_media_is_refused_by_path_as_a_string(tmp_path, spelling):
+def test_the_sealed_media_is_refused_by_path_as_a_string(tmp_path, spelling, sealed_denylist):
     with pytest.raises(T.Refused, match="media path"):
-        _run(Path(spelling), tmp_path / "x", tmp_path / "o.mkv")
+        _run(Path(spelling), tmp_path / "x", tmp_path / "o.mkv", **sealed_denylist)
 
 
 @media

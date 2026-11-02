@@ -182,7 +182,7 @@ MAPPING = {"swing": "swing", "get_over_here": "uppercut", "uppercut": "get_over_
 def test_the_web_counter_on_native_match_frames_tells_zero_from_absent(name, webs, own):
     """Pilot 052001's native frames (JPEG q95; reads equal the native decode's). Needs cv2 (perception group)."""
     cv2 = pytest.importorskip("cv2")
-    scan = module("reused_scan_match_test", ROOT / "data/human/inspection/20260922T033319-205Z-24328-2/regime-scan/scan.py")
+    scan = module("reused_scan_match_test", SESSIONS / "code-snapshot-f8fd92c-bounded-20260927" / intake.SCAN_REL)
     layout = scan.source_layout(MAPPING)
     img = cv2.imread(str(FIX / f"052001-{name}.jpg"))
     read = scan.read_sample(img, layout, MAPPING)
