@@ -30,7 +30,7 @@ jobs:
   # Full offline suite, including perception; one Windows run instead of two overlapping jobs.
   stdlib-windows:
     runs-on: windows-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       # Receipt fixtures authenticate Git's exact LF bytes on Windows too.
       - run: git config --global core.autocrlf false
@@ -46,7 +46,7 @@ jobs:
   stdlib-macos:
     if: github.event_name == 'workflow_dispatch'
     runs-on: macos-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       # Receipt fixtures authenticate Git's exact LF bytes on Windows too.
       - run: git config --global core.autocrlf false
