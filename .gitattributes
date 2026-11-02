@@ -1,0 +1,7 @@
+# The scoped camera acceptance authenticates these historical Windows bytes.
+# Preserve their CRLF checkout form without converting other LF-pinned receipts.
+agent/camera_maps/alt-247-124.json text eol=crlf
+docs/evidence/camera-map-20260929b/README.md text eol=crlf
+docs/evidence/camera-map-20260929b/pitch-results.json text eol=crlf
+docs/evidence/camera-map-20260929b/yaw-results-final.json text eol=crlf
+docs/evidence/camera-map-20260929b/delivery-receipt.json text eol=crlf
