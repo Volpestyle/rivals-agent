@@ -1,4 +1,6 @@
+import ast
 import json
+from pathlib import Path
 
 import pytest
 
@@ -200,7 +202,14 @@ def test_latent_dynamics_smoke(tmp_path):
 
 def test_latent_valid_starts():
     np = pytest.importorskip("numpy")
-    from rl.world_model.latent_dyn import valid_starts
+    # This helper only uses NumPy. Execute its real source without importing
+    # the unrelated Torch training stack (whose smoke tests above are opt-in).
+    source = Path(__file__).resolve().parents[1] / "rl/world_model/latent_dyn.py"
+    tree = ast.parse(source.read_text(encoding="utf-8"))
+    function = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "valid_starts")
+    namespace = {"np": np}
+    exec(compile(ast.Module(body=[function], type_ignores=[]), str(source), "exec"), namespace)
+    valid_starts = namespace["valid_starts"]
     ok = np.array([1, 1, 1, 0, 1, 1, 1, 1], bool)
     run = np.zeros(8, np.int32)
     i = np.arange(8)

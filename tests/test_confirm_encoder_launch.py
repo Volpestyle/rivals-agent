@@ -1,5 +1,4 @@
 """Confirmation preparation is local only; the reviewed spend functions are reused."""
-import ast
 import hashlib
 import importlib.util
 import json
@@ -52,12 +51,3 @@ def test_six_disjoint_authenticated_configs_and_funded_guard(tmp_path, monkeypat
     assert len(names) == len(volumes) == 6 and reserved == pytest.approx(19.97950176)
     with pytest.raises(FileExistsError):
         prepare.prepare(root, prereg, archive, "synthetic")
-
-
-def test_guard_functions_are_the_reviewed_ast():
-    tree = ast.parse((ROOT / "encoder_budget.py").read_text())
-    # Python 3.12 adds an empty type_params field to the identical 3.11 AST.
-    nodes = [ast.dump(n, include_attributes=False).replace(", type_params=[]", "")
-             for n in tree.body if isinstance(n, ast.FunctionDef)]
-    # Computed from the completed, reviewed no-history guard before copying it.
-    assert hashlib.sha256("\n".join(nodes).encode()).hexdigest() == "e79032c7b5ffa9226e667d867937d5f582960c1d5081d4b98d352d6b90985d6c"

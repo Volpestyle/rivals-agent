@@ -50,3 +50,26 @@ def _no_real_dotenv(monkeypatch):
     """The developer's .env (endpoint, keys) never reaches a test."""
     from agent import jev
     monkeypatch.setattr(jev, "_dotenv", lambda path=None: {})
+
+
+@pytest.fixture(autouse=True)
+def _stop_test_watchdogs(monkeypatch):
+    """Keep real Live watchdogs during tests, then stop their synthetic sessions."""
+    from functools import wraps
+    from agent.controller import Live
+
+    initialize = Live.__init__
+    closed_events = []
+
+    @wraps(initialize)
+    def tracked_init(self, *args, **kwargs):
+        try:
+            return initialize(self, *args, **kwargs)
+        finally:
+            if hasattr(self, "_closed"):
+                closed_events.append(self._closed)
+
+    monkeypatch.setattr(Live, "__init__", tracked_init)
+    yield
+    for event in closed_events:
+        event.set()

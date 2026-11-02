@@ -4,6 +4,7 @@ name: tests
 
 on:
   push:
+    branches: [main]              # topic branches are checked by pull_request, once
     paths:                        # tests read docs/evidence/** and docs/spiderman-kit.md, so docs are not ignored wholesale
       - "**"
       - "!docs/lanes/**"
@@ -26,15 +27,18 @@ env:
   PYTHONDONTWRITEBYTECODE: "1"
 
 jobs:
+  # Full offline suite, including perception; one Windows run instead of two overlapping jobs.
   stdlib-windows:
     runs-on: windows-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
+      # Receipt fixtures authenticate Git's exact LF bytes on Windows too.
+      - run: git config --global core.autocrlf false
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.11"
-      - run: uv run pytest -p no:cacheprovider -q
+      - run: uv run --group perception pytest -p no:cacheprovider -q
 
   # Manual only (Actions > tests > Run workflow). macOS runner minutes bill at 10x on a private repo, and the Mac
   # already runs this suite before its own fits; run it here when a change touches Mac-side code or before a merge
@@ -42,18 +46,10 @@ jobs:
   stdlib-macos:
     if: github.event_name == 'workflow_dispatch'
     runs-on: macos-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
-        with:
-          python-version: "3.11"
-      - run: uv run pytest -p no:cacheprovider -q
-
-  perception:
-    runs-on: windows-latest       # the PC runs perception live
     timeout-minutes: 30
     steps:
+      # Receipt fixtures authenticate Git's exact LF bytes on Windows too.
+      - run: git config --global core.autocrlf false
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
         with:
